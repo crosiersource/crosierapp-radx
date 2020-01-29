@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+	<infNFe Id="" versao="4.00">
+		<ide>
+			<cUF>41</cUF>
+			<cNF></cNF>
+			<natOp></natOp>
+			<mod></mod>
+			<serie></serie>
+			<nNF></nNF>
+			<dhEmi></dhEmi>
+			<dhSaiEnt></dhSaiEnt>
+			<tpNF></tpNF>
+			<idDest></idDest>
+			<cMunFG>4119905</cMunFG>
+			<tpImp>1</tpImp>
+			<tpEmis>1</tpEmis>
+			<cDV></cDV>
+			<tpAmb>1</tpAmb>
+			<finNFe></finNFe>
+			<indFinal>1</indFinal>
+			<indPres>1</indPres>
+			<procEmi>0</procEmi>
+			<verProc>02014-6</verProc>
+		</ide>
+		<emit>
+			<CNPJ></CNPJ>
+			<xNome></xNome>
+			<xFant></xFant>
+			<enderEmit>
+				<xLgr></xLgr>
+				<nro></nro>
+				<xBairro></xBairro>
+				<cMun>4119905</cMun>
+				<xMun>PONTA GROSSA</xMun>
+				<UF>PR</UF>
+				<CEP></CEP>
+				<cPais>1058</cPais>
+				<xPais>BRASIL</xPais>
+				<fone></fone>
+			</enderEmit>
+			<IE></IE>
+			<CRT>1</CRT>
+		</emit>
+		<dest>			
+		</dest>		
+	</infNFe>		
+</NFe>	
