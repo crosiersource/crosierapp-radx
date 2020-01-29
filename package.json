@@ -1,0 +1,31 @@
+{
+  "devDependencies": {
+    "@symfony/webpack-encore": "^0.27.0",
+    "bootstrap": "4.4.1",
+    "core-js": "3",
+    "copy-webpack-plugin": "^4.6.0",
+    "daterangepicker": "^3.0.3",
+    "google-charts": "^2.0.0",
+    "jquery": "3.4.1",
+    "lightbox2": "^2.11.1",
+    "moment": "^2.23.0",
+    "node-sass": "^4.13.0",
+    "numeral": "^2.0.6",
+    "sass-loader": "^7.0.1",
+    "select2": "4",
+    "select2-bootstrap-theme": "^0.1.0-beta.10",
+    "sortablejs": "^1.8.1",
+    "sprintf-js": "^1.1.2",
+    "summernote": "0.8.12",
+    "toastr": "^2.1.4",
+    "webpack-notifier": "^1.7.0"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress"
+  }
+}
