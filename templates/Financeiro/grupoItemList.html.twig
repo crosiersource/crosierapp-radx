@@ -1,0 +1,89 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+{% block page_content %}
+
+    <div class="card">
+        <div class="card-header">
+
+            <div class="row">
+                <div class="col-4">
+                    <h3>{{ page_title }}</h3>
+                </div>
+                <div class="col-8 text-right">
+
+
+                    <button type="button" class="btn btn-primary"
+                            data-url="{{ url('grupoItem_gerarNovo', {'pai': pai.id, 'prox': false}) }}"
+                            data-target="#confirmationModal" data-toggle="modal">
+                        <i class="fas fa-step-backward"></i> Gerar Anterior
+                    </button>
+
+                    <button type="button" class="btn btn-primary"
+                            data-url="{{ url('grupoItem_gerarNovo', {'pai': pai.id, 'prox': true}) }}"
+                            data-target="#confirmationModal" data-toggle="modal">
+                        <i class="fas fa-step-forward"></i> Gerar Próximo
+                    </button>
+
+                    <button type="button" class="btn btn-secondary"
+                            data-target="#pesquisarModal" data-toggle="modal">
+                        <i class="fas fa-search" aria-hidden="true"></i> Pesquisar
+                    </button>
+                    <button type="button" class="btn btn-secondary"
+                            onclick="window.location.href='{{ url('grupoItem_list',{'pai':pai.id,'r':'1'}) }}'">
+                        <i class="fas fa-sync" aria-hidden="true"></i> Recarregar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive-sm">
+
+                <table class="table table-sm table-striped table-hover crsr-datatable display compact">
+
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Dt Vencto</th>
+                        <th scope="col">Valor informado</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for item in dados %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.descricao }}</td>
+                            <td>{{ item.dtVencto|date('d/m/Y') }}</td>
+                            <td class="text-right">{{ item.valorInformado|number_format(2,',','.') }}</td>
+                            <td class="text-right">
+                                <a class="btn btn-sm btn-secondary" href="{{ url('grupoItem_listMovs', {grupoItem: item.id}) }}" role="button"
+                                   title="Movimentações">
+                                    <i class="fas fa-list-alt" aria-hidden="true"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-primary"
+                                        onclick="window.location.href='{{ url('grupoItem_form', {id: item.id}) }}'">
+                                    <i class="fas fa-wrench" aria-hidden="true"></i>
+                                </button>
+                                <br/>
+                                <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/grupoItemList.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% if notaFiscal.historicos %}
+<div class="card">
+	<div class="card-header">
+
+		<div class="row">
+			<div class="col-12">
+				<h5>Histórico</h5>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="card-body">
+
+		<div class="table-responsive-sm">
+			<table class="table table-striped table-hover">
+
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Data/Hora</th>
+						<th scope="col">Código</th>
+						<th scope="col">Descrição</th>
+						<th scope="col">Obs</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for historico in notaFiscal.historicos %}
+					<tr>
+						<td>{{ loop.index }}</td>
+						<td>{{ historico.dtHistorico|date('d/m/Y H:i:s') }}</td>
+						<td>{{ historico.codigoStatus }}</td>
+						<td>{{ historico.descricao }}</td>
+						<td>{{ historico.obs }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+
+			</table>
+		</div>
+
+
+	</div>
+</div>
+
+{% endif %}

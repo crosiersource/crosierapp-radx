@@ -1,0 +1,103 @@
+<div class="card">
+    <div class="card-header">
+
+        <div class="row">
+            <div class="col-12">
+                <h4>Dados do Cliente</h4>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="card-body">
+
+        {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+        {{ form_start(form) }}
+        {{ form_row(form._token) }}
+
+        {{ form_row(form.infoStatus) }}
+
+        {{ form_row(form.id) }}
+        {{ form_row(form.tipoNotaFiscal) }}
+
+        {{ form_row(form.documentoDestinatario) }}
+        {{ form_row(form.xNomeDestinatario) }}
+
+        {{ form_row(form.inscricaoEstadualDestinatario) }}
+
+        {{ form_row(form.foneDestinatario) }}
+        {{ form_row(form.emailDestinatario) }}
+
+        {{ form_row(form.cepDestinatario) }}
+        {{ form_row(form.logradouroDestinatario) }}
+        {{ form_row(form.numeroDestinatario) }}
+        {{ form_row(form.bairroDestinatario) }}
+        {{ form_row(form.cidadeDestinatario) }}
+        {{ form_row(form.estadoDestinatario) }}
+
+
+        <div class="row">
+            <div class="col text-right">
+
+                {% if permiteFaturamento %}
+                    <button type="button" value="Faturar" class="btn btn-primary"
+                            data-form="nota_fiscal" data-target="#confirmationModal"
+                            data-toggle="modal">
+                        <i class="fas fa-file-invoice" aria-hidden="true"></i> Faturar
+                    </button>
+                {% endif %}
+
+                {% if permiteReimpressao %}
+                    {% if notaFiscal.tipoNotaFiscal == 'NFCE' %}
+
+                        <a role="button" value="Imprimir" class="btn btn-outline-success"
+                                href="{{ url('fis_emissaonfe_imprimirDANFCE', {nfId: notaFiscal.id}) }}"
+                                target="_blank">
+                            <i class="fas fa-print" aria-hidden="true"></i> Imprimir
+                        </a>
+
+                    {% else %}
+
+                        <button type="button" value="Reimprimir" class="btn btn-secondary"
+                                data-url="{{ url('fis_emissaofiscalpv_reimprimir', {notaFiscal: notaFiscal.id, venda: venda.id}) }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-print" aria-hidden="true"></i> Reimprimir
+                        </button>
+
+                    {% endif %}
+                {% endif %}
+
+
+                {% if permiteCancelamento or permiteReimpressaoCancelamento %}
+                    <button type="button" id="Cancelar" class="btn btn-warning"
+                            onclick="window.location.assign('{{ url('fis_emissaofiscalpv_cancelarForm', {notaFiscal: notaFiscal.id, venda: venda.id}) }}')">
+                        <i class="fas fa-ban" aria-hidden="true"></i> Cancelar
+                    </button>
+                {% endif %}
+
+                {% if notaFiscal.id %}
+                    <button type="button" value="Consultar Status" class="btn btn-secondary"
+                            data-url="{{ url('fis_emissaofiscalpv_consultarStatus', {notaFiscal: notaFiscal.id, venda: venda.id}) }}"
+                            data-target="#confirmationModal" data-toggle="modal">
+                        <i class="fab fa-searchengin" aria-hidden="true"></i> Consultar Status
+                    </button>
+                {% endif %}
+
+                <button type="button" value="Resetar" class="btn btn-secondary"
+                        data-url="{{ url('fis_emissaofiscalpv_form', {venda: venda.id}) }}"
+                        data-target="#confirmationModal" data-toggle="modal">
+                    <i class="fas fa-undo" aria-hidden="true"></i> Recarregar
+                </button>
+
+            </div>
+        </div>
+
+
+        {{ form_end(form, {'render_rest': false}) }}
+
+
+    </div>
+</div>
+

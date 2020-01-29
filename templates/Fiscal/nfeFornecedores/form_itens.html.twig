@@ -1,0 +1,63 @@
+<div class="tab-pane fade" id="itens" role="tabpanel" aria-labelledby="itens-tab">
+
+    {% if notaFiscal.id %}
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h5>Itens</h5>
+                    </div>
+                    
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive-sm">
+                    <table class="table table-striped table-hover">
+
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Código</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Unidade</th>
+                            <th scope="col">NCM</th>
+                            <th scope="col">CFOP</th>
+                            <th scope="col">Qtde</th>
+                            <th scope="col">Vlr Unit</th>
+                            <th scope="col">Vlr Total</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for item in notaFiscal.itens %}
+                            <tr>
+                                <td>{{ item.ordem }}</td>
+                                <td>{{ item.codigo }}</td>
+                                <td>{{ item.descricao }}</td>
+                                <td>{{ item.unidade }}</td>
+                                <td>{{ item.ncm }}</td>
+                                <td>{{ item.cfop }}</td>
+                                <td>{{ item.qtde|number_format(2,',','.') }}</td>
+                                <td>{{ item.valorUnit|number_format(2,',','.') }}</td>
+                                <td>{{ item.valorTotal|number_format(2,',','.') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+
+
+                {{ form_row(form.subtotal) }}
+                {{ form_row(form.totalDescontos) }}
+                {{ form_row(form.valorTotal) }}
+
+            </div>
+        </div>
+    {% endif %}
+
+</div>

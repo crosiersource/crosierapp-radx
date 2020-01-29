@@ -1,0 +1,115 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+    <div class="card">
+        <form action="{{ url('conferencia_list') }}" method="get" id="formPesquisar">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-4"><h3>Conferência - Financeiro</h3></div>
+                    <div class="col-8 text-right">
+
+
+                        <button class="btn btn-outline-success"
+                                type="button" id="btn_ante"
+                                data-ante-periodoi="{{ antePeriodoI }}" data-ante-periodof="{{ antePeriodoF }}">
+                            <i class="fas fa-chevron-left"></i></button>
+
+                        <button class="btn btn-outline-success"
+                                type="button" id="btn_prox"
+                                data-prox-periodoi="{{ proxPeriodoI }}" data-prox-periodof="{{ proxPeriodoF }}">
+                            <i class="fas fa-chevron-right"></i></button>
+
+
+                        <input type="date" size="15" class="form-control" id="filter_dtUtil_i"
+                               name="filter[dtUtil][i]"
+                               style="width: 150px; float: left"
+                               value="{{ filter.dtUtil.i|default('') }}">
+                        <input type="date" size="15" class="form-control mr-1" id="filter_dtUtil_f"
+                               name="filter[dtUtil][f]"
+                               style="width: 150px; float: left"
+                               value="{{ filter.dtUtil.f|default('') }}">
+
+                        <button class="btn btn-outline-success" type="submit">Pesquisar</button>
+                        <button class="btn btn-outline-dark" type="submit" name="btnMesAtual" id="btnMesAtual"
+                                value="true">Mês Atual
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="card-body">
+            <div class="table-responsive-sm">
+
+                {% for list in lists %}
+
+                    <div class="card">
+                        <h5 class="card-header">{{ list.titulo }}</h5>
+                        <div class="card-body">
+                            <table class="table table-striped table-hover display compact">
+
+                                {% for item in list.itens %}
+
+                                    {% if item.titulo is defined %}
+                                        <tr>
+                                            <td>{{ item.titulo }}</td>
+                                            <td class="text-right">
+                                                {% if item.icon is defined %}
+                                                    <i class="{{ item.icon }}" title="{{ item.obs|default('') }}"></i>
+                                                {% endif %}
+                                                {{ item.valor|number_format(2,',','.') }}
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr style="background-color: lightblue"><td colspan="99"></td></tr>
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </table>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="pesquisarModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="" method="get" id="formPesquisar">
+                    <div class="modal-body">
+                        <h4>Pesquisar</h4>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                id="btnCancelarPesquisa" data-dismiss="modal">
+                            <i class="fa fa-ban" aria-hidden="true"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-danger" id="btnPesquisar">
+                            <i class="fa fa-trash" aria-hidden="true"></i> Pesquisar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/movimentacaoExtratoList.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/Estoque/produto_form.css') }}">
+{% endblock %}
+
+
+{% block page_content %}
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Produto</h3>
+                        {% if e.id %}
+                            <a href="{{ url('est_produto_form', {'id':e.id}) }}">
+                                <h6>{{ e.id }} - {{ e.titulo|default('') == '' ? e.nome : e.titulo }}</h6>
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="col-4 text-right">
+                        <a role="button" class="btn btn-primary"
+                           href="{{ url('est_produto_form') }}">
+                            <i class="fas fa-file" aria-hidden="true"></i> Novo
+                        </a>
+
+                        <button type="button" class="btn btn-outline-secondary" title="Copiar configurações"
+                                data-url="{{ url('est_produtoAtributo_copiarConfigs', {'produto': e.id}) }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-copy"></i>
+                        </button>
+
+                        {% if habilitaColarConfigsProduto %}
+                            <button type="button" class="btn btn-outline-danger"
+                                    data-url="{{ url('est_produtoAtributo_colarConfigs', {'produtoTo': e.id}) }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-paste"></i> Colar <span
+                                        class="badge badge-light">Id: {{ app.session.get('produtoAtributoCopiarConfigsProdutoId') }}</span>
+                            </button>
+                        {% endif %}
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 d-flex">
+
+                        <div class="text-left">
+                            <span class="badge badge-pill badge-success">{{ (e.porcentPreench * 100)|number_format(0,',','.') }}%</span>
+                            {% set faltantes = e.getAtributoByUUID('e526ef6b-ea96-40b4-8f83-d492896f5e32').valor|default('')|split('\|') %}
+                            {% for faltante in faltantes %}
+                                <span class="badge badge-pill badge-warning">{{ faltante }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="ml-auto text-right">
+                            Estoque
+                            {% if e.composicao == 'S' %}
+                                Disponível: {{ e.composicaoEstoqueDisponivel }}
+                            {% else %}
+                                Total: {{ e.getAtributoByUUID('8f25a3e6-cf93-4111-be2b-a46dedc30107').valor|default('') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <ul class="nav nav-tabs" id="principal" role="tablist">
+
+
+                    {% for kAba,vAba in abas %}
+
+                        <li class="nav-item">
+                            <a class="nav-link {{ loop.index0 == 0 ? 'active' : '' }}"
+                               id="{{ kAba|lower|transliterate }}-tab" data-toggle="tab"
+                               href="#{{ kAba|lower|transliterate }}"
+                               role="tab"
+                               aria-controls="{{ kAba|lower|transliterate }}" aria-selected="false">{{ kAba }}</a>
+                        </li>
+
+                    {% endfor %}
+
+                    {% if is_granted('ROLE_ESTOQUE_ADMIN') %}
+                        <li class="nav-item ml-auto">
+                            <a class="nav-link" id="config-tab" data-toggle="tab" href="#config" role="tab"
+                               aria-controls="config" aria-selected="false">Configuração</a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                <div class="form-group row">
+                </div>
+
+
+                <div class="tab-content" id="myTabContent">
+
+                    {% for kAba,vAba in abas %}
+
+                        {# Abas fixas que possuem arquivo próprio #}
+                        {% if kAba in ['Produto','Descritivos','Fiscal','Fotos','Composição'] %}
+                            {% include 'Estoque/produto_form_' ~ kAba|lower|transliterate ~ '.html.twig' %}
+                        {% else %}
+                            {% include 'Estoque/produto_form_aba.html.twig' with {'kAba': kAba , 'vAba': vAba} %}
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {% if is_granted('ROLE_ESTOQUE_ADMIN') %}
+                        {{ include('Estoque/produto_form_config.html.twig') }}
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/Estoque/produto_form.js') }}"></script>
+{% endblock %}

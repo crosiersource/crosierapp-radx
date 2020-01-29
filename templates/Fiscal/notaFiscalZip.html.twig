@@ -1,0 +1,45 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+
+            <div class="row">
+                <div class="col-8">
+                    <h3>Download Zip - Arquivos Fiscais</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <form action="{{ url('fis_notaFiscalZip_processar') }}" method="get" id="formNotaFiscalZip" name="formNotaFiscalZip">
+
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-2 form-control-label required" for="confeccao">Mês</label>
+                    <div class="col-sm-8">
+                        <input type="month" id="mesano" name="mesano" value="{{ mesano }}" class="form-control"/>
+                    </div>
+
+                    <div class="col-sm-2 text-right">
+                        <button type="button" value="Processar" class="btn btn-warning"
+                                data-form="formNotaFiscalZip" data-target="#confirmationModal"
+                                data-toggle="modal">
+                            <i class="fas fa-file-archive" aria-hidden="true"></i> Processar
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

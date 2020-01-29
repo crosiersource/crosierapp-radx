@@ -1,0 +1,164 @@
+<html>
+<head>
+
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+          crossorigin="anonymous">
+
+    <style>
+
+        /**
+            Set the margins of the page to 0, so the footer and the header
+            can be of the full height and width !
+         **/
+
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        @page {
+            margin: 0 0;
+        }
+
+        /** Define now the real margins of every page in the PDF **/
+        body {
+            margin: 3.5cm 1cm 1.5cm;
+            max-width: 21cm;
+            font-size: small;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        /** Define the header rules **/
+        header {
+            position: fixed;
+            max-width: 21cm;
+            top: 1cm;
+            left: 1cm;
+            right: 1cm;
+            height: 3cm;
+        }
+
+        /** Define the footer rules **/
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2cm;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: separate;
+            width: 100%;
+            font-size: 11px;
+            line-height: 0.35cm;
+        }
+
+        td {
+            padding: 1px;
+        }
+
+    </style>
+</head>
+<body>
+
+
+<header>
+    <table width="100%">
+        <tbody>
+        <tr>
+            <td style="vertical-align: top"><img src="https://www.casabonsucesso.com.br/img/LOGO_COMPLETO_300px.png"
+                                                 width="200px"/></td>
+            <td style="text-align: right;">
+                <span style="font-size: x-large; font-weight: bolder">Contas a Pagar</span><br/>
+                <span style="font-size: small;">Per&iacute;odo: {{ filter.dts }}</span><br/>
+                <span style="font-size: x-small;"><i>Impresso em: {{ hoje }}</i></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</header>
+
+
+<!-- Wrap the content of your PDF inside a main tag -->
+<main>
+    <table>
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">ID</th>
+            <th scope="col">Descrição</th>
+            <th scope="col">Valor</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% set i=0 %}
+        {% for dia in dias %}
+            <tr>
+                <th colspan="4"
+                    style="text-align: center; background-color: antiquewhite; font-size: 18px; line-height: 35px">
+                    {{ dia.dtVenctoEfetiva|localizeddate('none', 'none', app.request.locale, null, 'dd/MM/yyyy (EEEE)') }}
+                </th>
+            </tr>
+            {% set strip = true %}
+            {% for item in dia.movs %}
+                {% set i=i+1 %}
+                {% set strip = not strip %}
+                <tr style="background-color: {{ strip ? 'lightgrey' : 'white' }}">
+                    <th scope="row">{{ i }}</th>
+                    <td>{{ item.id }}</td>
+                    <td>
+
+
+                        <table>
+                            <tr>
+                                <td>
+                                    <b>{{ item.descricaoMontada|raw }}</b>
+                                    {% if item.cedenteInfo %}
+                                        <br/><i>{{ item.cedenteInfo }}</i>
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: right">
+                                    {{ item.modo.descricaoMontada }}
+                                    {% if item.recorrente %}
+                                        <br/><div style="font-size: 9px">* Recorrente</div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </td>
+                    <td style="text-align: right">{{ item.valorTotal|number_format(2,',','.') }}</td>
+                </tr>
+            {% endfor %}
+            <tr style="background-color: aquamarine; height: 1.5cm">
+                <td colspan="3" style="text-align: right; vertical-align: middle">Total:</td>
+                <td style="text-align: right; vertical-align: middle">
+                    <b>{{ dia.total|abs|number_format(2,',','.') }}</b></td>
+            </tr>
+            <tr>
+                <td colspan="999"></td>
+            </tr>
+        {% endfor %}
+        {% if dias|length > 1 %}
+            <tr style="background-color: lightgoldenrodyellow">
+                <th scope="row" colspan="3" class="text-right">
+                    TOTAL :
+                </th>
+                <th style="text-align: right">
+                    {{ totalGeral|abs|number_format(2,',','.') }}<br/>
+                </th>
+            </tr>
+        {% endif %}
+
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

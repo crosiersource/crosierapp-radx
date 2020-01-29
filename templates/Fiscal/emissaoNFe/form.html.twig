@@ -1,0 +1,155 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Emissão de NFe</h3>
+                    </div>
+                    <div class="col-4 text-right">
+                        <button type="button" class="btn btn-primary"
+                                onclick="window.location.href='{{ url('fis_emissaonfe_form') }}'">
+                            <i class="fas fa-file" aria-hidden="true"></i> Novo
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <ul class="nav nav-tabs" id="principal" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active NOTAFISCAL_TAB" id="cabecalho-tab" data-toggle="tab" href="#cabecalho"
+                           role="tab"
+                           aria-controls="home" aria-selected="true">Cabeçalho</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link NOTAFISCAL_TAB {{ notaFiscal.id|default('') != '' ? '' : 'disabled' }}" id="itens-tab" data-toggle="tab" href="#itens" role="tab"
+                           aria-controls="profile" aria-selected="false">Itens</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link NOTAFISCAL_TAB" id="transporte-tab" data-toggle="tab" href="#transporte"
+                           role="tab"
+                           aria-controls="contact" aria-selected="false">Transporte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link NOTAFISCAL_TAB" id="cartasCorrecao-tab" data-toggle="tab"
+                           href="#cartasCorrecao" role="tab"
+                           aria-controls="contact" aria-selected="false">Cartas de Correção</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link NOTAFISCAL_TAB" id="historico-tab" data-toggle="tab" href="#historico"
+                           role="tab"
+                           aria-controls="contact" aria-selected="false">Histórico</a>
+                    </li>
+                </ul>
+
+                <div class="form-group row">
+                </div>
+
+                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+                {{ form_start(form) }}
+
+                <div class="tab-content" id="myTabContent">
+
+                    {{ include('/Fiscal/emissaoNFe/form_cabecalho.html.twig') }}
+                    {{ include('/Fiscal/emissaoNFe/form_itens.html.twig') }}
+                    {{ include('/Fiscal/emissaoNFe/form_transporte.html.twig') }}
+                    {{ include('/Fiscal/emissaoNFe/form_cartasCorrecao.html.twig') }}
+                    {{ include('/Fiscal/emissaoNFe/form_historico.html.twig') }}
+
+                </div>
+
+                <div class="row">
+                    <div class="col-12">&nbsp;</div>
+                </div>
+
+                <div class="row">
+                    <div class="col text-right">
+
+
+                        {% if permiteSalvar %}
+
+                            <button type="submit" class="btn btn-primary" value="Salvar">
+                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                            </button>
+
+                        {% endif %}
+
+                        {% if permiteFaturamento %}
+
+                            <button type="button" class="btn btn-success" value="Faturar"
+                                    data-url="{{ url('fis_emissaonfe_faturar', {notaFiscal: notaFiscal.id}) }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-file-invoice" aria-hidden="true"></i> Faturar
+                            </button>
+
+                        {% endif %}
+
+                        {% if permiteReimpressao %}
+                            <a role="button" value="Imprimir" class="btn btn-outline-primary"
+                                    href="{{ url('fis_emissaonfe_imprimir', {notaFiscal: notaFiscal.id}) }}"
+                                    target="_blank">
+                                <i class="fas fa-print" aria-hidden="true"></i> Imprimir
+                            </a>
+                        {% endif %}
+
+                        {% if notaFiscal.id %}
+                            <button type="button" value="Clonar" class="btn btn-secondary"
+                                    data-url="{{ url('fis_emissaonfe_clonar', {notaFiscal: notaFiscal.id}) }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-copy" aria-hidden="true"></i> Clonar
+                            </button>
+                        {% endif %}
+
+                        {% if permiteCancelamento or permiteReimpressaoCancelamento %}
+                            <button type="button" id="Cancelar" class="btn btn-warning"
+                                    onclick="window.location.assign('{{ url('fis_emissaonfe_cancelarForm', {notaFiscal: notaFiscal.id}) }}')">
+                                <i class="fas fa-ban" aria-hidden="true"></i> Cancelar
+                            </button>
+                        {% endif %}
+
+                        {% if notaFiscal.id %}
+                            <button type="button" value="Consultar Status" class="btn btn-secondary"
+                                    data-url="{{ url('fis_emissaonfe_consultarStatus', {notaFiscal: notaFiscal.id}) }}"
+                                    data-target="#confirmationModal"
+                                    data-toggle="modal">
+                                <i class="fab fa-searchengin" aria-hidden="true"></i> Consultar Status
+                            </button>
+                        {% endif %}
+
+                        <button type="button" value="Resetar" class="btn btn-secondary"
+                                data-url="{{ url('fis_emissaonfe_form', {id: notaFiscal.id}) }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-undo" aria-hidden="true"></i> Recarregar
+                        </button>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">&nbsp;</div>
+                </div>
+
+                {{ form_end(form, {'render_rest': false}) }}
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/Fiscal/emissaoNFe/form.js') }}"></script>
+{% endblock %}

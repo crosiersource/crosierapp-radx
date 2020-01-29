@@ -1,0 +1,59 @@
+security:
+    encoders:
+        CrosierSource\CrosierLibBaseBundle\Entity\Security\User:
+            algorithm: auto
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        app_user_provider:
+            entity:
+                class: CrosierSource\CrosierLibBaseBundle\Entity\Security\User
+                property: username
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main_%env(CROSIERAPP_ID)%:
+            anonymous: ~
+
+            remember_me:
+                name: 'RMMBRM'
+                secret:   "%env(CROSIERCORE_APPSECRET)%"
+                lifetime: 6048000 # 10 semanas
+                domain: "%env(CROSIER_MAINDOMAIN)%"
+                samesite: lax
+                httponly: false
+
+            guard:
+                authenticators:
+                    - App\Security\CrosierCoreAuthenticator
+                    - App\Security\APIAuthenticator
+
+                # redirect anonymous users to the login page
+                entry_point: App\Security\CrosierCoreAuthenticator
+
+            logout:
+                path: logout
+
+
+
+            switch_user: true
+
+
+
+            # activate different ways to authenticate
+
+            # http_basic: true
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+
+            # form_login: true
+            # https://symfony.com/doc/current/security/form_login_setup.html
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # but, definitely allow /login to be accessible anonymously
+        # - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # if you wanted to force EVERY URL to be protected
+        - { path: ^/, roles: IS_AUTHENTICATED_REMEMBERED }
+    # - { path: ^/admin, roles: ROLE_ADMIN }
+    # - { path: ^/profile, roles: ROLE_USER }

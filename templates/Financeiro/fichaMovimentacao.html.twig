@@ -1,0 +1,161 @@
+<html>
+<head>
+
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+
+    <style>
+
+        /**
+            Set the margins of the page to 0, so the footer and the header
+            can be of the full height and width !
+         **/
+
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        @page {
+            margin: 0 0;
+        }
+
+        /** Define now the real margins of every page in the PDF **/
+        body {
+            margin: 1cm;
+            max-width: 21cm;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+
+    </style>
+</head>
+<body>
+
+{% for e in movs %}
+    <table border="0" style="width: 100%; height: 13cm;max-height: 13cm;max-width: 21cm;overflow: hidden;">
+        <tr>
+            <td>
+                <hr style="border-top: dotted 1px;"/>
+                <table width="100%" border="0">
+                    <tbody>
+                    <tr>
+                        <td valign="top" style="font-size: 26px; font-weight: bold">
+                            {{ e.dtVenctoEfetiva|localizeddate('none', 'none', app.request.locale, null, 'dd/MM/yyyy (EEEE)') }}
+                        </td>
+                        <td valign="top">
+                            <table style="width: 100%; font-size: 10px" border="0">
+                                <tbody>
+                                <tr>
+                                    <td style="text-align: right;"><strong>C&oacute;digo:</strong></td>
+                                    <td style="text-align: right;">{{ e.id }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right;"><strong>Dt Vencto Doc:</strong></td>
+                                    <td style="text-align: right;">{{ e.dtVencto|date('d/m/Y') }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table width="100%" border="0">
+                    <tbody>
+                    <tr>
+                        <td style="height: 1.5cm; width: 15%"><strong>Descri&ccedil;&atilde;o:</strong></td>
+                        <td style="background-color: lightgrey">
+                            {{ e.descricaoMontada|raw }}
+                            {% if e.cedenteInfo is defined %}
+                                <br/> {{ e.cedenteInfo }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Obs.:</strong></td>
+                        <td style="vertical-align: top;">
+                            <div style="height: 3.5cm; overflow: hidden; text-overflow: ellipsis;">
+                                {{ e.obs|default('') }}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cedente:</strong></td>
+                        <td>{{ e.cedente|default('') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Carteira:</strong></td>
+                        <td>{{ e.carteira.descricaoMontada }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Modo:</strong></td>
+                        <td>{{ e.modo.descricaoMontada }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Banco:</strong></td>
+                        <td>{{ e.documentoBanco.descricaoMontada|default('') }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table style="width: 100%" border="0">
+                    <tbody>
+                    <tr>
+                        <td>
+                            {% if e.chequeNumCheque is defined and e.chequeBanco is defined and e.chequeBanco %}
+                                <table border="0"
+                                       style="width: 100%; background-color: lightsteelblue; filter: alpha(opacity=40); opacity: 0.95;border:1px red solid;">
+                                    <tbody>
+                                    <tr>
+                                        <td align="center" colspan="2">-- CHEQUE --</td>
+                                    </tr>
+                                    <tr>
+                                        <td style=""><strong>Banco: </strong></td>
+                                        <td>{{ e.chequeBanco.descricaoMontada }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Agência: </strong></td>
+                                        <td style="text-align: right;">{{ e.chequeAgencia }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Conta: </strong></td>
+                                        <td style="text-align: right;">{{ e.chequeConta }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Núm. Cheque: </strong></td>
+                                        <td style="text-align: right;">{{ e.chequeNumCheque }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            {% endif %}
+
+                        </td>
+                        <td align="right" width="35%" valign="bottom">
+                            <table border="0" style="width: 100%">
+                                <tbody>
+                                <tr>
+                                    <td><strong>Valor (R$)</strong></td>
+                                    <td style="text-align: right;">{{ e.valor|number_format(2,',','.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Acr&eacute;scimos (R$)</strong></td>
+                                    <td style="text-align: right;">{{ e.acrescimos|number_format(2,',','.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Descontos (R$)</strong></td>
+                                    <td style="text-align: right;">{{ e.descontos|number_format(2,',','.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total (R$)</strong></td>
+                                    <td style="text-align: right;">{{ e.valorTotal|number_format(2,',','.') }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+{% endfor %}
+</body>
+</html>

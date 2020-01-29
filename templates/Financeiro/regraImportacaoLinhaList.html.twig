@@ -1,0 +1,25 @@
+{% extends '@CrosierLibBase/list.html.twig' %}
+
+
+{% set titulo = 'Regras de Importação' %}
+{% set route_form = 'regraImportacaoLinha_form' %}
+{% set route_list = 'regraImportacaoLinha_list' %}
+{% set route_list_ajax = 'regraImportacaoLinha_datatablesJsList' %}
+{% set list_id = 'regraImportacaoLinhaList' %}
+
+{% block campos_pesquisar %}
+
+	<div class="form-group">
+		<label for="p_descricao">Regra</label>
+		<input type="text"
+			   class="form-control" id="filter[regraRegexJava]"
+			   name="filter[regraRegexJava]"
+			   value="{{ filter.regraRegexJava|default('') }}">
+	</div>
+
+{% endblock %}
+
+
+{% block down_scripts %}
+	<script src="{{ asset('build/fin/regraImportacaoLinhaList.js') }}"></script>
+{% endblock %}

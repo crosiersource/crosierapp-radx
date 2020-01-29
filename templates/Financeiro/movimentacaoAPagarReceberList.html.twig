@@ -1,0 +1,262 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+    <form action="{{ url('aPagarReceber_list') }}" method="get" id="formPesquisar">
+
+        <div class="card">
+            <div class="card-header">
+
+
+                <div class="d-flex flex-wrap align-items-center">
+
+                    <div class="d-sm-flex text-nowrap mr-1">
+                        <h3>Contas a Pagar/Receber</h3>
+                    </div>
+                    <div class="d-sm-flex flex-nowrap ml-auto">
+
+
+                        <input type="text" class="form-control" id="filterDts"
+                               name="filter[dts]" data-mask="00/00/0000 - 00/00/0000"
+                               style="width: 180px; text-align: center"
+                               value="{{ filter.dts|default('') }}">
+
+                        <button class="btn btn-outline-success ml-1"
+                                type="button" id="btnAnterior" title="Anterior"
+                                data-ante-periodoi="{{ antePeriodoI }}"
+                                data-ante-periodof="{{ antePeriodoF }}">
+                            <i class="fas fa-chevron-left"></i></button>
+                        <button class="btn btn-outline-success ml-1"
+                                type="button" id="btnProximo" title="Próximo"
+                                data-prox-periodoi="{{ proxPeriodoI }}"
+                                data-prox-periodof="{{ proxPeriodoF }}">
+                            <i class="fas fa-chevron-right"></i></button>
+
+                        <button class="btn btn-outline-dark ml-1" type="button"
+                                id="btnHoje" name="btnHoje" title="Hoje">
+                            <i class="fas fa-calendar-day"></i></button>
+
+                        <button type="button" class="btn btn-info ml-1"
+                                title="Recarregar"
+                                onclick="window.location.href='{{ url('aPagarReceber_list',{'r':'1'}) }}'">
+                            <i class="fas fa-sync" aria-hidden="true"></i>
+                        </button>
+
+                        <button type="button" class="btn btn-success ml-1" title="Selecionar Carteiras"
+                                data-target="#pesquisarModal" data-toggle="modal">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                        </button>
+
+                        <button type="button" data-url="{{ url('aPagarReceber_rel') }}"
+                                class="btn btn-dark ml-1" value="Imprimir"
+                                id="btnImprimir" name="btnImprimir">
+                            <i class="fas fa-print"></i>
+                        </button>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive-sm">
+
+
+                    <table class="table table-sm table-striped table-hover crsr-datatable">
+
+                        <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Carteira<br/>Categoria<br/>Modo</th>
+                            <th scope="col">Descrição<br/>Cedente</th>
+                            <th scope="col">Dt Vencto</th>
+                            <th scope="col">Valor Total</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% set i=0 %}
+                        {% for dia in dias %}
+                            {% for item in dia.movs %}
+                                {% set i=i+1 %}
+                                <tr>
+                                    <td>
+                                        {{ item.id }}
+                                        <br/>
+                                        <span class="badge badge-pill badge-light">{{ i }}</span>
+                                    </td>
+                                    <td>
+                                        <b>{{ item.carteira.descricaoMontada }}</b><br/>
+                                        {{ item.categoria.descricaoMontada }}<br/>
+                                        {{ item.modo.descricaoMontada }}
+                                    </td>
+                                    <td>
+                                        <div style="float: left">
+                                            <b>{{ item.descricaoMontada|raw }}</b>
+                                            {% if item.cedenteInfo %}
+                                                <br/>{{ item.cedenteInfo }}
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="text-right">
+
+                                            {% if (item.chequeNumCheque) %}
+                                                <span class="badge badge-pill badge-danger">Cheque</span><br/>
+                                            {% endif %}
+
+
+                                            {% if (item.recorrente) %}
+
+                                                <span class="badge badge-pill badge-info">Recorrente</span><br/>
+
+                                            {% elseif (item.parcelamento) %}
+
+                                                <span class="badge badge-pill badge-info">Parcelamento</span>
+                                                <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
+                                                   class="btn btn-sm btn-outline-secondary"
+                                                   role="button" target="_blank" aria-pressed="true"><i
+                                                            class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+
+                                            {% elseif (item.cadeia) %}
+                                                <span class="badge badge-pill badge-info">Em cadeia</span>
+                                                <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
+                                                   class="btn btn-sm btn-outline-secondary"
+                                                   role="button" target="_blank" aria-pressed="true"><i
+                                                            class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+
+                                            {% endif %}
+
+                                            {% if (item.transferenciaEntreCarteiras and item.movimentacaoOposta and item.movimentacaoOposta.categoria) %}
+                                                <span class="badge badge-pill badge-light">
+                                            {{ (item.movimentacaoOposta.categoria.codigo == 199 ? '<i class="fas fa-sign-out-alt"></i> Para: ' : '<i class="fas fa-sign-in-alt"></i> De: ') }}
+                                                    {{ item.movimentacaoOposta.carteira.descricaoMontada }} </span>
+                                            {% endif %}
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <span title="Dt Vencto: {{ item.dtVencto|date('d/m/Y') }}">
+                                            {{ item.dtVenctoEfetiva|date('d/m/Y') }}
+                                        </span>
+                                    </td>
+                                    <td class="text-right"
+                                        style="color: white; background-color: {{ item.categoria.codigoSuper == 1 ? 'dodgerblue' : 'indianred' }}">
+                                        {{ item.valorTotal|number_format(2,',','.') }}
+                                    </td>
+                                    <td class="text-right">
+
+                                        {% if item.status == 'ABERTA' %}
+                                            <a class="btn btn-sm btn-outline-danger"
+                                               href="{{ url('movimentacao_form_pagto', {'id':item.id}) }}"
+                                               role="button" title="Registro de Pagamento">
+                                                <i class="fas fa-dollar-sign"></i>
+                                            </a>
+                                        {% endif %}
+
+
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                                onclick="window.location.href='{{ url('movimentacao_edit', {id: item.id}) }}'">
+                                            <i class="fas fa-wrench" aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                                data-url="{{ url('movimentacao_delete', {id: item.id}) }}"
+                                                data-token="{{ csrf_token('delete') }}"
+                                                data-target="#confirmationModal" data-toggle="modal">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                        <br/>
+                                        <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr style="background-color: lightgrey">
+                                <th scope="row" colspan="5" class="text-right">
+                                    Total em {{ dia.dtVenctoEfetiva|date('d/m/Y') }}:
+                                    R$ {{ dia.total|number_format(2,',','.') }}<br/>
+                                </th>
+                                <td class="text-right">
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr style="background-color: antiquewhite">
+                            <th scope="row" colspan="5" class="text-right">
+                                Total :
+                                R$ {{ totalGeral|number_format(2,',','.') }}<br/>
+                            </th>
+                            <td class="text-right">
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="pesquisarModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+
+                        <h5 class="modal-header">Pesquisar por...</h5>
+
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="form-group">
+
+                                    <div class="form-group">
+                                        <fieldset class="form-group pre-scrollable" style="height: 150px">
+                                            <legend>Carteiras</legend>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       value="" id="filterCarteiraSelectAll">
+                                                <label class="form-check-label"><i>Selecionar todas</i></label>
+                                            </div>
+                                            {% for carteira in filterChoices.carteiras %}
+                                                <div class="form-check">
+                                                    <input class="form-check-input filterCarteira" type="checkbox"
+                                                           value="{{ carteira.id }}"
+                                                           name="filter[carteira][]" {{ carteira.selected ? 'checked' : '' }}>
+                                                    <label class="form-check-label">
+                                                        {{ carteira.text }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </fieldset>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                id="btnCancelarPesquisa" data-dismiss="modal">
+                            <i class="fa fa-ban" aria-hidden="true"></i> Cancelar
+                        </button>
+                        <button type="button" class="btn btn-danger" id="btnCarteirasPesquisar">
+                            <i class="fa fa-trash" aria-hidden="true"></i> Pesquisar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </form>
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/movimentacaoAPagarReceberList.js') }}"></script>
+{% endblock %}

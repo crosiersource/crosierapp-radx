@@ -1,0 +1,254 @@
+<?php
+
+namespace App\Controller\Fiscal;
+
+use App\Business\Fiscal\DistDFeBusiness;
+use App\Business\Fiscal\SpedNFeBusiness;
+use App\Entity\Fiscal\DistDFe;
+use App\EntityHandler\Fiscal\DistDFeEntityHandler;
+use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Routing\Annotation\Route;
+
+/**
+ * Class DistDFeController
+ *
+ * @author Carlos Eduardo Pauluk
+ */
+class DistDFeController extends FormListController
+{
+
+    protected $crudParams =
+        [
+            'listView' => 'distDFeList.html.twig',
+            'listRoute' => 'distDFe_list',
+            'listRouteAjax' => 'distDFe_datatablesJsList',
+            'listPageTitle' => 'DistDFe',
+            'listId' => 'distDFeList',
+
+            'role_access' => 'ROLE_FISCAL_ADMIN',
+        ];
+
+    /** @var DistDFeEntityHandler */
+    protected $entityHandler;
+
+    /** @var SpedNFeBusiness */
+    private $spedNFeBusiness;
+
+    /** @var DistDFeBusiness */
+    private $distDFeBusiness;
+
+    /** @var ParameterBagInterface */
+    private $params;
+
+    /**
+     * @required
+     * @param SpedNFeBusiness $spedNFeBusiness
+     */
+    public function setSpedNFeBusiness(SpedNFeBusiness $spedNFeBusiness): void
+    {
+        $this->spedNFeBusiness = $spedNFeBusiness;
+    }
+
+    /**
+     * @required
+     * @param DistDFeBusiness $distDFeBusiness
+     */
+    public function setDistDFeBusiness(DistDFeBusiness $distDFeBusiness): void
+    {
+        $this->distDFeBusiness = $distDFeBusiness;
+    }
+
+    /**
+     * @param ParameterBagInterface $params
+     * @required
+     */
+    public function setParams(ParameterBagInterface $params): void
+    {
+        $this->params = $params;
+    }
+
+    /**
+     * @required
+     * @param DistDFeEntityHandler $entityHandler
+     * @return DistDFeController
+     */
+    public function setEntityHandler(DistDFeEntityHandler $entityHandler): DistDFeController
+    {
+        $this->entityHandler = $entityHandler;
+        return $this;
+    }
+
+
+    /**
+     *
+     * @Route("/fis/distDFe/list/", name="distDFe_list")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function list(Request $request): Response
+    {
+        return $this->doList($request);
+    }
+
+    /**
+     *
+     * @Route("/fis/distDFe/datatablesJsList/", name="distDFe_datatablesJsList")
+     * @param Request $request
+     * @return Response
+     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     */
+    public function datatablesJsList(Request $request): Response
+    {
+        return $this->doDatatablesJsList($request);
+    }
+
+
+    /**
+     *
+     * @Route("/fis/distDFe/obterDistDFes/{primeiroNSU}", name="distDFe_obterDistDFes")
+     *
+     * @param int|null $primeiroNSU
+     * @return Response
+     */
+    public function obterDistDFes(int $primeiroNSU = null): Response
+    {
+        try {
+            if ($primeiroNSU) {
+                $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU);
+            } else {
+                $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU();
+            }
+            $this->addFlash('info', $q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
+            $this->distDFeBusiness->extrairChaveETipoDosDistDFes();
+        } catch (ViewException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+        return $this->redirectToRoute('distDFe_list');
+    }
+
+    /**
+     *
+     * @Route("/fis/distDFe/extrairChaveETipoDosDistDFes", name="distDFe_extrairChavesDistDFes")
+     *
+     * @return Response
+     */
+    public function extrairChavesDistDFes(): Response
+    {
+        try {
+            $this->distDFeBusiness->extrairChaveETipoDosDistDFes();
+            return new Response('OK');
+        } catch (ViewException $e) {
+            return new Response($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @Route("/fis/distDFe/obterDistDFesDeNSUsPulados/", name="distDFe_obterDistDFesDeNSUsPulados")
+     *
+     * @return Response
+     */
+    public function obterDistDFesDeNSUsPulados(): Response
+    {
+        try {
+            $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados();
+            return new Response($q . ' DFe\'s obtidos');
+        } catch (ViewException $e) {
+            return new Response($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @Route("/fis/distDFe/obterDFePorNSU/{nsu}", name="distDFe_obterDFePorNSU", requirements={"nsu"="\d+"})
+     *
+     * @param int $nsu
+     * @return Response
+     */
+    public function obterDFePorNSU(int $nsu): Response
+    {
+        try {
+            $this->distDFeBusiness->obterDistDFeByNSU($nsu);
+            return new Response(' DFe obtido');
+        } catch (ViewException $e) {
+            return new Response($e->getMessage());
+        }
+    }
+
+
+    /**
+     *
+     * @Route("/fis/distDFe/processarDistDFesObtidos", name="distDFe_processarDistDFesObtidos")
+     *
+     * @return Response
+     */
+    public function processarDistDFesObtidos(): ?Response
+    {
+        try {
+            $this->distDFeBusiness->processarDistDFesObtidos();
+            $this->addFlash('info', 'DistDFe(s) processados');
+            return $this->redirectToRoute('distDFe_list');
+        } catch (ViewException $e) {
+            return new Response($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @Route("/fis/distDFe/reprocessarDistDFe/{distDFe}", name="distDFe_reprocessarDistDFe", requirements={"distDFe"="\d+"})
+     *
+     * @param DistDFe $distDFe
+     * @return Response
+     */
+    public function reprocessarDistDFe(DistDFe $distDFe): ?Response
+    {
+        try {
+            $this->distDFeBusiness->reprocessarDistDFe($distDFe);
+            $this->addFlash('info', 'DistDFe reprocessado');
+        } catch (ViewException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+        return $this->redirectToRoute('distDFe_list');
+    }
+
+
+    /**
+     *
+     * @Route("/fis/distDFe/downloadXML/{distDFe}", name="distDFe_downloadXML", requirements={"distDFe"="\d+"})
+     *
+     * @param DistDFe $distDFe
+     * @return Response
+     */
+    public function downloadXML(DistDFe $distDFe): Response
+    {
+        // Provide a name for your file with extension
+        $filename = $distDFe->getChave() . '.xml';
+
+        // The dinamically created content of the file
+        $fileContent = gzdecode(base64_decode($distDFe->getXml()));
+
+        // Return a response with a specific content
+        $response = new Response($fileContent);
+        $response->headers->set('Content-Type', 'application/xml');
+
+        // Create the disposition of the file
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
+            $filename
+        );
+
+        // Set the content disposition
+        $response->headers->set('Content-Disposition', $disposition);
+
+        // Dispatch request
+        return $response;
+    }
+
+
+}

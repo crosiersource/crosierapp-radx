@@ -1,0 +1,139 @@
+{% extends '@CrosierLibBase/list.html.twig' %}
+
+
+{% block btns %}
+    {{ parent() }}
+
+    <button type="button" data-url="{{ url('movimentacao_list_alterarLote') }}"
+            class="btn btn-warning ml-1" title="Alterar em Lote"
+            id="btnAlterarEmLote" name="btnAlterarEmLote" value="btnAlterarEmLote">
+        <i class="fas fa-list-alt"></i> Alterar em Lote
+    </button>
+
+    <button type="button" data-url="{{ url('aPagarReceber_fichaMovimentacao') }}"
+            class="btn btn-dark ml-1" title="Imprimir fichas de movimentação"
+            id="btnImprimirFichas" name="btnImprimirFichas" value="btnImprimirFichas">
+        <i class="fas fa-print"></i>
+    </button>
+
+{% endblock %}
+
+{% block campos_pesquisar %}
+
+    <div class="form-group">
+        <label for="p_descricao">Id</label>
+        <input type="text" class="form-control" id="filter[id]" name="filter[id]"
+               value="{{ filter.id|default('') }}">
+    </div>
+    <div class="form-group">
+        <label for="p_descricao">Descrição</label>
+        <input type="text" class="form-control" id="filter[descricao]" name="filter[descricao]"
+               value="{{ filter.descricao|default('') }}">
+    </div>
+    <div class="form-group">
+        <label>Data</label>
+        <div class="row">
+            <div class="col">
+                <input type="date" size="15" class="form-control" name="filter[dtUtil][i]"
+                       value="{{ filter.dtUtil.i|default('') }}">
+            </div>
+            <div class="col">
+                <input type="date" size="15" class="form-control" name="filter[dtUtil][f]"
+                       value="{{ filter.dtUtil.f|default('') }}">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Valor</label>
+        <div class="row">
+            <div class="col">
+                <input type="text" size="15" class="form-control crsr-money" name="filter[valorTotal][i]"
+                       value="{{ filter.valorTotal.i|default('') }}">
+            </div>
+            <div class="col">
+                <input type="text" size="15" class="form-control crsr-money" name="filter[valorTotal][f]"
+                       value="{{ filter.valorTotal.f|default('') }}">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="p_descricao">Núm Cheque</label>
+        <input type="text" class="form-control" id="filter[chequeNumCheque]" name="filter[chequeNumCheque]"
+               value="{{ filter.chequeNumCheque|default('') }}">
+    </div>
+
+    <div class="form-group">
+        <fieldset class="form-group pre-scrollable" style="height: 150px">
+            <legend>Carteiras</legend>
+            {% for carteira in filterChoices.carteiras %}
+                {% set checked = ((filter is defined) and (filter.carteira is defined) and (carteira.id in filter.carteira)) ? 'checked' : '' %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ carteira.id }}" {{ checked }}
+                           name="filter[carteira][]">
+                    <label class="form-check-label">
+                        {{ "%03d"|format(carteira.codigo) }}
+                        -
+                        {{ carteira.descricao }}
+                    </label>
+                </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+
+    <div class="form-group">
+        <fieldset class="form-group pre-scrollable" style="height: 150px">
+            <legend>Status</legend>
+            {% for status in filterChoices.status %}
+                {% set checked = ((filter is defined) and (filter.status is defined) and (status in filter.status)) ? 'checked' : '' %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ status }}" {{ checked }}
+                           name="filter[status][]">
+                    <label class="form-check-label">
+                        {{ status }}
+                    </label>
+                </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+
+    <div class="form-group">
+        <fieldset class="form-group pre-scrollable" style="height: 150px">
+            <legend>Modo</legend>
+            {% for modo in filterChoices.modos %}
+                {% set checked = ((filter is defined) and (filter.modo is defined) and (modo.id in filter.modo)) ? 'checked' : '' %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ modo.id }}" {{ checked }}
+                           name="filter[modo][]">
+                    <label class="form-check-label">
+                        {{ modo.descricao }}
+                    </label>
+                </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+
+    <div class="form-group">
+        <fieldset class="form-group pre-scrollable" style="height: 150px">
+            <legend>Categoria</legend>
+            {% for categoria in filterChoices.categorias %}
+                {% set checked = ((filter is defined) and (filter.categoria is defined) and (categoria.id in filter.categoria)) ? 'checked' : '' %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ categoria.id }}" {{ checked }}
+                           name="filter[categoria][]">
+                    <label class="form-check-label">
+                        {{ categoria.descricaoMontada }}
+                    </label>
+                </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+
+    <input type="hidden" id="filter[cadeia]" name="filter[cadeia]" value="{{ filter.cadeia|default('') }}">
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/movimentacaoList.js') }}"></script>
+{% endblock %}

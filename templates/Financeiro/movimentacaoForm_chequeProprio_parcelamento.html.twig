@@ -1,0 +1,248 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Cheques Próprios</h3>
+                        <h5>Parcelamento</h5>
+                    </div>
+                    <div class="col-4 text-right">
+
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                                title="Novo registro"
+                                onclick="window.location.href='{{ url(formRoute) }}'">
+                            <i class="fas fa-file" aria-hidden="true"></i> Novo
+                        </button>
+
+                        {% if e.id %}
+                            <button type="button" class="btn btn-danger"
+                                    data-url="{{ url('movimentacao_delete', {id: e.id}) }}"
+                                    data-token="{{ csrf_token('delete') }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+                {{ form_start(form) }}
+
+                {{ form_row(form._token) }}
+                {{ form_row(form.status) }}
+
+                <div style="display:none">
+                    {{ form_row(form.tipoLancto) }}
+                    {{ form_row(form.modo) }}
+                </div>
+
+                {{ form_row(form.carteira) }}
+
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-2" for="bancoAgenciaConta">Banco/Agência/Conta</label>
+                    <div class="col-sm-10">
+                        <input type="text" disabled id="bancoAgenciaConta" class="form-control">
+                    </div>
+                </div>
+
+                {{ form_row(form.categoria) }}
+                {{ form_row(form.centroCusto) }}
+
+                {{ form_row(form.sacado) }}
+                {{ form_row(form.cedente) }}
+
+
+
+                {{ form_row(form.descricao) }}
+
+                <div style="margin-top: 20px" id="divCamposDocumento" class="card">
+                    <h5 class="card-header">Documento</h5>
+                    <div class="card-body">
+                        {{ form_row(form.documentoBanco) }}
+                        {{ form_row(form.documentoNum) }}
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px" class="row">
+                    <div class="col">
+                        {{ form_row(form.obs) }}
+                    </div>
+                </div>
+
+                {{ form_row(form.dtMoviment) }}
+
+
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-2" for="dtPrimeiroVencto">Primeiro Vencto</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="dtPrimeiroVencto" name="dtPrimeiroVencto"
+                               class="crsr-date form-control" maxlength="10" value="{{ dtPrimeiroVencto }}">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-2" for="valor">Valor</label>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$ </span>
+                            </div>
+                            <input type="text" id="valor" name="valor" value="{{ valor }}"
+                                   class="crsr-money form-control"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 text-right">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tipoValor" id="tipoValor_total"
+                                   value="TOTAL" {{ tipoValor == 'TOTAL' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="tipoValor_total">Total</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tipoValor" id="tipoValor_parcela"
+                                   value="PARCELA" {{ tipoValor == 'PARCELA' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="tipoValor_parcela">Parcela</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 text-right">
+                        <label class="col-form-label float-left" style="margin-right: 15px" for="qtdeParcelas">Qtde
+                            Parcelas</label>
+
+                        <input type="number" min="1" id="qtdeParcelas" name="qtdeParcelas" style="width:100px"
+                               value="{{ qtdeParcelas }}" class="form-control">
+
+                    </div>
+                    <div class="col-sm-2 text-right">
+                        <button type="submit" value="Gerar" class="btn btn-outline-warning"
+                                id="btnGerarParcelas" name="btnGerarParcelas">
+                            <i class="fas fa-calculator"></i> Gerar
+                        </button>
+                        <button type="submit" value="Limpar" class="btn btn-outline-danger"
+                                id="btnLimparParcelas" name="btnLimparParcelas">
+                            <i class="fas fa-broom"></i>
+                        </button>
+
+
+                    </div>
+                </div>
+
+
+                {% if e.cadeia is defined and e.cadeia and e.cadeia.movimentacoes|length > 0 %}
+
+
+                    <div class="card">
+                        <div class="card-header">
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>Parcelas</h4>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <table class="table table-sm table-striped table-hover crsr-datatable">
+
+                                <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Núm Cheque</th>
+                                    <th scope="col">Dt Vencto</th>
+                                    <th scope="col">Dt Vencto Efet</th>
+                                    <th scope="col">Valor Total</th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+
+                                {% for item in e.cadeia.movimentacoes %}
+                                    <tr id="trParcela">
+                                        <td>
+                                            {{ item.id }}<br/>
+                                            <span class="badge badge-secondary">{{ loop.index }}</span>
+                                        </td>
+                                        <td>
+                                            {{ item.descricaoMontada|raw }}
+                                        </td>
+                                        <td>
+                                            <input type="text" name="parcelas[{{ loop.index0 }}][chequeNumCheque]"
+                                                   class="form-control" size="20"
+                                                   value="{{ item.chequeNumCheque|nl2br }}">
+
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="text" name="parcelas[{{ loop.index0 }}][dtVencto]"
+                                                   id="parcelas_{{ loop.index0 }}_dtVencto"
+                                                   class="crsr-date form-control"
+                                                   maxlength="10" size="15"
+                                                   value="{{ item.dtVencto|date('d/m/Y') }}">
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="text" name="parcelas[{{ loop.index0 }}][dtVenctoEfetiva]"
+                                                   data-dtvencto="parcelas_{{ loop.index0 }}_dtVencto"
+                                                   data-dtvenctoval="{{ item.dtVencto|date('d/m/Y') }}"
+                                                   class="crsr-date form-control dtVenctoEfetiva" maxlength="10" size="15"
+                                                   value="{{ item.dtVenctoEfetiva|date('d/m/Y') }}">
+                                        </td>
+                                        <td class="text-right">
+                                            <input type="text" name="parcelas[{{ loop.index0 }}][valor]"
+                                                   value="{{ item.valorTotal|number_format(2,',','.') }}"
+                                                   class="crsr-money form-control"/>
+                                        </td>
+                                        <td class="text-right">
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+
+                        </div>
+                    </div>
+
+                {% endif %}
+
+                <div class="form-group row">
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btn btn-primary" style="width: 200px"
+                                data-form="movimentacao" value="btnSalvar" name="btnSalvar"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fa fa-save" aria-hidden="true"></i> Salvar
+                        </button>
+                    </div>
+                </div>
+
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/movimentacaoForm_chequeProprio_parcelamento.js') }}"></script>
+{% endblock %}

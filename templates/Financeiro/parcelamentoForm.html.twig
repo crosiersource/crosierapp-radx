@@ -1,0 +1,55 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Lançamento de Parcelamento</h3>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <ul class="nav nav-tabs" id="principal" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="dadosMovimentacao-tab" data-toggle="tab"
+                           href="#dadosMovimentacao"
+                           role="tab"
+                           aria-controls="home" aria-selected="true">Dados da Movimentação</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="parcelas-tab" data-toggle="tab" href="#parcelas" role="tab"
+                           aria-controls="profile" aria-selected="false">Parcelas</a>
+                    </li>
+                </ul>
+
+                <div class="form-group row">
+                </div>
+
+                <div class="tab-content" id="myTabContent">
+
+                    {{ include('Financeiro/parcelamentoForm_dadosMovimentacao.html.twig') }}
+
+                    {{ include('Financeiro/parcelamentoForm_parcelas.html.twig') }}
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/parcelamentoForm.js') }}"></script>
+{% endblock %}

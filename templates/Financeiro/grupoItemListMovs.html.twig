@@ -1,0 +1,118 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+
+            <form action="{{ url('grupoItem_listMovs', {'grupoItem': grupoItem.id}) }}" method="get" id="formPesquisar">
+                <div class="d-flex flex-wrap align-items-center">
+
+                    <div class="mr-1">
+                        <p class="h3">Movimentações Agrupadas</p>
+
+                        <p class="h6">{{ page_title }}</p>
+
+                    </div>
+                    <div class="d-sm-flex flex-nowrap ml-auto">
+                        <select id="grupo" class="form-control autoSelect2 ml-2" style="width: 300px"
+                                data-val="{{ grupoItem.pai.id }}" data-options="{{ gruposOptions }}">
+                        </select>
+
+                        <select id="filter_grupoItem" class="form-control autoSelect2 ml-2" style="width: 350px"
+                                name="filter[grupoItem]" data-val="{{ grupoItem.id }}" data-options="{{ grupoItensOptions }}">
+                        </select>
+                    </div>
+                    <div class="d-sm-flex flex-nowrap ml-1">
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                                title="Novo registro"
+                                onclick="window.location.href='{{ url('movimentacao_form_grupo', {'grupoItem' : grupoItem.id, 'reftoback': 1}) }}'">
+                            <i class="fas fa-file" aria-hidden="true"></i> Novo
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive-sm">
+
+                <table class="table table-sm table-striped table-hover crsr-datatable">
+
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Categoria</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Dt Moviment</th>
+                        <th scope="col">Valor Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for item in dados %}
+                        <tr style="color: {{ item.categoria.codigo[0:1] == '1' ? 'blue' : 'red' }}">
+                            <td>{{ item.id }}</td>
+                            <td>
+                                {{ item.categoria.descricaoMontada }}
+                            </td>
+                            <td>
+                                <div style="float: left">
+                                    {{ item.descricao|raw }}
+                                </div>
+                                {% if item.cadeia %}
+                                    <div class="text-right">
+                                        <a href="{{ url('movimentacao_listCadeia', {cadeia: item.cadeia.id}) }}"
+                                           class="btn btn-outline-secondary" role="button" target="_blank"
+                                           aria-pressed="true">
+                                            <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ item.dtMoviment|date('d/m/Y') }}
+                            </td>
+                            <td class="text-right">{{ item.valorTotal|number_format(2,',','.') }}</td>
+                            <td class="text-right">
+                                <button type="button" class="btn btn-sm btn-primary"
+                                        onclick="window.location.href='{{ url('movimentacao_edit', {id: item.id}) }}'">
+                                    <i class="fas fa-wrench" aria-hidden="true"></i>
+                                </button>
+                                <br/>
+                                <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr style="background-color: lightgrey">
+
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-right">Total</td>
+                            <td class="text-right">{{ total|abs|number_format(2,',','.') }}</td>
+                            <td></td>
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/grupoItemListMovs.js') }}"></script>
+{% endblock %}

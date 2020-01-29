@@ -1,0 +1,11 @@
+imports:
+- { resource: parameters.yml }
+services:
+  _defaults:
+    autowire: true
+    # for tests only
+    public: true
+
+  #CrosierSource\CrosierLibBaseBundle\:
+  #  resource: ../../src
+  test.App\Business\Estoque\CalculoPreco: '@App\Business\Estoque\CalculoPreco'

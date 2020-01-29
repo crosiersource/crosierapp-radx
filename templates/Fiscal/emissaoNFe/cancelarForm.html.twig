@@ -1,0 +1,71 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+
+    <div class="container">
+    <div class="card">
+        <div class="card-header">
+
+            <div class="row">
+                <div class="col-5">
+                    <h3>Cancelamento Fiscal</h3>
+                </div>
+                <div class="col-7 text-right ml-auto">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+            {{ form_start(form) }}
+
+            {{ form_row(form._token) }}
+
+            {{ form_row(form.id) }}
+            {{ form_row(form.infoStatus) }}
+
+            {{ form_row(form.motivoCancelamento) }}
+
+
+            <div class="row">
+                <div class="col text-right">
+
+
+                    {% if permiteCancelamento %}
+                        <button type="button" value="Cancelar" class="btn btn-warning"
+                                data-form="nota_fiscal" data-target="#confirmationModal"
+                                data-toggle="modal">
+                            <i class="fas fa-ban" aria-hidden="true"></i> Cancelar
+                        </button>
+                    {% endif %}
+
+                    {% if permiteReimpressaoCancelamento %}
+                        <button type="button" value="Reimprimir Cancelamento" class="btn btn-secondary"
+                                data-url="{{ url('fis_emissaonfe_reimprimirCancelamento', {notaFiscal: notaFiscal.id}) }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-print" aria-hidden="true"></i> Reimprimir Cancelamento
+                        </button>
+                    {% endif %}
+
+                </div>
+
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>{{ formPageTitle }}</h3>
+                        {% if formPageSubTitle is defined %}
+                            <h6>{{ formPageSubTitle }}</h6>
+                        {% endif %}
+                    </div>
+                    <div class="col-4 text-right">
+                        <button type="button" class="btn btn-primary"
+                                onclick="window.location.href='{{ url(formRoute, formRouteParams|default([])) }}'">
+                            <i class="fas fa-file" aria-hidden="true"></i> Novo
+                        </button>
+                        {% if atributoPai.id|default('') != '' %}
+                            <button type="button" class="btn btn-outline-secondary"
+                                    onclick="window.location.href='{{ url(formRoute, {'id':atributoPai.id}) }}'">
+                                <i class="fas fa-arrow-left"></i> Voltar
+                            </button>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <div class="row mt-2 mb-2">
+                    <div class="col text-right">
+                        <button type="submit" class="btn btn-primary" style="width: 200px" value="Salvar">
+                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                        </button>
+                    </div>
+                </div>
+
+
+                {% if e.id is defined and e.tipo in ['LISTA'] %}
+                <div class="card">
+                    <div class="card-body">
+
+
+
+                        <div class="card-title">
+
+                            <div class="row">
+                                <div class="col-8">
+                                    <h5>Subatributos</h5>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="window.location.href='{{ url('est_atributo_form', {'reftoback': 1, 'atributoPaiUUID' : e.UUID}) }}'">
+                                        <i class="fas fa-plus" aria-hidden="true"></i> Adicionar
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <table class="table table-striped table-hover display compact">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Subatributo</th>
+                                <th scope="col">Config</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for subatributo in e.subatributos %}
+                                <tr>
+                                    <td>{{ subatributo.ordem }}</td>
+                                    <td>
+                                        <div style="float: left">
+                                            <b>{{ subatributo.descricao }}</b><br/>
+                                            <span class="badge badge-pill badge-success">{{ subatributo.label }}</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="badge badge-pill badge-info">{{ subatributo.tipo }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ subatributo.config }}</td>
+                                    <td class="text-right">
+
+                                        <a class="btn btn-sm btn-primary"
+                                           href="{{ url('est_atributo_form', {'reftoback': 1, 'id': subatributo.id, 'atributoPaiUUID': subatributo.paiUUID }) }}" role="button">
+                                            <i class="fas fa-wrench" aria-hidden="true"></i>
+                                        </a>
+
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                                data-url="{{ url('est_atributo_delete', {id: subatributo.id}) }}"
+                                                data-token="{{ csrf_token('delete') }}"
+                                                data-target="#confirmationModal" data-toggle="modal">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+                {% endif %}
+
+                {{ form_end(form) }}
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

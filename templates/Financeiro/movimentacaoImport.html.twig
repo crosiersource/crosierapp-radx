@@ -1,0 +1,239 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+{% block page_content %}
+
+    <div class="card">
+        <div class="card-header">
+
+            <div class="row">
+                <div class="col-8">
+                    <h3>Importação de Movimentações</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+            <form action="{{ url('movimentacao_import') }}" method="post" name="movimentacao_import">
+
+                <div class="row">
+                    <div class="col-7">
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Extrato</label>
+                            <textarea class="form-control" id="linhasExtrato" name="linhasExtrato" rows="15"
+                                      style="font-family:Consolas,Lucida Console,Courier New, monospace; font-size: 10px; white-space: nowrap"
+                                      rows="6">{{ linhasExtrato }}</textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="col-5">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4 form-control-label required">Tipo de Extrato</label>
+                            <div class="col-sm-8">
+                                <select id="tipoExtrato" name="tipoExtrato" class="form-control" required="true"
+                                        data-val="{{ tipoExtrato }}"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" id="grupoRow" style="display: none">
+                            <label class="col-form-label col-sm-4 form-control-label required">Grupo</label>
+                            <div class="col-sm-8">
+                                <select id="grupo" name="grupo" class="form-control" data-val="{{ grupo }}"></select>
+                            </div>
+
+                            <label class="col-form-label col-sm-4 form-control-label required">Grupo Item</label>
+                            <div class="col-sm-8">
+                                <select id="grupoItem" name="grupoItem" class="form-control"
+                                        data-val="{{ grupoItem }}"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" id="carteiraExtratoRow" style="display: none">
+                            <label class="col-form-label col-sm-4 form-control-label required">Carteira Extrato</label>
+                            <div class="col-sm-8">
+                                <select id="carteiraExtrato" name="carteiraExtrato" class="form-control"
+                                        data-val="{{ carteiraExtrato }}"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" id="carteiraDestinoRow" style="display: none">
+                            <label class="col-form-label col-sm-4 form-control-label required">Carteira Destino</label>
+                            <div class="col-sm-8">
+                                <select id="carteiraDestino" name="carteiraDestino" class="form-control"
+                                        data-val="{{ carteiraDestino }}"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" id="gerarRow" style="display: none">
+                            <label class="col-form-label col-sm-4 form-control-label required">Gerar</label>
+                            <div class="col-sm-8">
+                                <input class="form-check-input" type="checkbox" id="gerar"
+                                       name="gerarSemRegras" {{ gerarSemRegras ? 'checked' : '' }}>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" id="usarCabecalhoRow">
+                            <label class="col-form-label col-sm-4 form-control-label required">Usar cabeçalho</label>
+                            <div class="col-sm-8">
+                                <input class="form-check-input" type="checkbox" id="usarCabecalho"
+                                       name="usarCabecalho" {{ usarCabecalho ? 'checked' : '' }}>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4 form-control-label required">Gerar "A CONFERIR"</label>
+                            <div class="col-sm-8">
+                                <input class="form-check-input" type="checkbox" id="gerarAConferir"
+                                       name="gerarAConferir" {{ gerarAConferir ? 'checked' : '' }}>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 text-right">
+                        <button type="submit" class="btn btn-primary" value="Importar" name="btnImportar">
+                            <i class="fab fa-searchengin" aria-hidden="true"></i> Importar
+                        </button>
+
+                        {% if movsImportadas is defined and movsImportadas|length > 0 %}
+                            <button type="submit" class="btn btn-outline-secondary" value="Verificar"
+                                    name="btnVerificar">
+                                <i class="fas fa-check-double" aria-hidden="true"></i> Verificar
+                            </button>
+
+                            <button type="submit" class="btn btn-secondary" value="Limpar" name="btnLimpar">
+                                <i class="fas fa-broom" aria-hidden="true"></i> Limpar
+                            </button>
+
+                            <button type="button" value="Salvar" class="btn btn-warning" name="btnSalvarTodas"
+                                    data-form="movimentacao_import" data-target="#confirmationModal"
+                                    data-toggle="modal">
+                                <i class="fas fa-save" aria-hidden="true"></i> Salvar todas
+                            </button>
+
+                            <button type="button" data-url="{{ url('movimentacao_import_removerExistentes') }}"
+                                    class="btn btn-outline-danger" value="Remover Existentes"
+                                    data-target="#confirmationModal" data-toggle="modal"
+                                    id="btnRemoverExistentes" name="btnRemoverExistentes">
+                                <i class="fas fa-trash-alt"></i> Remover Existentes
+                            </button>
+
+                            <button type="button" data-url="{{ url('movimentacao_import_alterarLote') }}"
+                                    class="btn btn-secondary" value="Alterar em Lote"
+                                    id="btnAlterarEmLote" name="btnAlterarEmLote">
+                                <i class="fas fa-list-alt"></i> Alterar em Lote
+                            </button>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <div class="row">&nbsp;</div>
+
+                {% if movsImportadas is defined and movsImportadas|length > 0 %}
+
+                    <div class="table-responsive-sm">
+
+                        <table class="table table-sm table-striped table-hover crsr-datatable">
+
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">
+                                    <input style="width: 20px; height: 20px" type="checkbox" id="selTodasMovs"/>
+                                </th>
+                                <th scope="col">Id</th>
+                                <th scope="col">Carteira</th>
+                                <th scope="col">Categoria<br/>Modo</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col">Dt Vencto</th>
+                                <th scope="col">Dt Pagto</th>
+                                <th scope="col">Valor Total</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for item in movsImportadas %}
+                                <tr style="color: {{ item.categoria.codigo[0:1] == '1' ? 'blue' : 'red' }}">
+                                    <th scope="row"><span data-toggle="tooltip" data-placement="top"
+                                                          title="{{ item.UUID }}">{{ loop.index }}</span></th>
+                                    <td>
+                                        <input style="width: 17px; height: 17px" class="movSel" type="checkbox"
+                                               id="movsSelecionadas[{{ item.UUID }}]"
+                                               name="movsSelecionadas[{{ item.UUID }}]"/>
+                                    </td>
+                                    <td>{{ item.id }}</td>
+                                    <td>
+                                        {{ item.carteira.descricaoMontada }}
+                                        {% if item.carteiraDestino %}
+                                            <br />
+                                            <span class="badge badge-pill badge-info">Oposta: {{ item.carteiraDestino.descricaoMontada }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ item.categoria.descricaoMontada }}<br/>
+                                        {{ item.modo.descricaoMontada|default('') }}
+                                    </td>
+                                    <td>
+                                        {{ item.descricaoMontada|raw }}
+                                        {% if item.categoria.codigo in [195,295] %}
+                                            <br /><span class="badge badge-pill badge-warning" style="width: 120px">
+                                            <i class="fas fa-exclamation-circle"></i> A CONFERIR</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.dtVencto|date('d/m/Y') }}</td>
+                                    <td>{{ item.dtPagto|date('d/m/Y') }}</td>
+                                    <td class="text-right">{{ item.valorTotal|number_format(2,',','.') }}</td>
+                                    <td class="text-right nowrap">
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                                onclick="window.location.href='{{ url('movimentacao_import_form', {UUID: item.UUID}) }}'">
+                                            <i class="fas fa-wrench" aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                                data-url="{{ url('movimentacao_import_remove', {UUID: item.UUID}) }}"
+                                                data-token="{{ csrf_token('delete') }}"
+                                                data-target="#confirmationModal" data-toggle="modal">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                        <br/>
+                                        <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr style="background-color: lightgrey">
+                                <th scope="row" colspan="9" class="text-right">
+                                    Total: R$ {{ total|abs|number_format(2,',','.') }}
+                                </th>
+                                <td class="text-right">
+                                </td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col">
+                        {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+
+
+
+
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/movimentacaoImport.js') }}"></script>
+{% endblock %}

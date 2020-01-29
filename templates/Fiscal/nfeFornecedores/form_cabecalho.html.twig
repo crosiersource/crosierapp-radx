@@ -1,0 +1,49 @@
+<div class="tab-pane fade show active" id="cabecalho" role="tabpanel" aria-labelledby="cabecalho-tab">
+
+    <div class="container" style="margin-bottom: 50px">
+
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2 form-control-label">Número/Série/UUID</label>
+            <div class="col-sm-2">
+                {{ form_widget(form.numero) }}
+            </div>
+            <div class="col-sm-2">
+                {{ form_widget(form.serie) }}
+            </div>
+            <div class="col-sm-6">
+                {{ form_widget(form.uuid) }}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2 form-control-label">Chave / Prot Autoriz</label>
+            <div class="col-sm-6">
+                {{ form_widget(form.chaveAcesso) }}
+            </div>
+            <div class="col-sm-4">
+                {{ form_widget(form.protocoloAutorizacao) }}
+            </div>
+        </div>
+
+        {{ form_row(form.dtEmissao) }}
+        {{ form_row(form.dtSaiEnt) }}
+
+        {{ form_row(form.naturezaOperacao) }}
+
+        {{ form_row(form.finalidadeNf) }}
+        {{ form_row(form.entradaSaida) }}
+
+
+        {{ form_row(form.documentoEmitente) }}
+        {{ form_row(form.xNomeEmitente) }}
+
+
+
+
+
+    </div>
+
+
+</div>
+

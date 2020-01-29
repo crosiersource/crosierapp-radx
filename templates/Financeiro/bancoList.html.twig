@@ -1,0 +1,30 @@
+{% extends '@CrosierLibBase/list.html.twig' %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/fin/bancoList.css') }}">
+{% endblock %}
+
+{% set titulo = 'Bancos' %}
+{% set route_form = 'banco_form' %}
+{% set route_list = 'banco_list' %}
+{% set route_list_ajax = 'banco_datatablesJsList' %}
+{% set list_id = 'bancoList' %}
+
+{% block campos_pesquisar %}
+
+    <div class="form-group">
+        <label>Código/Nome</label>
+        <input type="text"
+               class="form-control" id="filter[str]"
+               name="filter[str]"
+               value="{{ filter.str|default('') }}">
+    </div>
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/bancoList.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+{% block page_content %}
+
+    <div class="card">
+        <div class="card-header">
+
+            <div class="row">
+                <div class="col-2">
+                    <h3>Vendas por Período</h3>
+                </div>
+
+                <div class="col-10">
+
+                    <form action="{{ url('ven_vendasResults_vendasPorPeriodo') }}" method="get" id="formPesquisar">
+                        <nav class="navbar navbar-expand-lg navbar-light bg-light float-right">
+
+                            <button class="btn btn-outline-success my-2 my-sm-0 mr-1"
+                                    type="button" id="btn_ante"
+                                    data-ante-periodoi="{{ antePeriodoI }}" data-ante-periodof="{{ antePeriodoF }}"><i
+                                        class="fas fa-chevron-left"></i></button>
+                            <button class="btn btn-outline-success my-2 my-sm-0 mr-1"
+                                    type="button" id="btn_prox"
+                                    data-prox-periodoi="{{ proxPeriodoI }}" data-prox-periodof="{{ proxPeriodoF }}"><i
+                                        class="fas fa-chevron-right"></i></button>
+
+
+                            <input type="date" size="15" class="form-control" id="dtVenda_i"
+                                   name="dtVenda[i]"
+                                   style="width: 150px; float: left"
+                                   value="{{ dtVenda.i|default('') }}">
+                            <input type="date" size="15" class="form-control mr-1" id="dtVenda_f"
+                                   name="dtVenda[f]"
+                                   style="width: 150px; float: left"
+                                   value="{{ dtVenda.f|default('') }}">
+
+                            <label>Vendedor</label>
+                            <input type="number" name="codVendedor[i]" class="form-control" style="width: 80px" min="0" max="999" value="{{ codVendedor.i }}" />
+                            <input type="number" name="codVendedor[f]" class="form-control" style="width: 80px" min="0" max="999" value="{{ codVendedor.f }}" />
+
+                            <button class="btn btn-outline-success my-2 my-sm-0 mr-1" type="submit">Pesquisar</button>
+
+                            <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="btnHoje" name="btnHoje" value="1">Hoje</button>
+
+
+                        </nav>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-striped table-hover crsr-datatable">
+
+                <thead>
+                <tr>
+                    <th scope="col">Vendedor</th>
+                    <th scope="col">Total</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for item in dados.rs %}
+                    <tr>
+                        <td>{{ "%02d"|format(item.vendedor.codigo) }} - {{ item.vendedor.nomeEkt }}</td>
+                        <td class="text-right">{{ item.total|number_format(2,',','.') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+                <tfoot>
+                <tr>
+                    <td class="text-right"></td>
+                    <td class="text-right">Total: {{ dados.total|number_format(2,',','.') }}</td>
+                </tr>
+                </tfoot>
+
+            </table>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/ven/vendasPorPeriodo.js') }}"></script>
+{% endblock %}

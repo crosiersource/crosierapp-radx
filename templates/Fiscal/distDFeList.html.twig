@@ -1,0 +1,23 @@
+{% extends '@CrosierLibBase/list.html.twig' %}
+
+{% block btns %}
+    {{ parent() }}
+
+    <button type="button" class="btn btn-warning ml-3"
+            data-url="{{ url('distDFe_obterDistDFes') }}"
+            data-form="formNotaFiscalZip" data-target="#confirmationModal"
+            data-toggle="modal">
+        <i class="fas fa-download"></i> Obter DistDFe's
+    </button>
+
+    <button type="button" class="btn btn-success ml-1"
+            data-url="{{ url('distDFe_processarDistDFesObtidos') }}"
+            data-target="#confirmationModal" data-toggle="modal">
+        <i class="fas fa-cog"></i> Processar DistDFe's
+    </button>
+
+{% endblock %}
+
+{% block down_scripts %}
+    <script src="{{ asset('build/distDFeList.js') }}"></script>
+{% endblock %}

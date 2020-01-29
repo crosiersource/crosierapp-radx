@@ -1,0 +1,156 @@
+<div style="margin-top: 20px" class="card">
+    <h5 class="card-header">Pesquisar Lançamentos</h5>
+    <div class="card-body">
+        <a id="pesquisarLanctos"></a>
+
+        <div class="form-group row" style="">
+            <label class="col-form-label col-sm-2" for="filter_carteiras">Carteiras</label>
+            <div class="col-sm-10">
+                <select id="filter_carteiras" multiple name="filter[carteiras][]"
+                        data-options="{{ carteirasOptions }}"
+                        class="form-control autoSelect2"
+                        data-val="{{ carteiraId|default('') }}">
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row" style="">
+            <label class="col-form-label col-sm-2" for="filter_dts">Período</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="filter_dts"
+                       name="filter[dts]" data-mask="00/00/0000 - 00/00/0000"
+                       style="width: 180px; text-align: center"
+                       value="{{ filter.dts|default('') }}">
+            </div>
+        </div>
+
+        <div class="form-group row" style="">
+            <label class="col-form-label col-sm-2" for="filter_valor_i">Valor</label>
+            <div class="col-sm-2">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">R$ </span>
+                    </div>
+                    <input type="text" id="filter_valor_i" name="filter[valor][i]"
+                           class="crsr-money form-control" value="{{ filter.valor.i }}">
+                </div>
+            </div>
+            <div class="col-sm-1 text-center">-</div>
+            <div class="col-sm-2">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">R$ </span>
+                    </div>
+                    <input type="text" id="filter_valor_f" name="filter[valor][f]"
+                           class="crsr-money form-control" value="{{ filter.valor.f }}">
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-4 text-right">
+                <button class="btn btn-outline-success my-2 my-sm-0 mr-1"
+                        name="btnPesquisarLanctos" value="Pesquisar Lançamento" type="submit">
+                    <i class="fas fa-search"></i> Pesquisar
+                </button>
+            </div>
+        </div>
+
+
+
+
+        <hr/>
+
+
+        {% if movsPesquisarLanctos is defined %}
+            <table class="table table-sm table-striped table-hover crsr-datatable">
+
+                <thead>
+
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Categoria<br/>Modo<br />Carteira</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Dt Vencto<br/>Dt Pagto</th>
+                    <th scope="col">Valor Total</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for item in movsPesquisarLanctos %}
+                    <tr style="color: {{ item.categoria.codigo[0:1] == '1' ? 'blue' : 'red' }}">
+                        <td>
+                            {{ item.id }}<br/>
+                            <span class="badge badge-secondary">{{ loop.index }}</span>
+                        </td>
+                        <td>
+                            {{ item.categoria.descricaoMontada }}<br/>
+                            {{ item.modo.descricaoMontada }}<br />
+                            {{ item.carteira.descricaoMontada }}
+                        </td>
+                        <td>
+                            <div style="float: left">
+                                {{ item.descricaoMontada|raw }}
+
+
+                                {% if item.recorrente %}
+                                    <br/><span class="badge badge-pill badge-secondary">Recorrente</span>
+                                {% endif %}
+
+
+                                {% if item.transferenciaEntreCarteiras %}
+                                    <br/><span class="badge badge-pill badge-warning">
+                                                    {{ item.movimentacaoOposta.categoria.codigo == 199 ? 'Para: ' : 'De: ' }}
+                                    {{ item.movimentacaoOposta.carteira.descricaoMontada }}
+                                                </span>
+
+                                {% endif %}
+
+                            </div>
+                            <div class="text-right">
+                                {% if item.cadeia %}
+                                    <a href="{{ url('movimentacao_listCadeia', {cadeia: item.cadeia.id}) }}"
+                                       class="btn btn-sm btn-outline-secondary" role="button" target="_blank"
+                                       aria-pressed="true">
+                                        <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                                    </a>
+
+                                {% endif %}
+
+                                {% if item.status == 'REALIZADA' %}
+                                    <span class="badge badge-pill badge-success" style="width: 82px">
+                                                <i class="fas fa-check-double" title="Movimentação realizada"></i> Realizada</span>
+                                {% else %}
+                                    <span class="badge badge-pill badge-danger" style="width: 82px">
+                                                <i class="fas fa-hourglass-half" title="Movimentação aberta"></i> Aberta</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="float-left">
+                                V:{{ item.dtVencto|date('d/m/Y') }}<br/>
+                                P:{{ item.dtPagto ? item.dtPagto|date('d/m/Y') : '' }}
+                            </div>
+                        </td>
+                        <td class="text-right">{{ item.valorTotal|number_format(2,',','.') }}</td>
+                        <td class="text-right">
+
+                            <button type="button" class="btn btn-danger"
+                                    data-url="{{ url('movimentacao_form_pagto_pagarAbertaComRealizada', {'aberta': e.id, 'realizada': item.id}) }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-hand-point-up"></i>
+                            </button>
+
+                            <br/>
+                            <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        {% endif %}
+
+
+    </div>
+</div>

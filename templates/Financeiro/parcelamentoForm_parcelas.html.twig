@@ -1,0 +1,177 @@
+<div class="tab-pane fade" id="parcelas" role="tabpanel" aria-labelledby="parcelas-tab">
+
+
+    <form id="parcelas" name="parcelas" action="{{ url('parcelamento_salvarParcelas') }}" method="post">
+
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="parcelamento_primeiroVencto">Vencto #1</label>
+            <div class="col-sm-10">
+                <input type="text" id="parcelamento_primeiroVencto" name="parcelamento[primeiroVencto]"
+                       class="crsr-date form-control" maxlength="10">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2 required" for="parcelamento_qtdeParcelas">Qtde</label>
+            <div class="col-sm-10">
+                <input type="number" id="parcelamento_qtdeParcelas" min="1" name="parcelamento[qtdeParcelas]"
+                       required="required" value="{{ parcelamento.qtdeParcelas|default('') }}"
+                       class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="parcelamento_valorTotal">Valor Total</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">R$ </span>
+                    </div>
+                    <input type="text" id="parcelamento_valorTotal" name="parcelamento[valorTotal]"
+                           value="{{ parcelamento.valorTotal|default('') }}" class="crsr-money form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="parcelamento_valorParcela">Valor Parcela</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">R$ </span>
+                    </div>
+                    <input type="text" id="parcelamento_valorParcela" name="parcelamento[valorParcela]"
+                           value="{{ parcelamento.valorParcela|default('') }}" class="crsr-money form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="parcelamento_diaFixo">Iteração</label>
+            <div class="col-sm-10">
+                <select id="parcelamento_diaFixo" name="parcelamento[diaFixo]" class="form-control">
+                    <option value="1" {{ parcelamento.diaFixo|default('') ? 'selected="selected"' : '' }}>Dia Fixo
+                    </option>
+                    <option value="0" {{ parcelamento.diaFixo|default('') ? 'selected="selected"' : '' }}>30 dias
+                        corridos
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-right">
+                <button type="button" name="parcelamento_btnGerar" id="parcelamento_btnGerar" class="btn btn-primary"
+                        value="Gerar">
+                    <i class="fas fa-save" aria-hidden="true"></i> Gerar
+                </button>
+
+                <button type="button" value="Apagar" class="btn btn-secondary"
+                        data-jsfunction="alert" data-jsfunction-args="balble"
+                        data-target="#confirmationModal" data-toggle="modal">
+                    <i class="fas fa-undo" aria-hidden="true"></i> Apagar
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">&NonBreakingSpace;</div>
+        </div>
+
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('parcelas') }}">
+        <input type="hidden" id="movimentacao" name="movimentacao"/>
+
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Parcelas</h5>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive-sm">
+                    <table class="table table-striped table-hover">
+
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Dt Vencto</th>
+                            <th scope="col">Dt Vencto Efet</th>
+                            <th scope="col">Núm Documento</th>
+                            <th scope="col">Valor</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="tbody_parcelas">
+                        {% if parcelas is defined %}
+                            {% for i,parcela in parcelas %}
+                                <tr>
+                                    <td>{{ i+1 }}</td>
+                                    <td>
+                                        <input type="text" name="parcela[{{ i }}][dtVencto]" required="required"
+                                               class="crsr-date form-control" value="{{ parcela.dtVencto }}"
+                                               maxlength="10">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="parcela[{{ i }}][dtVenctoEfetiva]" required="required"
+                                               class="crsr-date form-control" value="{{ parcela.dtVenctoEfetiva }}"
+                                               maxlength="10">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="parcela[{{ i }}][documentoNum]" required="required"
+                                               class="form-control" value="{{ parcela.documentoNum }} ">
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">R$ </span>
+                                            </div>
+                                            <input type="text" name="parcela[{{ i }}][valor]" required="required"
+                                                   class="crsr-money form-control" value="{{ parcela.valor }}">
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                        {% endif %}
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-12">&NonBreakingSpace;</div>
+        </div>
+
+        <div class="row">
+            <div class="col text-right">
+                <button type="button" name="parcelamento_btnGerar" id="parcelamento_btnSalvarTodas"
+                        class="btn btn-primary"
+                        value="Salvar parcelas"
+                        data-form="parcelas"
+                        data-target="#confirmationModal" data-toggle="modal">
+                    <i class="fas fa-save" aria-hidden="true"></i> Salvar parcelas
+                </button>
+
+
+            </div>
+        </div>
+
+    </form>
+
+
+</div>
+

@@ -1,0 +1,26 @@
+{% extends '@CrosierLibBase/list.html.twig' %}
+
+
+{% set titulo = 'Bandeiras de Cartões' %}
+{% set route_form = 'bandeiraCartao_form' %}
+{% set route_list = 'bandeiraCartao_list' %}
+{% set route_list_ajax = 'bandeiraCartao_datatablesJsList' %}
+{% set list_id = 'bandeiraCartaoList' %}
+
+{% block campos_pesquisar %}
+
+    <div class="form-group">
+        <label for="p_descricao">Descrição</label>
+        <input type="text"
+               class="form-control" id="filter[descricao]"
+               name="filter[descricao]"
+               value="{{ filter.descricao|default('') }}">
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/bandeiraCartaoList.js') }}"></script>
+{% endblock %}

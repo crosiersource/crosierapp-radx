@@ -1,0 +1,2 @@
+crosierlibbase:
+    resource: "@CrosierLibBaseBundle/Resources/config/routes.xml"

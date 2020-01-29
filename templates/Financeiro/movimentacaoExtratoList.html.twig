@@ -1,0 +1,257 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+            <form action="{{ url('movimentacao_extrato') }}" method="get" id="formPesquisar">
+                <div class="d-flex flex-wrap align-items-center">
+
+                    <div class="d-sm-flex text-nowrap mr-1">
+                        <h3>Extrato</h3>
+                    </div>
+                    <div class="d-sm-flex flex-nowrap ml-auto">
+
+
+                        <select id="filterCarteira" name="filter[carteira]" class="form-control">
+                            {{ carteira.options|raw }}
+                        </select>
+
+                    </div>
+                    <div class="d-sm-flex flex-nowrap ml-auto">
+
+                        <input type="text" class="form-control" id="filterDts"
+                               name="filter[dts]" data-mask="00/00/0000 - 00/00/0000"
+                               style="width: 180px; text-align: center"
+                               value="{{ filter.dts|default('') }}">
+
+                        <button class="btn btn-outline-success ml-1"
+                                type="button" id="btnAnterior"
+                                data-ante-periodoi="{{ antePeriodoI }}"
+                                data-ante-periodof="{{ antePeriodoF }}">
+                            <i class="fas fa-chevron-left"></i></button>
+                        <button class="btn btn-outline-success ml-1"
+                                type="button" id="btnProximo"
+                                data-prox-periodoi="{{ proxPeriodoI }}"
+                                data-prox-periodof="{{ proxPeriodoF }}">
+                            <i class="fas fa-chevron-right"></i></button>
+
+
+                        <button class="btn btn-outline-success ml-1" type="submit"><i class="fas fa-search"></i>
+                        </button>
+                        <button class="btn btn-outline-dark ml-1" type="button" id="btnHoje" name="btnHoje"><i
+                                    class="fas fa-calendar-day"></i>
+                        </button>
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive-sm">
+
+                <table class="table table-sm table-striped table-hover crsr-datatable">
+
+                    <thead>
+                    <tr style="background-color: lightgrey">
+                        <th scope="row" colspan="5" class="text-right">
+                            Saldo anterior:
+                            R$ {{ anteriores.saldos.SALDO_POSTERIOR_REALIZADAS|number_format(2,',','.') }}
+                            {% if carteira.cheque == 'SIM' %}
+                                <br/>
+                                Saldo anterior (+ cheques):
+                                R$ {{ anteriores.saldos.SALDO_POSTERIOR_COM_CHEQUES|number_format(2,',','.') }}
+                            {% endif %}
+                        </th>
+                        <td class="text-right">
+                            <a href="{{ url('aPagarReceber_list', {'filter': {'dts': '01/01/0000 - ' ~ dtFim, 'carteira': carteira.id }}) }}"
+                               role="button"
+                               target="_blank" class="btn btn-sm btn-primary">
+                                <i class="fas fa-money-check-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Categoria<br/>Modo</th>
+                        <th scope="col">Descrição<br/>Cedente</th>
+                        <th scope="col">Dt Vencto<br/>Dt Pagto</th>
+                        <th scope="col">Valor Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for dia in dias %}
+                        {% for item in dia.movs %}
+                            <tr>
+                                <td>
+                                    {{ item.id }}
+                                    <br/>
+                                    <span class="badge badge-pill badge-light">{{ loop.index }}</span>
+                                </td>
+                                <td>
+                                    <b>{{ item.carteira.descricaoMontada }}</b><br/>
+                                    {{ item.categoria.descricaoMontada }}<br/>
+                                    {{ item.modo.descricaoMontada }}
+                                </td>
+                                <td>
+                                    <div style="float: left">
+                                        <b>{{ item.descricaoMontada|raw }}</b>
+                                        {% if item.cedenteInfo %}
+                                            <br/>{{ item.cedenteInfo }}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="text-right">
+
+                                        {% if (item.chequeNumCheque) %}
+                                            <span class="badge badge-pill badge-danger">Cheque</span><br/>
+                                        {% endif %}
+
+
+                                        {% if (item.recorrente) %}
+
+                                            <span class="badge badge-pill badge-info">Recorrente</span><br/>
+
+                                        {% elseif (item.parcelamento) %}
+
+                                            <span class="badge badge-pill badge-info">Parcelamento</span>
+                                            <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
+                                               class="btn btn-sm btn-outline-secondary"
+                                               role="button" target="_blank" aria-pressed="true"><i
+                                                        class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+
+                                        {% elseif (item.cadeia) %}
+                                            <span class="badge badge-pill badge-info">Em cadeia</span>
+                                            <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
+                                               class="btn btn-sm btn-outline-secondary"
+                                               role="button" target="_blank" aria-pressed="true"><i
+                                                        class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+
+                                        {% endif %}
+
+                                        {% if (item.transferenciaEntreCarteiras and item.movimentacaoOposta and item.movimentacaoOposta.categoria) %}
+                                            <span class="badge badge-pill badge-light">
+                                            {{ (item.movimentacaoOposta.categoria.codigo == 199 ? '<i class="fas fa-sign-out-alt"></i> Para: ' : '<i class="fas fa-sign-in-alt"></i> De: ') }}
+                                                {{ item.movimentacaoOposta.carteira.descricaoMontada }} </span>
+                                        {% endif %}
+                                    </div>
+
+                                </td>
+                                <td>
+                                        <span title="Dt Vencto: {{ item.dtVencto|date('d/m/Y') }}">
+                                            {{ item.dtVenctoEfetiva|date('d/m/Y') }}
+                                        </span>
+                                </td>
+                                <td class="text-right"
+                                    style="color: white; background-color: {{ item.categoria.codigoSuper == 1 ? 'dodgerblue' : 'indianred' }}">
+                                    {{ item.valorTotal|number_format(2,',','.') }}
+                                </td>
+                                <td class="text-right">
+
+                                    {% if item.status == 'ABERTA' %}
+                                        <a class="btn btn-sm btn-outline-danger"
+                                           href="{{ url('movimentacao_form_pagto', {'id':item.id}) }}"
+                                           role="button" title="Registro de Pagamento">
+                                            <i class="fas fa-dollar-sign"></i>
+                                        </a>
+                                    {% endif %}
+
+
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="window.location.href='{{ url('movimentacao_edit', {id: item.id}) }}'">
+                                        <i class="fas fa-wrench" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            data-url="{{ url('movimentacao_delete', {id: item.id}) }}"
+                                            data-token="{{ csrf_token('delete') }}"
+                                            data-target="#confirmationModal" data-toggle="modal">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <br/>
+                                    <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr style="background-color: lightgrey">
+                            <th scope="row" colspan="5" class="text-right">
+                                Saldo em {{ dia.dtUtil|date('d/m/Y') }}:
+                                R$ {{ dia.saldos.SALDO_POSTERIOR_REALIZADAS|number_format(2,',','.') }}
+                                {% if carteira.cheque == 'SIM' %}
+                                    <br/>
+                                    Saldo <span style="cursor: help"
+                                                title="R$ {{ dia.saldos.TOTAL_CHEQUES|number_format(2,',','.') }}">(+ cheques)</span> em {{ dia.dtUtil|date('d/m/Y') }}:
+                                    R$ {{ dia.saldos.SALDO_POSTERIOR_COM_CHEQUES|number_format(2,',','.') }}
+                                {% endif %}
+                            </th>
+                            <td class="text-right">
+                                <a href="{{ url('aPagarReceber_list', {'filter': {'dts': '01/01/0000 - ' ~ dia.dtUtil|date('d/m/Y'), 'carteira': carteira.id, 'modo': 3 }}) }}"
+                                   role="button"
+                                   target="_blank" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-money-check-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    {% if carteira.operadoraCartao %}
+                        <tr style="background-color: lightblue">
+                            <th scope="row" colspan="4" class="text-right">Total Créditos:</th>
+                            <td class="text-right">
+                                R$ {{ totaisExtratoCartao.totalCreditos|number_format(2,',','.') }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr style="background-color: lightblue">
+                            <th scope="row" colspan="4" class="text-right">Taxa Crédito:</th>
+                            <td class="text-right">
+                                {{ totaisExtratoCartao.taxaCreditos|number_format(2,',','.') }} %</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr style="background-color: lightblue">
+                            <th scope="row" colspan="4" class="text-right">Total Débitos:</th>
+                            <td class="text-right">
+                                R$ {{ totaisExtratoCartao.totalDebitos|number_format(2,',','.') }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr style="background-color: lightblue">
+                            <th scope="row" colspan="4" class="text-right">Taxa Débito:</th>
+                            <td class="text-right">
+                                {{ totaisExtratoCartao.taxaDebitos|number_format(2,',','.') }} %</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr style="background-color: lightblue">
+                            <th scope="row" colspan="4" class="text-right">Total Transf p/ Conta:</th>
+                            <td class="text-right">
+                                R$ {{ totaisExtratoCartao.totalTransfParaConta|number_format(2,',','.') }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr style="background-color: lightblue">
+                            <th scope="row" colspan="4" class="text-right">Total Geral:</th>
+                            <td class="text-right">
+                                R$ {{ totaisExtratoCartao.totalGeral|number_format(2,',','.') }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    {% endif %}
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/movimentacaoExtratoList.js') }}"></script>
+{% endblock %}

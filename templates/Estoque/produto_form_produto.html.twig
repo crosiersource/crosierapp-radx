@@ -1,0 +1,59 @@
+<div class="tab-pane fade show active" id="produto" role="tabpanel" aria-labelledby="produto-tab">
+
+    <div class="container" style="margin-bottom: 50px">
+
+        {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+        {{ form_start(form, {'attr': {'id': 'produtoForm'}}) }}
+
+        {{ form_row(form._token) }}
+
+        {{ form_row(form.UUID) }}
+
+
+        {{ form_row(form.id) }}
+        {{ form_row(form.nome) }}
+        {{ form_row(form.titulo) }}
+
+        <hr/>
+        {{ form_row(form.depto) }}
+        {{ form_row(form.grupo) }}
+        {{ form_row(form.subgrupo) }}
+        <hr/>
+        {{ form_row(form.fornecedor) }}
+        {{ form_row(form.ean) }}
+        {{ form_row(form.referencia) }}
+        {{ form_row(form.unidade) }}
+        {{ form_row(form.status) }}
+        {{ form_row(form.composicao) }}
+        <hr/>
+
+
+        {% for kGrupo,campos in abas['Produto']|default([]) %}
+            {% for produtoAtributo in campos %}
+                {% if produtoAtributo.atributo.visivel %}
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" for="">{{ produtoAtributo.atributo.label }}</label>
+                        <div class="col-sm-10">
+                            {{ buildAtributoInput('produtoForm', 'produtoAtributo', produtoAtributo.atributo.id, produtoAtributo.atributo.tipo, produtoAtributo.valor) }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+
+
+        <div class="row mt-3">
+            <div class="col text-right">
+                <button type="submit" class="btn btn-primary" value="Salvar">
+                    <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                </button>
+            </div>
+        </div>
+
+        {{ form_end(form, {'render_rest': false}) }}
+
+
+    </div>
+
+
+</div>

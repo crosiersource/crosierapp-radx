@@ -1,0 +1,206 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+
+            <form action="{{ url('movimentacaoRecorrente_list') }}" method="get" id="formPesquisar">
+
+                <div class="d-flex flex-wrap align-items-center">
+
+                    <div class="d-sm-flex text-nowrap mr-1">
+                        <h3 class="text-dark">Movimentações Recorrentes</h3>
+                    </div>
+
+                    <div class="d-sm-flex ml-auto">
+
+
+                        <input type="text" class="form-control" id="filterDts"
+                               name="filter[dts]" data-mask="00/00/0000 - 00/00/0000"
+                               style="width: 180px; text-align: center"
+                               value="{{ filter.dts|default('') }}">
+
+                        <button class="btn btn-outline-success ml-1"
+                                type="button" id="btnAnterior"
+                                data-ante-periodoi="{{ antePeriodoI }}"
+                                data-ante-periodof="{{ antePeriodoF }}">
+                            <i class="fas fa-chevron-left"></i></button>
+                        <button class="btn btn-outline-success ml-1"
+                                type="button" id="btnProximo"
+                                data-prox-periodoi="{{ proxPeriodoI }}"
+                                data-prox-periodof="{{ proxPeriodoF }}">
+                            <i class="fas fa-chevron-right"></i></button>
+
+
+                        <button class="btn btn-outline-success ml-1" type="submit"><i class="fas fa-search"></i>
+                        </button>
+
+                        <button type="button" class="btn btn btn-warning ml-1" id="btnProcessarRecorrentes"
+                                data-form="formMovs"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-cog" aria-hidden="true"></i> Processar
+                        </button>
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+
+        {% for flashMessage in app.flashes('msgsProcessarRecorrentes') %}
+            <div class="alert alert-success" role="alert">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+
+        <div class="card-body">
+
+            <form name="formMovs" action="{{ url('movimentacaoRecorrente_processar') }}" method="post">
+
+                <div class="table-responsive-sm">
+
+                    <table class="table table-sm table-striped table-hover crsr-datatable">
+
+                        <thead>
+                        <tr>
+                            <th scope="col">
+                                <input style="width: 20px; height: 20px" type="checkbox" id="selTodasMovs"/>
+                            </th>
+                            <th scope="col">Carteira<br/>Categoria<br/>Modo</th>
+                            <th scope="col">Descrição<br/>Recorrência</th>
+                            <th scope="col">Dt Vencto<br/>Dt Pagto</th>
+                            <th scope="col">Valor Total</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for item in dados %}
+
+
+                            <tr>
+                                <td>
+                                    {{ item.id }}
+                                    <br/>
+                                    <input style="width: 17px; height: 17px" class="movSel" type="checkbox"
+                                           id="movsSelecionadas[{{ item.id }}]"
+                                           name="movsSelecionadas[{{ item.id }}]"/><br/>
+                                    <span class="badge badge-pill badge-light">{{ loop.index }}</span>
+                                </td>
+                                <td>
+                                    <b>{{ item.carteira.descricaoMontada }}</b><br/>
+                                    {{ item.categoria.descricaoMontada }}<br/>
+                                    {{ item.modo.descricaoMontada }}
+                                </td>
+                                <td>
+                                    <div style="float: left">
+                                        <b>{{ item.descricaoMontada|raw }}</b>
+                                        {% if item.cedenteInfo %}
+                                            <br/>{{ item.cedenteInfo }}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="text-right">
+
+                                        {% if (item.chequeNumCheque) %}
+                                            <span class="badge badge-pill badge-danger">Cheque</span><br/>
+                                        {% endif %}
+
+
+                                        {% if (item.recorrente) %}
+
+                                            <span class="badge badge-pill badge-info">Recorrente (dia {{ item.recorrDia }})</span>
+
+                                        {% elseif (item.parcelamento) %}
+
+                                            <span class="badge badge-pill badge-info">Parcelamento</span>
+                                            <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
+                                               class="btn btn-sm btn-outline-secondary"
+                                               role="button" target="_blank" aria-pressed="true"><i
+                                                        class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+
+                                        {% elseif (item.cadeia) %}
+                                            <span class="badge badge-pill badge-info">Em cadeia</span>
+                                            <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
+                                               class="btn btn-sm btn-outline-secondary"
+                                               role="button" target="_blank" aria-pressed="true"><i
+                                                        class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+
+                                        {% endif %}
+
+                                        {% if (item.transferenciaEntreCarteiras and item.movimentacaoOposta and item.movimentacaoOposta.categoria) %}
+                                            <span class="badge badge-pill badge-light">
+                                            {{ (item.movimentacaoOposta.categoria.codigo == 199 ? '<i class="fas fa-sign-out-alt"></i> Para: ' : '<i class="fas fa-sign-in-alt"></i> De: ') }}
+                                                {{ item.movimentacaoOposta.carteira.descricaoMontada }} </span>
+                                        {% endif %}
+                                    </div>
+
+                                </td>
+                                <td>
+                                        <span title="Dt Vencto: {{ item.dtVencto|date('d/m/Y') }}">
+                                            {{ item.dtVenctoEfetiva|date('d/m/Y') }}
+                                        </span>
+                                </td>
+                                <td class="text-right"
+                                    style="color: white; background-color: {{ item.categoria.codigoSuper == 1 ? 'dodgerblue' : 'indianred' }}">
+                                    {{ item.valorTotal|number_format(2,',','.') }}
+                                </td>
+                                <td class="text-right">
+
+                                    {% if item.status == 'ABERTA' %}
+                                        <a class="btn btn-sm btn-outline-danger"
+                                           href="{{ url('movimentacao_form_pagto', {'id':item.id}) }}"
+                                           role="button" title="Registro de Pagamento">
+                                            <i class="fas fa-dollar-sign"></i>
+                                        </a>
+                                    {% endif %}
+
+
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="window.location.href='{{ url('movimentacao_form_recorrente', {id: item.id}) }}'">
+                                        <i class="fas fa-wrench" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            data-url="{{ url('movimentacao_delete', {id: item.id}) }}"
+                                            data-token="{{ csrf_token('delete') }}"
+                                            data-target="#confirmationModal" data-toggle="modal">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <br/>
+                                    <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </form>
+
+
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col">
+                    {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fin/movimentacaoRecorrentesList.js') }}"></script>
+{% endblock %}

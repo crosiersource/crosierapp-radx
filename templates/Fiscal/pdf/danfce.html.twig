@@ -1,0 +1,109 @@
+<html>
+<head>
+    <style>
+        @page {
+            margin: 0 0;
+            size: 8cm 30cm;
+        }
+
+        /** Define now the real margins of every page in the PDF **/
+        body {
+            max-width: 7.9cm;
+            font-size: 8pt;
+            font-family: 'Ubuntu Mono', monospace;
+            font-weight: bold;
+            font-stretch: condensed;
+        }
+    </style>
+</head>
+<body onload="window.print();">
+
+
+<p style="text-align: center">
+    CNPJ: {{ xml.NFe.infNFe.emit.CNPJ|mascararCnpjCpf }} <b>{{ xml.NFe.infNFe.emit.xNome }}</b><br/>
+    {{ xml.NFe.infNFe.emit.enderEmit.xLgr }}, {{ xml.NFe.infNFe.emit.enderEmit.nro }} . {{ xml.NFe.infNFe.emit.enderEmit.xBairro }} . {{ xml.NFe.infNFe.emit.enderEmit.CEP }} . {{ xml.NFe.infNFe.emit.enderEmit.xMun }}-{{ xml.NFe.infNFe.emit.enderEmit.UF }}<br/>
+    Documento Auxiliar da Nota Fiscal de Consumidor Eletrônica<br/>
+</p>
+
+
+<p style="text-align: center;">
+<table style="font-size: 8pt; width: 100%; padding: 0; border-spacing: 0">
+    <tr style="font-weight: bold">
+        <td>Cód</td>
+        <td>Descrição</td>
+        <td>Qtde</td>
+        <td>UN</td>
+        <td>Vl Unit</td>
+        <td>Vl Total</td>
+    </tr>
+
+    {% for item in xml.NFe.infNFe.det %}
+        <tr>
+            <td>{{ item.prod.cProd }}</td>
+            <td>{{ item.prod.xProd }}</td>
+            <td style="text-align: right">{{ item.prod.qCom|number_format(3,',','.') }}</td>
+            <td style="text-align: center">{{ item.prod.uCom }}</td>
+            <td style="text-align: right">{{ item.prod.vUnCom|number_format(2,',','.') }}</td>
+            <td style="text-align: right">{{ item.prod.vProd|number_format(2,',','.') }}</td>
+        </tr>
+    {% endfor %}
+
+</table>
+</p>
+<p style="text-align: center;">
+<table style="width: 100%; font-size: 8pt;">
+    <tr>
+        <td>Qtde. total de itens</td>
+        <td style="text-align: right">{{ xml.NFe.infNFe.det|length }}</td>
+    </tr>
+    <tr>
+        <td>Valor total R$</td>
+        <td style="text-align: right">{{ xml.NFe.infNFe.total.ICMSTot.vProd|number_format(2,',','.') }}</td>
+    </tr>
+    <tr>
+        <td>Desconto R$</td>
+        <td style="text-align: right">{{ xml.NFe.infNFe.total.ICMSTot.vDesc|number_format(2,',','.') }}</td>
+    </tr>
+    <tr style="font-weight: bold">
+        <td>Valor a Pagar R$</td>
+        <td style="text-align: right">{{ xml.NFe.infNFe.total.ICMSTot.vNF|number_format(2,',','.') }}</td>
+    </tr>
+    <tr>
+        <td>FORMA PAGAMENTO</td>
+        <td style="text-align: right">VALOR PAGO R$</td>
+    </tr>
+    <tr>
+        <td>Dinheiro</td>
+        <td style="text-align: right">{{ xml.NFe.infNFe.total.ICMSTot.vNF|number_format(2,',','.') }}</td>
+    </tr>
+</table>
+</p>
+<p style="text-align: center;">
+
+    <b>Consulte pela Chave de Acesso em</b><br/>
+    www.fazenda.pr.gov.br/nfce/consulta<br/>
+    {{ chaveAcesso }}
+</p>
+<p>
+<div style="float: left">
+    <img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={{ qrcode }}&choe=UTF-8"
+         style="width: 30mm" title="Link to Google.com"/>
+</div>
+<div>
+    {% if xml.NFe.infNFe.dest.CPF is defined %}
+        CONSUMIDOR - CPF: {{ xml.NFe.infNFe.dest.CPF|mascararCnpjCpf }}
+        <br/>
+    {% elseif xml.NFe.infNFe.dest.CNPJ is defined %}
+        CONSUMIDOR - CNPJ: {{ xml.NFe.infNFe.dest.CNPJ|mascararCnpjCpf }}
+        <br/>
+    {% else %}
+        CONSUMIDOR NÃO IDENTIFICADO<br/>
+    {% endif %}
+    <b>NFC-e n. {{ xml.NFe.infNFe.ide.nNF }} Série {{ xml.NFe.infNFe.ide.serie }} {{ xml.NFe.infNFe.ide.dhEmi|date('d/m/Y H:i:s') }} - Via consumidor</b><br/>
+    Protocolo de autorização: {{ xml.protNFe.infProt.nProt }}<br/>
+    Data de autorização: {{ xml.protNFe.infProt.dhRecbto|date('d/m/Y H:i:s') }}
+</div>
+</p>
+
+</body>
+</html>

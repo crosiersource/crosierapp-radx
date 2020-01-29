@@ -1,0 +1,79 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>NFe - Fornecedor</h3>
+                    </div>
+                    <div class="col-4 text-right">
+                        <button type="button" class="btn btn-secondary"
+                                onclick="window.location.href='{{ url('nfesFornecedores_list') }}'">
+                            <i class="fas fa-sync" aria-hidden="true"></i> Listar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <ul class="nav nav-tabs" id="principal" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active NOTAFISCAL_TAB" id="cabecalho-tab" data-toggle="tab" href="#cabecalho"
+                           role="tab"
+                           aria-controls="home" aria-selected="true">Cabeçalho</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link NOTAFISCAL_TAB" id="itens-tab" data-toggle="tab" href="#itens" role="tab"
+                           aria-controls="profile" aria-selected="false">Itens</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link NOTAFISCAL_TAB" id="transporte-tab" data-toggle="tab" href="#transporte"
+                           role="tab"
+                           aria-controls="contact" aria-selected="false">Transporte</a>
+                    </li>
+                </ul>
+
+                <div class="form-group row">
+                </div>
+
+                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+
+                <div class="tab-content" id="myTabContent">
+
+                    {{ include('/Fiscal/nfeFornecedores/form_cabecalho.html.twig') }}
+                    {{ include('/Fiscal/nfeFornecedores/form_itens.html.twig') }}
+                    {{ include('/Fiscal/nfeFornecedores/form_transporte.html.twig') }}
+
+                </div>
+
+                <div class="row">
+                    <div class="col-12">&nbsp;</div>
+                </div>
+
+                <div class="row">
+                    <div class="col text-right">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">&nbsp;</div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}

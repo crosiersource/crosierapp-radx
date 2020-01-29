@@ -1,0 +1,100 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>NFe - Fornecedor</h3>
+                        <h6>Resumo</h6>
+                    </div>
+                    <div class="col-4 text-right">
+                        <button type="button" class="btn btn-secondary"
+                                onclick="window.location.href='{{ url('nfesFornecedores_list') }}'">
+                            <i class="fas fa-sync" aria-hidden="true"></i> Listar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="container" style="margin-bottom: 50px">
+
+
+                    {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+                    {{ form_start(form, { disabled:'disabled' }) }}
+
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2 form-control-label">Chave / Prot Autoriz</label>
+                        <div class="col-sm-6">
+                            {{ form_widget(form.chaveAcesso) }}
+                        </div>
+                        <div class="col-sm-4">
+                            {{ form_widget(form.protocoloAutorizacao) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.dtEmissao, {'disabled':'disabled'}) }}
+
+                    {{ form_row(form.documentoEmitente, {'disabled':'disabled'}) }}
+                    {{ form_row(form.xNomeEmitente, {'disabled':'disabled'}) }}
+                    {{ form_row(form.inscricaoEstadualEmitente, {'disabled':'disabled'}) }}
+                    {{ form_row(form.manifestDest, {'disabled':'disabled'}) }}
+                    {{ form_row(form.dtManifestDest, {'disabled':'disabled'}) }}
+
+                    {{ form_row(form.valorTotal, {'disabled':'disabled'}) }}
+
+                    {{ form_end(form, {'render_rest': false}) }}
+
+
+                    <div class="row">
+                        <div class="col text-right">
+                            {% if notaFiscal.manifestDest|default('') == '' %}
+                                <button type="button" value="Manifestar 'Ciência'" class="btn btn-primary"
+                                        data-url="{{ url('nfesFornecedores_manifestar', {nf: notaFiscal.id, codManifest: '210210'}) }}"
+                                        data-target="#confirmationModal" data-toggle="modal">
+                                    <i class="fas fa-copy" aria-hidden="true"></i> Manifestar 'Ciência'
+                                </button>
+
+                                <button type="button" value="Manifestar 'Desconhecimento da Operação'" class="btn btn-danger"
+                                        data-url="{{ url('nfesFornecedores_manifestar', {nf: notaFiscal.id, codManifest: '210220'}) }}"
+                                        data-target="#confirmationModal" data-toggle="modal">
+                                    <i class="fas fa-question-circle"></i> Manifestar 'Desconhecimento da Operação'
+                                </button>
+                            {% endif %}
+
+                            {% if '210210' in notaFiscal.manifestDest|default('') %}
+                                <button type="button" value="Manifestar 'Confirmação da Operação'" class="btn btn-success"
+                                        data-url="{{ url('nfesFornecedores_manifestar', {nf: notaFiscal.id, codManifest: '210200'}) }}"
+                                        data-target="#confirmationModal" data-toggle="modal">
+                                    <i class="fas fa-copy" aria-hidden="true"></i> Manifestar 'Confirmação da Operação'
+                                </button>
+
+                                <button type="button" value="Manifestar 'Operação não Realizada'" class="btn btn-danger"
+                                        data-url="{{ url('nfesFornecedores_manifestar', {nf: notaFiscal.id, codManifest: '210240'}) }}"
+                                        data-target="#confirmationModal" data-toggle="modal">
+                                    <i class="fas fa-window-close"></i> Manifestar 'Operação não Realizada'
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
