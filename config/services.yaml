@@ -33,3 +33,8 @@ services:
     app.utils.estoque.vich_uploader_produto_directory_namer:
         alias: App\Utils\Estoque\VichUploaderProdutoDirectoryNamer
         public: true
+
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+            - { name: twig.extension }

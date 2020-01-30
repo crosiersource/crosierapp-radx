@@ -171,7 +171,7 @@ class MovimentacaoImportController extends BaseController
 
     /**
      *
-     * @Route("/movimentacao/import", name="movimentacao_import")
+     * @Route("/fin/movimentacao/import", name="movimentacao_import")
      * @param Request $request
      * @return RedirectResponse|Response
      * @throws ViewException
@@ -220,7 +220,7 @@ class MovimentacaoImportController extends BaseController
         $this->vParams['total'] = $this->session->get('total');
         $this->vParams['linhasExtrato'] = $this->session->get('linhasExtrato');
 
-        return $this->doRender('movimentacaoImport.html.twig', $this->vParams);
+        return $this->doRender('Financeiro/movimentacaoImport.html.twig', $this->vParams);
     }
 
     /**
@@ -308,7 +308,7 @@ class MovimentacaoImportController extends BaseController
 
     /**
      *
-     * @Route("/movimentacao/import/tiposExtratos", name="movimentacao_import_tiposExtratos")
+     * @Route("/fin/movimentacao/import/tiposExtratos", name="movimentacao_import_tiposExtratos")
      * @return Response
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
@@ -345,7 +345,7 @@ class MovimentacaoImportController extends BaseController
 
     /**
      *
-     * @Route("/movimentacao/import/form/{UUID}", name="movimentacao_import_form")
+     * @Route("/fin/movimentacao/import/form/{UUID}", name="movimentacao_import_form")
      * @param Request $request
      * @param $UUID
      * @return RedirectResponse|Response
@@ -386,12 +386,12 @@ class MovimentacaoImportController extends BaseController
         // Pode ou não ter vindo algo no $parameters. Independentemente disto, só adiciono form e foi-se.
         $parameters['form'] = $form->createView();
 
-        return $this->doRender('movimentacaoImportForm.html.twig', $parameters);
+        return $this->doRender('Financeiro/movimentacaoImportForm.html.twig', $parameters);
     }
 
     /**
      *
-     * @Route("/movimentacao/import/remove/{UUID}", name="movimentacao_import_remove")
+     * @Route("/fin/movimentacao/import/remove/{UUID}", name="movimentacao_import_remove")
      * @param $UUID
      * @return RedirectResponse|Response
      * @throws ViewException
@@ -411,7 +411,7 @@ class MovimentacaoImportController extends BaseController
 
     /**
      *
-     * @Route("/movimentacao/import/alterarLote/", name="movimentacao_import_alterarLote")
+     * @Route("/fin/movimentacao/import/alterarLote/", name="movimentacao_import_alterarLote")
      * @param Request $request
      * @return RedirectResponse|Response
      * @throws ViewException
@@ -461,13 +461,13 @@ class MovimentacaoImportController extends BaseController
         // Pode ou não ter vindo algo no $parameters. Independentemente disto, só adiciono form e foi-se.
         $parameters['form'] = $form->createView();
 
-        return $this->doRender('movimentacaoAlterarEmLoteForm.html.twig', $parameters);
+        return $this->doRender('Financeiro/movimentacaoAlterarEmLoteForm.html.twig', $parameters);
     }
 
 
     /**
      *
-     * @Route("/movimentacao/import/removerExistentes", name="movimentacao_import_removerExistentes")
+     * @Route("/fin/movimentacao/import/removerExistentes", name="movimentacao_import_removerExistentes")
      * @return RedirectResponse
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)

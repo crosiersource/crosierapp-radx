@@ -131,7 +131,7 @@ class MovimentacaoController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/list/", name="movimentacao_list")
+     * @Route("/fin/movimentacao/list/", name="movimentacao_list")
      * @param Request $request
      * @return Response
      * @throws \Exception
@@ -141,7 +141,7 @@ class MovimentacaoController extends FormListController
     public function list(Request $request): Response
     {
         $params = [
-            'listView' => 'movimentacaoList.html.twig',
+            'listView' => 'Financeiro/movimentacaoList.html.twig',
             'listRoute' => 'movimentacao_list',
             'listRouteAjax' => 'movimentacao_datatablesJsList',
             'listPageTitle' => 'Pesquisar Movimentações',
@@ -188,7 +188,7 @@ class MovimentacaoController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/datatablesJsList/", name="movimentacao_datatablesJsList")
+     * @Route("/fin/movimentacao/datatablesJsList/", name="movimentacao_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws ViewException
@@ -202,7 +202,7 @@ class MovimentacaoController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/listCadeia/{cadeia}", name="movimentacao_listCadeia", requirements={"cadeia"="\d+"})
+     * @Route("/fin/movimentacao/listCadeia/{cadeia}", name="movimentacao_listCadeia", requirements={"cadeia"="\d+"})
      * @param Cadeia $cadeia
      * @return Response
      * @throws \Exception
@@ -212,12 +212,12 @@ class MovimentacaoController extends FormListController
     public function listCadeia(Cadeia $cadeia): Response
     {
         $total = $this->business->somarMovimentacoes($cadeia->getMovimentacoes());
-        return $this->doRender('movimentacaoList_cadeia.html.twig', ['cadeia' => $cadeia, 'total' => $total]);
+        return $this->doRender('Financeiro/movimentacaoList_cadeia.html.twig', ['cadeia' => $cadeia, 'total' => $total]);
     }
 
     /**
      *
-     * @Route("/cadeia/delete/{cadeia}", name="cadeia_delete", requirements={"cadeia"="\d+"})
+     * @Route("/fin/cadeia/delete/{cadeia}", name="cadeia_delete", requirements={"cadeia"="\d+"})
      * @param Cadeia $cadeia
      * @return Response
      * @throws \Exception
@@ -237,7 +237,7 @@ class MovimentacaoController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/delete/{id}", name="movimentacao_delete", requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/delete/{id}", name="movimentacao_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao $movimentacao
      * @return Response
@@ -263,7 +263,7 @@ class MovimentacaoController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/list/alterarLote/", name="movimentacao_list_alterarLote")
+     * @Route("/fin/movimentacao/list/alterarLote/", name="movimentacao_list_alterarLote")
      * @param Request $request
      * @param $UUID
      * @return RedirectResponse|Response
@@ -310,13 +310,13 @@ class MovimentacaoController extends FormListController
         // Pode ou não ter vindo algo no $params. Independentemente disto, só adiciono form e foi-se.
         $params['form'] = $form->createView();
 
-        return $this->doRender('movimentacaoAlterarEmLoteForm.html.twig', $params);
+        return $this->doRender('Financeiro/movimentacaoAlterarEmLoteForm.html.twig', $params);
     }
 
 
     /**
      *
-     * @Route("/movimentacao/form/ini", name="movimentacaoForm_ini")
+     * @Route("/fin/movimentacao/form/ini", name="movimentacaoForm_ini")
      * @param Request $request
      * @return RedirectResponse|Response
      * @throws \Exception
@@ -335,13 +335,13 @@ class MovimentacaoController extends FormListController
             /** @var TipoLancto $e */
             return $e->getDescricaoMontada();
         });
-        return $this->doRender('movimentacaoIniForm.html.twig', ['tiposLanctos' => json_encode($tiposLanctos)]);
+        return $this->doRender('Financeiro/movimentacaoIniForm.html.twig', ['tiposLanctos' => json_encode($tiposLanctos)]);
     }
 
 
     /**
      *
-     * @Route("/movimentacao/edit/{id}", name="movimentacao_edit", requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/edit/{id}", name="movimentacao_edit", requirements={"id"="\d+"})
      * @param UrlMatcherInterface $urlMatcher
      * @param Request $request
      * @param Movimentacao $movimentacao
@@ -363,7 +363,7 @@ class MovimentacaoController extends FormListController
     /**
      * Edição geral de uma movimentação (com exibição de todos os campos).
      *
-     * @Route("/movimentacao/form/geral/{id}", name="movimentacao_form_geral", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/form/geral/{id}", name="movimentacao_form_geral", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -375,7 +375,7 @@ class MovimentacaoController extends FormListController
     {
         $params = [
             'typeClass' => MovimentacaoType::class,
-            'formView' => 'movimentacaoForm_geral.html.twig',
+            'formView' => 'Financeiro/movimentacaoForm_geral.html.twig',
             'formRoute' => 'movimentacaoForm_ini',
             'formRouteEdit' => 'movimentacao_edit',
             'formPageTitle' => 'Movimentação'
@@ -387,7 +387,7 @@ class MovimentacaoController extends FormListController
     /**
      * Form para movimentações do tipoLancto 40.
      *
-     * @Route("/movimentacao/form/chequeProprio/{id}", name="movimentacao_form_chequeProprio", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/form/chequeProprio/{id}", name="movimentacao_form_chequeProprio", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -413,11 +413,11 @@ class MovimentacaoController extends FormListController
         $params = [
             'formRoute' => 'movimentacao_form_chequeProprio',
             'typeClass' => MovimentacaoChequeProprioType::class,
-            'formView' => 'movimentacaoForm_chequeProprio.html.twig'
+            'formView' => 'Financeiro/movimentacaoForm_chequeProprio.html.twig'
         ];
 
         if ($parcelamento && !$movimentacao->getId()) {
-            $params['formView'] = 'movimentacaoForm_chequeProprio_parcelamento.html.twig';
+            $params['formView'] = 'Financeiro/movimentacaoForm_chequeProprio_parcelamento.html.twig';
             return $this->handleParcelamento($request, $movimentacao, $params);
         }
         // else
@@ -496,7 +496,7 @@ class MovimentacaoController extends FormListController
     /**
      * Form para movimentações do tipoLancto 42.
      *
-     * @Route("/movimentacao/form/chequeTerceiros/{id}", name="movimentacao_form_chequeTerceiros", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/form/chequeTerceiros/{id}", name="movimentacao_form_chequeTerceiros", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -521,10 +521,10 @@ class MovimentacaoController extends FormListController
 
         $params['formRoute'] = 'movimentacao_form_chequeTerceiros';
         $params['typeClass'] = MovimentacaoChequeProprioType::class;
-        $params['formView'] = 'movimentacaoForm_chequeTerceiros.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoForm_chequeTerceiros.html.twig';
 
         if ($parcelamento && !$movimentacao->getId()) {
-            $params['formView'] = 'movimentacaoForm_chequeTerceiros_parcelamento.html.twig';
+            $params['formView'] = 'Financeiro/movimentacaoForm_chequeTerceiros_parcelamento.html.twig';
             return $this->handleParcelamento($request, $movimentacao, $params);
         }
         // else
@@ -536,7 +536,7 @@ class MovimentacaoController extends FormListController
     /**
      * Form para movimentações do tipoLancto 60.
      *
-     * @Route("/movimentacao/form/transferenciaEntreCarteiras/{id}", name="movimentacao_form_transferenciaEntreCarteiras", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/form/transferenciaEntreCarteiras/{id}", name="movimentacao_form_transferenciaEntreCarteiras", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -553,7 +553,7 @@ class MovimentacaoController extends FormListController
         }
 
         $params['typeClass'] = MovimentacaoTransferenciaEntreCarteirasType::class;
-        $params['formView'] = 'movimentacaoForm_transferenciaEntreCarteiras.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoForm_transferenciaEntreCarteiras.html.twig';
         $params['formPageTitle'] = 'Transferência Entre Carteiras';
         $params['formRoute'] = 'movimentacao_form_transferenciaEntreCarteiras';
 
@@ -563,7 +563,7 @@ class MovimentacaoController extends FormListController
     /**
      * Form para movimentações do tipoLancto 61.
      *
-     * @Route("/movimentacao/form/transferenciaEntradaCaixa/{id}", name="movimentacao_form_transferenciaEntradaCaixa", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/form/transferenciaEntradaCaixa/{id}", name="movimentacao_form_transferenciaEntradaCaixa", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -573,7 +573,7 @@ class MovimentacaoController extends FormListController
      */
     public function formTransferenciaEntradaCaixa(Request $request, Movimentacao $movimentacao = null)
     {
-        $params['formView'] = 'movimentacaoForm_transferenciaEntradaCaixa.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoForm_transferenciaEntradaCaixa.html.twig';
         $params['typeClass'] = MovimentacaoType::class;
         $params['formRoute'] = 'movimentacao_form_transferenciaEntradaCaixa';
         return $this->doForm($request, $movimentacao, $params);
@@ -582,7 +582,7 @@ class MovimentacaoController extends FormListController
     /**
      * Form para movimentações do tipoLancto 70.
      *
-     * @Route("/movimentacao/form/grupo/{grupoItem}/{id}", name="movimentacao_form_grupo", defaults={"id"=null}, requirements={"grupoItem"="\d+", "id"="\d+"})
+     * @Route("/fin/movimentacao/form/grupo/{grupoItem}/{id}", name="movimentacao_form_grupo", defaults={"id"=null}, requirements={"grupoItem"="\d+", "id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -644,14 +644,14 @@ class MovimentacaoController extends FormListController
         $movimentacao->setGrupoItem($grupoItem);
 
         $params['typeClass'] = MovimentacaoType::class; // ???
-        $params['formView'] = 'movimentacaoForm_grupo.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoForm_grupo.html.twig';
         $params['formPageTitle'] = 'Movimentação de Grupo';
 
         if ($parcelamento) {
             return $this->handleParcelamento($request, $movimentacao, $params);
         }
 
-        $params['formView'] = $parcelamento ? 'movimentacaoForm_grupo_parcelamento.html.twig' : 'movimentacaoForm_grupo.html.twig';
+        $params['formView'] = $parcelamento ? 'Financeiro/movimentacaoForm_grupo_parcelamento.html.twig' : 'Financeiro/movimentacaoForm_grupo.html.twig';
         $params['typeClass'] = MovimentacaoType::class;
         $params['formRoute'] = 'movimentacao_form_grupo';
 
@@ -668,7 +668,7 @@ class MovimentacaoController extends FormListController
     /**
      * Form para movimentações do tipoLancto 80.
      *
-     * @Route("/movimentacao/form/estorno/{id}", name="movimentacao_form_estorno", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/form/estorno/{id}", name="movimentacao_form_estorno", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -678,7 +678,7 @@ class MovimentacaoController extends FormListController
      */
     public function formEstorno(Request $request, Movimentacao $movimentacao = null)
     {
-        $params['formView'] = 'movimentacaoForm_estorno.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoForm_estorno.html.twig';
         $params['typeClass'] = MovimentacaoType::class;
         $params['formRoute'] = 'movimentacao_form_estorno';
         return $this->doForm($request, $movimentacao, $params);
@@ -687,7 +687,7 @@ class MovimentacaoController extends FormListController
     /**
      * Form para movimentações do tipoLancto 80.
      *
-     * @Route("/movimentacao/form/pagto/{id}", name="movimentacao_form_pagto", requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/form/pagto/{id}", name="movimentacao_form_pagto", requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -727,7 +727,7 @@ class MovimentacaoController extends FormListController
             }, $params['filter']['carteiras'] ?? null));
 
         $params['formRoute'] = 'movimentacao_form_pagto';
-        $params['formView'] = 'movimentacaoForm_pagto.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoForm_pagto.html.twig';
         $params['typeClass'] = MovimentacaoPagtoType::class;
 
         // se a ação for do btnPesquisarLanctos, não submete o form
@@ -783,7 +783,7 @@ class MovimentacaoController extends FormListController
     /**
      * Form para movimentações do tipoLancto 80.
      *
-     * @Route("/movimentacao/form/pagto/pagarAbertaComRealizada/{aberta}/{realizada}", name="movimentacao_form_pagto_pagarAbertaComRealizada", requirements={"aberta"="\d+","realizada"="\d+"})
+     * @Route("/fin/movimentacao/form/pagto/pagarAbertaComRealizada/{aberta}/{realizada}", name="movimentacao_form_pagto_pagarAbertaComRealizada", requirements={"aberta"="\d+","realizada"="\d+"})
      * @param Movimentacao $aberta
      * @param Movimentacao $realizada
      * @return RedirectResponse

@@ -26,7 +26,7 @@ class ConferenciaFinanceiroController extends AbstractController
 
     /**
      *
-     * @Route("/conferencia/list/", name="conferencia_list")
+     * @Route("/fin/conferencia/list/", name="conferencia_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -57,7 +57,7 @@ class ConferenciaFinanceiroController extends AbstractController
         $vParams['proxPeriodoI'] = $prox['dtIni'];
         $vParams['proxPeriodoF'] = $prox['dtFim'];
 
-        return $this->doRender('conferenciaFinanceiro.html.twig', $vParams);
+        return $this->doRender('Financeiro/conferenciaFinanceiro.html.twig', $vParams);
     }
 
 }

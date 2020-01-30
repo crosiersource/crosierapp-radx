@@ -38,7 +38,7 @@ class MovimentacaoExtratoController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/extrato/", name="movimentacao_extrato")
+     * @Route("/fin/movimentacao/extrato/", name="movimentacao_extrato")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -134,7 +134,7 @@ class MovimentacaoExtratoController extends FormListController
             $parameters['totaisExtratoCartao'] = $repo->findTotaisExtratoCartoes($carteira, $dtIni, $dtFim);
         }
 
-        return $this->doRender('movimentacaoExtratoList.html.twig', $parameters);
+        return $this->doRender('Financeiro/movimentacaoExtratoList.html.twig', $parameters);
     }
 
     /**

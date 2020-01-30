@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Financeiro;
 
 
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
@@ -16,12 +16,11 @@ class DefaultController extends BaseController
 
     /**
      *
-     * @Route("/", name="index")
+     * @Route("/fin/", name="fin_root")
      */
     public function index()
     {
-        $params['PROGRAM_UUID'] = 'e957c606-7f1a-4856-afde-287c2c6fe3dd';
-        return $this->doRender('dashboard.html.twig', $params);
+        return $this->doRender('Financeiro/dashboard.html.twig');
     }
 
 }

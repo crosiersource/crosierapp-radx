@@ -1,8 +1,8 @@
 <?php
 
-namespace App\EntityHandler;
+namespace App\EntityHandler\RH;
 
-use App\Entity\Funcionario;
+use App\Entity\RH\Funcionario;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 
 /**

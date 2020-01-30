@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\RH;
 
-use App\Entity\Cargo;
-use App\EntityHandler\CargoEntityHandler;
-use App\Form\CargoType;
+use App\Entity\RH\Cargo;
+use App\EntityHandler\RH\CargoEntityHandler;
+use App\Form\RH\CargoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use Symfony\Component\HttpFoundation\Request;

@@ -44,7 +44,7 @@ class GrupoController extends FormListController
 
     /**
      *
-     * @Route("/grupo/form/{id}", name="grupo_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/grupo/form/{id}", name="grupo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Grupo|null $grupo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -65,7 +65,7 @@ class GrupoController extends FormListController
 
     /**
      *
-     * @Route("/grupo/list/", name="grupo_list")
+     * @Route("/fin/grupo/list/", name="grupo_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -76,7 +76,7 @@ class GrupoController extends FormListController
     {
         $params = [
             'formRoute' => 'grupo_form',
-            'listView' => 'grupoList.html.twig',
+            'listView' => 'Financeiro/grupoList.html.twig',
             'listRoute' => 'grupo_list',
             'listRouteAjax' => 'grupo_datatablesJsList',
             'listPageTitle' => 'Grupos de Movimentações',
@@ -88,7 +88,7 @@ class GrupoController extends FormListController
 
     /**
      *
-     * @Route("/grupo/datatablesJsList/", name="grupo_datatablesJsList")
+     * @Route("/fin/grupo/datatablesJsList/", name="grupo_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -102,7 +102,7 @@ class GrupoController extends FormListController
 
     /**
      *
-     * @Route("/grupo/delete/{id}/", name="grupo_delete", requirements={"id"="\d+"})
+     * @Route("/fin/grupo/delete/{id}/", name="grupo_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param Grupo $grupo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -117,7 +117,7 @@ class GrupoController extends FormListController
 
     /**
      *
-     * @Route("/grupo/select2json", name="grupo_select2json")
+     * @Route("/fin/grupo/select2json", name="grupo_select2json")
      * @param Request $request
      * @return Response
      *

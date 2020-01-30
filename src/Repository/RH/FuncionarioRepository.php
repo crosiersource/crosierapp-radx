@@ -21,7 +21,7 @@ class FuncionarioRepository extends FilterRepository
 
     public function findByCodigo($codigo)
     {
-        $ql = "SELECT f FROM App\Entity\Funcionario f JOIN App\Entity\FuncionarioCargo fc WHERE fc.funcionario = f AND f.codigo = :codigo AND fc.atual = TRUE";
+        $ql = "SELECT f FROM App\Entity\RH\Funcionario f JOIN App\Entity\RH\FuncionarioCargo fc WHERE fc.funcionario = f AND f.codigo = :codigo AND fc.atual = TRUE";
         $query = $this->getEntityManager()->createQuery($ql);
         $query->setParameters(array(
             'codigo' => $codigo

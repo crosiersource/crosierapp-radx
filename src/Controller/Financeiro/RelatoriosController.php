@@ -17,7 +17,7 @@ class RelatoriosController extends BaseController
 
     /**
      *
-     * @Route("/relatorios/list", name="relatorios_list")
+     * @Route("/fin/relatorios/list", name="relatorios_list")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function list(Request $request)

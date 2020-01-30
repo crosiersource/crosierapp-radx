@@ -86,7 +86,7 @@ class MovimentacaoAPagarReceberController extends FormListController
     /**
      * Tela para lançamento completo de contas a pagar.
      *
-     * @Route("/movimentacao/form/aPagarReceber/{id}", name="movimentacao_form_aPagarReceber", defaults={"id"=null}, requirements={"movimentacao"="\d+"})
+     * @Route("/fin/movimentacao/form/aPagarReceber/{id}", name="movimentacao_form_aPagarReceber", defaults={"id"=null}, requirements={"movimentacao"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -117,10 +117,10 @@ class MovimentacaoAPagarReceberController extends FormListController
             'formPageTitle' => 'Movimentação a Pagar/Receber',
         ];
 
-        $params['formView'] = 'movimentacaoForm_aPagarReceber.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoForm_aPagarReceber.html.twig';
 
         if (!$movimentacao->getId() && $parcelamento) {
-            $params['formView'] = 'movimentacaoForm_aPagarReceber_parcelamento.html.twig';
+            $params['formView'] = 'Financeiro/movimentacaoForm_aPagarReceber_parcelamento.html.twig';
             return $this->handleParcelamento($request, $movimentacao, $params);
         }
         // else
@@ -198,7 +198,7 @@ class MovimentacaoAPagarReceberController extends FormListController
     /**
      * Tela para lançamento simplificado de contas a pagar.
      *
-     * @Route("/aPagar/formSimpl/{id}", name="movimentacao_form_aPagarReceberSimpl", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/aPagar/formSimpl/{id}", name="movimentacao_form_aPagarReceberSimpl", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -215,7 +215,7 @@ class MovimentacaoAPagarReceberController extends FormListController
         $vParams['exibirRecorrente'] = $this->business->exibirRecorrente($movimentacao);
 
         $params['typeClass'] = MovimentacaoAPagarType::class;
-        $params['formView'] = 'movimentacaoForm_aPagarReceber_simpl.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoForm_aPagarReceber_simpl.html.twig';
         $params['formRoute'] = 'movimentacao_form_aPagarReceberSimpl';
         $params['formPageTitle'] = 'Conta a Pagar';
         return $this->doForm($request, $movimentacao, $vParams);
@@ -225,7 +225,7 @@ class MovimentacaoAPagarReceberController extends FormListController
     /**
      * Tela para lançamento completo de contas a receber.
      *
-     * @Route("/aReceber/form/{id}", name="aReceber_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/aReceber/form/{id}", name="aReceber_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -242,7 +242,7 @@ class MovimentacaoAPagarReceberController extends FormListController
         $vParams['exibirRecorrente'] = $this->business->exibirRecorrente($movimentacao);
 
         $params['typeClass'] = MovimentacaoAReceberType::class;
-        $params['formView'] = 'movimentacaoAPagarReceberForm.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoAPagarReceberForm.html.twig';
         $params['formRoute'] = 'aReceber_form';
         $params['formPageTitle'] = 'Conta a Receber';
         return $this->doForm($request, $movimentacao, $vParams);
@@ -251,7 +251,7 @@ class MovimentacaoAPagarReceberController extends FormListController
     /**
      * Tela para lançamento simplificado de contas a pagar.
      *
-     * @Route("/aReceber/formSimpl/{id}", name="aReceber_formSimpl", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/aReceber/formSimpl/{id}", name="aReceber_formSimpl", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -268,7 +268,7 @@ class MovimentacaoAPagarReceberController extends FormListController
         $vParams['exibirRecorrente'] = $this->business->exibirRecorrente($movimentacao);
 
         $params['typeClass'] = MovimentacaoAReceberType::class;
-        $params['formView'] = 'movimentacaoAPagarReceberForm_simpl.html.twig';
+        $params['formView'] = 'Financeiro/movimentacaoAPagarReceberForm_simpl.html.twig';
         $params['formRoute'] = 'aReceber_formSimpl';
         $params['formPageTitle'] = 'Conta a Receber';
         return $this->doForm($request, $movimentacao, $vParams);
@@ -276,7 +276,7 @@ class MovimentacaoAPagarReceberController extends FormListController
 
     /**
      *
-     * @Route("/aPagarReceber/list", name="aPagarReceber_list")
+     * @Route("/fin/aPagarReceber/list", name="aPagarReceber_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -286,7 +286,7 @@ class MovimentacaoAPagarReceberController extends FormListController
     public function aPagarReceberList(Request $request)
     {
         $params = $this->buildListData($request);
-        return $this->doRender('movimentacaoAPagarReceberList.html.twig', $params);
+        return $this->doRender('Financeiro/movimentacaoAPagarReceberList.html.twig', $params);
     }
 
     /**
@@ -395,7 +395,7 @@ class MovimentacaoAPagarReceberController extends FormListController
 
     /**
      *
-     * @Route("/aPagarReceber/fichaMovimentacao/", name="aPagarReceber_fichaMovimentacao")
+     * @Route("/fin/aPagarReceber/fichaMovimentacao/", name="aPagarReceber_fichaMovimentacao")
      *
      * @param Request $request
      * @return void
@@ -418,7 +418,7 @@ class MovimentacaoAPagarReceberController extends FormListController
         }
 
         // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('fichaMovimentacao.html.twig', ['movs' => $movs]);
+        $html = $this->renderView('Financeiro/fichaMovimentacao.html.twig', ['movs' => $movs]);
         // Load HTML to Dompdf
         $dompdf->loadHtml($html);
 
@@ -438,7 +438,7 @@ class MovimentacaoAPagarReceberController extends FormListController
 
     /**
      *
-     * @Route("/aPagarReceber/fichaMovimentacaoHTML/{movimentacao}", name="aPagarReceber_fichaMovimentacaoHTML", defaults={"movimentacao"=null}, requirements={"movimentacao"="\d+"})
+     * @Route("/fin/aPagarReceber/fichaMovimentacaoHTML/{movimentacao}", name="aPagarReceber_fichaMovimentacaoHTML", defaults={"movimentacao"=null}, requirements={"movimentacao"="\d+"})
      *
      * @param Movimentacao $movimentacao
      * @return Response
@@ -447,12 +447,12 @@ class MovimentacaoAPagarReceberController extends FormListController
      */
     public function fichaMovimentacaoHTML(Movimentacao $movimentacao): Response
     {
-        return $this->render('fichaMovimentacao.html.twig', ['movs' => [$movimentacao]]);
+        return $this->render('Financeiro/fichaMovimentacao.html.twig', ['movs' => [$movimentacao]]);
     }
 
     /**
      *
-     * @Route("/aPagarReceber/rel/", name="aPagarReceber_rel")
+     * @Route("/fin/aPagarReceber/rel/", name="aPagarReceber_rel")
      *
      * @param Request $request
      * @return void
@@ -478,7 +478,7 @@ class MovimentacaoAPagarReceberController extends FormListController
         $dompdf = new Dompdf($pdfOptions);
 
         // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('movimentacaoAPagarRel.html.twig', $params);
+        $html = $this->renderView('Financeiro/movimentacaoAPagarRel.html.twig', $params);
         // Load HTML to Dompdf
         $dompdf->loadHtml($html);
 
@@ -501,7 +501,7 @@ class MovimentacaoAPagarReceberController extends FormListController
 
     /**
      *
-     * @Route("/aPagarReceber/relHTML/", name="aPagarReceber_relHTML")
+     * @Route("/fin/aPagarReceber/relHTML/", name="aPagarReceber_relHTML")
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -513,7 +513,7 @@ class MovimentacaoAPagarReceberController extends FormListController
     {
         $params = $this->buildListData($request);
         $params['hoje'] = (new \DateTime())->format('d/m/Y H:i');
-        return $this->render('movimentacaoAPagarRel.html.twig', $params);
+        return $this->render('Financeiro/movimentacaoAPagarRel.html.twig', $params);
     }
 
 

@@ -40,7 +40,7 @@ class ModoController extends FormListController
 
     /**
      *
-     * @Route("/modo/form/{id}", name="modo_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/modo/form/{id}", name="modo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Modo|null $modo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -61,7 +61,7 @@ class ModoController extends FormListController
 
     /**
      *
-     * @Route("/modo/list/", name="modo_list")
+     * @Route("/fin/modo/list/", name="modo_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -72,7 +72,7 @@ class ModoController extends FormListController
     {
         $params = [
             'formRoute' => 'modo_form',
-            'listView' => 'modoList.html.twig',
+            'listView' => 'Financeiro/modoList.html.twig',
             'listRoute' => 'modo_list',
             'listRouteAjax' => 'modo_datatablesJsList',
             'listPageTitle' => 'Modos de Movimentação',
@@ -83,7 +83,7 @@ class ModoController extends FormListController
 
     /**
      *
-     * @Route("/modo/datatablesJsList/", name="modo_datatablesJsList")
+     * @Route("/fin/modo/datatablesJsList/", name="modo_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -97,7 +97,7 @@ class ModoController extends FormListController
 
     /**
      *
-     * @Route("/modo/delete/{id}/", name="modo_delete", requirements={"id"="\d+"})
+     * @Route("/fin/modo/delete/{id}/", name="modo_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param Modo $modo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse

@@ -44,7 +44,7 @@ class CarteiraController extends FormListController
 
     /**
      *
-     * @Route("/carteira/form/{id}", name="carteira_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/carteira/form/{id}", name="carteira_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Carteira|null $carteira
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -65,7 +65,7 @@ class CarteiraController extends FormListController
 
     /**
      *
-     * @Route("/carteira/list/", name="carteira_list")
+     * @Route("/fin/carteira/list/", name="carteira_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -76,7 +76,7 @@ class CarteiraController extends FormListController
     {
         $params = [
             'formRoute' => 'carteira_form',
-            'listView' => 'carteiraList.html.twig',
+            'listView' => 'Financeiro/carteiraList.html.twig',
             'listRoute' => 'carteira_list',
             'listRouteAjax' => 'carteira_datatablesJsList',
             'listPageTitle' => 'Carteiras',
@@ -87,7 +87,7 @@ class CarteiraController extends FormListController
 
     /**
      *
-     * @Route("/carteira/datatablesJsList/", name="carteira_datatablesJsList")
+     * @Route("/fin/carteira/datatablesJsList/", name="carteira_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws ViewException
@@ -101,7 +101,7 @@ class CarteiraController extends FormListController
 
     /**
      *
-     * @Route("/carteira/delete/{id}/", name="carteira_delete", requirements={"id"="\d+"})
+     * @Route("/fin/carteira/delete/{id}/", name="carteira_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param Carteira $carteira
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -116,7 +116,7 @@ class CarteiraController extends FormListController
 
     /**
      *
-     * @Route("/carteira/select2json", name="carteira_select2json")
+     * @Route("/fin/carteira/select2json", name="carteira_select2json")
      * @param Request $request
      * @return Response
      * @throws ViewException

@@ -27,7 +27,7 @@ class CarteiraAPIController extends BaseAPIEntityIdController
 
     /**
      *
-     * @Route("/api/carteira/findById/{id}", name="api_carteira_findById", requirements={"id"="\d+"})
+     * @Route("/fin/api/carteira/findById/{id}", name="api_carteira_findById", requirements={"id"="\d+"})
      * @param int $id
      * @return JsonResponse
      */
@@ -38,7 +38,7 @@ class CarteiraAPIController extends BaseAPIEntityIdController
 
     /**
      *
-     * @Route("/api/carteira/findByFilters/", name="api_carteira_findByFilters")
+     * @Route("/fin/api/carteira/findByFilters/", name="api_carteira_findByFilters")
      * @param Request $request
      * @return JsonResponse
      */
@@ -49,7 +49,7 @@ class CarteiraAPIController extends BaseAPIEntityIdController
 
     /**
      *
-     * @Route("/api/carteira/getNew", name="api_carteira_getNew")
+     * @Route("/fin/api/carteira/getNew", name="api_carteira_getNew")
      * @return JsonResponse
      */
     public function getNew(): JsonResponse
@@ -61,7 +61,7 @@ class CarteiraAPIController extends BaseAPIEntityIdController
 
     /**
      *
-     * @Route("/api/carteira/save", name="api_carteira_save")
+     * @Route("/fin/api/carteira/save", name="api_carteira_save")
      * @param Request $request
      * @return JsonResponse
      */

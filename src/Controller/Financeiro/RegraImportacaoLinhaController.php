@@ -39,7 +39,7 @@ class RegraImportacaoLinhaController extends FormListController
 
     /**
      *
-     * @Route("/regraImportacaoLinha/form/{id}", name="regraImportacaoLinha_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/regraImportacaoLinha/form/{id}", name="regraImportacaoLinha_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param RegraImportacaoLinha|null $regraImportacaoLinha
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -60,7 +60,7 @@ class RegraImportacaoLinhaController extends FormListController
 
     /**
      *
-     * @Route("/regraImportacaoLinha/list/", name="regraImportacaoLinha_list")
+     * @Route("/fin/regraImportacaoLinha/list/", name="regraImportacaoLinha_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -71,7 +71,7 @@ class RegraImportacaoLinhaController extends FormListController
     {
         $params = [
             'formRoute' => 'regraImportacaoLinha_form',
-            'listView' => 'regraImportacaoLinhaList.html.twig',
+            'listView' => 'Financeiro/regraImportacaoLinhaList.html.twig',
             'listRoute' => 'regraImportacaoLinha_list',
             'listRouteAjax' => 'regraImportacaoLinha_datatablesJsList',
             'listPageTitle' => 'Regras de Importação',
@@ -82,7 +82,7 @@ class RegraImportacaoLinhaController extends FormListController
 
     /**
      *
-     * @Route("/regraImportacaoLinha/datatablesJsList/", name="regraImportacaoLinha_datatablesJsList")
+     * @Route("/fin/regraImportacaoLinha/datatablesJsList/", name="regraImportacaoLinha_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -96,7 +96,7 @@ class RegraImportacaoLinhaController extends FormListController
 
     /**
      *
-     * @Route("/regraImportacaoLinha/delete/{id}/", name="regraImportacaoLinha_delete", requirements={"id"="\d+"})
+     * @Route("/fin/regraImportacaoLinha/delete/{id}/", name="regraImportacaoLinha_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param RegraImportacaoLinha $regraImportacaoLinha
      * @return \Symfony\Component\HttpFoundation\RedirectResponse

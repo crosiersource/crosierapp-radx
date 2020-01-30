@@ -40,7 +40,7 @@ class BancoController extends FormListController
 
     /**
      *
-     * @Route("/banco/form/{id}", name="banco_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/banco/form/{id}", name="banco_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Banco|null $banco
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -61,7 +61,7 @@ class BancoController extends FormListController
 
     /**
      *
-     * @Route("/banco/list/", name="banco_list")
+     * @Route("/fin/banco/list/", name="banco_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -72,7 +72,7 @@ class BancoController extends FormListController
     {
         $params = [
             'formRoute' => 'banco_form',
-            'listView' => 'bancoList.html.twig',
+            'listView' => 'Financeiro/bancoList.html.twig',
             'listRoute' => 'banco_list',
             'listRouteAjax' => 'banco_datatablesJsList',
             'listPageTitle' => 'Bancos',
@@ -83,7 +83,7 @@ class BancoController extends FormListController
 
     /**
      *
-     * @Route("/banco/datatablesJsList/", name="banco_datatablesJsList")
+     * @Route("/fin/banco/datatablesJsList/", name="banco_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -97,7 +97,7 @@ class BancoController extends FormListController
 
     /**
      *
-     * @Route("/banco/delete/{id}/", name="banco_delete", requirements={"id"="\d+"})
+     * @Route("/fin/banco/delete/{id}/", name="banco_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param Banco $banco
      * @return \Symfony\Component\HttpFoundation\RedirectResponse

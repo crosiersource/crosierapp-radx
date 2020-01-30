@@ -75,7 +75,7 @@ class GrupoItemController extends FormListController
 
     /**
      *
-     * @Route("/grupoItem/form/{id}", name="grupoItem_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/grupoItem/form/{id}", name="grupoItem_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param GrupoItem|null $grupoItem
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -97,7 +97,7 @@ class GrupoItemController extends FormListController
 
     /**
      *
-     * @Route("/grupoItem/datatablesJsList/", name="grupoItem_datatablesJsList")
+     * @Route("/fin/grupoItem/datatablesJsList/", name="grupoItem_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -111,7 +111,7 @@ class GrupoItemController extends FormListController
 
     /**
      *
-     * @Route("/grupoItem/delete/{id}/", name="grupoItem_delete", requirements={"id"="\d+"})
+     * @Route("/fin/grupoItem/delete/{id}/", name="grupoItem_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param GrupoItem $grupoItem
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -126,7 +126,7 @@ class GrupoItemController extends FormListController
 
     /**
      *
-     * @Route("/grupoItem/gerarNovo/{pai}", name="grupoItem_gerarNovo", requirements={"pai"="\d+"})
+     * @Route("/fin/grupoItem/gerarNovo/{pai}", name="grupoItem_gerarNovo", requirements={"pai"="\d+"})
      * @param Request $request
      * @param Grupo $pai
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -147,7 +147,7 @@ class GrupoItemController extends FormListController
 
     /**
      *
-     * @Route("/grupoItem/list/{pai}", name="grupoItem_list", requirements={"pai"="\d+"})
+     * @Route("/fin/grupoItem/list/{pai}", name="grupoItem_list", requirements={"pai"="\d+"})
      * @param Request $request
      * @param Grupo $pai
      * @return \Symfony\Component\HttpFoundation\Response
@@ -168,13 +168,13 @@ class GrupoItemController extends FormListController
         $vParams['page_title'] = $pai->getDescricao();
         $vParams['formRoute'] = 'grupoItem_form';
 
-        return $this->doRender('grupoItemList.html.twig', $vParams);
+        return $this->doRender('Financeiro/grupoItemList.html.twig', $vParams);
 
     }
 
     /**
      *
-     * @Route("/grupoItem/select2json", name="grupoItem_select2json")
+     * @Route("/fin/grupoItem/select2json", name="grupoItem_select2json")
      * @param Request $request
      * @return Response
      *
@@ -214,7 +214,7 @@ class GrupoItemController extends FormListController
 
     /**
      *
-     * @Route("/grupoItem/listMovs/", name="grupoItem_listMovs")
+     * @Route("/fin/grupoItem/listMovs/", name="grupoItem_listMovs")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -290,7 +290,7 @@ class GrupoItemController extends FormListController
         $vParams['grupoItem'] = $grupoItem;
         $vParams['page_title'] = $grupoItem->getDescricao();
 
-        return $this->doRender('grupoItemListMovs.html.twig', $vParams);
+        return $this->doRender('Financeiro/grupoItemListMovs.html.twig', $vParams);
     }
 
 

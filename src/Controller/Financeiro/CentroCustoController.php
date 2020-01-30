@@ -40,7 +40,7 @@ class CentroCustoController extends FormListController
 
     /**
      *
-     * @Route("/centroCusto/form/{id}", name="centroCusto_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/centroCusto/form/{id}", name="centroCusto_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param CentroCusto|null $centroCusto
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -61,7 +61,7 @@ class CentroCustoController extends FormListController
 
     /**
      *
-     * @Route("/centroCusto/list/", name="centroCusto_list")
+     * @Route("/fin/centroCusto/list/", name="centroCusto_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -72,7 +72,7 @@ class CentroCustoController extends FormListController
     {
         $params = [
             'formRoute' => 'centroCusto_form',
-            'listView' => 'centroCustoList.html.twig',
+            'listView' => 'Financeiro/centroCustoList.html.twig',
             'listRoute' => 'centroCusto_list',
             'listRouteAjax' => 'centroCusto_datatablesJsList',
             'listPageTitle' => 'Centros de Custo',
@@ -83,7 +83,7 @@ class CentroCustoController extends FormListController
 
     /**
      *
-     * @Route("/centroCusto/datatablesJsList/", name="centroCusto_datatablesJsList")
+     * @Route("/fin/centroCusto/datatablesJsList/", name="centroCusto_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -97,7 +97,7 @@ class CentroCustoController extends FormListController
 
     /**
      *
-     * @Route("/centroCusto/delete/{id}/", name="centroCusto_delete", requirements={"id"="\d+"})
+     * @Route("/fin/centroCusto/delete/{id}/", name="centroCusto_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param CentroCusto $centroCusto
      * @return \Symfony\Component\HttpFoundation\RedirectResponse

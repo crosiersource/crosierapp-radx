@@ -70,7 +70,7 @@ class MovimentacaoCaixaController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/caixa", name="movimentacao_caixa")
+     * @Route("/fin/movimentacao/caixa", name="movimentacao_caixa")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -232,13 +232,13 @@ class MovimentacaoCaixaController extends FormListController
         ];
         $this->storedViewInfoBusiness->store('movimentacao_caixa', $sviParams);
 
-        return $this->doRender('movimentacaoCaixaList.html.twig', $parameters);
+        return $this->doRender('Financeiro/movimentacaoCaixaList.html.twig', $parameters);
     }
 
 
     /**
      *
-     * @Route("/movimentacao/caixa/consolidarDebitos", name="movimentacao_caixa_consolidarDebitos")
+     * @Route("/fin/movimentacao/caixa/consolidarDebitos", name="movimentacao_caixa_consolidarDebitos")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -277,7 +277,7 @@ class MovimentacaoCaixaController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/form/caixa/{id}", name="movimentacao_form_caixa", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/form/caixa/{id}", name="movimentacao_form_caixa", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -346,7 +346,7 @@ class MovimentacaoCaixaController extends FormListController
 
         $params = [
             'typeClass' => MovimentacaoCaixaType::class,
-            'formView' => 'movimentacaoForm_caixa.html.twig',
+            'formView' => 'Financeiro/movimentacaoForm_caixa.html.twig',
             'formRoute' => 'movimentacao_form_caixa',
             'formPageTitle' => 'Movimentação de Caixa'
         ];
@@ -377,7 +377,7 @@ class MovimentacaoCaixaController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/caixa/delete/{movimentacao}", name="movimentacao_caixa_delete", requirements={"movimentacao"="\d+"})
+     * @Route("/fin/movimentacao/caixa/delete/{movimentacao}", name="movimentacao_caixa_delete", requirements={"movimentacao"="\d+"})
      * @param Movimentacao $movimentacao
      * @return RedirectResponse
      * @throws ViewException

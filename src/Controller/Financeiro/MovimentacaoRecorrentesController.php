@@ -56,7 +56,7 @@ class MovimentacaoRecorrentesController extends FormListController
 
     /**
      *
-     * @Route("/movimentacaoRecorrente/list", name="movimentacaoRecorrente_list")
+     * @Route("/fin/movimentacaoRecorrente/list", name="movimentacaoRecorrente_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
@@ -113,7 +113,7 @@ class MovimentacaoRecorrentesController extends FormListController
         ];
         $parameters['dados'] = $repo->findByFilters($filterDatas, $orders, 0, null);
 
-        return $this->doRender('movimentacaoRecorrentesList.html.twig', $parameters);
+        return $this->doRender('Financeiro/movimentacaoRecorrentesList.html.twig', $parameters);
 
     }
 
@@ -132,7 +132,7 @@ class MovimentacaoRecorrentesController extends FormListController
 
     /**
      *
-     * @Route("/movimentacaoRecorrente/processar", name="movimentacaoRecorrente_processar")
+     * @Route("/fin/movimentacaoRecorrente/processar", name="movimentacaoRecorrente_processar")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
@@ -167,7 +167,7 @@ class MovimentacaoRecorrentesController extends FormListController
 
     /**
      *
-     * @Route("/movimentacao/form/recorrente/{id}", name="movimentacao_form_recorrente", defaults={"id"=null}, requirements={"movimentacao"="\d+"})
+     * @Route("/fin/movimentacao/form/recorrente/{id}", name="movimentacao_form_recorrente", defaults={"id"=null}, requirements={"movimentacao"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
@@ -185,7 +185,7 @@ class MovimentacaoRecorrentesController extends FormListController
 
         $params = [
             'typeClass' => MovimentacaoType::class,
-            'formView' => 'movimentacaoForm_recorrente.html.twig',
+            'formView' => 'Financeiro/movimentacaoForm_recorrente.html.twig',
             'formRoute' => 'movimentacaoForm_ini',
             'formRouteEdit' => 'movimentacao_edit',
             'formPageTitle' => 'Movimentação Recorrente'

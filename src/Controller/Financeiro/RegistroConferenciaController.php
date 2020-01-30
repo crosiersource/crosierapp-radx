@@ -54,7 +54,7 @@ class RegistroConferenciaController extends FormListController
 
     /**
      *
-     * @Route("/registroConferencia/form/{id}", name="registroConferencia_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/registroConferencia/form/{id}", name="registroConferencia_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param RegistroConferencia|null $registroConferencia
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -75,7 +75,7 @@ class RegistroConferenciaController extends FormListController
 
     /**
      *
-     * @Route("/registroConferencia/list/", name="registroConferencia_list")
+     * @Route("/fin/registroConferencia/list/", name="registroConferencia_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -86,7 +86,7 @@ class RegistroConferenciaController extends FormListController
     {
         $params = [
             'formRoute' => 'registroConferencia_form',
-            'listView' => 'registroConferenciaList.html.twig',
+            'listView' => 'Financeiro/registroConferenciaList.html.twig',
             'listRoute' => 'registroConferencia_list',
             'listRouteAjax' => 'registroConferencia_datatablesJsList',
             'listPageTitle' => 'Registros para Conferências',
@@ -97,7 +97,7 @@ class RegistroConferenciaController extends FormListController
 
     /**
      *
-     * @Route("/registroConferencia/datatablesJsList/", name="registroConferencia_datatablesJsList")
+     * @Route("/fin/registroConferencia/datatablesJsList/", name="registroConferencia_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -111,7 +111,7 @@ class RegistroConferenciaController extends FormListController
 
     /**
      *
-     * @Route("/registroConferencia/delete/{id}/", name="registroConferencia_delete", requirements={"id"="\d+"})
+     * @Route("/fin/registroConferencia/delete/{id}/", name="registroConferencia_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param RegistroConferencia $registroConferencia
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -125,7 +125,7 @@ class RegistroConferenciaController extends FormListController
 
     /**
      *
-     * @Route("/registroConferencia/gerarProximo/{id}/", name="registroConferencia_gerarProximo", requirements={"id"="\d+"})
+     * @Route("/fin/registroConferencia/gerarProximo/{id}/", name="registroConferencia_gerarProximo", requirements={"id"="\d+"})
      * @param RegistroConferencia $registroConferencia
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *

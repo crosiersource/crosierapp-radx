@@ -66,7 +66,7 @@ class FuncionarioCargo implements EntityId
 
     /**
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Cargo")
+     * @ORM\ManyToOne(targetEntity="App\Entity\RH\Cargo")
      * @ORM\JoinColumn(name="cargo_id", nullable=false)
      *
      * @var $cargo null|Cargo
@@ -75,7 +75,7 @@ class FuncionarioCargo implements EntityId
 
     /**
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Funcionario", inversedBy="cargos")
+     * @ORM\ManyToOne(targetEntity="App\Entity\RH\Funcionario", inversedBy="cargos")
      * @ORM\JoinColumn(name="funcionario_id", nullable=false)
      *
      * @var $funcionario null|Funcionario

@@ -40,7 +40,7 @@ class BandeiraCartaoController extends FormListController
 
     /**
      *
-     * @Route("/bandeiraCartao/form/{id}", name="bandeiraCartao_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/bandeiraCartao/form/{id}", name="bandeiraCartao_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param BandeiraCartao|null $bandeiraCartao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -61,7 +61,7 @@ class BandeiraCartaoController extends FormListController
 
     /**
      *
-     * @Route("/bandeiraCartao/list/", name="bandeiraCartao_list")
+     * @Route("/fin/bandeiraCartao/list/", name="bandeiraCartao_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -72,7 +72,7 @@ class BandeiraCartaoController extends FormListController
     {
         $params = [
             'formRoute' => 'bandeiraCartao_form',
-            'listView' => 'bandeiraCartaoList.html.twig',
+            'listView' => 'Financeiro/bandeiraCartaoList.html.twig',
             'listRoute' => 'bandeiraCartao_list',
             'listRouteAjax' => 'bandeiraCartao_datatablesJsList',
             'listPageTitle' => 'Bandeira de Cartão',
@@ -83,7 +83,7 @@ class BandeiraCartaoController extends FormListController
 
     /**
      *
-     * @Route("/bandeiraCartao/datatablesJsList/", name="bandeiraCartao_datatablesJsList")
+     * @Route("/fin/bandeiraCartao/datatablesJsList/", name="bandeiraCartao_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -97,7 +97,7 @@ class BandeiraCartaoController extends FormListController
 
     /**
      *
-     * @Route("/bandeiraCartao/delete/{id}/", name="bandeiraCartao_delete", requirements={"id"="\d+"})
+     * @Route("/fin/bandeiraCartao/delete/{id}/", name="bandeiraCartao_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param BandeiraCartao $bandeiraCartao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse

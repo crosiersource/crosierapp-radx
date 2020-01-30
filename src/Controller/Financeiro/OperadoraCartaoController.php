@@ -39,7 +39,7 @@ class OperadoraCartaoController extends FormListController
 
     /**
      *
-     * @Route("/operadoraCartao/form/{id}", name="operadoraCartao_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/operadoraCartao/form/{id}", name="operadoraCartao_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param OperadoraCartao|null $operadoraCartao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -60,7 +60,7 @@ class OperadoraCartaoController extends FormListController
 
     /**
      *
-     * @Route("/operadoraCartao/list/", name="operadoraCartao_list")
+     * @Route("/fin/operadoraCartao/list/", name="operadoraCartao_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -71,7 +71,7 @@ class OperadoraCartaoController extends FormListController
     {
         $params = [
             'formRoute' => 'operadoraCartao_form',
-            'listView' => 'operadoraCartaoList.html.twig',
+            'listView' => 'Financeiro/operadoraCartaoList.html.twig',
             'listRoute' => 'operadoraCartao_list',
             'listRouteAjax' => 'operadoraCartao_datatablesJsList',
             'listPageTitle' => 'Funções/Cargos',
@@ -82,7 +82,7 @@ class OperadoraCartaoController extends FormListController
 
     /**
      *
-     * @Route("/operadoraCartao/datatablesJsList/", name="operadoraCartao_datatablesJsList")
+     * @Route("/fin/operadoraCartao/datatablesJsList/", name="operadoraCartao_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -96,7 +96,7 @@ class OperadoraCartaoController extends FormListController
 
     /**
      *
-     * @Route("/operadoraCartao/delete/{id}/", name="operadoraCartao_delete", requirements={"id"="\d+"})
+     * @Route("/fin/operadoraCartao/delete/{id}/", name="operadoraCartao_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param OperadoraCartao $operadoraCartao
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
