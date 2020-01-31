@@ -774,7 +774,7 @@ class NotaFiscalBusiness extends BaseBusiness
                     $cartaCorrecao->getNotaFiscal()->getXMotivo(),
                     'ENVIO DA CARTA DE CORREÇÃO PROCESSADO');
                 $cartaCorrecao = $this->consultarStatus($cartaCorrecao->getNotaFiscal());
-                $this->spedNFeBusiness->imprimirCartaCorrecao($cartaCorrecao);
+                // $this->spedNFeBusiness->imprimirCartaCorrecao($cartaCorrecao);
             } else {
                 $this->addHistorico($cartaCorrecao->getNotaFiscal(), -2, 'PROBLEMA AO ENVIAR CARTA DE CORREÇÃO');
             }
