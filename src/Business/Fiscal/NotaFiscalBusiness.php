@@ -779,7 +779,7 @@ class NotaFiscalBusiness extends BaseBusiness
                 $this->addHistorico($cartaCorrecao->getNotaFiscal(), -2, 'PROBLEMA AO ENVIAR CARTA DE CORREÇÃO');
             }
         } catch (\Exception $e) {
-            $this->addHistorico($cartaCorrecao, -2, 'PROBLEMA AO ENVIAR CARTA DE CORREÇÃO: [' . $e->getMessage() . ']');
+            $this->addHistorico($cartaCorrecao->getNotaFiscal(), -2, 'PROBLEMA AO ENVIAR CARTA DE CORREÇÃO: [' . $e->getMessage() . ']');
         }
         return $cartaCorrecao;
     }
