@@ -162,6 +162,9 @@ CREATE TABLE `fin_carteira` (
   `limite` decimal(15,2) DEFAULT NULL,
   `operadora_cartao_id` bigint(20) DEFAULT NULL,
 
+  `atual` bit(1) NOT NULL,
+
+
   `inserted` datetime  NOT NULL,
   `updated` datetime  NOT NULL,
   `version` int(11) DEFAULT NULL,
