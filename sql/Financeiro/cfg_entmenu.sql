@@ -3,7 +3,6 @@ START TRANSACTION;
 SET FOREIGN_KEY_CHECKS = 0;
 
 
-
 --
 --
 -- Entrada no menu do crosier-core
@@ -165,10 +164,6 @@ DELETE
 FROM cfg_entmenu
 WHERE uuid = '6f68649c-516c-4b1f-a735-040d9f7125a9';
 
-INSERT INTO cfg_program(uuid, descricao, url, app_uuid, url, roles, entmenu_uuid, inserted, updated, estabelecimento_id,
-                        user_inserted_id, user_updated_id)
-VALUES ('f81fe3e7-1aa7-4187-a180-eaeed830a13d', 'CENTROS DE CUSTOS [LIST]', , '2c16979f-2663-496e-9287-566fcb63629a',
-        null, now(), now(), 1, 1, 1);
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated,
                         estabelecimento_id, user_inserted_id, user_updated_id)
@@ -273,7 +268,7 @@ VALUES ('5cf74ef9-4d4d-4283-98d0-120d4617a7ea', 'Bancos', 'fas fa-university', '
 --
 INSERT INTO cfg_entmenu_locator(menu_uuid, url_regexp, quem, inserted, updated, estabelecimento_id, user_inserted_id,
                                 user_updated_id)
-VALUES ('b7a5f134-ea80-40e4-822e-e04cdac70258', '^https://finan\.', '*', now(), now(), 1, 1, 1);
+VALUES ('b7a5f134-ea80-40e4-822e-e04cdac70258', '^https://radx\.(.)*/fin/(.)*', '*', now(), now(), 1, 1, 1);
 
 
 COMMIT;
