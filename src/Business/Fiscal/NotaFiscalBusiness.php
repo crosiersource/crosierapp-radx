@@ -773,13 +773,13 @@ class NotaFiscalBusiness extends BaseBusiness
                     $cartaCorrecao->getNotaFiscal()->getCStat(),
                     $cartaCorrecao->getNotaFiscal()->getXMotivo(),
                     'ENVIO DA CARTA DE CORREÇÃO PROCESSADO');
-                $cartaCorrecao = $this->consultarStatus($cartaCorrecao->getNotaFiscal());
-                $this->spedNFeBusiness->imprimirCartaCorrecao($cartaCorrecao);
+                $this->consultarStatus($cartaCorrecao->getNotaFiscal());
+                // $this->spedNFeBusiness->imprimirCartaCorrecao($cartaCorrecao);
             } else {
                 $this->addHistorico($cartaCorrecao->getNotaFiscal(), -2, 'PROBLEMA AO ENVIAR CARTA DE CORREÇÃO');
             }
         } catch (\Exception $e) {
-            $this->addHistorico($cartaCorrecao, -2, 'PROBLEMA AO ENVIAR CARTA DE CORREÇÃO: [' . $e->getMessage() . ']');
+            $this->addHistorico($cartaCorrecao->getNotaFiscal(), -2, 'PROBLEMA AO ENVIAR CARTA DE CORREÇÃO: [' . $e->getMessage() . ']');
         }
         return $cartaCorrecao;
     }

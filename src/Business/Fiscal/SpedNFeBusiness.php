@@ -596,12 +596,14 @@ class SpedNFeBusiness
                 //SUCESSO PROTOCOLAR A SOLICITAÇÂO ANTES DE GUARDAR
                 $xml = Complements::toAuthorize($tools->lastRequest, $response);
                 $cartaCorrecao->setMsgRetorno($xml);
-                $this->notaFiscalCartaCorrecaoEntityHandler->save($cartaCorrecao);
+                $cartaCorrecao = $this->notaFiscalCartaCorrecaoEntityHandler->save($cartaCorrecao);
             } else {
                 $this->logger->error('Erro ao enviar carta de correção');
                 $this->logger->error('cStat: ' . $cStat);
             }
         }
+
+        return $cartaCorrecao;
 
     }
 
