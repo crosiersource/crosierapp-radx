@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS=0;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -20,6 +21,7 @@ CREATE TABLE `fin_tipo_lancto` (
   `codigo` int(11) NOT NULL,
   `descricao` varchar(200) NOT NULL,
   `obs` varchar(3000) NOT NULL,
+  `url` varchar(2000) NOT NULL,
 
   `inserted` datetime  NOT NULL,
   `updated` datetime  NOT NULL,
