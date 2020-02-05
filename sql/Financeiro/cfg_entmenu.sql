@@ -3,6 +3,8 @@ START TRANSACTION;
 SET FOREIGN_KEY_CHECKS = 0;
 
 
+# INSERT INTO cfg_app_config VALUES(null,'URL_prod','https://core.xxxxxxxxxxxx','9121ea11-dc5d-4a22-9596-187f5452f95a',now(),now(),1,1,1);
+
 --
 --
 -- Entrada no menu do crosier-core
