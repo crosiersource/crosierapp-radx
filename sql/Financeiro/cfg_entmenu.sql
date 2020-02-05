@@ -266,6 +266,9 @@ VALUES ('5cf74ef9-4d4d-4283-98d0-120d4617a7ea', 'Bancos', 'fas fa-university', '
 --
 -- cfg_entmenu_locator
 --
+
+DELETE FROM cfg_entmenu_locator WHERE menu_uuid = 'b7a5f134-ea80-40e4-822e-e04cdac70258';
+
 INSERT INTO cfg_entmenu_locator(menu_uuid, url_regexp, quem, inserted, updated, estabelecimento_id, user_inserted_id,
                                 user_updated_id)
 VALUES ('b7a5f134-ea80-40e4-822e-e04cdac70258', '^https://radx\.(.)*/fin/(.)*', '*', now(), now(), 1, 1, 1);
