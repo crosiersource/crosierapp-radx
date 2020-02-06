@@ -33,7 +33,7 @@ class AtributoController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['label'], 'LIKE', 'label', $params),
+            new FilterData(['label'], 'LIKE', 'str', $params),
             new FilterData(['primaria'], 'EQ', 'primaria', $params)
         ];
     }
@@ -66,7 +66,7 @@ class AtributoController extends FormListController
             'formRoute' => 'est_atributo_form',
             'routeParams' => ['atributoPai' => ($atributoPai ? $atributoPai->getId() : '')]
         ];
-        $params['formPageTitle'] = $atributoPai ? 'Subatributo' : 'Atributo';
+        $params['formPageTitle'] = $atributoPai ? 'Subatributo de Produto' : 'Atributo de Produto';
         $params['formPageSubTitle'] = $atributoPai ? '(Atributo Pai: ' . $atributoPai->getDescricao() . ')' : '';
         $params['atributoPai'] = $atributoPai;
         if (!$atributo) {
@@ -96,8 +96,8 @@ class AtributoController extends FormListController
             'listJS' => 'Estoque/atributo_list.js',
             'listRoute' => 'est_atributo_list',
             'listRouteAjax' => 'est_atributo_datatablesJsList',
-            'listPageTitle' => 'Atributos',
-            'page_subTitle' => '(Primárias)',
+            'listPageTitle' => 'Atributos de Produtos',
+            'page_subTitle' => '(Primários)',
             'deleteRoute' => 'est_atributo_delete',
             'listId' => 'atributo_list'
         ];
@@ -130,7 +130,7 @@ class AtributoController extends FormListController
      */
     public function delete(Request $request, Atributo $atributo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $atributo);
+        return $this->doDelete($request, $atributo, ['listRoute' => 'est_atributo_list']);
     }
 
 

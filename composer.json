@@ -18,6 +18,7 @@
     "ext-intl": "*",
     "ext-json": "*",
     "ext-simplexml": "*",
+    "ext-soap": "*",
     "ext-zip": "*",
     "ext-dom": "*",
     "ext-zlib": "*",
@@ -60,7 +61,8 @@
     "nfephp-org/sped-common": "^5.0",
     "nfephp-org/sped-da": "dev-master",
     "nfephp-org/sped-nfe": "^5.0",
-    "picqer/php-barcode-generator": "^0.3.0"
+    "picqer/php-barcode-generator": "^0.3.0",
+    "econea/nusoap": "^0.9.7"
   },
   "require-dev": {
     "symfony/debug-bundle": "5.0.*",
