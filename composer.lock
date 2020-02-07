@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "../crosierlib-base",
-                "reference": "dc5cba6440eb065efe9ca77fd072bf57dff99b7c",
+                "reference": "a63daa95ba7b555c571d738f7a83232ad620558a",
                 "shasum": null
             },
             "require": {
@@ -2479,12 +2479,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-da.git",
-                "reference": "4ac4c3bf644b904b6b2bd972f591ad4db114174b"
+                "reference": "311a32b0aa15da91b8560918520af6cb10aa5a05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-da/zipball/4ac4c3bf644b904b6b2bd972f591ad4db114174b",
-                "reference": "4ac4c3bf644b904b6b2bd972f591ad4db114174b",
+                "url": "https://api.github.com/repos/nfephp-org/sped-da/zipball/311a32b0aa15da91b8560918520af6cb10aa5a05",
+                "reference": "311a32b0aa15da91b8560918520af6cb10aa5a05",
                 "shasum": ""
             },
             "require": {
@@ -2541,7 +2541,7 @@
                 "nfephp",
                 "sped"
             ],
-            "time": "2020-02-04T21:32:12+00:00"
+            "time": "2020-02-07T11:10:51+00:00"
         },
         {
             "name": "nfephp-org/sped-gtin",
