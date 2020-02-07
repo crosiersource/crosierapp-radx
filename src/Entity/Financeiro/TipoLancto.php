@@ -27,7 +27,7 @@ class TipoLancto implements EntityId
      *
      * @var int|null
      */
-    private $codigo;
+    public ?int $codigo;
 
     /**
      *
@@ -36,14 +36,23 @@ class TipoLancto implements EntityId
      *
      * @var string|null
      */
-    private $descricao;
+    public ?string $descricao;
+
+    /**
+     *
+     * @ORM\Column(name="icon", type="string", nullable=false, length=40)
+     * @Groups("entity")
+     *
+     * @var string|null
+     */
+    public ?string $icon;
 
     /**
      * Transient.
      *
      * @var string|null
      */
-    private $descricaoMontada;
+    public ?string $descricaoMontada;
 
     /**
      *
@@ -52,7 +61,7 @@ class TipoLancto implements EntityId
      *
      * @var string|null
      */
-    private $obs;
+    public ?string $obs;
 
     /**
      *
@@ -61,7 +70,7 @@ class TipoLancto implements EntityId
      *
      * @var string|null
      */
-    private $url;
+    public ?string $url;
 
     /**
      * @param bool|null $format
@@ -76,86 +85,13 @@ class TipoLancto implements EntityId
     }
 
     /**
-     * @param int|null $codigo
-     * @return TipoLancto
-     */
-    public function setCodigo(?int $codigo): TipoLancto
-    {
-        $this->codigo = $codigo;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getDescricao(): ?string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @param null|string $descricao
-     * @return TipoLancto
-     */
-    public function setDescricao(?string $descricao): TipoLancto
-    {
-        $this->descricao = $descricao;
-        return $this;
-    }
-
-    /**
      * @return null|string
      */
     public function getDescricaoMontada(): ?string
     {
-        return $this->getCodigo(true) . ' - ' . $this->getDescricao();
+        return $this->getCodigo(true) . ' - ' . $this->descricao;
     }
 
-    /**
-     * @param null|string $descricaoMontada
-     * @return TipoLancto
-     */
-    public function setDescricaoMontada(?string $descricaoMontada): TipoLancto
-    {
-        $this->descricaoMontada = $descricaoMontada;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param null|string $obs
-     * @return TipoLancto
-     */
-    public function setObs(?string $obs): TipoLancto
-    {
-        $this->obs = $obs;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getUrl(): ?string
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param null|string $url
-     * @return TipoLancto
-     */
-    public function setUrl(?string $url): TipoLancto
-    {
-        $this->url = $url;
-        return $this;
-    }
 
 
 }
