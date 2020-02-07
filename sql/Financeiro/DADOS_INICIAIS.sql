@@ -22,10 +22,10 @@ INSERT INTO `fin_centrocusto` (`id`, `codigo`, `descricao`, `inserted`, `updated
 
 TRUNCATE TABLE fin_carteira;
 
-INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES (1,1,'GERAL',null,null,null,true,true,false,true,'1900-01-01',0,null,'2019-03-18 16:48:46','2019-03-18 16:48:46',0,1,1,1);
-INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES (2,2,'MOVIMENTAÇÕES AGRUPADAS',null,null,null,true,false,false,true,'1900-01-01',0,null,'2019-03-18 16:48:46','2019-03-18 16:48:46',0,1,1,1);
+INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, atual) 
+VALUES (1,1,'GERAL',null,null,null,true,true,false,true,'1900-01-01',0,null,'2019-03-18 16:48:46','2019-03-18 16:48:46',0,1,1,1,true);
+INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, atual)
+VALUES (2,2,'MOVIMENTAÇÕES AGRUPADAS',null,null,null,true,false,false,true,'1900-01-01',0,null,'2019-03-18 16:48:46','2019-03-18 16:48:46',0,1,1,1,true);
 
 
 

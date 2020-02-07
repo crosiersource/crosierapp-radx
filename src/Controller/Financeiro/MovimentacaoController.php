@@ -330,12 +330,9 @@ class MovimentacaoController extends FormListController
             $tipoLancto = $repoTipoLancto->find($request->get('tipoLancto'));
             return $this->redirect($tipoLancto->getUrl() . (strpos($tipoLancto->getDescricao(), 'PARCELAMENTO') !== FALSE ? '?parcelamento=true' : ''));
         }
-        $rTiposLanctos = $repoTipoLancto->findAll(['codigo' => 'ASC']);
-        $tiposLanctos = Select2JsUtils::toSelect2DataFn($rTiposLanctos, function ($e) {
-            /** @var TipoLancto $e */
-            return $e->getDescricaoMontada();
-        });
-        return $this->doRender('Financeiro/movimentacaoIniForm.html.twig', ['tiposLanctos' => json_encode($tiposLanctos)]);
+        $tiposLanctos = $repoTipoLancto->findAll(['codigo' => 'ASC']);
+
+        return $this->doRender('Financeiro/movimentacaoIniForm.html.twig', ['tiposLanctos' => $tiposLanctos]);
     }
 
 

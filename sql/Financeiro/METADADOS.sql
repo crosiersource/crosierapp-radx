@@ -20,6 +20,7 @@ CREATE TABLE `fin_tipo_lancto` (
 
   `codigo` int(11) NOT NULL,
   `descricao` varchar(200) NOT NULL,
+  `icon` varchar(100),
   `obs` varchar(3000) NOT NULL,
   `url` varchar(2000) NOT NULL,
 
@@ -161,6 +162,9 @@ CREATE TABLE `fin_carteira` (
   `dt_consolidado` date  NOT NULL,
   `limite` decimal(15,2) DEFAULT NULL,
   `operadora_cartao_id` bigint(20) DEFAULT NULL,
+
+  `atual` bit(1) NOT NULL,
+
 
   `inserted` datetime  NOT NULL,
   `updated` datetime  NOT NULL,

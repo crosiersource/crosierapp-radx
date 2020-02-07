@@ -275,7 +275,7 @@ class MovimentacaoTypeBuilder
                 return $modo ? $modo->getDescricaoMontada() : null;
             },
             'required' => false,
-            'attr' => ['class' => '']
+            'attr' => ['class' => 'autoSelect2']
         ]);
 
         $form->add('bandeiraCartao', EntityType::class, [

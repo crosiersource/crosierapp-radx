@@ -1,45 +1,65 @@
 {% extends '@CrosierLibBase/index.html.twig' %}
 
+{% block up_scripts %}
+    <style>
+
+        .clicker {
+            -moz-transition: all .2s ease-in;
+            -o-transition: all .2s ease-in;
+            -webkit-transition: all .2s ease-in;
+            transition: all .2s ease-in;
+        }
+
+        .clicker:hover {
+            background: #eee;
+
+        }
+
+    </style>
+
+{% endblock %}
+
 {% block page_content %}
 
-    <div class="container" style="margin-bottom: 50px">
-        <div class="card">
-            <div class="card-header">
+    <div class="container-fluid mt-3">
+        <div class="row">
 
-                <div class="row">
-                    <div class="col-8">
-                        <h3>Lançamento de Movimentações</h3>
+            {% for tipoLancto in tiposLanctos %}
+
+                {% set tipoBotao = 'success' %}
+                {% if 'Parcelamento' in tipoLancto.descricao %}
+                    {% set tipoBotao = 'warning' %}
+                {% elseif 'Grupo' in tipoLancto.descricao %}
+                    {% set tipoBotao = 'secondary' %}
+                {% elseif 'Cheque' in tipoLancto.descricao %}
+                    {% set tipoBotao = 'primary' %}
+                {% elseif 'Transfe' in tipoLancto.descricao %}
+                    {% set tipoBotao = 'danger' %}
+                {% endif %}
+
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                    <div class="card clicker">
+                        <div class="card-body p-3 d-flex align-items-center">
+                            <div class="p-3 mfe-3">
+                                <a class="btn btn-lg btn-{{tipoBotao}}" href="{{ tipoLancto.url }}">
+                                    <i class="{{ tipoLancto.icon }}"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <div class="h5">
+                                    <a href="{{ tipoLancto.url }}">
+                                        {{ tipoLancto.descricao }}
+                                    </a>
+                                </div>
+                                <div class="h6 text-muted">
+                                    <a href="{{ tipoLancto.url }}">{{ tipoLancto.obs }}</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-            </div>
-
-            <div class="card-body">
-
-                <form action="{{ url('movimentacaoForm_ini') }}" method="get">
-
-                    <div class="form-group row">
-                        <label class="col-form-label col-sm-2 required" for="tipoLancto">Tipo de Lançamento</label>
-                        <div class="col-sm-10">
-                            <select class="form-control autoSelect2 focusOnReady"
-                                    name="tipoLancto" id="tipoLancto"
-                                    data-options="{{ tiposLanctos|default('') }}"></select>
-                        </div>
-                    </div>
-
-
-                    <div style="margin-top: 20px" class="row">
-                        <div class="col text-right">
-                            <button type="submit" class="btn btn-primary" value="Iniciar">
-                                <i class="far fa-play-circle"></i> Iniciar
-                            </button>
-                        </div>
-                    </div>
-
-                </form>
-
-            </div>
+            {% endfor %}
         </div>
     </div>
-
 {% endblock %}
