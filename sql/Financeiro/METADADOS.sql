@@ -20,6 +20,7 @@ CREATE TABLE `fin_tipo_lancto` (
 
   `codigo` int(11) NOT NULL,
   `descricao` varchar(200) NOT NULL,
+  `icon` varchar(100),
   `obs` varchar(3000) NOT NULL,
   `url` varchar(2000) NOT NULL,
 

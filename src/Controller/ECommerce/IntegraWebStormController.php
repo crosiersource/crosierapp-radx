@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Estoque;
+namespace App\Controller\ECommerce;
 
 use App\Business\ECommerce\IntegraWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
