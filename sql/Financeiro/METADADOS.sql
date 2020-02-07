@@ -149,7 +149,7 @@ CREATE TABLE `fin_carteira` (
   `codigo` int(11) NOT NULL,
   `descricao` varchar(40) NOT NULL,
 
-
+  `atual` bit(1) NOT NULL DEFAULT b'1',
   `banco_id` bigint(20) DEFAULT NULL,
   `agencia` varchar(30)  DEFAULT NULL,
   `conta` varchar(30)  DEFAULT NULL,
@@ -475,7 +475,9 @@ CREATE TABLE `fin_movimentacao` (
   `documento_num` varchar(200) DEFAULT NULL,
 
   `pessoa_sacado_id` bigint(20) DEFAULT NULL,
+  `pessoa_sacado_info` varchar(400) COLLATE utf8_swedish_ci DEFAULT NULL,
   `pessoa_cedente_id` bigint(20) DEFAULT NULL,
+  `pessoa_cedente_info` varchar(400) COLLATE utf8_swedish_ci DEFAULT NULL,
 
   `fis_nf_id` bigint(20) DEFAULT NULL,
 
