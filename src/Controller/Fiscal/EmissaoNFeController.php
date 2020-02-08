@@ -1157,6 +1157,29 @@ class EmissaoNFeController extends FormListController
 
     }
 
+    /**
+     * @Route("/fis/emissaonfe/consultaRecibo/{notaFiscal}", name="fis_emissaonfe_consultaRecibo")
+     * @param NotaFiscal $notaFiscal
+     * @return RedirectResponse
+     * @throws ViewException
+     */
+    public function consultarRecibo(NotaFiscal $notaFiscal): Response
+    {
+        $result = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+        $r = [];
+        $r[] = 'cStat: ' . $result->cStat;
+        $r[] = 'xMotivo: ' . $result->xMotivo;
+        $r[] = 'dhRecbto: ' . $result->dhRecbto;
+        $r[] = 'protNFe.chNFe: ' . $result->protNFe->infProt->chNFe;
+        $r[] = 'protNFe.dhRecbto: ' . $result->protNFe->infProt->dhRecbto;
+        $r[] = 'protNFe.nProt: ' . $result->protNFe->infProt->nProt;
+        $r[] = 'protNFe.digVal: ' . $result->protNFe->infProt->digVal;
+        $r[] = 'protNFe.cStat: ' . $result->protNFe->infProt->cStat;
+        $r[] = 'protNFe.xMotivo: ' . $result->protNFe->infProt->xMotivo;
+
+        return new Response(implode('<br>', $r));
+    }
+
 
 
 }

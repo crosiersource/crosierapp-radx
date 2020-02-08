@@ -437,12 +437,17 @@ class SpedNFeBusiness
     {
         $tools = $this->nfeUtils->getTools();
         $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
-        $xmlAssinado = $tools->signNFe($notaFiscal->getXmlNota());
+
+        if (!isset($notaFiscal->getXMLDecoded()->infNFe->Signature) && !isset($notaFiscal->getXMLDecoded()->Signature)) {
+            $xmlAssinado = $tools->signNFe($notaFiscal->getXmlNota());
+            $notaFiscal->setXmlNota($xmlAssinado);
+            $this->notaFiscalEntityHandler->save($notaFiscal);
+        } else {
+            $xmlAssinado = $notaFiscal->getXmlNota();
+        }
 
         $idLote = random_int(1000000000000, 9999999999999);
         $resp = $tools->sefazEnviaLote([$xmlAssinado], $idLote);
-
-        $notaFiscal->setXmlNota($xmlAssinado);
 
         //transforma o xml de retorno em um stdClass
         $st = new Standardize();
@@ -485,7 +490,8 @@ class SpedNFeBusiness
             $notaFiscal->setXMotivo($std->protNFe->infProt->xMotivo);
             if ($notaFiscal->getXmlNota() && $notaFiscal->getXMLDecoded()->getName() !== 'nfeProc') {
                 try {
-                    if (!($notaFiscal->getXMLDecoded()->infNFe->Signature ?? false)) {
+                    if (!isset($notaFiscal->getXMLDecoded()->infNFe->Signature) &&
+                        !isset($notaFiscal->getXMLDecoded()->Signature)) {
                         $xmlAssinado = $tools->signNFe($notaFiscal->getXmlNota());
                         $notaFiscal->setXmlNota($xmlAssinado);
                     }
@@ -500,6 +506,9 @@ class SpedNFeBusiness
                 $notaFiscal->setProtocoloAutorizacao($std->protNFe->infProt->nProt);
                 $notaFiscal->setDtProtocoloAutorizacao(DateTimeUtils::parseDateStr($std->protNFe->infProt->dhRecbto));
             }
+        } else if ($std->cStat === 217) {
+            $consultaRecibo = $this->consultaRecibo($notaFiscal);
+            $notaFiscal->setXMotivoLote($std->xMotivo . ' (' . $consultaRecibo->protNFe->infProt->xMotivo . ')');
         }
         /** @var NotaFiscal $notaFiscal */
         $notaFiscal = $this->notaFiscalEntityHandler->save($notaFiscal);
@@ -794,6 +803,23 @@ class SpedNFeBusiness
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @param NotaFiscal $notaFiscal
+     * @return \stdClass
+     * @throws ViewException
+     */
+    public function consultaRecibo(NotaFiscal $notaFiscal)
+    {
+        if (!$notaFiscal->getNRec()) {
+            throw new ViewException('nRec N/D');
+        }
+        $tools = $this->nfeUtils->getTools();
+        $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
+        $xmlResp = $tools->sefazConsultaRecibo($notaFiscal->getNRec());
+        $stdCl = new Standardize($xmlResp);
+        return $stdCl->toStd();
     }
 
 }

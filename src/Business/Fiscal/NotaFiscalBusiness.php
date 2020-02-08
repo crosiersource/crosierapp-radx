@@ -498,7 +498,16 @@ class NotaFiscalBusiness extends BaseBusiness
         $this->addHistorico($notaFiscal, -1, 'INICIANDO FATURAMENTO');
         if ($this->permiteFaturamento($notaFiscal)) {
             $this->handleIdeFields($notaFiscal);
-            $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+            if (!$notaFiscal->getXmlNota()) {
+                $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+            } else {
+                // se já tem o XML e está pedindo para faturar, aconteceu algum problema
+                $consultaRecibo = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+                if ((int)$consultaRecibo->protNFe->infProt->cStat === 502) {
+                    $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
+                    $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+                }
+            }
             $notaFiscal = $this->spedNFeBusiness->enviaNFe($notaFiscal);
             sleep(3);
             $notaFiscal = $this->spedNFeBusiness->consultarStatus($notaFiscal);
