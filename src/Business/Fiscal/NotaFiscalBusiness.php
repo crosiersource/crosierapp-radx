@@ -452,7 +452,8 @@ class NotaFiscalBusiness extends BaseBusiness
 
             $this->calcularTotais($notaFiscal);
 
-            $this->notaFiscalEntityHandler->save($notaFiscal);
+            $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+
             $this->getDoctrine()->commit();
             return $notaFiscal;
         } catch (\Exception $e) {
@@ -501,11 +502,12 @@ class NotaFiscalBusiness extends BaseBusiness
             if (!$notaFiscal->getXmlNota()) {
                 $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
             } else {
-                // se já tem o XML e está pedindo para faturar, aconteceu algum problema
-                $consultaRecibo = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
-                if ((int)$consultaRecibo->protNFe->infProt->cStat === 502) {
-                    $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
-                    $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+                if ($notaFiscal->getNRec()) {
+                    $consultaRecibo = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+                    if (isset($consultaRecibo->protNFe->infProt->cStat) && (int)$consultaRecibo->protNFe->infProt->cStat === 502) {
+                        $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
+                        $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+                    }
                 }
             }
             $notaFiscal = $this->spedNFeBusiness->enviaNFe($notaFiscal);

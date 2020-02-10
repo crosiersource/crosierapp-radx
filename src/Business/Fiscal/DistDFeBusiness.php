@@ -607,7 +607,7 @@ class DistDFeBusiness
     public function downloadNFe(NotaFiscal $notaFiscal): void
     {
         try {
-            $tools = $this->nfeUtils->getTools();
+            $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoDestinatario());
             $tools->model('55');
             $tools->setEnvironment(1);
             $response = $tools->sefazDownload($notaFiscal->getChaveAcesso());

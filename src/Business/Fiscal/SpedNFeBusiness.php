@@ -435,7 +435,7 @@ class SpedNFeBusiness
      */
     public function enviaNFe(NotaFiscal $notaFiscal): NotaFiscal
     {
-        $tools = $this->nfeUtils->getTools();
+        $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
         $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
 
         if (!isset($notaFiscal->getXMLDecoded()->infNFe->Signature) && !isset($notaFiscal->getXMLDecoded()->Signature)) {
@@ -471,7 +471,7 @@ class SpedNFeBusiness
     public function consultarStatus(NotaFiscal $notaFiscal): NotaFiscal
     {
         //$content = conteúdo do certificado PFX
-        $tools = $this->nfeUtils->getTools();
+        $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
         $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
         //consulta número de recibo
         //$numeroRecibo = número do recíbo do envio do lote
@@ -532,7 +532,7 @@ class SpedNFeBusiness
             throw new ViewException('Documento Emitente diferente do CNPJ configurado');
         }
 
-        $tools = $this->nfeUtils->getTools();
+        $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
 
         $chaveNota = $notaFiscal->getChaveAcesso();
         $xJust = $notaFiscal->getMotivoCancelamento();
@@ -584,7 +584,7 @@ class SpedNFeBusiness
      */
     public function cartaCorrecao(NotaFiscalCartaCorrecao $cartaCorrecao): NotaFiscalCartaCorrecao
     {
-        $tools = $this->nfeUtils->getTools();
+        $tools = $this->nfeUtils->getToolsByCNPJ($cartaCorrecao->getNotaFiscal()->getDocumentoEmitente());
         $tools->model($cartaCorrecao->getNotaFiscal()->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
 
         $chave = $cartaCorrecao->getNotaFiscal()->getChaveAcesso();
@@ -659,7 +659,7 @@ class SpedNFeBusiness
             $xJust = ''; //a ciencia não requer justificativa
             $nSeqEvento = 1;
 
-            $tools = $this->nfeUtils->getTools();
+            $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoDestinatario());
 
             $response = $tools->sefazManifesta($notaFiscal->getChaveAcesso(), $tpEvento, $xJust, $nSeqEvento);
             $st = new Standardize($response);
@@ -686,7 +686,7 @@ class SpedNFeBusiness
     public function consultaChave(NotaFiscal $notaFiscal)
     {
         try {
-            $tools = $this->nfeUtils->getTools();
+            $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
             $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
             $response = $tools->sefazConsultaChave($notaFiscal->getChaveAcesso());
 
@@ -815,7 +815,7 @@ class SpedNFeBusiness
         if (!$notaFiscal->getNRec()) {
             throw new ViewException('nRec N/D');
         }
-        $tools = $this->nfeUtils->getTools();
+        $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
         $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
         $xmlResp = $tools->sefazConsultaRecibo($notaFiscal->getNRec());
         $stdCl = new Standardize($xmlResp);

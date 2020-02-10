@@ -136,6 +136,7 @@ class NFeUtils
     {
         /** @var AppConfigRepository $repoAppConfig */
         $repoAppConfig = $this->appConfigEntityHandler->getDoctrine()->getRepository(AppConfig::class);
+        /** @var AppConfig $appConfig_nfeConfigsIdEmUso */
         $appConfig_nfeConfigsIdEmUso = $repoAppConfig->findOneBy(['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'nfeConfigsIdEmUso_' . $this->security->getUser()->getUsername()]);
         $appConfig_nfeConfigsIdEmUso->setValor($id);
         $this->appConfigEntityHandler->save($appConfig_nfeConfigsIdEmUso);
@@ -150,30 +151,56 @@ class NFeUtils
         try {
             // Verifica qual nfeConfigs está em uso no momento
             $idNfeConfigsEmUso = $this->getNfeConfigsIdEmUso();
-
-            /** @var AppConfigRepository $repoAppConfig */
-            $repoAppConfig = $this->appConfigEntityHandler->getDoctrine()->getRepository(AppConfig::class);
-            /** @var AppConfig $appConfig */
-            $appConfig = $repoAppConfig->find($idNfeConfigsEmUso);
-
-            $configs = json_decode($appConfig->getValor(), true);
-            if ($configs['tpAmb'] === 1) {
-                $configs['CSC'] = $configs['CSC_prod'];
-                $configs['CSCid'] = $configs['CSCid_prod'];
-            } else {
-                $configs['CSC'] = $configs['CSC_hom'];
-                $configs['CSCid'] = $configs['CSCid_hom'];
-            }
-
-            $pfx = base64_decode($configs['certificado']);
-            $pwd = $configs['certificadoPwd'];
-            $certificate = Certificate::readPfx($pfx, $pwd);
-            return new Tools(json_encode($configs), $certificate);
-        } catch (InvalidArgumentException $e) {
+            return $this->getIdNfeConfigsTools($idNfeConfigsEmUso);
+        } catch (\Exception $e) {
             $this->logger->error('Erro ao obter tools do cachê');
             $this->logger->error($e->getMessage());
             throw new ViewException('Erro ao obter tools do cachê');
         }
+    }
+
+
+    /**
+     * @return Tools
+     * @throws ViewException
+     */
+    public function getToolsByCNPJ(string $cnpj): Tools
+    {
+        try {
+            // Verifica qual nfeConfigs está em uso no momento
+            $idNfeConfigs = $this->getNFeConfigsByCNPJ($cnpj);
+            return $this->getIdNfeConfigsTools($idNfeConfigs);
+        } catch (\Exception $e) {
+            $this->logger->error('Erro ao obter tools do cachê');
+            $this->logger->error($e->getMessage());
+            throw new ViewException('Erro ao obter tools do cachê');
+        }
+    }
+
+    /**
+     * @param array $idNfeConfigs
+     * @return Tools
+     */
+    private function getIdNfeConfigsTools(array $idNfeConfigs): Tools
+    {
+        /** @var AppConfigRepository $repoAppConfig */
+        $repoAppConfig = $this->appConfigEntityHandler->getDoctrine()->getRepository(AppConfig::class);
+        /** @var AppConfig $appConfig */
+        $appConfig = $repoAppConfig->find($idNfeConfigs['id']);
+
+        $configs = json_decode($appConfig->getValor(), true);
+        if ($configs['tpAmb'] === 1) {
+            $configs['CSC'] = $configs['CSC_prod'];
+            $configs['CSCid'] = $configs['CSCid_prod'];
+        } else {
+            $configs['CSC'] = $configs['CSC_hom'];
+            $configs['CSCid'] = $configs['CSCid_hom'];
+        }
+
+        $pfx = base64_decode($configs['certificado']);
+        $pwd = $configs['certificadoPwd'];
+        $certificate = Certificate::readPfx($pfx, $pwd);
+        return new Tools(json_encode($configs), $certificate);
     }
 
 
@@ -197,7 +224,7 @@ class NFeUtils
             $a['enderEmit_xBairro'] = strtoupper($a['enderEmit_xBairro']);
             unset($a['certificado'], $a['certificadoPwd']);
             return $a;
-        } catch (InvalidArgumentException $e) {
+        } catch (\Exception $e) {
             $this->logger->error('Erro ao obter nfeConfigs do cachê');
             $this->logger->error($e->getMessage());
             throw new ViewException('Erro ao obter nfeConfigs do cachê');
@@ -211,6 +238,7 @@ class NFeUtils
      *
      * @return array
      * @throws ViewException
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function getNFeConfigsEmUso(): array
     {
