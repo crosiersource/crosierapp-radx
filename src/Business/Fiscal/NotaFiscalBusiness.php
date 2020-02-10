@@ -324,13 +324,16 @@ class NotaFiscalBusiness extends BaseBusiness
      */
     public function handleIdeFields(NotaFiscal $notaFiscal): void
     {
+        $mudou = false;
         if (!$notaFiscal->getUuid()) {
             $notaFiscal->setUuid(md5(uniqid(mt_rand(), true)));
+            $mudou = true;
         }
 
         if (!$notaFiscal->getCnf()) {
             $cNF = random_int(10000000, 99999999);
             $notaFiscal->setCnf($cNF);
+            $mudou = true;
         }
 
         // Rejeição 539: Duplicidade de NF-e, com diferença na Chave de Acesso
@@ -353,14 +356,22 @@ class NotaFiscalBusiness extends BaseBusiness
             /** @var NotaFiscalRepository $repoNotaFiscal */
             $nnf = $this->repoNotaFiscal->findProxNumFiscal($ambiente, $notaFiscal->getSerie(), $notaFiscal->getTipoNotaFiscal());
             $notaFiscal->setNumero($nnf);
+            $mudou = true;
         }
 
         if (!$notaFiscal->getDtEmissao()) {
             $notaFiscal->setDtEmissao(new \DateTime());
+            $mudou = true;
         }
 
-        if (!$notaFiscal->getChaveAcesso()) {
+        if ($mudou || !$notaFiscal->getChaveAcesso() || ! preg_match('/[0-9]{44}/', $notaFiscal->getChaveAcesso()) ) {
             $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
+            $mudou = true;
+        }
+
+        if ($mudou) {
+            $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+            $this->notaFiscalEntityHandler->save($notaFiscal);
         }
     }
 
