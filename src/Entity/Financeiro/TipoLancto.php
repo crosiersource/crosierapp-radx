@@ -27,7 +27,7 @@ class TipoLancto implements EntityId
      *
      * @var int|null
      */
-    public ?int $codigo;
+    public ?int $codigo = null;
 
     /**
      *
@@ -36,7 +36,7 @@ class TipoLancto implements EntityId
      *
      * @var string|null
      */
-    public ?string $descricao;
+    public ?string $descricao = null;
 
     /**
      *
@@ -45,14 +45,14 @@ class TipoLancto implements EntityId
      *
      * @var string|null
      */
-    public ?string $icon;
+    public ?string $icon = null;
 
     /**
      * Transient.
      *
      * @var string|null
      */
-    public ?string $descricaoMontada;
+    public ?string $descricaoMontada = null;
 
     /**
      *
@@ -61,7 +61,7 @@ class TipoLancto implements EntityId
      *
      * @var string|null
      */
-    public ?string $obs;
+    public ?string $obs = null;
 
     /**
      *
@@ -70,7 +70,7 @@ class TipoLancto implements EntityId
      *
      * @var string|null
      */
-    public ?string $url;
+    public ?string $url = null;
 
     /**
      * @param bool|null $format
