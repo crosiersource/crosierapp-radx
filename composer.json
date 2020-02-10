@@ -22,7 +22,6 @@
     "ext-zip": "*",
     "ext-dom": "*",
     "ext-zlib": "*",
-    "vich/uploader-bundle": "^1.9",
     "phpoffice/phpspreadsheet": "^1.9",
     "dompdf/dompdf": "dev-master",
     "friendsofsymfony/jsrouting-bundle": "^2.2",
@@ -62,7 +61,8 @@
     "nfephp-org/sped-da": "dev-master",
     "nfephp-org/sped-nfe": "^5.0",
     "picqer/php-barcode-generator": "^0.3.0",
-    "econea/nusoap": "^0.9.7"
+    "econea/nusoap": "^0.9.7",
+    "vich/uploader-bundle": "^1.13"
   },
   "require-dev": {
     "symfony/debug-bundle": "5.0.*",
