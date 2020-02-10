@@ -364,7 +364,7 @@ class NotaFiscalBusiness extends BaseBusiness
             $mudou = true;
         }
 
-        if ($mudou || !$notaFiscal->getChaveAcesso() || ! preg_match('/[0-9]{44}/', $notaFiscal->getChaveAcesso()) ) {
+        if ($mudou || !$notaFiscal->getChaveAcesso() || !preg_match('/[0-9]{44}/', $notaFiscal->getChaveAcesso())) {
             $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
             $mudou = true;
         }
@@ -510,19 +510,18 @@ class NotaFiscalBusiness extends BaseBusiness
         $this->addHistorico($notaFiscal, -1, 'INICIANDO FATURAMENTO');
         if ($this->permiteFaturamento($notaFiscal)) {
             $this->handleIdeFields($notaFiscal);
-            if (!$notaFiscal->getXmlNota()) {
-                $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
-            } else {
-                if ($notaFiscal->getNRec()) {
-                    $consultaRecibo = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
-                    if (isset($consultaRecibo->protNFe->infProt->cStat) && (int)$consultaRecibo->protNFe->infProt->cStat === 502) {
-                        $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
-                        $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
-                    }
+            $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+            if ($notaFiscal->getNRec()) {
+                $consultaRecibo = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+                if (isset($consultaRecibo->protNFe->infProt->cStat) && (int)$consultaRecibo->protNFe->infProt->cStat === 502) {
+                    $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
+                    $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
                 }
             }
+
             $notaFiscal = $this->spedNFeBusiness->enviaNFe($notaFiscal);
             sleep(3);
+            $consultaRecibo = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
             $notaFiscal = $this->spedNFeBusiness->consultarStatus($notaFiscal);
             if ($notaFiscal) {
                 $this->addHistorico($notaFiscal, $notaFiscal->getCStat() ?: -1, $notaFiscal->getXMotivo(), 'FATURAMENTO PROCESSADO');
