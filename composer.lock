@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb83dad3e8ff0e983312cacaa25147bd",
+    "content-hash": "e3430e34394d2e18d6ac0f0a0b8bbbe6",
     "packages": [
         {
             "name": "crosiersource/crosierlib-base",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "../crosierlib-base",
-                "reference": "a63daa95ba7b555c571d738f7a83232ad620558a",
+                "reference": "f45ac3c91e07b6c9f37c1d769dbbaca78f6f8ceb",
                 "shasum": null
             },
             "require": {
@@ -2479,12 +2479,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-da.git",
-                "reference": "311a32b0aa15da91b8560918520af6cb10aa5a05"
+                "reference": "c4fd711f8a7d7728d767bf3c0c67e5295c3d6c7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-da/zipball/311a32b0aa15da91b8560918520af6cb10aa5a05",
-                "reference": "311a32b0aa15da91b8560918520af6cb10aa5a05",
+                "url": "https://api.github.com/repos/nfephp-org/sped-da/zipball/c4fd711f8a7d7728d767bf3c0c67e5295c3d6c7d",
+                "reference": "c4fd711f8a7d7728d767bf3c0c67e5295c3d6c7d",
                 "shasum": ""
             },
             "require": {
@@ -2541,7 +2541,7 @@
                 "nfephp",
                 "sped"
             ],
-            "time": "2020-02-07T11:10:51+00:00"
+            "time": "2020-02-10T16:06:30+00:00"
         },
         {
             "name": "nfephp-org/sped-gtin",
@@ -2733,16 +2733,16 @@
         },
         {
             "name": "ocramius/proxy-manager",
-            "version": "2.6.1",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ocramius/ProxyManager.git",
-                "reference": "dec37bfb3c3594440ee4fa263494189344787d22"
+                "reference": "e77928e8f11ea36b388f87e75c993d05f5da6bf1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ocramius/ProxyManager/zipball/dec37bfb3c3594440ee4fa263494189344787d22",
-                "reference": "dec37bfb3c3594440ee4fa263494189344787d22",
+                "url": "https://api.github.com/repos/Ocramius/ProxyManager/zipball/e77928e8f11ea36b388f87e75c993d05f5da6bf1",
+                "reference": "e77928e8f11ea36b388f87e75c993d05f5da6bf1",
                 "shasum": ""
             },
             "require": {
@@ -2760,14 +2760,12 @@
                 "doctrine/coding-standard": "^6.0.0",
                 "ext-phar": "*",
                 "infection/infection": "^0.15.0",
-                "mikey179/vfsstream": "^1.6.8",
                 "nikic/php-parser": "^4.3.0",
-                "phpbench/phpbench": "^0.16.10",
-                "phpunit/phpunit": "^8.5.1",
+                "phpbench/phpbench": "^0.17.0",
+                "phpunit/phpunit": "^8.5.2",
                 "slevomat/coding-standard": "^5.0.4",
-                "squizlabs/php_codesniffer": "^3.5.3",
-                "symfony/console": "^4.4.2",
-                "vimeo/psalm": "3.7.0"
+                "squizlabs/php_codesniffer": "^3.5.4",
+                "vimeo/psalm": "^3.8.5"
             },
             "suggest": {
                 "laminas/laminas-json": "To have the JsonRpc adapter (Remote Object feature)",
@@ -2806,7 +2804,7 @@
                 "proxy pattern",
                 "service proxies"
             ],
-            "time": "2020-01-27T09:25:51+00:00"
+            "time": "2020-02-08T19:22:03+00:00"
         },
         {
             "name": "phenx/php-font-lib",
