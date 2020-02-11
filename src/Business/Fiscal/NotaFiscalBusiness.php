@@ -206,17 +206,14 @@ class NotaFiscalBusiness extends BaseBusiness
                 $notaFiscal->setChaveAcesso(null);
             }
 
-            $this->handleIdeFields($notaFiscal);
-
             // Aqui somente coisas que fazem sentido serem alteradas depois de já ter sido (provavelmente) tentado o faturamento da Notafiscal.
             $notaFiscal->setTranspModalidadeFrete('SEM_FRETE');
-
-            // para ser usado depois como 'chave' nas comunicações com a SEFAZ
 
             $notaFiscal->setIndicadorFormaPagto(
                 $venda->getPlanoPagto()->getCodigo() === '1.00' ? IndicadorFormaPagto::VISTA['codigo'] : IndicadorFormaPagto::PRAZO['codigo']);
 
             $notaFiscal = $this->notaFiscalEntityHandler->deleteAllItens($notaFiscal);
+            $this->getDoctrine()->flush();
 
             // Atenção, aqui tem que verificar a questão do arredondamento
             if ($venda->getSubTotal() > 0.0) {
@@ -284,7 +281,7 @@ class NotaFiscalBusiness extends BaseBusiness
             $this->calcularTotais($notaFiscal);
             $totalDescontos = bcsub($notaFiscal->getSubTotal(), $notaFiscal->getValorTotal(), 2);
 
-            if (bcsub(abs($totalDescontos), abs($somaDescontosItens), 2) !== 0) {
+            if ((float)bcsub(abs($totalDescontos), abs($somaDescontosItens), 2) !== 0.0) {
                 $diferenca = $totalDescontos - $somaDescontosItens;
                 $notaFiscal->getItens()
                     ->get(0)
@@ -320,58 +317,59 @@ class NotaFiscalBusiness extends BaseBusiness
      * Lida com os campos que são gerados programaticamente.
      *
      * @param $notaFiscal
-     * @throws \Exception
+     * @return bool
+     * @throws ViewException
      */
-    public function handleIdeFields(NotaFiscal $notaFiscal): void
+    public function handleIdeFields(NotaFiscal $notaFiscal): bool
     {
-        $mudou = false;
-        if (!$notaFiscal->getUuid()) {
-            $notaFiscal->setUuid(md5(uniqid(mt_rand(), true)));
-            $mudou = true;
-        }
-
-        if (!$notaFiscal->getCnf()) {
-            $cNF = random_int(10000000, 99999999);
-            $notaFiscal->setCnf($cNF);
-            $mudou = true;
-        }
-
-        // Rejeição 539: Duplicidade de NF-e, com diferença na Chave de Acesso
-        if (!$notaFiscal->getNumero() || $notaFiscal->getCStat() === 539) {
-            $nfeConfigs = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
-
-            $ambiente = $nfeConfigs['tpAmb'] === 1 ? 'PROD' : 'HOM';
-            $notaFiscal->setAmbiente($ambiente);
-
-            if (!$notaFiscal->getTipoNotaFiscal()) {
-                throw new \Exception('Impossível gerar número sem saber o tipo da nota fiscal.');
+        try {
+            $mudou = false;
+            if (!$notaFiscal->getUuid()) {
+                $notaFiscal->setUuid(md5(uniqid(mt_rand(), true)));
+                $mudou = true;
             }
-            $chaveSerie = 'serie_' . $notaFiscal->getTipoNotaFiscal() . '_' . $ambiente;
-            $serie = $nfeConfigs[$chaveSerie];
-            if (!$serie) {
-                throw new ViewException('Série não encontrada para ' . $chaveSerie);
+            if (!$notaFiscal->getCnf()) {
+                $cNF = random_int(10000000, 99999999);
+                $notaFiscal->setCnf($cNF);
+                $mudou = true;
+            }// Rejeição 539: Duplicidade de NF-e, com diferença na Chave de Acesso
+            if (!$notaFiscal->getNumero() || $notaFiscal->getCStat() === 539) {
+                $nfeConfigs = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
+
+                $ambiente = $nfeConfigs['tpAmb'] === 1 ? 'PROD' : 'HOM';
+                $notaFiscal->setAmbiente($ambiente);
+
+                if (!$notaFiscal->getTipoNotaFiscal()) {
+                    throw new \Exception('Impossível gerar número sem saber o tipo da nota fiscal.');
+                }
+                $chaveSerie = 'serie_' . $notaFiscal->getTipoNotaFiscal() . '_' . $ambiente;
+                $serie = $nfeConfigs[$chaveSerie];
+                if (!$serie) {
+                    throw new ViewException('Série não encontrada para ' . $chaveSerie);
+                }
+                $notaFiscal->setSerie($serie);
+
+                /** @var NotaFiscalRepository $repoNotaFiscal */
+                $nnf = $this->repoNotaFiscal->findProxNumFiscal($ambiente, $notaFiscal->getSerie(), $notaFiscal->getTipoNotaFiscal());
+                $notaFiscal->setNumero($nnf);
+                $mudou = true;
             }
-            $notaFiscal->setSerie($serie);
-
-            /** @var NotaFiscalRepository $repoNotaFiscal */
-            $nnf = $this->repoNotaFiscal->findProxNumFiscal($ambiente, $notaFiscal->getSerie(), $notaFiscal->getTipoNotaFiscal());
-            $notaFiscal->setNumero($nnf);
-            $mudou = true;
-        }
-
-        if (!$notaFiscal->getDtEmissao()) {
-            $notaFiscal->setDtEmissao(new \DateTime());
-            $mudou = true;
-        }
-
-        if ($mudou || !$notaFiscal->getChaveAcesso() || !preg_match('/[0-9]{44}/', $notaFiscal->getChaveAcesso())) {
-            $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
-            $mudou = true;
-        }
-
-        if ($mudou) {
-            $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
-            $this->notaFiscalEntityHandler->save($notaFiscal);
+            if (!$notaFiscal->getDtEmissao()) {
+                $notaFiscal->setDtEmissao(new \DateTime());
+                $mudou = true;
+            }
+            if ($mudou || !$notaFiscal->getChaveAcesso() || !preg_match('/[0-9]{44}/', $notaFiscal->getChaveAcesso())) {
+                $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
+                $mudou = true;
+            }
+            if ($mudou) {
+                $this->notaFiscalEntityHandler->save($notaFiscal);
+            }
+            return $mudou;
+        } catch (\Throwable $e) {
+            $this->getLogger()->error('handleIdeFields');
+            $this->getLogger()->error($e->getMessage());
+            throw new ViewException('Erro ao gerar campos ide');
         }
     }
 
@@ -463,8 +461,6 @@ class NotaFiscalBusiness extends BaseBusiness
 
             $this->calcularTotais($notaFiscal);
 
-            $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
-
             $this->getDoctrine()->commit();
             return $notaFiscal;
         } catch (\Exception $e) {
@@ -509,20 +505,16 @@ class NotaFiscalBusiness extends BaseBusiness
 
         $this->addHistorico($notaFiscal, -1, 'INICIANDO FATURAMENTO');
         if ($this->permiteFaturamento($notaFiscal)) {
-            $this->handleIdeFields($notaFiscal);
-            $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
             if ($notaFiscal->getNRec()) {
-                $consultaRecibo = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
-                if (isset($consultaRecibo->protNFe->infProt->cStat) && (int)$consultaRecibo->protNFe->infProt->cStat === 502) {
-                    $notaFiscal->setChaveAcesso($this->buildChaveAcesso($notaFiscal));
-                    $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+                $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+                if ($notaFiscal->getCStat() === 502) {
+                    $notaFiscal->setChaveAcesso(null); // será regerada no handleIdeFields()
                 }
             }
+            $this->handleIdeFields($notaFiscal);
+            $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
 
             $notaFiscal = $this->spedNFeBusiness->enviaNFe($notaFiscal);
-            sleep(3);
-            $consultaRecibo = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
-            $notaFiscal = $this->spedNFeBusiness->consultarStatus($notaFiscal);
             if ($notaFiscal) {
                 $this->addHistorico($notaFiscal, $notaFiscal->getCStat() ?: -1, $notaFiscal->getXMotivo(), 'FATURAMENTO PROCESSADO');
                 // $this->imprimir($notaFiscal);

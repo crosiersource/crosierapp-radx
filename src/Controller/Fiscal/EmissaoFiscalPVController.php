@@ -112,7 +112,7 @@ class EmissaoFiscalPVController extends BaseController
                 try {
                     $notaFiscal->setDtEmissao(new \DateTime());
                     $notaFiscal->setDtSaiEnt(new \DateTime());
-                    $notaFiscal = $this->notaFiscalBusiness->faturarNFe($notaFiscal);
+                    $this->notaFiscalBusiness->faturarNFe($notaFiscal);
                 } catch (\Exception $e) {
                     $this->addFlash('error', $e->getMessage());
                 }

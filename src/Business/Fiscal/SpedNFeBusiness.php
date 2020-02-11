@@ -435,32 +435,42 @@ class SpedNFeBusiness
      */
     public function enviaNFe(NotaFiscal $notaFiscal): NotaFiscal
     {
-        $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
-        $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
-
-        if (!isset($notaFiscal->getXMLDecoded()->infNFe->Signature) && !isset($notaFiscal->getXMLDecoded()->Signature)) {
-            $xmlAssinado = $tools->signNFe($notaFiscal->getXmlNota());
-            $notaFiscal->setXmlNota($xmlAssinado);
+        try {
+            $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
+            $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
+            if (!isset($notaFiscal->getXMLDecoded()->infNFe->Signature) && !isset($notaFiscal->getXMLDecoded()->Signature)) {
+                $xmlAssinado = $tools->signNFe($notaFiscal->getXmlNota());
+                $notaFiscal->setXmlNota($xmlAssinado);
+                $this->notaFiscalEntityHandler->save($notaFiscal);
+            } else {
+                $xmlAssinado = $notaFiscal->getXmlNota();
+            }
+            $idLote = random_int(1000000000000, 9999999999999);
+            $resp = $tools->sefazEnviaLote([$xmlAssinado], $idLote);//transforma o xml de retorno em um stdClass
+            $st = new Standardize();
+            $std = $st->toStd($resp);
+            $notaFiscal->setCStatLote($std->cStat);
+            $notaFiscal->setXMotivoLote($std->xMotivo);
+            if ((string)$std->cStat === '103') {
+                $notaFiscal->setNRec($std->infRec->nRec);
+            }
             $this->notaFiscalEntityHandler->save($notaFiscal);
-        } else {
-            $xmlAssinado = $notaFiscal->getXmlNota();
+            $tentativa = 1;
+            while (true) {
+                $this->consultaRecibo($notaFiscal);
+                if (!$notaFiscal->getCStat() || (int)$notaFiscal->getCStat() === -100) {
+                    sleep(1);
+                    if (++$tentativa === 4) break;
+                } else {
+                    break;
+                }
+            }
+            return $notaFiscal;
+        } catch (\Throwable $e) {
+            $this->logger->error('enviaNFe - id: ' . $notaFiscal->getId());
+            $this->logger->error($e->getMessage());
+            throw new ViewException('Erro ao enviar a NFe');
         }
-
-        $idLote = random_int(1000000000000, 9999999999999);
-        $resp = $tools->sefazEnviaLote([$xmlAssinado], $idLote);
-
-        //transforma o xml de retorno em um stdClass
-        $st = new Standardize();
-        $std = $st->toStd($resp);
-
-        $notaFiscal->setCStatLote($std->cStat);
-        $notaFiscal->setXMotivoLote($std->xMotivo);
-
-        if ((string)$std->cStat === '103') {
-            $notaFiscal->setNRec($std->infRec->nRec);
-        }
-        $this->notaFiscalEntityHandler->save($notaFiscal);
-        return $notaFiscal;
     }
 
     /**
@@ -507,8 +517,7 @@ class SpedNFeBusiness
                 $notaFiscal->setDtProtocoloAutorizacao(DateTimeUtils::parseDateStr($std->protNFe->infProt->dhRecbto));
             }
         } else if ($std->cStat === 217) {
-            $consultaRecibo = $this->consultaRecibo($notaFiscal);
-            $notaFiscal->setXMotivoLote($std->xMotivo . ' (' . $consultaRecibo->protNFe->infProt->xMotivo . ')');
+            $this->consultaRecibo($notaFiscal);
         }
         /** @var NotaFiscal $notaFiscal */
         $notaFiscal = $this->notaFiscalEntityHandler->save($notaFiscal);
@@ -807,19 +816,49 @@ class SpedNFeBusiness
 
     /**
      * @param NotaFiscal $notaFiscal
-     * @return \stdClass
      * @throws ViewException
      */
     public function consultaRecibo(NotaFiscal $notaFiscal)
     {
-        if (!$notaFiscal->getNRec()) {
-            throw new ViewException('nRec N/D');
+        try {
+            if (!$notaFiscal->getNRec()) {
+                throw new ViewException('nRec N/D');
+            }
+            $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
+            $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
+            $xmlResp = $tools->sefazConsultaRecibo($notaFiscal->getNRec());
+            $std = (new Standardize($xmlResp))->toStd();
+            $notaFiscal->setCStatLote($std->cStat);
+            $notaFiscal->setXMotivoLote($std->xMotivo);
+            if ((int)$std->cStat === 104 || (int)$std->cStat === 100) { //lote processado (tudo ok)
+                $cStat = $std->protNFe->infProt->cStat;
+                $notaFiscal->setCStat($cStat);
+                $notaFiscal->setXMotivo($std->protNFe->infProt->xMotivo);
+                if ($notaFiscal->getXmlNota() && $notaFiscal->getXMLDecoded()->getName() !== 'nfeProc') {
+                    try {
+                        if (!isset($notaFiscal->getXMLDecoded()->infNFe->Signature) &&
+                            !isset($notaFiscal->getXMLDecoded()->Signature)) {
+                            $xmlAssinado = $tools->signNFe($notaFiscal->getXmlNota());
+                            $notaFiscal->setXmlNota($xmlAssinado);
+                        }
+                        $r = Complements::toAuthorize($notaFiscal->getXmlNota(), $xmlResp);
+                        $notaFiscal->setXmlNota($r);
+                    } catch (\Exception $e) {
+                        $this->logger->error($e->getMessage());
+                        $this->logger->error('Erro no Complements::toAuthorize para $notaFiscal->id = ' . $notaFiscal->getId());
+                    }
+                }
+                if (in_array($cStat, ['100', '302'])) { //DENEGADAS
+                    $notaFiscal->setProtocoloAutorizacao($std->protNFe->infProt->nProt);
+                    $notaFiscal->setDtProtocoloAutorizacao(DateTimeUtils::parseDateStr($std->protNFe->infProt->dhRecbto));
+                }
+            }
+            $this->notaFiscalEntityHandler->save($notaFiscal);
+        } catch (\Throwable $e) {
+            $this->logger->error('consultaRecibo - Id: ' . $notaFiscal->getId());
+            $this->logger->error($e->getMessage());
+            throw new ViewException('Erro ao consultar recibo');
         }
-        $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
-        $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
-        $xmlResp = $tools->sefazConsultaRecibo($notaFiscal->getNRec());
-        $stdCl = new Standardize($xmlResp);
-        return $stdCl->toStd();
     }
 
 }

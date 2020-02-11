@@ -238,7 +238,6 @@ class NFeUtils
      *
      * @return array
      * @throws ViewException
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function getNFeConfigsEmUso(): array
     {
@@ -253,7 +252,7 @@ class NFeUtils
             $a['enderEmit_xBairro'] = strtoupper($a['enderEmit_xBairro']);
             unset($a['certificado'], $a['certificadoPwd']);
             return $a;
-        } catch (InvalidArgumentException $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Erro ao obter nfeConfigs do cachê');
             $this->logger->error($e->getMessage());
             throw new ViewException('Erro ao obter nfeConfigs do cachê');
