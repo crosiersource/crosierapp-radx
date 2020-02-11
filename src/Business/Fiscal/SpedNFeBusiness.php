@@ -542,6 +542,7 @@ class SpedNFeBusiness
         }
 
         $tools = $this->nfeUtils->getToolsByCNPJ($notaFiscal->getDocumentoEmitente());
+        $tools->model($notaFiscal->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
 
         $chaveNota = $notaFiscal->getChaveAcesso();
         $xJust = $notaFiscal->getMotivoCancelamento();

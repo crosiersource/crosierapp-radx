@@ -14,14 +14,35 @@
             font-weight: bold;
             font-stretch: condensed;
         }
+
+        .watermark {
+            z-index: 0;
+            background: white;
+            display: block;
+            min-height: 40%;
+            min-width: 100%;
+            content: "DRAFT";
+            color: steelblue;
+            font-size: 50px;
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.5
+        }
     </style>
 </head>
 <body onload="window.print();">
 
+{% if cancelada %}
+    <div class="watermark">CANCELADA</div>
+{% endif %}
 
 <p style="text-align: center">
     CNPJ: {{ xml.NFe.infNFe.emit.CNPJ|mascararCnpjCpf }} <b>{{ xml.NFe.infNFe.emit.xNome }}</b><br/>
-    {{ xml.NFe.infNFe.emit.enderEmit.xLgr }}, {{ xml.NFe.infNFe.emit.enderEmit.nro }} . {{ xml.NFe.infNFe.emit.enderEmit.xBairro }} . {{ xml.NFe.infNFe.emit.enderEmit.CEP }} . {{ xml.NFe.infNFe.emit.enderEmit.xMun }}-{{ xml.NFe.infNFe.emit.enderEmit.UF }}<br/>
+    {{ xml.NFe.infNFe.emit.enderEmit.xLgr }}, {{ xml.NFe.infNFe.emit.enderEmit.nro }}
+    . {{ xml.NFe.infNFe.emit.enderEmit.xBairro }} . {{ xml.NFe.infNFe.emit.enderEmit.CEP }}
+    . {{ xml.NFe.infNFe.emit.enderEmit.xMun }}-{{ xml.NFe.infNFe.emit.enderEmit.UF }}<br/>
     Documento Auxiliar da Nota Fiscal de Consumidor Eletrônica<br/>
 </p>
 
@@ -99,7 +120,9 @@
     {% else %}
         CONSUMIDOR NÃO IDENTIFICADO<br/>
     {% endif %}
-    <b>NFC-e n. {{ xml.NFe.infNFe.ide.nNF }} Série {{ xml.NFe.infNFe.ide.serie }} {{ xml.NFe.infNFe.ide.dhEmi|date('d/m/Y H:i:s') }} - Via consumidor</b><br/>
+    <b>NFC-e n. {{ xml.NFe.infNFe.ide.nNF }}
+        Série {{ xml.NFe.infNFe.ide.serie }} {{ xml.NFe.infNFe.ide.dhEmi|date('d/m/Y H:i:s') }} - Via
+        consumidor</b><br/>
     Protocolo de autorização: {{ xml.protNFe.infProt.nProt }}<br/>
     Data de autorização: {{ xml.protNFe.infProt.dhRecbto|date('d/m/Y H:i:s') }}
 </div>

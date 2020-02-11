@@ -926,6 +926,7 @@ class EmissaoNFeController extends FormListController
 
         $params = [
             'nf' => $nf,
+            'cancelada' => $nf->getCStat() === 135,
             'cnpj' => $configs['cnpj'],
             'razaoSocial' => $configs['razaosocial'],
             'enderecoCompleto' => $configs['enderecoCompleto'],
@@ -1078,6 +1079,7 @@ class EmissaoNFeController extends FormListController
 
         $params = [
             'xml' => $nf->getXMLDecoded(),
+            'cancelada' => $nf->getCStat() === 135,
             'chaveAcesso' => $chaveAcesso,
             'qrcode' => $qrcode
         ];

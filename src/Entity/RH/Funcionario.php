@@ -2,6 +2,7 @@
 
 namespace App\Entity\RH;
 
+use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -145,15 +146,16 @@ class Funcionario implements EntityId
      */
     private $vendedorComissionado;
 
+
     /**
      *
-     * @ORM\Column(name="pessoa_id", type="bigint", nullable=false)
-     *
-     * @var $pessoa null|int
-     *
+     * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa")
+     * @ORM\JoinColumn(name="pessoa_id", nullable=false)
      * @Groups("entity")
+     *
+     * @var null|Pessoa
      */
-    private $pessoa;
+    private ?Pessoa $pessoa;
 
     /**
      *
@@ -221,8 +223,6 @@ class Funcionario implements EntityId
      * )
      */
     private $cargos;
-
-
 
 
     /**
@@ -478,18 +478,18 @@ class Funcionario implements EntityId
     }
 
     /**
-     * @return int|null
+     * @return Pessoa|null
      */
-    public function getPessoa(): ?int
+    public function getPessoa(): ?Pessoa
     {
         return $this->pessoa;
     }
 
     /**
-     * @param int|null $pessoa
+     * @param Pessoa|null $pessoa
      * @return Funcionario
      */
-    public function setPessoa(?int $pessoa): Funcionario
+    public function setPessoa(?Pessoa $pessoa): Funcionario
     {
         $this->pessoa = $pessoa;
         return $this;

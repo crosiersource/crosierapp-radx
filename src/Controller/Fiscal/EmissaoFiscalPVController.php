@@ -186,7 +186,6 @@ class EmissaoFiscalPVController extends BaseController
      */
     public function cancelarForm(Request $request, NotaFiscal $notaFiscal, Venda $venda)
     {
-
         if (!$notaFiscal) {
             $this->addFlash('error', 'Venda não encontrada!');
             return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
@@ -208,14 +207,13 @@ class EmissaoFiscalPVController extends BaseController
         $permiteCancelamento = $this->notaFiscalBusiness->permiteCancelamento($notaFiscal);
         $permiteReimpressaoCancelamento = $this->notaFiscalBusiness->permiteReimpressaoCancelamento($notaFiscal);
 
-        $response = $this->doRender('/Fiscal/emissaoFiscalPV/cancelarForm.html.twig', array(
+        return $this->doRender('/Fiscal/emissaoFiscalPV/cancelarForm.html.twig', array(
             'form' => $form->createView(),
             'venda' => $venda,
             'notaFiscal' => $notaFiscal,
             'permiteCancelamento' => $permiteCancelamento,
             'permiteReimpressaoCancelamento' => $permiteReimpressaoCancelamento
         ));
-        return $response;
     }
 
     /**

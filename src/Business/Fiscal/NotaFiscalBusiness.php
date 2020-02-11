@@ -590,7 +590,7 @@ class NotaFiscalBusiness extends BaseBusiness
      */
     public function permiteFaturamento(NotaFiscal $notaFiscal): bool
     {
-        if ($notaFiscal && $notaFiscal->getId() && in_array($notaFiscal->getCStat(), [-100, 100, 101, 204], false)) {
+        if ($notaFiscal && $notaFiscal->getId() && in_array($notaFiscal->getCStat(), [-100, 100, 101, 204, 135], false)) {
             return false;
         }
         if ($notaFiscal && !$notaFiscal->getId()) {
@@ -637,7 +637,7 @@ class NotaFiscalBusiness extends BaseBusiness
     public function permiteReimpressao(NotaFiscal $notaFiscal)
     {
         if ($notaFiscal->getId()) {
-            if ($notaFiscal->getCStat() == 100 || $notaFiscal->getCStat() == 204) {
+            if ($notaFiscal->getCStat() == 100 || $notaFiscal->getCStat() == 204 || $notaFiscal->getCStat() == 135) {
                 return true;
             }
             // else
