@@ -140,7 +140,6 @@ class EmissaoNFeController extends FormListController
             $notaFiscal->setTipoNotaFiscal('NFE');
             $notaFiscal->setEntradaSaida('S');
             $notaFiscal->setDtEmissao(new \DateTime());
-
             $notaFiscal->setNaturezaOperacao('VENDA');
         }
 
@@ -181,9 +180,7 @@ class EmissaoNFeController extends FormListController
         $permiteCancelamento = $this->notaFiscalBusiness->permiteCancelamento($notaFiscal);
         $permiteCartaCorrecao = $this->notaFiscalBusiness->permiteCartaCorrecao($notaFiscal);
 
-
-
-        $response = $this->doRender('/Fiscal/emissaoNFe/form.html.twig', [
+        return $this->doRender('/Fiscal/emissaoNFe/form.html.twig', [
             'form' => $form->createView(),
             'notaFiscal' => $notaFiscal,
             'permiteSalvar' => $permiteSalvar,
@@ -194,7 +191,6 @@ class EmissaoNFeController extends FormListController
             'permiteCartaCorrecao' => $permiteCartaCorrecao,
             'itemCopiado' => $session->has('fis_emissaonfe_copiarNotaFiscalItem') ? $session->get('fis_emissaonfe_copiarNotaFiscalItem') : null,
         ]);
-        return $response;
     }
 
     /**

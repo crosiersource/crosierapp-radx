@@ -460,7 +460,7 @@ class NotaFiscalBusiness extends BaseBusiness
             }
 
             $this->calcularTotais($notaFiscal);
-
+            $this->notaFiscalEntityHandler->save($notaFiscal);
             $this->getDoctrine()->commit();
             return $notaFiscal;
         } catch (\Exception $e) {
