@@ -90,7 +90,7 @@ class DistDFeBusiness
         $qtdeObtida = 0;
 
         try {
-            $tools = $this->nfeUtils->getTools();
+            $tools = $this->nfeUtils->getToolsEmUso();
             $tools->model('55');
             $tools->setEnvironment(1);
             /** @var DistDFeRepository $repo */
@@ -185,7 +185,7 @@ class DistDFeBusiness
     public function obterDistDFeByNSU(int $nsu): bool
     {
         try {
-            $tools = $this->nfeUtils->getTools();
+            $tools = $this->nfeUtils->getToolsEmUso();
             $tools->model('55');
             $tools->setEnvironment(1);
 

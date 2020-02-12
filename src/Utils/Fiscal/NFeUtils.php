@@ -14,7 +14,6 @@ use NFePHP\NFe\Tools;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -25,33 +24,28 @@ class NFeUtils
 
     private Connection $conn;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /** @var AppConfigEntityHandler */
-    private $appConfigEntityHandler;
+    private AppConfigEntityHandler $appConfigEntityHandler;
 
-    /** @var Security */
-    private $security;
+    private Security $security;
 
-    /** @var SessionInterface */
-    private $session;
 
     /**
      * NFeUtils constructor.
+     * @param Connection $conn
      * @param LoggerInterface $logger
      * @param AppConfigEntityHandler $appConfigEntityHandler
-     * @param SessionInterface $session
      * @param Security $security
      */
-    public function __construct(Connection $conn, LoggerInterface $logger, AppConfigEntityHandler $appConfigEntityHandler, SessionInterface $session, Security $security)
+    public function __construct(Connection $conn, LoggerInterface $logger, AppConfigEntityHandler $appConfigEntityHandler, Security $security)
     {
         $this->conn = $conn;
         $this->logger = $logger;
         $this->appConfigEntityHandler = $appConfigEntityHandler;
-        $this->session = $session;
         $this->security = $security;
     }
+
 
     /**
      * @throws ViewException
@@ -68,6 +62,7 @@ class NFeUtils
             throw new ViewException('Erro ao limpar nfeTools e nfeConfigs do cachê');
         }
     }
+
 
     /**
      * @param array $configs
@@ -104,7 +99,10 @@ class NFeUtils
         $this->appConfigEntityHandler->save($appConfig);
     }
 
+
     /**
+     * Retorna o id do cfg_app_config que contém as nfeConfigs setadas como 'em uso' para o usuário logado.
+     *
      * @return mixed
      * @throws ViewException
      */
@@ -128,6 +126,7 @@ class NFeUtils
         return (int)$appConfig_nfeConfigsIdEmUso->getChave();
     }
 
+
     /**
      * @param int $id
      * @throws ViewException
@@ -142,16 +141,19 @@ class NFeUtils
         $this->appConfigEntityHandler->save($appConfig_nfeConfigsIdEmUso);
     }
 
+
     /**
+     * Retorna o Tools a partir do nfeConfigs em uso.
+     *
      * @return Tools
      * @throws ViewException
      */
-    public function getTools(): Tools
+    public function getToolsEmUso(): Tools
     {
         try {
             // Verifica qual nfeConfigs está em uso no momento
             $idNfeConfigsEmUso = $this->getNfeConfigsIdEmUso();
-            return $this->getIdNfeConfigsTools($idNfeConfigsEmUso);
+            return $this->getTools($idNfeConfigsEmUso);
         } catch (\Exception $e) {
             $this->logger->error('Erro ao obter tools do cachê');
             $this->logger->error($e->getMessage());
@@ -161,15 +163,17 @@ class NFeUtils
 
 
     /**
+     * Retorna o Tools a partir do nfeConfigs de um CNPJ específico.
+     *
+     * @param string $cnpj
      * @return Tools
      * @throws ViewException
      */
     public function getToolsByCNPJ(string $cnpj): Tools
     {
         try {
-            // Verifica qual nfeConfigs está em uso no momento
             $idNfeConfigs = $this->getNFeConfigsByCNPJ($cnpj);
-            return $this->getIdNfeConfigsTools($idNfeConfigs);
+            return $this->getTools($idNfeConfigs['id']);
         } catch (\Exception $e) {
             $this->logger->error('Erro ao obter tools do cachê');
             $this->logger->error($e->getMessage());
@@ -178,15 +182,15 @@ class NFeUtils
     }
 
     /**
-     * @param array $idNfeConfigs
+     * @param int $idNfeConfigs
      * @return Tools
      */
-    private function getIdNfeConfigsTools(array $idNfeConfigs): Tools
+    private function getTools(int $idNfeConfigs): Tools
     {
         /** @var AppConfigRepository $repoAppConfig */
         $repoAppConfig = $this->appConfigEntityHandler->getDoctrine()->getRepository(AppConfig::class);
         /** @var AppConfig $appConfig */
-        $appConfig = $repoAppConfig->find($idNfeConfigs['id']);
+        $appConfig = $repoAppConfig->find($idNfeConfigs);
 
         $configs = json_decode($appConfig->getValor(), true);
         if ($configs['tpAmb'] === 1) {
@@ -206,8 +210,9 @@ class NFeUtils
 
     /**
      * Chamada para pegar informações do CNPJ, Razão Social, etc.
-     * Não retorna o certificado nem a senha.
+     * Não retorna o certificado nem a senha, pois... ?
      *
+     * @param string $cnpj
      * @return array
      * @throws ViewException
      */

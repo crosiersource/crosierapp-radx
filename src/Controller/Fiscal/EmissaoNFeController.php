@@ -644,7 +644,7 @@ class EmissaoNFeController extends FormListController
 
         $nf = $this->spedNFeBusiness->gerarXML($nf);
 
-        $tools = $this->nfeUtils->getTools();
+        $tools = $this->nfeUtils->getToolsEmUso();
         $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
         $fileContent = $tools->signNFe($nf->getXmlNota());
 
@@ -692,7 +692,7 @@ class EmissaoNFeController extends FormListController
             throw new \RuntimeException('Não foi possível escrever o arquivo zip');
         }
 
-        $tools = $this->nfeUtils->getTools();
+        $tools = $this->nfeUtils->getToolsEmUso();
 
 
         $nfeConfigs = $this->nfeUtils->getNFeConfigsEmUso();

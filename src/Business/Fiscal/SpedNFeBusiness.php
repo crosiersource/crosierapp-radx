@@ -634,7 +634,7 @@ class SpedNFeBusiness
     public function consultarCNPJ(string $cnpj)
     {
         try {
-            $tools = $this->nfeUtils->getTools();
+            $tools = $this->nfeUtils->getToolsEmUso();
             $uf = 'PR';
             $iest = '';
             $cpf = '';
@@ -804,7 +804,7 @@ class SpedNFeBusiness
     public function inutilizaNumeracao(string $tipoNotaFiscal, int $serie, int $numero)
     {
         try {
-            $tools = $this->nfeUtils->getTools();
+            $tools = $this->nfeUtils->getToolsEmUso();
             $tools->model($tipoNotaFiscal === 'NFE' ? '55' : '65');
             $xJust = 'Erro de digitação dos números sequencias das notas';
             $response = $tools->sefazInutiliza($serie, $numero, $numero, $xJust, 1);
