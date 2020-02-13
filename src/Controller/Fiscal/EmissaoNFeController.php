@@ -611,7 +611,8 @@ class EmissaoNFeController extends FormListController
             if (!ValidaCPFCNPJ::valida($cnpj)) {
                 return new JsonResponse(['result' => 'ERRO', 'msg' => 'CPF/CNPJ inválido']);
             }
-            $r = $this->notaFiscalBusiness->consultarCNPJ($cnpj);
+            $uf = $request->get('uf');
+            $r = $this->notaFiscalBusiness->consultarCNPJ($cnpj, $uf);
             if (isset($r['dados'])) {
                 return new JsonResponse(['result' => 'OK', 'dados' => $r['dados']]);
             } else {

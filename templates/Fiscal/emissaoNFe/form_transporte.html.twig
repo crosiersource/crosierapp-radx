@@ -13,7 +13,22 @@
     {{ form_row(form.transpPesoBruto) }}
     {{ form_row(form.transpPesoLiquido) }}
 
-    {{ form_row(form.transpDocumento) }}
+    <div class="form-group row">
+        {{ form_label(form.transpDocumento) }}
+        <div class="col-sm-8">
+            {{ form_errors(form.transpDocumento) }}
+            {{ form_widget(form.transpDocumento) }}
+            {{ form_help(form.transpDocumento) }}
+        </div>
+        <div class="col-sm-2 text-right">
+            <button type="button" value="Consultar" class="btn btn-outline-info"
+                    data-jsfunction="consultarTranspDocumento"
+                    data-target="#confirmationModal" data-toggle="modal">
+                <i class="fas fa-search" aria-hidden="true"></i> Consultar
+            </button>
+        </div>
+    </div>
+
     {{ form_row(form.transpNome) }}
     {{ form_row(form.transpEndereco) }}
     {{ form_row(form.transpCidade) }}

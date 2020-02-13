@@ -232,14 +232,14 @@ class EmissaoFiscalPVController extends BaseController
 
     /**
      *
-     * @Route("/fis/emissaofiscalpv/consultarCNPJ/{cnpj}", name="fis_emissaofiscalpv_consultarCNPJ")
-     * @param $cnpj
+     * @Route("/fis/emissaofiscalpv/consultarCNPJ/{cnpj}/{uf}", name="fis_emissaofiscalpv_consultarCNPJ")
+     * @param string $cnpj
      * @return Response
      * @throws \Exception
      */
-    public function consultarCNPJ($cnpj): Response
+    public function consultarCNPJ(string $cnpj, string $uf): Response
     {
-        $dados = $this->notaFiscalBusiness->consultarCNPJ($cnpj);
+        $dados = $this->notaFiscalBusiness->consultarCNPJ($cnpj, $uf);
         $normalizer = new ObjectNormalizer();
         $encoder = new JsonEncoder();
 

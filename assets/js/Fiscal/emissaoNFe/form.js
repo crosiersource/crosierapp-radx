@@ -31,45 +31,20 @@ $(document).ready(function () {
     let $cidadeDestinatario = $('#nota_fiscal_cidadeDestinatario');
     let $estadoDestinatario = $('#nota_fiscal_estadoDestinatario');
 
-
-    $documentoDestinatario.on('blur', function () {
-        let documentoVal = $documentoDestinatario.val().replace(/[^\d]+/g, '');
-        if (documentoVal && $documentoDestinatario.data('documento') != documentoVal) {
-            $documentoDestinatario.data('documento', documentoVal);
-            $.ajax({
-                url: Routing.generate('fis_emissaonfe_getPessoaByDocumento', {'documento': documentoVal}),
-                type: 'get',
-                dataType: 'json',
-                success: function (res) {
-                    if (res.result === 'OK') {
-                        $xNomeDestinatario.val(res.dados.nome);
-                        $inscricaoEstadualDestinatario.val(res.dados.ie);
-                        $foneDestinatario.val(res.dados.fone);
-                        $emailDestinatario.val(res.dados.email);
-                        $cepDestinatario.val(res.dados.cep);
-                        $logradouroDestinatario.val(res.dados.logradouro);
-                        $numeroDestinatario.val(res.dados.numero);
-                        $bairroDestinatario.val(res.dados.bairro);
-                        $cidadeDestinatario.val(res.dados.cidade);
-                        $estadoDestinatario.val(res.dados.estado).change();
-                    } else if (res.result === 'ERRO') {
-                        toastrr.error(res.msg);
-                    } else {
-                        toastrr.error('Erro ao pesquisar CPF/CNPJ');
-                    }
-                }
-            });
-        }
-    });
-
+    let $transpDocumento = $('#nota_fiscal_transpDocumento');
+    let $transpNome = $('#nota_fiscal_transpNome');
+    let $transpEndereco = $('#nota_fiscal_transpEndereco');
+    let $transpCidade = $('#nota_fiscal_transpCidade');
+    let $transpEstado = $('#nota_fiscal_transpEstado');
 
     /**
      *
      */
     function handleFields() {
 
-        let documentoVal = $documentoDestinatario.val().replace(/[^\d]+/g, '');
-        $documentoDestinatario.data('documento', documentoVal);
+        $documentoDestinatario.data('documento', $documentoDestinatario.val().replace(/[^\d]+/g, ''));
+
+        $transpDocumento.data('documento', $transpDocumento.val().replace(/[^\d]+/g, ''));
 
         let tipoVal = $("input[name*='nota_fiscal[tipoNotaFiscal]']:checked").val();
         if (tipoVal !== 'NFE') {
@@ -127,33 +102,58 @@ $(document).ready(function () {
     handleFields();
 
 
-
     window.consultarCNPJDestinatario = function () {
 
         let documentoVal = $documentoDestinatario.val().replace(/[^\d]+/g, '');
-        // Para esperar a funcionalidade do blur (ver acima)
-        if (documentoVal && $documentoDestinatario.data('documento') == documentoVal) {
-            $.ajax({
-                url: Routing.generate('fis_emissaonfe_consultarCNPJ') + '/?cnpj=' + $documentoDestinatario.val(),
-                type: 'get',
-                dataType: 'json',
-                success: function (res) {
-                    if (res.result === 'OK') {
-                        $xNomeDestinatario.val(res.dados.razaoSocial);
-                        $inscricaoEstadualDestinatario.val(res.dados.IE);
-                        $cepDestinatario.val(res.dados.CEP);
-                        $logradouroDestinatario.val(res.dados.logradouro);
-                        $numeroDestinatario.val(res.dados.numero);
-                        $bairroDestinatario.val(res.dados.bairro);
-                        $cidadeDestinatario.val(res.dados.cidade);
-                        $estadoDestinatario.val(res.dados.UF).change();
-                        CrosierMasks.maskAll();
-                    } else {
-                        toastrr.error(res.msg ? res.msg : 'Erro ao consultar CNPJ');
-                    }
-                }
-            });
+        if (!documentoVal || !$estadoDestinatario.val()) {
+            toastrr.error('É necessário informar o CNPJ e o UF');
+            return;
         }
+        $.ajax({
+            url: Routing.generate('fis_emissaonfe_consultarCNPJ') + '/?cnpj=' + documentoVal + '&uf=' + $estadoDestinatario.val(),
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                if (res.result === 'OK') {
+                    $xNomeDestinatario.val(res.dados.razaoSocial);
+                    $inscricaoEstadualDestinatario.val(res.dados.IE);
+                    $cepDestinatario.val(res.dados.CEP);
+                    $logradouroDestinatario.val(res.dados.logradouro);
+                    $numeroDestinatario.val(res.dados.numero);
+                    $bairroDestinatario.val(res.dados.bairro);
+                    $cidadeDestinatario.val(res.dados.cidade);
+                    $estadoDestinatario.val(res.dados.UF).change();
+                    CrosierMasks.maskAll();
+                } else {
+                    toastrr.error(res.msg ? res.msg : 'Erro ao consultar CNPJ');
+                }
+            }
+        });
+    };
+
+
+    window.consultarTranspDocumento = function () {
+        let documentoVal = $transpDocumento.val().replace(/[^\d]+/g, '');
+        if (!documentoVal || !$transpEstado.val()) {
+            toastrr.error('É necessário informar o CNPJ e o UF');
+            return;
+        }
+        $.ajax({
+            url: Routing.generate('fis_emissaonfe_consultarCNPJ') + '/?cnpj=' + documentoVal + '&uf=' + $transpEstado.val(),
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                if (res.result === 'OK') {
+                    $transpNome.val(res.dados.razaoSocial);
+                    $transpEndereco.val(res.dados.logradouro + ', ' + res.dados.numero + ' - ' + res.dados.bairro);
+                    $transpCidade.val(res.dados.cidade);
+                    $transpEstado.val(res.dados.UF).change();
+                    CrosierMasks.maskAll();
+                } else {
+                    toastrr.error(res.msg ? res.msg : 'Erro ao consultar CNPJ');
+                }
+            }
+        });
     };
 
 });

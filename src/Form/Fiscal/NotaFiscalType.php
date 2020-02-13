@@ -28,8 +28,7 @@ use Symfony\Component\Validator\Constraints\Length;
 class NotaFiscalType extends AbstractType
 {
 
-    /** @var NotaFiscalBusiness */
-    private $notaFiscalBusiness;
+    private NotaFiscalBusiness $notaFiscalBusiness;
 
     /**
      * @required
@@ -144,95 +143,6 @@ class NotaFiscalType extends AbstractType
                 'attr' => ['class' => 'autoSelect2'],
                 'disabled' => $disabled
             ]);
-
-
-//            $builder->add('documentoEmitente', TextType::class, [
-//                'label' => 'CNPJ',
-//                'required' => false,
-//                'disabled' => true,
-//                'attr' => [
-//                    'class' => 'cpfCnpj'
-//                ],
-//            ]);
-//            $builder->add('xNomeEmitente', TextType::class, [
-//                'label' => 'Razão Social',
-//                'required' => false,
-//                'disabled' => true
-//            ]);
-//            $builder->add('inscricaoEstadualEmitente', TextType::class, [
-//                'label' => 'Inscr Estadual',
-//                'required' => false,
-//                'disabled' => $disabled
-//            ]);
-//            $builder->add('cepEmitente', TextType::class, [
-//                'label' => 'CEP',
-//                'required' => false,
-//                'disabled' => $disabled
-//            ]);
-//            $builder->add('logradouroEmitente', TextType::class, [
-//                'label' => 'Logradouro',
-//                'required' => false,
-//                'disabled' => $disabled
-//            ]);
-//            $builder->add('numeroEmitente', TextType::class, [
-//                'label' => 'Número',
-//                'required' => false,
-//                'disabled' => $disabled
-//            ]);
-//            $builder->add('bairroEmitente', TextType::class, [
-//                'label' => 'Bairro',
-//                'required' => false,
-//
-//            ]);
-//            $builder->add('cidadeEmitente', TextType::class, [
-//                'label' => 'Cidade',
-//                'required' => false,
-//                'disabled' => $disabled
-//            ]);
-//            $builder->add('estadoEmitente', ChoiceType::class, [
-//                'label' => 'Estado',
-//                'choices' => [
-//                    'Acre' => 'AC',
-//                    'Alagoas' => 'AL',
-//                    'Amapá' => 'AP',
-//                    'Amazonas' => 'AM',
-//                    'Bahia' => 'BA',
-//                    'Ceará' => 'CE',
-//                    'Distrito Federal' => 'DF',
-//                    'Espírito Santo' => 'ES',
-//                    'Goiás' => 'GO',
-//                    'Maranhão' => 'MA',
-//                    'Mato Grosso' => 'MT',
-//                    'Mato Grosso do Sul' => 'MS',
-//                    'Minas Gerais' => 'MG',
-//                    'Pará' => 'PA',
-//                    'Paraíba' => 'PB',
-//                    'Paraná' => 'PR',
-//                    'Pernambuco' => 'PE',
-//                    'Piauí' => 'PI',
-//                    'Rio de Janeiro' => 'RJ',
-//                    'Rio Grande do Norte' => 'RN',
-//                    'Rio Grande do Sul' => 'RS',
-//                    'Rondônia' => 'RO',
-//                    'Roraima' => 'RR',
-//                    'Santa Catarina' => 'SC',
-//                    'São Paulo' => 'SP',
-//                    'Sergipe' => 'SE',
-//                    'Tocantins' => 'TO'
-//                ],
-//                'required' => false,
-//                'attr' => ['class' => 'autoSelect2'],
-//                'disabled' => $disabled
-//            ]);
-//            $builder->add('foneEmitente', TextType::class, [
-//                'label' => 'Fone',
-//                'required' => false,
-//                'attr' => [
-//                    'class' => 'telefone'
-//                ],
-//                'disabled' => $disabled
-//            ]);
-
 
             $builder->add('documentoDestinatario', TextType::class, [
                 'label' => 'CPF/CNPJ',
@@ -365,6 +275,7 @@ class NotaFiscalType extends AbstractType
                     'Entrada' => 'E',
                     'Saída' => 'S'
                 ],
+                'attr' => ['class' => 'autoSelect2'],
                 'disabled' => $disabled
             ]);
 
@@ -379,7 +290,8 @@ class NotaFiscalType extends AbstractType
                     'Por conta do destinatário/remetente' => 'DESTINATARIO',
                     'Por conta de terceiros' => 'TERCEIROS'
                 ],
-                'disabled' => $disabledTransp
+                'attr' => ['class' => 'autoSelect2'],
+                'disabled' => $disabled
             ]);
 
 
@@ -502,7 +414,8 @@ class NotaFiscalType extends AbstractType
                     'A prazo' => 'PRAZO',
                     'Outros' => 'OUTROS'
                 ],
-                'disabled' => $disabledTransp
+                'attr' => ['class' => 'autoSelect2'],
+                'disabled' => $disabled
             ]);
 
             $builder->add('finalidadeNf', ChoiceType::class, [
@@ -514,6 +427,7 @@ class NotaFiscalType extends AbstractType
                     'Ajuste' => 'AJUSTE',
                     'Complementar' => 'COMPLEMENTAR'
                 ],
+                'attr' => ['class' => 'autoSelect2'],
                 'disabled' => $disabled
             ]);
 

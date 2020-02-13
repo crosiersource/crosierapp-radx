@@ -466,6 +466,9 @@ class NotaFiscalBusiness extends BaseBusiness
         } catch (\Exception $e) {
             $this->getDoctrine()->rollback();
             $erro = 'Erro ao salvar Nota Fiscal';
+            if ($e instanceof ViewException) {
+                $erro .= ' (' . $e->getMessage() . ')';
+            }
             throw new ViewException($erro, null, $e);
         }
     }
@@ -798,14 +801,15 @@ class NotaFiscalBusiness extends BaseBusiness
     }
 
     /**
-     * @param $cnpj
+     * @param string $cnpj
+     * @param string $uf
      * @return mixed
-     * @throws \Exception
+     * @throws ViewException
      */
-    public function consultarCNPJ($cnpj)
+    public function consultarCNPJ(string $cnpj, string $uf)
     {
         $r = [];
-        $infCons = $this->spedNFeBusiness->consultarCNPJ($cnpj);
+        $infCons = $this->spedNFeBusiness->consultarCNPJ($cnpj, $uf);
         if ($infCons->cStat->__toString() === '259') {
             $r['xMotivo'] = $infCons->xMotivo->__toString();
         } else {

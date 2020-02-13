@@ -627,23 +627,22 @@ class SpedNFeBusiness
     }
 
     /**
-     * @param $cnpj
+     * @param string $cnpj
+     * @param string $uf
      * @return mixed
      * @throws ViewException
      */
-    public function consultarCNPJ(string $cnpj)
+    public function consultarCNPJ(string $cnpj, string $uf)
     {
         try {
             $tools = $this->nfeUtils->getToolsEmUso();
-            $uf = 'PR';
             $iest = '';
             $cpf = '';
             $response = $tools->sefazCadastro($uf, $cnpj, $iest, $cpf);
             $xmlResp = simplexml_load_string($response);
             $xmlResp->registerXPathNamespace('soap', 'http://www.w3.org/2003/05/soap-envelope');
             $xml = $xmlResp->xpath('//soap:Body');
-            $infCons = $xml[0]->nfeResultMsg->retConsCad->infCons;
-            return $infCons;
+            return $xml[0]->nfeResultMsg->retConsCad->infCons;
         } catch (\Exception $e) {
             throw new ViewException('Erro ao consultar o CNPJ');
         }

@@ -73,6 +73,7 @@ class NotaFiscalEntityHandler extends EntityHandler
 
         $notaFiscal->setDocumentoEmitente(preg_replace("/[\D]/", '', $notaFiscal->getDocumentoEmitente()));
         $notaFiscal->setDocumentoDestinatario(preg_replace("/[\D]/", '', $notaFiscal->getDocumentoDestinatario()));
+        $notaFiscal->setTranspDocumento(preg_replace("/[\D]/", '', $notaFiscal->getTranspDocumento()));
 
         if ($notaFiscal->getChaveAcesso() === '') {
             $notaFiscal->setChaveAcesso(null);
