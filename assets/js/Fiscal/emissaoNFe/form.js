@@ -42,9 +42,14 @@ $(document).ready(function () {
      */
     function handleFields() {
 
-        $documentoDestinatario.data('documento', $documentoDestinatario.val().replace(/[^\d]+/g, ''));
+        if ($documentoDestinatario.val()) {
+            $documentoDestinatario.data('documento', $documentoDestinatario.val().replace(/[^\d]+/g, ''));
+        }
+        
 
-        $transpDocumento.data('documento', $transpDocumento.val().replace(/[^\d]+/g, ''));
+        if ($transpDocumento.val()) {
+            $transpDocumento.data('documento', $transpDocumento.val().replace(/[^\d]+/g, ''));
+        }
 
         let tipoVal = $("input[name*='nota_fiscal[tipoNotaFiscal]']:checked").val();
         if (tipoVal !== 'NFE') {
