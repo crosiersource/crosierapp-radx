@@ -26,26 +26,7 @@ class TipoVenda implements EntityId
      *
      * @var null|string
      */
-    private $descricao;
-
-    /**
-     * @return null|string
-     */
-    public function getDescricao(): ?string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @param null|string $descricao
-     * @return TipoVenda
-     */
-    public function setDescricao(?string $descricao): TipoVenda
-    {
-        $this->descricao = $descricao;
-        return $this;
-    }
-
+    public ?string $descricao;
 
 }
     

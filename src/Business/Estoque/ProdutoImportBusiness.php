@@ -3,12 +3,10 @@
 namespace App\Business\Estoque;
 
 
-use App\Entity\Estoque\Atributo;
 use App\Entity\Estoque\Fornecedor;
 use App\Entity\Estoque\Grupo;
 use App\EntityHandler\Estoque\FornecedorEntityHandler;
 use App\EntityHandler\Estoque\GrupoEntityHandler;
-use App\Repository\Estoque\AtributoRepository;
 use App\Repository\Estoque\FornecedorRepository;
 use App\Repository\Estoque\GrupoRepository;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;

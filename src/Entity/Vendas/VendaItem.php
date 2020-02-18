@@ -2,12 +2,9 @@
 
 namespace App\Entity\Vendas;
 
-use App\Entity\Estoque\Atributo;
 use App\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -30,7 +27,7 @@ class VendaItem implements EntityId
      *
      * @var null|boolean
      */
-    private $alteracaoPreco;
+    public ?bool $alteracaoPreco;
 
     /**
      *
@@ -39,7 +36,7 @@ class VendaItem implements EntityId
      *
      * @var null|string
      */
-    private $obs;
+    public ?string $obs;
 
     /**
      *
@@ -48,7 +45,7 @@ class VendaItem implements EntityId
      *
      * @var null|float
      */
-    private $precoVenda;
+    public ?float $precoVenda;
 
     /**
      *
@@ -57,7 +54,7 @@ class VendaItem implements EntityId
      *
      * @var null|float
      */
-    private $qtde;
+    public ?float $qtde;
 
     /**
      *
@@ -66,7 +63,7 @@ class VendaItem implements EntityId
      *
      * @var null|Venda
      */
-    private $venda;
+    public ?Venda $venda;
 
     /**
      *
@@ -75,7 +72,7 @@ class VendaItem implements EntityId
      *
      * @var null|string
      */
-    private $ncDescricao;
+    public ?string $ncDescricao;
 
     /**
      *
@@ -85,7 +82,7 @@ class VendaItem implements EntityId
      *
      * @var null|Produto
      */
-    private $produto;
+    public ?Produto $produto;
 
     /**
      *
@@ -94,7 +91,7 @@ class VendaItem implements EntityId
      *
      * @var null|integer
      */
-    private $ncReduzido;
+    public ?int $ncReduzido;
 
     /**
      *
@@ -103,7 +100,7 @@ class VendaItem implements EntityId
      *
      * @var null|string
      */
-    private $ncGradeTamanho;
+    public ?string $ncGradeTamanho;
 
     /**
      *
@@ -112,7 +109,7 @@ class VendaItem implements EntityId
      *
      * @var null|string
      */
-    private $ncm;
+    public ?string $ncm;
 
     /**
      *
@@ -121,7 +118,7 @@ class VendaItem implements EntityId
      *
      * @var null|integer
      */
-    private $ordem;
+    public ?int $ordem;
 
     /**
      *
@@ -130,7 +127,7 @@ class VendaItem implements EntityId
      *
      * @var null|boolean
      */
-    private $ncmExistente;
+    public ?bool $ncmExistente;
 
     /**
      *
@@ -139,7 +136,7 @@ class VendaItem implements EntityId
      *
      * @var null|\DateTime
      */
-    private $dtCusto;
+    public ?\DateTime $dtCusto;
 
     /**
      *
@@ -148,7 +145,7 @@ class VendaItem implements EntityId
      *
      * @var null|float
      */
-    private $precoCusto;
+    public ?float $precoCusto;
 
 
     /**
@@ -157,303 +154,7 @@ class VendaItem implements EntityId
      *
      * @var null|float
      */
-    private $totalItem;
-
-    /**
-     *
-     * @ORM\ManyToMany(targetEntity="\App\Entity\Estoque\Atributo")
-     * @ORM\JoinTable(name="ven_venda_item_atributo",
-     *      joinColumns={@ORM\JoinColumn(name="venda_item_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="atributo_id", referencedColumnName="id")}
-     * )
-     * @var null|Atributo[]|array|Collection
-     * @Groups("entity")
-     */
-    private $atributos;
-
-
-    public function __construct()
-    {
-        $this->atributos = new ArrayCollection();
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getAlteracaoPreco(): ?bool
-    {
-        return $this->alteracaoPreco;
-    }
-
-    /**
-     * @param bool|null $alteracaoPreco
-     * @return VendaItem
-     */
-    public function setAlteracaoPreco(?bool $alteracaoPreco): VendaItem
-    {
-        $this->alteracaoPreco = $alteracaoPreco;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param null|string $obs
-     * @return VendaItem
-     */
-    public function setObs(?string $obs): VendaItem
-    {
-        $this->obs = $obs;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPrecoVenda(): ?float
-    {
-        return $this->precoVenda;
-    }
-
-    /**
-     * @param float|null $precoVenda
-     * @return VendaItem
-     */
-    public function setPrecoVenda(?float $precoVenda): VendaItem
-    {
-        $this->precoVenda = $precoVenda;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getQtde(): ?float
-    {
-        return $this->qtde;
-    }
-
-    /**
-     * @param float|null $qtde
-     * @return VendaItem
-     */
-    public function setQtde(?float $qtde): VendaItem
-    {
-        $this->qtde = $qtde;
-        return $this;
-    }
-
-    /**
-     * @return Venda|null
-     */
-    public function getVenda(): ?Venda
-    {
-        return $this->venda;
-    }
-
-    /**
-     * @param Venda|null $venda
-     * @return VendaItem
-     */
-    public function setVenda(?Venda $venda): VendaItem
-    {
-        $this->venda = $venda;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getNcDescricao(): ?string
-    {
-        return $this->ncDescricao;
-    }
-
-    /**
-     * @param null|string $ncDescricao
-     * @return VendaItem
-     */
-    public function setNcDescricao(?string $ncDescricao): VendaItem
-    {
-        $this->ncDescricao = $ncDescricao;
-        return $this;
-    }
-
-    /**
-     * @return Produto|null
-     */
-    public function getProduto(): ?Produto
-    {
-        return $this->produto;
-    }
-
-    /**
-     * @param Produto|null $produto
-     * @return VendaItem
-     */
-    public function setProduto(?Produto $produto): VendaItem
-    {
-        $this->produto = $produto;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getNcReduzido(): ?int
-    {
-        return $this->ncReduzido;
-    }
-
-    /**
-     * @param int|null $ncReduzido
-     * @return VendaItem
-     */
-    public function setNcReduzido(?int $ncReduzido): VendaItem
-    {
-        $this->ncReduzido = $ncReduzido;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getNcGradeTamanho(): ?string
-    {
-        return $this->ncGradeTamanho;
-    }
-
-    /**
-     * @param null|string $ncGradeTamanho
-     * @return VendaItem
-     */
-    public function setNcGradeTamanho(?string $ncGradeTamanho): VendaItem
-    {
-        $this->ncGradeTamanho = $ncGradeTamanho;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getNcm(): ?string
-    {
-        return $this->ncm;
-    }
-
-    /**
-     * @param null|string $ncm
-     * @return VendaItem
-     */
-    public function setNcm(?string $ncm): VendaItem
-    {
-        $this->ncm = $ncm;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getOrdem(): ?int
-    {
-        return $this->ordem;
-    }
-
-    /**
-     * @param int|null $ordem
-     * @return VendaItem
-     */
-    public function setOrdem(?int $ordem): VendaItem
-    {
-        $this->ordem = $ordem;
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getNcmExistente(): ?bool
-    {
-        return $this->ncmExistente;
-    }
-
-    /**
-     * @param bool|null $ncmExistente
-     * @return VendaItem
-     */
-    public function setNcmExistente(?bool $ncmExistente): VendaItem
-    {
-        $this->ncmExistente = $ncmExistente;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtCusto(): ?\DateTime
-    {
-        return $this->dtCusto;
-    }
-
-    /**
-     * @param \DateTime|null $dtCusto
-     * @return VendaItem
-     */
-    public function setDtCusto(?\DateTime $dtCusto): VendaItem
-    {
-        $this->dtCusto = $dtCusto;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPrecoCusto(): ?float
-    {
-        return $this->precoCusto;
-    }
-
-    /**
-     * @param float|null $precoCusto
-     * @return VendaItem
-     */
-    public function setPrecoCusto(?float $precoCusto): VendaItem
-    {
-        $this->precoCusto = $precoCusto;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getTotalItem(): ?float
-    {
-        return bcmul($this->qtde, $this->precoVenda, 2);
-    }
-
-    /**
-     * @return Atributo[]|array|Collection|null
-     */
-    public function getAtributos()
-    {
-        return $this->atributos;
-    }
-
-    /**
-     * @param Atributo[]|array|Collection|null $atributos
-     * @return VendaItem
-     */
-    public function setAtributos($atributos)
-    {
-        $this->atributos = $atributos;
-        return $this;
-    }
+    public ?float $totalItem;
 
 
 }

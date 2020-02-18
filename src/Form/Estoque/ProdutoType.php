@@ -7,19 +7,18 @@ use App\Entity\Estoque\Fornecedor;
 use App\Entity\Estoque\Grupo;
 use App\Entity\Estoque\Produto;
 use App\Entity\Estoque\Subgrupo;
-use App\Entity\Estoque\UnidadeProduto;
 use App\Repository\Estoque\DeptoRepository;
 use App\Repository\Estoque\FornecedorRepository;
 use App\Repository\Estoque\GrupoRepository;
-use App\Repository\Estoque\UnidadeProdutoRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\PercentType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -34,7 +33,7 @@ class ProdutoType extends AbstractType
 {
 
     /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
     public function __construct(EntityManagerInterface $doctrine)
     {
@@ -60,18 +59,6 @@ class ProdutoType extends AbstractType
                 'attr' => ['class' => 'focusOnReady'],
             ]);
 
-            $builder->add('titulo', TextType::class, [
-                'label' => 'Título',
-                'required' => false,
-                'attr' => ['class' => 'notuppercase'],
-            ]);
-
-            $builder->add('caracteristicas', TextareaType::class, [
-                'label' => 'Características',
-                'required' => false,
-                'attr' => ['class' => 'summernote']
-            ]);
-
             /** @var DeptoRepository $repoDeptos */
             $repoDeptos = $this->doctrine->getRepository(Depto::class);
             $deptos = $repoDeptos->findAll(['codigo' => 'ASC']);
@@ -89,10 +76,10 @@ class ProdutoType extends AbstractType
             ]);
 
             $grupos = [];
-            if ($produto && $produto->getDepto()) {
+            if ($produto && $produto->depto ?? false) {
                 /** @var GrupoRepository $repoGrupos */
                 $repoGrupos = $this->doctrine->getRepository(Grupo::class);
-                $grupos = $repoGrupos->findBy(['depto' => $produto->getDepto()], ['codigo' => 'ASC']);
+                $grupos = $repoGrupos->findBy(['depto' => $produto->depto], ['codigo' => 'ASC']);
             }
             $builder->add('grupo', EntityType::class, [
                 'label' => 'Grupo',
@@ -106,10 +93,10 @@ class ProdutoType extends AbstractType
             ]);
 
             $subgrupos = [];
-            if ($produto && $produto->getGrupo()) {
+            if ($produto && $produto->grupo ?? false) {
                 /** @var GrupoRepository $repoGrupos */
                 $repoSubgrupos = $this->doctrine->getRepository(Subgrupo::class);
-                $subgrupos = $repoSubgrupos->findBy(['grupo' => $produto->getGrupo()], ['codigo' => 'ASC']);
+                $subgrupos = $repoSubgrupos->findBy(['grupo' => $produto->grupo], ['codigo' => 'ASC']);
             }
             $builder->add('subgrupo', EntityType::class, [
                 'label' => 'Subgrupo',
@@ -117,31 +104,6 @@ class ProdutoType extends AbstractType
                 'class' => Subgrupo::class,
                 'choices' => $subgrupos,
                 'choice_label' => 'descricaoMontada',
-                'attr' => [
-                    'class' => 'autoSelect2'
-                ],
-                'required' => true
-            ]);
-
-            $builder->add('ean', TextType::class, [
-                'label' => 'EAN',
-                'required' => false
-            ]);
-
-            $builder->add('referencia', TextType::class, [
-                'label' => 'Referência',
-                'required' => false
-            ]);
-
-            /** @var UnidadeProdutoRepository $repoUnidadeProduto */
-            $repoUnidadeProduto = $this->doctrine->getRepository(UnidadeProduto::class);
-            $unidades = $repoUnidadeProduto->findAll(['label' => 'ASC']);
-            $builder->add('unidade', EntityType::class, [
-                'label' => 'Unidade',
-                'placeholder' => '...',
-                'class' => UnidadeProduto::class,
-                'choices' => $unidades,
-                'choice_label' => 'label',
                 'attr' => [
                     'class' => 'autoSelect2'
                 ],
@@ -180,14 +142,6 @@ class ProdutoType extends AbstractType
                 ]
             ));
 
-            $builder->add('ncm', TextType::class, [
-                'label' => 'NCM',
-                'required' => false,
-                'attr' => [
-                    'form' => 'produto',
-                ]
-            ]);
-
             $builder->add('status', ChoiceType::class, [
                 'label' => 'Status',
                 'choices' => [
@@ -211,42 +165,40 @@ class ProdutoType extends AbstractType
 
             ]);
 
-            $builder->add('porcentPreench', PercentType::class, [
-                'label' => 'Status Cad',
-                'scale' => 0,
-                'attr' => ['class' => 'int'],
-                'required' => false,
-                'disabled' => true
-            ]);
+            /** @var AppConfigRepository $repoAppConfig */
+            $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
+            $jsonMetadata = json_decode($repoAppConfig->findByChave('est_produto_json_metadata'), true);
+
+            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata]);
 
 
         });
-
-
-        $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) {
-
-                $builder = $event->getForm();
-
-                $builder->add('depto', EntityType::class, [
-                    'class' => Depto::class,
-                    'choice_label' => 'descricaoMontada'
-                ]);
-
-                $builder->add('grupo', EntityType::class, [
-                    'class' => Grupo::class,
-                    'choice_label' => 'descricaoMontada'
-                ]);
-
-                $builder->add('subgrupo', EntityType::class, [
-                    'class' => Subgrupo::class,
-                    'choice_label' => 'descricaoMontada'
-                ]);
-
-
-            }
-        );
+//
+//
+//        $builder->addEventListener(
+//            FormEvents::PRE_SUBMIT,
+//            function (FormEvent $event) {
+//
+//                $builder = $event->getForm();
+//
+//                $builder->add('depto', EntityType::class, [
+//                    'class' => Depto::class,
+//                    'choice_label' => 'descricaoMontada'
+//                ]);
+//
+//                $builder->add('grupo', EntityType::class, [
+//                    'class' => Grupo::class,
+//                    'choice_label' => 'descricaoMontada'
+//                ]);
+//
+//                $builder->add('subgrupo', EntityType::class, [
+//                    'class' => Subgrupo::class,
+//                    'choice_label' => 'descricaoMontada'
+//                ]);
+//
+//
+//            }
+//        );
 
     }
 

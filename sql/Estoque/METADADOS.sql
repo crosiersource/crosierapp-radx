@@ -155,30 +155,30 @@ CREATE TABLE `est_subgrupo`
 
 
 
-DROP TABLE IF EXISTS `est_atributo`;
+DROP TABLE IF EXISTS `est_produto`;
 
-CREATE TABLE `est_atributo`
+CREATE TABLE `est_produto`
 (
     `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
 
     `uuid`               char(36)     NOT NULL,
-    `label`              varchar(255) NOT NULL,
-    `descricao`          varchar(255) NOT NULL,
-    `config`             varchar(255),
-    `sufixo`             varchar(255),
-    `prefixo`            varchar(255),
-    `tipo`               varchar(50)  NOT NULL,
-    `atributo_pai_uuid`  char(36),
-    `primaria`           char(1)      NOT NULL,
-    `ordem`              integer      NOT NULL,
-    `editavel`           char(1)      NOT NULL,
-    `visivel`           char(1)      NOT NULL,
-    `obs`                varchar(3000),
+    `subgrupo_id`        bigint(20)   NOT NULL,
+    `fornecedor_id`      bigint(20)   NOT NULL,
+    `nome`               varchar(255) NOT NULL,
+    `status`             enum ('ATIVO','INATIVO'),
+    `obs`                varchar(5000),
+    `json_data`          json,
 
-    UNIQUE KEY `UK_est_atributo_uuid` (`uuid`),
-    KEY `K_est_atributo_label` (`label`),
-    KEY `K_est_atributo_atributo_pai` (`atributo_pai_uuid`),
-    CONSTRAINT `FK_est_atributo_atributo_pai` FOREIGN KEY (`atributo_pai_uuid`) REFERENCES `est_atributo` (`uuid`),
+    KEY `K_est_produto_uuid` (`uuid`),
+    KEY `K_est_produto_nome` (`nome`),
+    KEY `K_est_produto_titulo` (`titulo`),
+    KEY `K_est_produto_ean` (`ean`),
+    UNIQUE KEY `K_est_produto_codigo_from` (`codigo_from`),
+
+    KEY `K_est_produto_subgrupo` (`subgrupo_id`),
+    CONSTRAINT `FK_est_produto_subgrupo` FOREIGN KEY (`subgrupo_id`) REFERENCES `est_subgrupo` (`id`),
+    KEY `K_est_produto_fornecedor` (`fornecedor_id`),
+    CONSTRAINT `FK_est_produto_fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `est_fornecedor` (`id`),
 
     -- campo de controle
     PRIMARY KEY (`id`),
@@ -188,134 +188,6 @@ CREATE TABLE `est_atributo`
     `estabelecimento_id` bigint(20)   NOT NULL,
     `user_inserted_id`   bigint(20)   NOT NULL,
     `user_updated_id`    bigint(20)   NOT NULL,
-    KEY `K_est_atributo_estabelecimento` (`estabelecimento_id`),
-    KEY `K_est_atributo_user_inserted` (`user_inserted_id`),
-    KEY `K_est_atributo_user_updated` (`user_updated_id`),
-    CONSTRAINT `FK_est_atributo_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `FK_est_atributo_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_est_atributo_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
-
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
-
-
-
-DROP TABLE IF EXISTS `est_grupo_atributo`;
-
-CREATE TABLE `est_grupo_atributo`
-(
-    `id`                 bigint(20)    NOT NULL AUTO_INCREMENT,
-
-    `uuid`               char(36)      NOT NULL,
-    `label`              varchar(255)  NOT NULL,
-    `descricao`          varchar(3000) NOT NULL,
-
-    KEY `K_est_grupo_atributo_label` (`label`),
-
-    -- campo de controle
-    PRIMARY KEY (`id`),
-    `inserted`           datetime      NOT NULL,
-    `updated`            datetime      NOT NULL,
-    `version`            int(11),
-    `estabelecimento_id` bigint(20)    NOT NULL,
-    `user_inserted_id`   bigint(20)    NOT NULL,
-    `user_updated_id`    bigint(20)    NOT NULL,
-    KEY `K_est_grupo_atributo_estabelecimento` (`estabelecimento_id`),
-    KEY `K_est_grupo_atributo_user_inserted` (`user_inserted_id`),
-    KEY `K_est_grupo_atributo_user_updated` (`user_updated_id`),
-    CONSTRAINT `FK_est_grupo_atributo_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `FK_est_grupo_atributo_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_est_grupo_atributo_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
-
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
-
-
--- NxN
-DROP TABLE IF EXISTS `est_atributo_grupo_atributo`;
-
-CREATE TABLE `est_atributo_grupo_atributo`
-(
-    `atributo_id`       bigint(20) NOT NULL,
-    `grupo_atributo_id` bigint(20) NOT NULL,
-
-    PRIMARY KEY (`atributo_id`, `grupo_atributo_id`),
-
-    KEY `K_est_atributo_grupo_atributo_atributo` (`atributo_id`),
-    CONSTRAINT `FK_est_atributo_grupo_atributo_atributo` FOREIGN KEY (`atributo_id`) REFERENCES `est_atributo` (`id`),
-    KEY `K_est_atributo_grupo_atributo_grupo_atributo` (`grupo_atributo_id`),
-    CONSTRAINT `FK_est_atributo_grupo_atributo_grupo_atributo` FOREIGN KEY (`grupo_atributo_id`) REFERENCES `est_grupo_atributo` (`id`)
-
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
-
-
-
-DROP TABLE IF EXISTS `est_produto`;
-
-CREATE TABLE `est_produto`
-(
-    `id`                   bigint(20)   NOT NULL AUTO_INCREMENT,
-
-    `uuid`                 char(36)     NOT NULL,
-
-    `depto_id`             bigint(20)   NOT NULL,
-    `depto_codigo`         varchar(50)  NOT NULL,
-    `depto_nome`           varchar(255) NOT NULL,
-
-    `grupo_id`             bigint(20)   NOT NULL,
-    `grupo_codigo`         varchar(50)  NOT NULL,
-    `grupo_nome`           varchar(255) NOT NULL,
-
-    `subgrupo_id`          bigint(20)   NOT NULL,
-    `subgrupo_codigo`      varchar(50)  NOT NULL,
-    `subgrupo_nome`        varchar(255) NOT NULL,
-
-    `fornecedor_id`        bigint(20)   NOT NULL,
-    `fornecedor_nome`      VARCHAR(255) NOT NULL,
-    `fornecedor_documento` VARCHAR(20),
-
-    `nome`                 varchar(255) NOT NULL,
-    `titulo`               varchar(600),
-    `caracteristicas`      varchar(10000),
-    `ean`                  varchar(30),
-    `referencia`           varchar(255),
-    `ncm`                  varchar(30),
-    `status`               enum ('ATIVO','INATIVO'),
-    `unidade_produto_id`   bigint(20)   NOT NULL,
-    `obs`                  varchar(5000),
-
-    `codigo_from`          varchar(255),
-    `porcent_preench`      decimal(5, 3),
-
-    KEY `K_est_produto_uuid` (`uuid`),
-    KEY `K_est_produto_nome` (`nome`),
-    KEY `K_est_produto_titulo` (`titulo`),
-    KEY `K_est_produto_ean` (`ean`),
-    UNIQUE KEY `K_est_produto_codigo_from` (`codigo_from`),
-
-    KEY `K_est_produto_depto` (`depto_id`),
-    CONSTRAINT `FK_est_produto_depto` FOREIGN KEY (`depto_id`) REFERENCES `est_depto` (`id`),
-    KEY `K_est_produto_grupo` (`grupo_id`),
-    CONSTRAINT `FK_est_produto_grupo` FOREIGN KEY (`grupo_id`) REFERENCES `est_grupo` (`id`),
-    KEY `K_est_produto_subgrupo` (`subgrupo_id`),
-    CONSTRAINT `FK_est_produto_subgrupo` FOREIGN KEY (`subgrupo_id`) REFERENCES `est_subgrupo` (`id`),
-    KEY `K_est_produto_fornecedor` (`fornecedor_id`),
-    CONSTRAINT `FK_est_produto_fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `est_fornecedor` (`id`),
-    KEY `K_est_unidade_produto` (`unidade_produto_id`),
-    CONSTRAINT `FK_est_unidade_produto` FOREIGN KEY (`unidade_produto_id`) REFERENCES `est_unidade_produto` (`id`),
-
-    -- campo de controle
-    PRIMARY KEY (`id`),
-    `inserted`             datetime     NOT NULL,
-    `updated`              datetime     NOT NULL,
-    `version`              int(11),
-    `estabelecimento_id`   bigint(20)   NOT NULL,
-    `user_inserted_id`     bigint(20)   NOT NULL,
-    `user_updated_id`      bigint(20)   NOT NULL,
     KEY `K_est_produto_estabelecimento` (`estabelecimento_id`),
     KEY `K_est_produto_user_inserted` (`user_inserted_id`),
     KEY `K_est_produto_user_updated` (`user_updated_id`),
@@ -328,48 +200,7 @@ CREATE TABLE `est_produto`
   COLLATE = utf8_swedish_ci;
 
 
--- NxN com especificação
-DROP TABLE IF EXISTS `est_produto_atributo`;
 
-CREATE TABLE `est_produto_atributo`
-(
-    `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
-
-    `produto_id`         bigint(20) NOT NULL,
-    `atributo_id`        bigint(20) NOT NULL,
-    `aba`                varchar(50),
-    `grupo`              varchar(50),
-    `ordem`              integer,
-    `soma_preench`       char(1)    NOT NULL,
-    `quantif`            char(1)    NOT NULL,
-    `precif`             char(1)    NOT NULL,
-    `valor`              varchar(10000),
-
-    UNIQUE KEY `UK_est_produto_atributo` (`produto_id`, `atributo_id`),
-
-    KEY `K_est_produto_atributo_produto` (`produto_id`),
-    CONSTRAINT `FK_est_produto_atributo_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`),
-    KEY `K_est_produto_atributo_atributo` (`atributo_id`),
-    CONSTRAINT `FK_est_produto_atributo_atributo` FOREIGN KEY (`atributo_id`) REFERENCES `est_atributo` (`id`),
-
-    -- campo de controle
-    PRIMARY KEY (`id`),
-    `inserted`           datetime   NOT NULL,
-    `updated`            datetime   NOT NULL,
-    `version`            int(11),
-    `estabelecimento_id` bigint(20) NOT NULL,
-    `user_inserted_id`   bigint(20) NOT NULL,
-    `user_updated_id`    bigint(20) NOT NULL,
-    KEY `K_est_produto_atributo_estabelecimento` (`estabelecimento_id`),
-    KEY `K_est_produto_atributo_user_inserted` (`user_inserted_id`),
-    KEY `K_est_produto_atributo_user_updated` (`user_updated_id`),
-    CONSTRAINT `FK_est_produto_atributo_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `FK_est_produto_atributo_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_est_produto_atributo_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
-
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
 
 
 DROP TABLE IF EXISTS `est_produto_imagem`;
@@ -525,25 +356,6 @@ CREATE TABLE `est_produto_composicao`
   COLLATE = utf8_swedish_ci;
 
 
--- NxN
-DROP TABLE IF EXISTS `est_produto_preco_atributo`;
-
-CREATE TABLE `est_produto_preco_atributo`
-(
-    `produto_preco_id` bigint(20) NOT NULL,
-    `atributo_id`      bigint(20) NOT NULL,
-
-    PRIMARY KEY (`produto_preco_id`, `atributo_id`),
-
-    KEY `K_est_produto_preco_atributo_produto_preco` (`produto_preco_id`),
-    CONSTRAINT `FK_est_produto_preco_atributo_produto_preco` FOREIGN KEY (`produto_preco_id`) REFERENCES `est_produto_preco` (`id`),
-    KEY `K_est_produto_preco_atributo_atributo` (`atributo_id`),
-    CONSTRAINT `FK_est_produto_preco_atributo_atributo` FOREIGN KEY (`atributo_id`) REFERENCES `est_atributo` (`id`)
-
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
-
 
 
 DROP TABLE IF EXISTS `est_produto_saldo`;
@@ -577,24 +389,6 @@ CREATE TABLE `est_produto_saldo`
   COLLATE = utf8_swedish_ci;
 
 
--- NxN
-DROP TABLE IF EXISTS `est_produto_saldo_atributo`;
-
-CREATE TABLE `est_produto_saldo_atributo`
-(
-    `produto_saldo_id` bigint(20) NOT NULL,
-    `atributo_id`      bigint(20) NOT NULL,
-
-    PRIMARY KEY (`produto_saldo_id`, `atributo_id`),
-
-    KEY `K_est_produto_saldo_atributo_produto_saldo` (`produto_saldo_id`),
-    CONSTRAINT `FK_est_produto_saldo_atributo_produto_saldo` FOREIGN KEY (`produto_saldo_id`) REFERENCES `est_produto_saldo` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-    KEY `K_est_produto_saldo_atributo_atributo` (`atributo_id`),
-    CONSTRAINT `FK_est_produto_saldo_atributo_atributo` FOREIGN KEY (`atributo_id`) REFERENCES `est_atributo` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
-
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
 
 
 

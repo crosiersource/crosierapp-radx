@@ -3,18 +3,14 @@
 namespace App\Controller\Estoque;
 
 use App\Business\Estoque\ProdutoBusiness;
-use App\Entity\Estoque\Atributo;
 use App\Entity\Estoque\Produto;
-use App\Entity\Estoque\ProdutoAtributo;
 use App\Entity\Estoque\ProdutoComposicao;
 use App\Entity\Estoque\ProdutoImagem;
-use App\EntityHandler\Estoque\ProdutoAtributoEntityHandler;
 use App\EntityHandler\Estoque\ProdutoComposicaoEntityHandler;
 use App\EntityHandler\Estoque\ProdutoEntityHandler;
 use App\EntityHandler\Estoque\ProdutoImagemEntityHandler;
 use App\Form\Estoque\ProdutoImagemType;
 use App\Form\Estoque\ProdutoType;
-use App\Repository\Estoque\AtributoRepository;
 use App\Repository\Estoque\ProdutoComposicaoRepository;
 use App\Repository\Estoque\ProdutoImagemRepository;
 use App\Repository\Estoque\ProdutoRepository;
@@ -40,29 +36,13 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 class ProdutoController extends FormListController
 {
 
-    /** @var ProdutoAtributoEntityHandler */
-    private $produtoAtributoEntityHandler;
+    private ProdutoComposicaoEntityHandler $produtoComposicaoEntityHandler;
 
-    /** @var ProdutoComposicaoEntityHandler */
-    private $produtoComposicaoEntityHandler;
+    private ProdutoImagemEntityHandler $produtoImagemEntityHandler;
 
-    /** @var ProdutoImagemEntityHandler */
-    private $produtoImagemEntityHandler;
+    private UploaderHelper $uploaderHelper;
 
-    /** @var UploaderHelper */
-    private $uploaderHelper;
-
-    /** @var ProdutoBusiness */
-    private $produtoBusiness;
-
-    /**
-     * @required
-     * @param ProdutoAtributoEntityHandler $produtoAtributoEntityHandler
-     */
-    public function setProdutoAtributoEntityHandler(ProdutoAtributoEntityHandler $produtoAtributoEntityHandler): void
-    {
-        $this->produtoAtributoEntityHandler = $produtoAtributoEntityHandler;
-    }
+    private ProdutoBusiness $produtoBusiness;
 
     /**
      * @required
@@ -124,13 +104,12 @@ class ProdutoController extends FormListController
      *
      * @Route("/est/produto/form/{id}", name="est_produto_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
-     * @param SessionInterface $session
      * @param Produto|null $produto
      * @return RedirectResponse|Response
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
-    public function form(Request $request, SessionInterface $session, Produto $produto = null)
+    public function form(Request $request, Produto $produto = null)
     {
         $params = [
             'listRoute' => 'est_produto_list',
@@ -143,30 +122,6 @@ class ProdutoController extends FormListController
         if (!$produto) {
             $produto = new Produto();
         }
-
-
-        /** @var AtributoRepository $repoAtributo */
-        $repoAtributo = $this->getDoctrine()->getRepository(Atributo::class);
-
-        $atributosOptions = $repoAtributo->findBy(['primaria' => 'S'], ['label' => 'ASC']); // ->getAtributosNotInProduto($produto);
-        $atributosOptionsSelect2 = Select2JsUtils::toSelect2DataFn($atributosOptions, function ($e) {
-            /** @var Atributo $e */
-            return $e->getDescricao();
-        });
-        if ($produto && $produto->getAtributos()) {
-            $idsAtributosProduto = [];
-            foreach ($produto->getAtributos() as $atributoProduto) {
-                $idsAtributosProduto[] = $atributoProduto->getAtributo()->getId();
-            }
-            foreach ($atributosOptionsSelect2 as $key => $a) {
-                if (in_array($a['id'], $idsAtributosProduto, true)) {
-                    $atributosOptionsSelect2[$key]['disabled'] = true;
-                }
-            }
-        }
-        array_unshift($atributosOptionsSelect2, ['id' => '', 'text' => 'Selecione...']);
-        $params['atributosOptions'] = json_encode($atributosOptionsSelect2);
-
 
         if ($produto && $produto->getId()) {
             $formProdutoImagem = $this->formProdutoImagem($request, $produto);
@@ -181,12 +136,9 @@ class ProdutoController extends FormListController
             /** @var Produto $produto */
             $produto = $repoProduto->findOneBy(['id' => $produto->getId()]); // refind para não ficar stale após o formProdutoImagem (caso dê erro)
         }
-        $params['abas'] = $repoProduto->getAbas($produto);
+        $params['jsonMetadata'] = json_decode($repoProduto->getJsonMetadata(), true);
 
-        $params['habilitaColarConfigsProduto'] = $produto->getId() && $session->has('produtoAtributoCopiarConfigsProdutoId') && $session->get('produtoAtributoCopiarConfigsProdutoId') !== $produto->getId();
-        $params['habilitaCopiarParaTodosConfigsProduto'] = $produto->getId() && $session->has('produtoAtributoCopiarConfigsProdutoId');
-
-        if ($produto->getComposicao() === 'S') {
+        if ($produto->composicao === 'S') {
             $this->produtoBusiness->fillQtdeEmEstoqueComposicao($produto);
         }
 
@@ -262,18 +214,6 @@ class ProdutoController extends FormListController
     }
 
     /**
-     * @param Request $request
-     * @param $produto
-     * @throws ViewException
-     */
-    public function handleRequestOnValid(Request $request, /** @var Produto $produto */ $produto): void
-    {
-        if ($request->get('produtoAtributo')) {
-            $this->produtoAtributoEntityHandler->saveProdutoAtributos($request->get('produtoAtributo'), $produto);
-        }
-    }
-
-    /**
      *
      * @Route("/est/produto/list/", name="est_produto_list")
      * @param Request $request
@@ -345,72 +285,6 @@ class ProdutoController extends FormListController
 
     /**
      *
-     * @Route("/est/produto/formAtributo/{produto}", name="est_produto_formAtributo", requirements={"produto"="\d+"})
-     * @param Request $request
-     * @param Produto|null $produto
-     * @return RedirectResponse|Response
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function formAtributo(Request $request, Produto $produto)
-    {
-        try {
-            $produtoAtributo = $request->get('produtoAtributo');
-            $this->produtoAtributoEntityHandler->salvarAtributo($produto, $produtoAtributo);
-            $this->entityHandler->getDoctrine()->refresh($produto);
-        } catch (ViewException $e) {
-            $this->addFlash('error', 'Erro ao salvar o atributo');
-            $this->addFlash('error', $e->getMessage());
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Erro ao salvar o atributo');
-        }
-        return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'config']);
-    }
-
-    /**
-     *
-     * @Route("/est/produto/formAtributoSaveOrdem/", name="est_produto_formAtributoSaveOrdem")
-     * @param Request $request
-     * @return RedirectResponse|Response
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function formAtributoSaveOrdem(Request $request)
-    {
-        try {
-            $ids = $request->get('ids');
-            $idsArr = explode(',', $ids);
-            $ordens = $this->produtoAtributoEntityHandler->salvarOrdens($idsArr);
-            $r = ['result' => 'OK', 'ids' => $ordens];
-            return new JsonResponse($r);
-        } catch (ViewException $e) {
-            return new JsonResponse(['result' => 'FALHA']);
-        }
-    }
-
-    /**
-     *
-     * @Route("/est/produtoAtributo/delete/{produtoAtributo}/", name="est_produtoAtributo_delete", requirements={"produtoAtributo"="\d+"})
-     * @param ProdutoAtributo $produtoAtributo
-     * @return RedirectResponse
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function produtoAtributoDelete(ProdutoAtributo $produtoAtributo): RedirectResponse
-    {
-        try {
-            $this->produtoAtributoEntityHandler->delete($produtoAtributo);
-            $this->produtoAtributoEntityHandler->reordenar($produtoAtributo->getProduto());
-            $this->entityHandler->getDoctrine()->refresh($produtoAtributo->getProduto());
-        } catch (ViewException $e) {
-            $this->addFlash('error', $e->getMessage());
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Erro ao deletar o atributo');
-        }
-
-        return $this->redirectToRoute('est_produto_form', ['id' => $produtoAtributo->getProduto()->getId(), '_fragment' => 'config']);
-    }
-
-
-    /**
-     *
      * @Route("/est/produtoImagem/delete/{produtoImagem}/", name="est_produtoImagem_delete", requirements={"produtoImagem"="\d+"})
      * @param ProdutoImagem $produtoImagem
      * @return RedirectResponse
@@ -433,73 +307,6 @@ class ProdutoController extends FormListController
         return $this->redirectToRoute('est_produto_form', ['id' => $produtoImagem->getProduto()->getId(), '_fragment' => 'fotos']);
     }
 
-    /**
-     *
-     * @Route("/est/produtoAtributo/copiarConfigs/{produto}/", name="est_produtoAtributo_copiarConfigs", requirements={"produto"="\d+"})
-     * @param SessionInterface $session
-     * @param Produto $produto
-     * @return RedirectResponse
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function produtoCopiarConfigs(SessionInterface $session, Produto $produto): RedirectResponse
-    {
-        try {
-            $session->set('produtoAtributoCopiarConfigsProdutoId', $produto->getId());
-            $this->addFlash('info', 'Configurações copiadas com sucesso');
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Erro ao copiar as configurações deste produto');
-        }
-        return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'config']);
-    }
-
-    /**
-     *
-     * @Route("/est/produtoAtributo/colarConfigs/{produtoTo}", name="est_produtoAtributo_colarConfigs", requirements={"produtoTo"="\d+"})
-     * @param SessionInterface $session
-     * @param Produto $produtoTo
-     * @return RedirectResponse
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function produtoColarConfigs(SessionInterface $session, Produto $produtoTo): RedirectResponse
-    {
-        try {
-            /** @var ProdutoRepository $repoProduto */
-            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
-            $produtoFromId = $session->get('produtoAtributoCopiarConfigsProdutoId');
-            /** @var Produto $produtoFrom */
-            $produtoFrom = $repoProduto->find($produtoFromId);
-            $this->produtoAtributoEntityHandler->colarConfigs($produtoFrom, $produtoTo);
-            $this->entityHandler->getDoctrine()->refresh($produtoTo);
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Erro ao colar configurações do produto');
-        }
-
-        return $this->redirectToRoute('est_produto_form', ['id' => $produtoTo->getId()]);
-    }
-
-    /**
-     *
-     * @Route("/est/produtoAtributo/copiarParaTodosConfigs/", name="est_produtoAtributo_copiarParaTodosConfigs")
-     * @param SessionInterface $session
-     * @return RedirectResponse
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function produtoCopiarParaTodosConfigs(SessionInterface $session): RedirectResponse
-    {
-        try {
-            /** @var ProdutoRepository $repoProduto */
-            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
-            $produtoFromId = $session->get('produtoAtributoCopiarConfigsProdutoId');
-            /** @var Produto $produtoFrom */
-            $produtoFrom = $repoProduto->find($produtoFromId);
-            $this->produtoAtributoEntityHandler->copiarParaTodos($produtoFrom);
-            $this->addFlash('info', 'Configurações copiadas para todos os produtos');
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Erro ao colar configurações do produto');
-        }
-
-        return $this->redirectToRoute('est_produto_list');
-    }
 
     /**
      *
@@ -551,28 +358,26 @@ class ProdutoController extends FormListController
     {
         try {
             $this->produtoComposicaoEntityHandler->delete($produtoComposicao);
-            $this->produtoComposicaoEntityHandler->reordenar($produtoComposicao->getProdutoPai());
+            $this->produtoComposicaoEntityHandler->reordenar($produtoComposicao->produtoPai);
         } catch (ViewException $e) {
             $this->addFlash('error', $e->getMessage());
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erro ao deletar o item da composição');
         }
 
-        return $this->redirectToRoute('est_produto_form', ['id' => $produtoComposicao->getProdutoPai()->getId(), '_fragment' => 'composicao']);
+        return $this->redirectToRoute('est_produto_form', ['id' => $produtoComposicao->produtoPai->getId(), '_fragment' => 'composicao']);
     }
 
     /**
      *
      * @Route("/est/produto/findProdutoByIdNomeTituloJSON/", name="est_produto_findProdutoByIdNomeTituloJSON")
-     * @param string $str
+     * @param Request $request
      * @return JsonResponse
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
     public function findProdutoByIdNomeTituloJSON(Request $request): JsonResponse
     {
-
         try {
-
             $str = $request->get('term');
             /** @var ProdutoRepository $repoProduto */
             $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
@@ -582,10 +387,9 @@ class ProdutoController extends FormListController
             } else {
                 $produtos = $repoProduto->findByFiltersSimpl([[['nome', 'titulo'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
             }
-
             $select2js = Select2JsUtils::toSelect2DataFn($produtos, function ($e) {
                 /** @var Produto $e */
-                return ($e->getTitulo() ?: $e->getNome()) . ' (' . $e->getId() . ')';
+                return ($e->jsonData['titulo'] ?: $e->nome) . ' (' . $e->getId() . ')';
             });
             return new JsonResponse(
                 ['results' => $select2js]

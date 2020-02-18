@@ -4,8 +4,6 @@ namespace App\Entity\Estoque;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -28,7 +26,7 @@ class ProdutoSaldo implements EntityId
      *
      * @var null|float
      */
-    private $qtde;
+    public ?float $qtde;
 
     /**
      *
@@ -37,80 +35,6 @@ class ProdutoSaldo implements EntityId
      *
      * @var null|Produto
      */
-    private $produto;
-
-    /**
-     *
-     * @ORM\ManyToMany(targetEntity="Atributo")
-     * @ORM\JoinTable(name="est_produto_preco_atributo",
-     *      joinColumns={@ORM\JoinColumn(name="lista_preco_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="atributo_id", referencedColumnName="id")}
-     * )
-     * @var null|Atributo[]|array|Collection
-     * @Groups("entity")
-     */
-    private $atributos;
-
-// ...
-
-    public function __construct()
-    {
-        $this->atributos = new ArrayCollection();
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getQtde(): ?float
-    {
-        return $this->qtde;
-    }
-
-    /**
-     * @param float|null $qtde
-     * @return ProdutoSaldo
-     */
-    public function setQtde(?float $qtde): ProdutoSaldo
-    {
-        $this->qtde = $qtde;
-        return $this;
-    }
-
-    /**
-     * @return Produto|null
-     */
-    public function getProduto(): ?Produto
-    {
-        return $this->produto;
-    }
-
-    /**
-     * @param Produto|null $produto
-     * @return ProdutoSaldo
-     */
-    public function setProduto(?Produto $produto): ProdutoSaldo
-    {
-        $this->produto = $produto;
-        return $this;
-    }
-
-    /**
-     * @return Atributo[]|array|Collection|null
-     */
-    public function getAtributos()
-    {
-        return $this->atributos;
-    }
-
-    /**
-     * @param Atributo[]|array|Collection|null $atributos
-     * @return ProdutoSaldo
-     */
-    public function setAtributos($atributos)
-    {
-        $this->atributos = $atributos;
-        return $this;
-    }
-
+    public ?Produto $produto;
 
 }

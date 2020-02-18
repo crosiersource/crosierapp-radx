@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  *
  * @ORM\Entity(repositoryClass="App\Repository\Estoque\ListaPrecoRepository")
- * @ORM\Table(name="est_atributo")
+ * @ORM\Table(name="est_lista_preco")
  *
  * @author Carlos Eduardo Pauluk
  */
@@ -29,7 +29,7 @@ class ListaPreco implements EntityId
      *
      * @var string|null
      */
-    private $descricao;
+    public ?string $descricao;
 
     /**
      *
@@ -38,7 +38,7 @@ class ListaPreco implements EntityId
      *
      * @var \DateTime|null
      */
-    private $dtVigenciaIni;
+    public ?\DateTime $dtVigenciaIni;
 
     /**
      *
@@ -47,98 +47,7 @@ class ListaPreco implements EntityId
      *
      * @var \DateTime|null
      */
-    private $dtVigenciaFim;
+    public ?\DateTime $dtVigenciaFim;
 
-    /**
-     *
-     * @ORM\ManyToMany(targetEntity="Atributo")
-     * @ORM\JoinTable(name="est_produto_preco_atributo",
-     *      joinColumns={@ORM\JoinColumn(name="lista_preco_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="atributo_id", referencedColumnName="id")}
-     * )
-     * @var null|Atributo[]|array|Collection
-     * @Groups("entity")
-     */
-    private $atributos;
-
-// ...
-
-    public function __construct()
-    {
-        $this->atributos = new ArrayCollection();
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDescricao(): ?string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @param string|null $descricao
-     * @return ListaPreco
-     */
-    public function setDescricao(?string $descricao): ListaPreco
-    {
-        $this->descricao = $descricao;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtVigenciaIni(): ?\DateTime
-    {
-        return $this->dtVigenciaIni;
-    }
-
-    /**
-     * @param \DateTime|null $dtVigenciaIni
-     * @return ListaPreco
-     */
-    public function setDtVigenciaIni(?\DateTime $dtVigenciaIni): ListaPreco
-    {
-        $this->dtVigenciaIni = $dtVigenciaIni;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtVigenciaFim(): ?\DateTime
-    {
-        return $this->dtVigenciaFim;
-    }
-
-    /**
-     * @param \DateTime|null $dtVigenciaFim
-     * @return ListaPreco
-     */
-    public function setDtVigenciaFim(?\DateTime $dtVigenciaFim): ListaPreco
-    {
-        $this->dtVigenciaFim = $dtVigenciaFim;
-        return $this;
-    }
-
-    /**
-     * @return Atributo[]|array|Collection|null
-     */
-    public function getAtributos()
-    {
-        return $this->atributos;
-    }
-
-    /**
-     * @param Atributo[]|array|Collection|null $atributos
-     * @return ListaPreco
-     */
-    public function setAtributos($atributos)
-    {
-        $this->atributos = $atributos;
-        return $this;
-    }
-
-
+    
 }

@@ -27,30 +27,14 @@
                            href="{{ url('est_produto_form') }}">
                             <i class="fas fa-file" aria-hidden="true"></i> Novo
                         </a>
-
-                        <button type="button" class="btn btn-outline-secondary" title="Copiar configurações"
-                                data-url="{{ url('est_produtoAtributo_copiarConfigs', {'produto': e.id}) }}"
-                                data-target="#confirmationModal" data-toggle="modal">
-                            <i class="fas fa-copy"></i>
-                        </button>
-
-                        {% if habilitaColarConfigsProduto %}
-                            <button type="button" class="btn btn-outline-danger"
-                                    data-url="{{ url('est_produtoAtributo_colarConfigs', {'produtoTo': e.id}) }}"
-                                    data-target="#confirmationModal" data-toggle="modal">
-                                <i class="fas fa-paste"></i> Colar <span
-                                        class="badge badge-light">Id: {{ app.session.get('produtoAtributoCopiarConfigsProdutoId') }}</span>
-                            </button>
-                        {% endif %}
-
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 d-flex">
 
                         <div class="text-left">
-                            <span class="badge badge-pill badge-success">{{ (e.porcentPreench * 100)|number_format(0,',','.') }}%</span>
-                            {% set faltantes = e.getAtributoByUUID('e526ef6b-ea96-40b4-8f83-d492896f5e32').valor|default('')|split('\|') %}
+                            <span class="badge badge-pill badge-success">{{ (e.jsonData['porcent_preench']|default(0) * 100)|number_format(0,',','.') }}%</span>
+                            {% set faltantes = e.jsonData['porcent_preench_campos_faltantes']|default('')|split('\|') %}
                             {% for faltante in faltantes %}
                                 <span class="badge badge-pill badge-warning">{{ faltante }}</span>
                             {% endfor %}
@@ -60,7 +44,7 @@
                             {% if e.composicao == 'S' %}
                                 Disponível: {{ e.composicaoEstoqueDisponivel }}
                             {% else %}
-                                Total: {{ e.getAtributoByUUID('8f25a3e6-cf93-4111-be2b-a46dedc30107').valor|default('') }}
+                                Total: {{ e.jsonData['qtde_estoque_total']|default('') }}
                             {% endif %}
                         </div>
                     </div>
@@ -73,24 +57,19 @@
                 <ul class="nav nav-tabs" id="principal" role="tablist">
 
 
-                    {% for kAba,vAba in abas %}
+                    {% for aba, campos in jsonMetadata.abas %}
 
                         <li class="nav-item">
                             <a class="nav-link {{ loop.index0 == 0 ? 'active' : '' }}"
-                               id="{{ kAba|lower|transliterate }}-tab" data-toggle="tab"
-                               href="#{{ kAba|lower|transliterate }}"
+                               id="{{ aba|lower|transliterate }}-tab" data-toggle="tab"
+                               href="#{{ aba|lower|transliterate }}"
                                role="tab"
-                               aria-controls="{{ kAba|lower|transliterate }}" aria-selected="false">{{ kAba }}</a>
+                               aria-controls="{{ aba|lower|transliterate }}"
+                               aria-selected="false">{{ aba }}</a>
                         </li>
 
                     {% endfor %}
 
-                    {% if is_granted('ROLE_ESTOQUE_ADMIN') %}
-                        <li class="nav-item ml-auto">
-                            <a class="nav-link" id="config-tab" data-toggle="tab" href="#config" role="tab"
-                               aria-controls="config" aria-selected="false">Configuração</a>
-                        </li>
-                    {% endif %}
                 </ul>
 
                 <div class="form-group row">
@@ -99,29 +78,22 @@
 
                 <div class="tab-content" id="myTabContent">
 
-                    {% for kAba,vAba in abas %}
+                    {% for aba,camposNaAba in jsonMetadata.abas %}
 
                         {# Abas fixas que possuem arquivo próprio #}
-                        {% if kAba in ['Produto','Descritivos','Fiscal','Fotos','Composição'] %}
-                            {% include 'Estoque/produto_form_' ~ kAba|lower|transliterate ~ '.html.twig' %}
+                        {% if aba in ['Produto','Descritivos','Fiscal','Fotos','Composição'] %}
+                            {% include 'Estoque/produto_form_' ~ aba|lower|transliterate ~ '.html.twig' %}
                         {% else %}
-                            {% include 'Estoque/produto_form_aba.html.twig' with {'kAba': kAba , 'vAba': vAba} %}
+                            {% include 'Estoque/produto_form_aba.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
                         {% endif %}
 
                     {% endfor %}
-
-                    {% if is_granted('ROLE_ESTOQUE_ADMIN') %}
-                        {{ include('Estoque/produto_form_config.html.twig') }}
-                    {% endif %}
 
                 </div>
 
             </div>
         </div>
-
-
     </div>
-
 
 {% endblock %}
 

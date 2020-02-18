@@ -2,12 +2,10 @@
 
 namespace App\EntityHandler\Estoque;
 
-use App\Entity\Estoque\Atributo;
 use App\Entity\Estoque\Depto;
+use App\Entity\Estoque\Grupo;
 use App\Entity\Estoque\Produto;
-use App\Entity\Estoque\ProdutoAtributo;
-use App\Repository\Estoque\AtributoRepository;
-use App\Repository\Estoque\ProdutoAtributoRepository;
+use App\Entity\Estoque\Subgrupo;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
@@ -39,28 +37,29 @@ class ProdutoEntityHandler extends EntityHandler
 
     public function beforeSave(/** @var Produto $produto */ $produto)
     {
-        if (!$produto->getUUID()) {
-            $produto->setUUID(StringUtils::guidv4());
+        if (!$produto->UUID) {
+            $produto->UUID = StringUtils::guidv4();
         }
 
-        if (!$produto->getDepto()) {
-            $produto->setDepto($this->doctrine->getRepository(Depto::class)->find(1));
+        if (!$produto->depto) {
+            $produto->depto = $this->doctrine->getRepository(Depto::class)->find(1);
         }
-        if (!$produto->getGrupo()) {
-            $produto->setGrupo($this->doctrine->getRepository(Grupo::class)->find(1));
+        if (!$produto->grupo) {
+            $produto->grupo = $this->doctrine->getRepository(Grupo::class)->find(1);
         }
-        if (!$produto->getSubgrupo()) {
-            $produto->setSubgrupo($this->doctrine->getRepository(Subgrupo::class)->find(1));
+        if (!$produto->subgrupo) {
+            $produto->subgrupo = $this->doctrine->getRepository(Subgrupo::class)->find(1);
         }
-        $produto->setCodigoDepto($produto->getDepto()->getCodigo());
-        $produto->setNomeDepto($produto->getDepto()->getNome());
-        $produto->setCodigoGrupo($produto->getGrupo()->getCodigo());
-        $produto->setNomeGrupo($produto->getGrupo()->getNome());
-        $produto->setCodigoSubgrupo($produto->getSubgrupo()->getCodigo());
-        $produto->setNomeSubgrupo($produto->getSubgrupo()->getNome());
+        $produto->jsonData['depto_codigo'] = $produto->depto->getCodigo();
+        $produto->jsonData['depto_nome'] = $produto->depto->getNome();
+
+        $produto->jsonData['grupo_codigo'] = $produto->grupo->getCodigo();
+        $produto->jsonData['grupo_nome'] = $produto->grupo->getNome();
+
+        $produto->jsonData['subgrupo_codigo'] = $produto->subgrupo->getCodigo();
+        $produto->jsonData['subgrupo_nome'] = $produto->subgrupo->getNome();
 
         $this->calcPorcentPreench($produto);
-
     }
 
     /**
@@ -92,44 +91,34 @@ class ProdutoEntityHandler extends EntityHandler
         $pesoTotal = $this->calcPesoTotal($produto);
 
         if (isset($pesos['titulo'])) {
-            if ($produto->getTitulo()) {
+            if ($produto->jsonData['titulo'] ?? false) {
                 $preench += $pesos['titulo'];
             } else {
-                $camposFaltantes .= 'Título (' . DecimalUtils::roundUp(bcdiv($pesos['titulo'] * 100, $pesoTotal, 2),0) . '%)|';
+                $camposFaltantes .= 'Título (' . DecimalUtils::roundUp(bcdiv($pesos['titulo'] * 100, $pesoTotal, 2), 0) . '%)|';
             }
         }
 
         if (isset($pesos['caracteristicas'])) {
-            if ($produto->getCaracteristicas()) {
+            if ($produto->jsonData['caracteristicas'] ?? false) {
                 $preench += $pesos['caracteristicas'];
             } else {
-                $camposFaltantes .= 'Características (' . DecimalUtils::roundUp(bcdiv($pesos['caracteristicas'] * 100, $pesoTotal, 2),0) . '%)|';
+                $camposFaltantes .= 'Características (' . DecimalUtils::roundUp(bcdiv($pesos['caracteristicas'] * 100, $pesoTotal, 2), 0) . '%)|';
             }
         }
 
         if (isset($pesos['ean'])) {
-            if ($produto->getEan()) {
+            if ($produto->jsonData['ean'] ?? false) {
                 $preench += $pesos['ean'];
             } else {
-                $camposFaltantes .= 'EAN (' . DecimalUtils::roundUp(bcdiv($pesos['ean'] * 100, $pesoTotal, 2),0) . '%)|';
+                $camposFaltantes .= 'EAN (' . DecimalUtils::roundUp(bcdiv($pesos['ean'] * 100, $pesoTotal, 2), 0) . '%)|';
             }
         }
 
         if (isset($pesos['ncm'])) {
-            if ($produto->getNcm()) {
+            if ($produto->jsonData['ncm'] ?? false) {
                 $preench += $pesos['ncm'];
             } else {
-                $camposFaltantes .= 'NCM (' . DecimalUtils::roundUp(bcdiv($pesos['ncm'] * 100, $pesoTotal, 2),0) . '%)|';
-            }
-        }
-
-        foreach ($produto->getAtributos() as $atributo) {
-            if ($atributo->getSomaPreench()) {
-                if ($atributo->getValor()) {
-                    $preench += $atributo->getSomaPreench() ?? 0;
-                } else {
-                    $camposFaltantes .= $atributo->getAtributo()->getLabel() . ' (' . DecimalUtils::roundUp(bcdiv($atributo->getSomaPreench() * 100, $pesoTotal, 2),0) . '%)|';
-                }
+                $camposFaltantes .= 'NCM (' . DecimalUtils::roundUp(bcdiv($pesos['ncm'] * 100, $pesoTotal, 2), 0) . '%)|';
             }
         }
 
@@ -138,7 +127,7 @@ class ProdutoEntityHandler extends EntityHandler
         if ($produto->getImagens()) {
             for ($i = 1; $i <= $qtdeFotosMinima; $i++) {
                 if ($qtdeImagensProduto < $i) {
-                    $camposFaltantes .= 'Imagem ' . $i . ' (' . DecimalUtils::roundUp(bcdiv($pesos['imagem'] * 100, $pesoTotal, 2),0) . '%)|';
+                    $camposFaltantes .= 'Imagem ' . $i . ' (' . DecimalUtils::roundUp(bcdiv($pesos['imagem'] * 100, $pesoTotal, 2), 0) . '%)|';
                 } else {
                     $preench += $pesos['imagem'] ?? 1;
                 }
@@ -148,9 +137,8 @@ class ProdutoEntityHandler extends EntityHandler
 
         $totalPreench = $preench / $pesoTotal;
 
-        $produto->setPorcentPreench($totalPreench);
+        $produto->jsonData['porcent_preench'] = $totalPreench;
 
-        $this->salvarAtributoCamposFaltantes($produto, $camposFaltantes);
     }
 
     /**
@@ -179,9 +167,6 @@ class ProdutoEntityHandler extends EntityHandler
             $pesos[$keyVal[0]] = $keyVal[1];
         }
 
-        foreach ($produto->getAtributos() as $atributo) {
-            $pesoTotal += $atributo->getSomaPreench() ?? 0;
-        }
 
         $qtdeFotosMinima = $this->getQtdeFotosMinima();
 
@@ -210,33 +195,4 @@ class ProdutoEntityHandler extends EntityHandler
         return $qtdeFotosMinima;
     }
 
-    /**
-     * @param Produto $produto
-     * @param string $camposFaltantes
-     */
-    private function salvarAtributoCamposFaltantes(Produto $produto, string $camposFaltantes): void
-    {
-        /** @var AtributoRepository $repoAtributo */
-        $repoAtributo = $this->doctrine->getRepository(Atributo::class);
-        /** @var Atributo $atrCamposFaltantes */
-        $atrCamposFaltantes = $repoAtributo->findOneBy(['descricao' => 'SOMA PREENCH (CAMPOS FALTANTES)']);
-
-        /** @var ProdutoAtributoRepository $repoProdutoAtributo */
-        $repoProdutoAtributo = $this->doctrine->getRepository(ProdutoAtributo::class);
-        /** @var ProdutoAtributo $produtoAtrCamposFaltantes */
-        $produtoAtrCamposFaltantes = $repoProdutoAtributo->findOneBy(['atributo' => $atrCamposFaltantes, 'produto' => $produto]);
-
-        if (!$produtoAtrCamposFaltantes) {
-            $produtoAtrCamposFaltantes = new ProdutoAtributo();
-            $produtoAtrCamposFaltantes->setProduto($produto);
-            $produtoAtrCamposFaltantes->setAtributo($atrCamposFaltantes);
-            $produtoAtrCamposFaltantes->setSomaPreench(0);
-            $produtoAtrCamposFaltantes->setQuantif('N');
-            $produtoAtrCamposFaltantes->setPrecif('N');
-            $this->handleSavingEntityId($produtoAtrCamposFaltantes);
-            $produto->getAtributos()->add($produtoAtrCamposFaltantes);
-
-        }
-        $produtoAtrCamposFaltantes->setValor($camposFaltantes);
-    }
 }

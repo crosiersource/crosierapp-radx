@@ -26,7 +26,7 @@ class ProdutoComposicao implements EntityId
      *
      * @var null|Produto
      */
-    private $produtoPai;
+    public ?Produto $produtoPai;
 
     /**
      *
@@ -37,7 +37,7 @@ class ProdutoComposicao implements EntityId
      *
      * @var null|Produto
      */
-    private $produtoFilho;
+    public ?Produto $produtoFilho;
 
     /**
      *
@@ -45,7 +45,7 @@ class ProdutoComposicao implements EntityId
      * @Groups("entity")
      * @var null|integer
      */
-    private $ordem;
+    public ?int $ordem;
 
     /**
      *
@@ -54,7 +54,7 @@ class ProdutoComposicao implements EntityId
      *
      * @var null|float
      */
-    private $qtde;
+    public ?float $qtde;
 
     /**
      *
@@ -62,7 +62,7 @@ class ProdutoComposicao implements EntityId
      * @Groups("entity")
      * @var null|string
      */
-    private $precoAtual;
+    public ?string $precoAtual;
 
     /**
      * Transient.
@@ -70,7 +70,7 @@ class ProdutoComposicao implements EntityId
      *
      * @var null|float
      */
-    private $qtdeEmEstoque;
+    public ?float $qtdeEmEstoque;
 
     /**
      *
@@ -78,185 +78,21 @@ class ProdutoComposicao implements EntityId
      * @Groups("entity")
      * @var null|string
      */
-    private $precoComposicao;
+    public ?string $precoComposicao;
 
     /**
      * Transient.
      *
      * @var null|float
      */
-    private $totalAtual;
+    public ?float $totalAtual;
 
     /**
      * Transient.
      *
      * @var null|float
      */
-    private $totalComposicao;
-
-    /**
-     * @return Produto|null
-     */
-    public function getProdutoPai(): ?Produto
-    {
-        return $this->produtoPai;
-    }
-
-    /**
-     * @param Produto|null $produtoPai
-     * @return ProdutoComposicao
-     */
-    public function setProdutoPai(?Produto $produtoPai): ProdutoComposicao
-    {
-        $this->produtoPai = $produtoPai;
-        return $this;
-    }
-
-    /**
-     * @return Produto|null
-     */
-    public function getProdutoFilho(): ?Produto
-    {
-        return $this->produtoFilho;
-    }
-
-    /**
-     * @param Produto|null $produtoFilho
-     * @return ProdutoComposicao
-     */
-    public function setProdutoFilho(?Produto $produtoFilho): ProdutoComposicao
-    {
-        $this->produtoFilho = $produtoFilho;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getOrdem(): ?int
-    {
-        return $this->ordem;
-    }
-
-    /**
-     * @param int|null $ordem
-     * @return ProdutoComposicao
-     */
-    public function setOrdem(?int $ordem): ProdutoComposicao
-    {
-        $this->ordem = $ordem;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getQtde(): ?float
-    {
-        return $this->qtde;
-    }
-
-    /**
-     * @param float|null $qtde
-     * @return ProdutoComposicao
-     */
-    public function setQtde(?float $qtde): ProdutoComposicao
-    {
-        $this->qtde = $qtde;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPrecoAtual(): ?string
-    {
-        return $this->precoAtual;
-    }
-
-    /**
-     * @param string|null $precoAtual
-     * @return ProdutoComposicao
-     */
-    public function setPrecoAtual(?string $precoAtual): ProdutoComposicao
-    {
-        $this->precoAtual = $precoAtual;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getQtdeEmEstoque(): ?float
-    {
-        return $this->qtdeEmEstoque;
-    }
-
-    /**
-     * @param float|null $qtdeEmEstoque
-     * @return ProdutoComposicao
-     */
-    public function setQtdeEmEstoque(?float $qtdeEmEstoque): ProdutoComposicao
-    {
-        $this->qtdeEmEstoque = $qtdeEmEstoque;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPrecoComposicao(): ?string
-    {
-        return $this->precoComposicao;
-    }
-
-    /**
-     * @param string|null $precoComposicao
-     * @return ProdutoComposicao
-     */
-    public function setPrecoComposicao(?string $precoComposicao): ProdutoComposicao
-    {
-        $this->precoComposicao = $precoComposicao;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getTotalAtual(): ?float
-    {
-        $this->totalAtual = bcmul((float)($this->qtde ?? 0.0), (float)($this->precoAtual ?? 0.0), 2);
-        return $this->totalAtual;
-    }
-
-    /**
-     * @param float|null $totalAtual
-     * @return ProdutoComposicao
-     */
-    public function setTotalAtual(?float $totalAtual): ProdutoComposicao
-    {
-        $this->totalAtual = $totalAtual;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getTotalComposicao(): ?float
-    {
-        $this->totalComposicao = bcmul((float)($this->qtde ?? 0.0), (float)($this->precoComposicao ?? 0.0), 2);
-        return $this->totalComposicao;
-    }
-
-    /**
-     * @param float|null $totalComposicao
-     * @return ProdutoComposicao
-     */
-    public function setTotalComposicao(?float $totalComposicao): ProdutoComposicao
-    {
-        $this->totalComposicao = $totalComposicao;
-        return $this;
-    }
+    public ?float $totalComposicao;
 
 
 }

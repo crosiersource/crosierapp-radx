@@ -26,7 +26,7 @@ class PlanoPagto implements EntityId
      *
      * @var null|string
      */
-    private $codigo;
+    public ?string $codigo;
 
     /**
      *
@@ -35,44 +35,7 @@ class PlanoPagto implements EntityId
      *
      * @var null|string
      */
-    private $descricao;
-
-
-    /**
-     * @return null|string
-     */
-    public function getCodigo(): ?string
-    {
-        return $this->codigo;
-    }
-
-    /**
-     * @param null|string $codigo
-     * @return PlanoPagto
-     */
-    public function setCodigo(?string $codigo): PlanoPagto
-    {
-        $this->codigo = $codigo;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getDescricao(): ?string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @param null|string $descricao
-     * @return PlanoPagto
-     */
-    public function setDescricao(?string $descricao): PlanoPagto
-    {
-        $this->descricao = $descricao;
-        return $this;
-    }
+    public ?string $descricao;
 
 
 }
