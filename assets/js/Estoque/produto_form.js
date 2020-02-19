@@ -105,21 +105,6 @@ $(document).ready(function () {
     buildSubgrupo();
 
 
-    $('.btnAtributoEdit').on('click', function (e) {
-        let produtoAtributo = $(this).data('json');
-        $('#produtoAtributo_id').val(produtoAtributo.id);
-        $('#produtoAtributo_atributo').val(produtoAtributo.atributo.id).trigger('change');
-        $('#produtoAtributo_aba').val(produtoAtributo.aba);
-        $('#produtoAtributo_grupo').val(produtoAtributo.grupo);
-        $('#produtoAtributo_ordem').val(produtoAtributo.ordem);
-        $('#produtoAtributo_quantif').prop('checked', produtoAtributo.quantif == 'S');
-        $('#produtoAtributo_precif').prop('checked', produtoAtributo.precif == 'S');
-        $('#produtoAtributo_somaPreench').val(produtoAtributo.somaPreench);
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    });
-
-
     $('.btnComposicaoEdit').on('click', function (e) {
 
         // produtoComposicao_produtoFilho
@@ -215,46 +200,12 @@ $(document).ready(function () {
             });
     }
 
-
-    if ($('#tbodySortableAtributo').length) {
-        Sortable.create(tbodySortableAtributo,
-            {
-                animation: 150,
-                onEnd:
-                    function (/**Event*/evt) {
-                        let ids = '';
-                        $('#tbodySortableAtributo > tr').each(function () {
-                            ids += $(this).data('id') + ',';
-                        });
-
-                        $.ajax({
-                                dataType: "json",
-                                data: {'ids': ids},
-                                url: Routing.generate('est_produto_formAtributoSaveOrdem'),
-                                type: 'POST'
-                            }
-                        ).done(function (data) {
-                            if (data.result === 'OK') {
-                                toastrr.success('Itens ordenados com sucesso');
-
-                                $.each(data.ids, function (id, ordem) {
-                                    $('#tbodySortableAtributo > tr[data-id="' + id + '"] > td[id="ordem"]').html(ordem);
-                                });
-
-                            } else {
-                                toastrr.error('Erro ao ordenar itens');
-                            }
-                        });
-                    }
-            });
-    }
-
-
     $('#produto_imagem_imageFile').on('change',function(){
         //get the file name
         let fileName = $(this).val().split('\\').pop();
         //replace the "Choose a file" label
         $(this).next('.custom-file-label').html(fileName);
     })
+
 
 });

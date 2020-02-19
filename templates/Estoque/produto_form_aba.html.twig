@@ -3,6 +3,7 @@
 
     <div class="container" style="margin-bottom: 50px">
 
+
         {% for campo in camposNaAba %}
             {{ form_row(form.jsonData[campo]) }}
         {% endfor %}
@@ -10,7 +11,7 @@
 
         <div class="row mt-3">
             <div class="col text-right">
-                <button type="submit" form="produtoForm" class="btn btn-primary" value="Salvar">
+                <button type="submit" class="btn btn-primary" value="Salvar">
                     <i class="fas fa-save" aria-hidden="true"></i> Salvar
                 </button>
             </div>

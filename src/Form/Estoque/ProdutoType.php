@@ -42,8 +42,11 @@ class ProdutoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var AppConfigRepository $repoAppConfig */
+        $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
+        $jsonMetadata = json_decode($repoAppConfig->findByChave('est_produto_json_metadata'), true);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($jsonMetadata) {
             /** @var Produto $produto */
             $produto = $event->getData();
             $builder = $event->getForm();
@@ -165,40 +168,38 @@ class ProdutoType extends AbstractType
 
             ]);
 
-            /** @var AppConfigRepository $repoAppConfig */
-            $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
-            $jsonMetadata = json_decode($repoAppConfig->findByChave('est_produto_json_metadata'), true);
-
-            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata]);
-
+            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => $produto->jsonData]);
 
         });
-//
-//
-//        $builder->addEventListener(
-//            FormEvents::PRE_SUBMIT,
-//            function (FormEvent $event) {
-//
-//                $builder = $event->getForm();
-//
-//                $builder->add('depto', EntityType::class, [
-//                    'class' => Depto::class,
-//                    'choice_label' => 'descricaoMontada'
-//                ]);
-//
-//                $builder->add('grupo', EntityType::class, [
-//                    'class' => Grupo::class,
-//                    'choice_label' => 'descricaoMontada'
-//                ]);
-//
-//                $builder->add('subgrupo', EntityType::class, [
-//                    'class' => Subgrupo::class,
-//                    'choice_label' => 'descricaoMontada'
-//                ]);
-//
-//
-//            }
-//        );
+
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) use ($jsonMetadata) {
+
+                $builder = $event->getForm();
+                $data = $event->getData();
+
+                $builder->remove('jsonData');
+                $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => $data['jsonData'] ?? null]);
+
+                $builder->add('depto', EntityType::class, [
+                    'class' => Depto::class,
+                    'choice_label' => 'descricaoMontada'
+                ]);
+
+                $builder->add('grupo', EntityType::class, [
+                    'class' => Grupo::class,
+                    'choice_label' => 'descricaoMontada'
+                ]);
+
+                $builder->add('subgrupo', EntityType::class, [
+                    'class' => Subgrupo::class,
+                    'choice_label' => 'descricaoMontada'
+                ]);
+
+            }
+        );
 
     }
 

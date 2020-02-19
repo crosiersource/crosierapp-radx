@@ -2,15 +2,12 @@
 
     <div class="container" style="margin-bottom: 50px">
 
-        {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
-        {{ form_start(form, {'attr': {'id': 'produtoForm'}}) }}
-
-        {{ form_row(form._token) }}
+        {{ form_row(form.id) }}
 
         {{ form_row(form.UUID) }}
 
 
-        {{ form_row(form.id) }}
+
         {{ form_row(form.nome) }}
         {{ form_row(form.jsonData.titulo) }}
 
@@ -33,8 +30,6 @@
                 </button>
             </div>
         </div>
-
-        {{ form_end(form, {'render_rest': false}) }}
 
 
     </div>
