@@ -90,7 +90,7 @@
 
                         {# Abas fixas que possuem arquivo próprio #}
                         {% if aba in ['Produto','Fotos','Composição'] %}
-                            {% include 'Estoque/produto_form_' ~ aba|lower|transliterate ~ '.html.twig' %}
+                            {% include 'Estoque/produto_form_' ~ aba|lower|transliterate ~ '.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
                         {% else %}
                             {% include 'Estoque/produto_form_aba.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
                         {% endif %}

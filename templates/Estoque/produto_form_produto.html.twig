@@ -23,6 +23,10 @@
         {{ form_row(form.composicao) }}
         <hr/>
 
+        {% for campo in camposNaAba %}
+            {{ form_row(form.jsonData[campo]) }}
+        {% endfor %}
+
         <div class="row mt-3">
             <div class="col text-right">
                 <button type="submit" class="btn btn-primary" value="Salvar">
