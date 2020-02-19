@@ -125,7 +125,7 @@ class ProdutoController extends FormListController
 
         if ($produto && $produto->getId()) {
             $formProdutoImagem = $this->formProdutoImagem($request, $produto);
-            if ($formProdutoImagem->isSubmitted() && $formProdutoImagem->isValid()) {
+            if ($formProdutoImagem->isSubmitted() && $formProdutoImagem->isValid() && $request->get('btnSalvarFotos')) {
                 return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'fotos']);
             }
             $params['formProdutoImagem'] = $formProdutoImagem->createView();
@@ -162,6 +162,9 @@ class ProdutoController extends FormListController
             $produtoImagem = $repoProdutoImagem->find($produtoImagemId);
         }
         $formProdutoImagem = $this->createForm(ProdutoImagemType::class, $produtoImagem);
+        if (!$request->get('btnSalvarFotos')) {
+            $request->request->remove('produto_imagem');
+        }
         $formProdutoImagem->handleRequest($request);
         if ($formProdutoImagem->isSubmitted()) {
             if ($formProdutoImagem->isValid()) {
