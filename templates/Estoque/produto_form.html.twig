@@ -91,7 +91,7 @@
                     {% for aba,camposNaAba in jsonMetadata.abas %}
 
                         {# Abas fixas que possuem arquivo próprio #}
-                        {% if aba in ['Produto','Descritivos','Fiscal','Fotos','Composição'] %}
+                        {% if aba in ['Produto','Fotos','Composição'] %}
                             {% include 'Estoque/produto_form_' ~ aba|lower|transliterate ~ '.html.twig' %}
                         {% else %}
                             {% include 'Estoque/produto_form_aba.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
