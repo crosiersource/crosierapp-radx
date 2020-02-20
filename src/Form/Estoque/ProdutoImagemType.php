@@ -36,8 +36,6 @@ class ProdutoImagemType extends AbstractType
             'label' => 'Imagem',
             'required' => false
         ]);
-
-
     }
 
     public function configureOptions(OptionsResolver $resolver)

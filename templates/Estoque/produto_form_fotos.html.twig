@@ -7,6 +7,14 @@
             {{ form_row(form.jsonData[campo]) }}
         {% endfor %}
 
+        <div class="row mt-3 mb-3">
+            <div class="col text-right">
+                <button type="submit" class="btn btn-primary" value="Salvar">
+                    <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                </button>
+            </div>
+        </div>
+
 
         <div class="card">
 
@@ -24,22 +32,13 @@
 
                 <div class="row mt-3 mb-3">
                     <div class="col text-right">
-
-
-                        <button type="submit" class="btn btn-primary" name="btnSalvarFotos" value="Salvar">
-                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                        <button type="submit" class="btn btn-outline-primary" name="btnSalvarFotos" value="Salvar">
+                            <i class="fas fa-save" aria-hidden="true"></i> Salvar Foto
                         </button>
-
-                        <button type="button" value="Resetar" class="btn btn-secondary"
-                                data-url="{{ url('est_produto_form', {id: e.id}) }}"
-                                data-target="#confirmationModal" data-toggle="modal">
-                            <i class="fas fa-undo" aria-hidden="true"></i> Recarregar
-                        </button>
-
                     </div>
                 </div>
 
-                {{ form_end(formProdutoImagem, {'render_rest': false}) }}
+                {{ form_end(formProdutoImagem) }}
 
                 <div class="row">
                     <div class="col-sm-12 overflow-auto">
