@@ -5,7 +5,9 @@ namespace App\EntityHandler\Estoque;
 use App\Entity\Estoque\Depto;
 use App\Entity\Estoque\Grupo;
 use App\Entity\Estoque\Produto;
+use App\Entity\Estoque\ProdutoImagem;
 use App\Entity\Estoque\Subgrupo;
+use App\Repository\Estoque\ProdutoImagemRepository;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
@@ -58,6 +60,13 @@ class ProdutoEntityHandler extends EntityHandler
 
         $produto->jsonData['subgrupo_codigo'] = $produto->subgrupo->getCodigo();
         $produto->jsonData['subgrupo_nome'] = $produto->subgrupo->getNome();
+
+        /** @var ProdutoImagemRepository $repoProdutoImagem */
+        $repoProdutoImagem = $this->getDoctrine()->getRepository(ProdutoImagem::class);
+        $imagens = $repoProdutoImagem->findBy(['produto' => $produto], ['ordem' => 'ASC']);
+
+        $produto->jsonData['qtde_imagens'] = count($imagens);
+        $produto->jsonData['imagem1'] = $imagens[0]->getImageName();
 
         $this->calcPorcentPreench($produto);
     }

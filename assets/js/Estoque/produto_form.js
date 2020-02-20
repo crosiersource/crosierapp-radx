@@ -211,7 +211,7 @@ $(document).ready(function () {
                                 toastrr.success('Fotos ordenadas com sucesso');
 
                                 $.each(data.ids, function (id, ordem) {
-                                    $('#ulFotosSortable > li[data-id="' + id + '"] > div > span.ordem').html(ordem);
+                                    $('#ulFotosSortable > li[data-id="' + id + '"] > div > div > label > span.ordem').html(ordem);
                                 });
 
                             } else {

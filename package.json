@@ -18,7 +18,9 @@
     "sprintf-js": "^1.1.2",
     "summernote": "0.8.12",
     "toastr": "^2.1.4",
-    "webpack-notifier": "^1.7.0"
+    "webpack-notifier": "^1.7.0",
+    "blueimp-file-upload": "^10.8.0",
+    "jquery-ui": "^1.12.1"
   },
   "license": "UNLICENSED",
   "private": true,
@@ -27,9 +29,5 @@
     "dev": "encore dev",
     "watch": "encore dev --watch",
     "build": "encore production --progress"
-  },
-  "dependencies": {
-    "blueimp-file-upload": "^10.8.0",
-    "jquery-ui": "^1.12.1"
   }
 }

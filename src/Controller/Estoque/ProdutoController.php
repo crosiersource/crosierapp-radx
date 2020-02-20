@@ -205,6 +205,18 @@ class ProdutoController extends FormListController
             $ids = $request->get('ids');
             $idsArr = explode(',', $ids);
             $ordens = $this->produtoImagemEntityHandler->salvarOrdens($idsArr);
+
+            /** @var ProdutoImagemRepository $repoProdutoImagem */
+            $repoProdutoImagem = $this->getDoctrine()->getRepository(ProdutoImagem::class);
+            /** @var ProdutoImagem $produtoImagem */
+            $produtoImagem = $repoProdutoImagem->find(array_key_first($ordens));
+
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+            /** @var Produto $produto */
+            $produto = $repoProduto->findOneBy(['id' => $produtoImagem->getProduto()->getId()]);
+
+            $this->entityHandler->save($produto);
             $r = ['result' => 'OK', 'ids' => $ordens];
             return new JsonResponse($r);
         } catch (ViewException $e) {

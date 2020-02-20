@@ -42,8 +42,9 @@ class ProdutoImagemEntityHandler extends EntityHandler
         $ordens = [];
         $imagens = $repoProdutoImagem->find($ids[0])->getProduto()->getImagens();
         /** @var ProdutoImagem $imagem */
+        $varia = random_int(1, 1000000);
         foreach ($imagens as $imagem) {
-            $imagem->setOrdem($imagem->getOrdem() + 100 + random_int(0,100));
+            $imagem->setOrdem($imagem->getOrdem() + $varia + 1);
             $this->save($imagem);
         }
         foreach ($ids as $id) {
