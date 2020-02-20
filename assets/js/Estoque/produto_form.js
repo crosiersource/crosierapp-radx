@@ -12,11 +12,13 @@ import toastrr from "toastr";
 
 import 'lightbox2/dist/css/lightbox.css';
 import 'lightbox2';
-
-Routing.setRoutingData(routes);
+import 'blueimp-file-upload';
 
 import Numeral from 'numeral';
 import 'numeral/locales/pt-br.js';
+
+Routing.setRoutingData(routes);
+
 Numeral.locale('pt-br');
 
 
@@ -25,6 +27,69 @@ $(document).ready(function () {
     let $depto = $('#produto_depto');
     let $grupo = $('#produto_grupo');
     let $subgrupo = $('#produto_subgrupo');
+    let $btnImagemEdit = $('.btnImagemEdit');
+
+
+    let $imageFile = $('#produto_imagem_imageFile');
+
+    $imageFile.on('change', function () {
+        //get the file name
+        let fileName = $(this).val().split('\\').pop();
+        //replace the "Choose a file" label
+        $(this).next('.custom-file-label').html(fileName);
+    });
+
+    $imageFile.fileupload({
+        dataType: 'json',
+        singleFileUploads: false,
+        add: function (e, data) {
+            data.submit();
+        },
+        success: function (result, textStatus, jqXHR) {
+            $('#filesUl').html(result.filesUl);
+            toastrr.success('Imagem salva com sucesso');
+        },
+        fail: function (result, textStatus, jqXHR) {
+            toastrr.error('Erro ao salvar imagem');
+        },
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo(document.body);
+            });
+        }
+    });
+
+    function submitImagemDescricao(produtoImagemId) {
+        let dados = {
+            'produtoImagemId': produtoImagemId,
+            'descricao': $('#produto_imagem_descricao_' + produtoImagemId).val()
+        };
+        $.ajax({
+                dataType: "json",
+                data: dados,
+                url: Routing.generate('est_produto_formImagemSalvarDescricao') + '/',
+                type: 'POST'
+            }
+        ).done(function (data) {
+            $('#filesUl').html(data.filesUl);
+            toastrr.success('Descrição salva com sucesso');
+        });
+    }
+
+    $('.produto_imagem_descricao').keypress(function (event) {
+        if ((event.keyCode ? event.keyCode : event.which) === 13) {
+            let produtoImagemId = $(this).data('produtoimagemid');
+            submitImagemDescricao(produtoImagemId);
+            event.preventDefault();
+            return false;
+        }
+    });
+
+    $btnImagemEdit.on('click', function (e) {
+        let produtoImagemId = $(this).data('produtoimagemid');
+        submitImagemDescricao(produtoImagemId);
+    });
+
 
     $('.summernote').summernote();
 
@@ -117,20 +182,12 @@ $(document).ready(function () {
 
         $('#produtoComposicao_id').val(produtoComposicao.id);
         $('#produtoComposicao_qtde').val(produtoComposicao.qtde);
-        $('#produtoComposicao_precoComposicao').val( Numeral(parseFloat(produtoComposicao.precoComposicao)).format('0.0,[00]') );
+        $('#produtoComposicao_precoComposicao').val(Numeral(parseFloat(produtoComposicao.precoComposicao)).format('0.0,[00]'));
 
         document.body.scrollTop = 0; // For Safari
         document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     });
 
-
-    $('.btnImagemEdit').on('click', function (e) {
-        let produtoImagem = $(this).data('json');
-        $('#produto_imagem_id').val(produtoImagem.id);
-        $('#produto_imagem_descricao').val(produtoImagem.descricao);
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    });
 
     if ($('#ulFotosSortable').length) {
         Sortable.create(ulFotosSortable,
@@ -199,13 +256,6 @@ $(document).ready(function () {
                     }
             });
     }
-
-    $('#produto_imagem_imageFile').on('change',function(){
-        //get the file name
-        let fileName = $(this).val().split('\\').pop();
-        //replace the "Choose a file" label
-        $(this).next('.custom-file-label').html(fileName);
-    })
 
 
 });

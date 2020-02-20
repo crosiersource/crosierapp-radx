@@ -9,23 +9,21 @@ use App\Entity\Estoque\ProdutoImagem;
 use App\EntityHandler\Estoque\ProdutoComposicaoEntityHandler;
 use App\EntityHandler\Estoque\ProdutoEntityHandler;
 use App\EntityHandler\Estoque\ProdutoImagemEntityHandler;
-use App\Form\Estoque\ProdutoImagemType;
 use App\Form\Estoque\ProdutoType;
 use App\Repository\Estoque\ProdutoComposicaoRepository;
 use App\Repository\Estoque\ProdutoImagemRepository;
 use App\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
@@ -123,19 +121,8 @@ class ProdutoController extends FormListController
             $produto = new Produto();
         }
 
-        if ($produto && $produto->getId()) {
-            $formProdutoImagem = $this->formProdutoImagem($request, $produto);
-            if ($formProdutoImagem->isSubmitted() && $formProdutoImagem->isValid() && $request->get('btnSalvarFotos')) {
-                return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'fotos']);
-            }
-            $params['formProdutoImagem'] = $formProdutoImagem->createView();
-        }
         /** @var ProdutoRepository $repoProduto */
         $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
-        if ($produto && $produto->getId()) {
-            /** @var Produto $produto */
-            $produto = $repoProduto->findOneBy(['id' => $produto->getId()]); // refind para não ficar stale após o formProdutoImagem (caso dê erro)
-        }
         $params['jsonMetadata'] = json_decode($repoProduto->getJsonMetadata(), true);
 
         if ($produto->composicao === 'S') {
@@ -147,53 +134,62 @@ class ProdutoController extends FormListController
     }
 
     /**
+     *
+     * @Route("/est/produto/formImagemFileUpload/", name="est_produto_formImagemFileUpload")
      * @param Request $request
-     * @param Produto $produto
-     * @return \Symfony\Component\Form\FormInterface
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
-    private function formProdutoImagem(Request $request, Produto $produto): \Symfony\Component\Form\FormInterface
+    public function formImagemFileUpload(Request $request): JsonResponse
     {
-        $produtoImagem = new ProdutoImagem();
-        if ($request->get('produto_imagem') && $request->get('produto_imagem')['id'] ?? null) {
-            $produtoImagemId = $request->get('produto_imagem')['id'];
+        try {
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+            /** @var Produto $produto */
+            $produto = $repoProduto->find($request->get('produto')['id']);
+            /** @var UploadedFile $brochureFile */
+            $imageFiles = $request->files->get('produto_imagem')['imageFile'];
+            foreach ($imageFiles as $imageFile) {
+                $produtoImagem = new ProdutoImagem();
+                $produtoImagem->setProduto($produto);
+                $produtoImagem->setImageFile($imageFile);
+                $this->produtoImagemEntityHandler->save($produtoImagem);
+            }
+            $r = [
+                'result' => 'OK',
+                'filesUl' => $this->renderView('Estoque/produto_form_produto_filesUl.html.twig', ['e' => $produto])
+            ];
+        } catch (\Exception $e) {
+            $r = ['result' => 'ERRO'];
+        }
+        return new JsonResponse($r);
+    }
+
+    /**
+     *
+     * @Route("/est/produto/formImagemSalvarDescricao/", name="est_produto_formImagemSalvarDescricao")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function formImagemSalvarDescricao(Request $request): JsonResponse
+    {
+        try {
             /** @var ProdutoImagemRepository $repoProdutoImagem */
             $repoProdutoImagem = $this->getDoctrine()->getRepository(ProdutoImagem::class);
             /** @var ProdutoImagem $produtoImagem */
-            $produtoImagem = $repoProdutoImagem->find($produtoImagemId);
+            $produtoImagem = $repoProdutoImagem->find($request->get('produtoImagemId'));
+            $descricao = $request->get('descricao');
+            $produtoImagem->setDescricao($descricao);
+            $this->produtoImagemEntityHandler->save($produtoImagem);
+            $r = [
+                'result' => 'OK',
+                'filesUl' => $this->renderView('Estoque/produto_form_produto_filesUl.html.twig', ['e' => $produto])
+            ];
+        } catch (\Exception $e) {
+            $r = ['result' => 'ERRO'];
         }
-        $formProdutoImagem = $this->createForm(ProdutoImagemType::class, $produtoImagem);
-        if (!$request->get('btnSalvarFotos')) {
-            $request->request->remove('produto_imagem');
-        }
-        $formProdutoImagem->handleRequest($request);
-        if ($formProdutoImagem->isSubmitted()) {
-            if ($formProdutoImagem->isValid()) {
-                try {
-                    /** @var ProdutoImagem $produtoImagem */
-                    $produtoImagem = $formProdutoImagem->getData();
-                    $produtoImagem->setProduto($produto);
-                    $produto->getImagens()->add($produtoImagem);
-                    $this->produtoImagemEntityHandler->save($produtoImagem);
-                    /** @var Produto $produto */
-                    $produto = $this->entityHandler->getDoctrine()->getRepository(Produto::class)->findOneBy(['id' => $produtoImagem->getProduto()->getId()]);
-                    $this->entityHandler->save($produto);
-                    $this->addFlash('success', 'Imagem salva com sucesso!');
-                } catch (ViewException $e) {
-                    $this->addFlash('error', $e->getMessage());
-                } catch (\Exception $e) {
-                    $msg = ExceptionUtils::treatException($e);
-                    $this->addFlash('error', $msg);
-                    $this->addFlash('error', 'Erro ao salvar!');
-                }
-            } else {
-                $errors = $formProdutoImagem->getErrors(true, true);
-                foreach ($errors as $error) {
-                    $this->addFlash('error', $error->getMessage());
-                }
-            }
-        }
-
-        return $formProdutoImagem;
+        return new JsonResponse($r);
     }
 
     /**

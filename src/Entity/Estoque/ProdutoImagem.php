@@ -95,7 +95,7 @@ class ProdutoImagem implements EntityId
      * must be able to accept an instance of 'File' as the bundle will inject one here
      * during Doctrine hydration.
      *
-     * @param File|null $imageFile
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
      * @return ProdutoImagem
      * @throws \Exception
      */

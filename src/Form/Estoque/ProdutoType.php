@@ -54,7 +54,7 @@ class ProdutoType extends AbstractType
             $builder->add('id', TextType::class, [
                 'label' => 'Código',
                 'required' => false,
-                'disabled' => true,
+                'attr' => ['readonly' => 'readonly']
             ]);
 
             $builder->add('nome', TextType::class, [

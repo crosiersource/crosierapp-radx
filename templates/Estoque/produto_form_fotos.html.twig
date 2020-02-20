@@ -25,59 +25,24 @@
                 </div>
 
 
-                {% form_theme formProdutoImagem 'bootstrap_4_horizontal_layout.html.twig' %}
-                {{ form_start(formProdutoImagem) }}
-
-                {{ form_widget(formProdutoImagem) }}
-
-                <div class="row mt-3 mb-3">
-                    <div class="col text-right">
-                        <button type="submit" class="btn btn-outline-primary" name="btnSalvarFotos" value="Salvar">
-                            <i class="fas fa-save" aria-hidden="true"></i> Salvar Foto
-                        </button>
+                <div id="produto_imagem">
+                    <input type="hidden" id="produto_imagem_id" name="produto_imagem[id]">
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" for="produto_imagem_imageFile">Imagens</label>
+                        <div class="col-sm-10">
+                            <div class="custom-file">
+                                <input type="file" multiple id="produto_imagem_imageFile" name="produto_imagem[imageFile][]"
+                                       class="custom-file-input"
+                                       data-url="{{ url('est_produto_formImagemFileUpload') }}">
+                                <label for="produto_imagem_imageFile" class="custom-file-label"></label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {{ form_end(formProdutoImagem) }}
 
-                <div class="row">
-                    <div class="col-sm-12 overflow-auto">
-                        <ul class="list-group list-group-horizontal" id="ulFotosSortable">
-                            {% for imagem in e.imagens %}
-                                <li data-id="{{ imagem.id }}"
-                                    class="list-group-item {{ imagemId is defined and imagemId == imagem.id ? 'active' : '' }}">
-
-                                    <div>
-                                        #<span class="ordem">{{ imagem.ordem }}</span> - {{ imagem.descricao }}
-
-                                        <div style="float: right">
-                                            <button type="button" class="btn btn-sm btn-outline-primary btnImagemEdit"
-                                                    data-json="{{ imagem|serializeEntity }}">
-                                                <i class="fa fa-wrench" aria-hidden="true"></i>
-                                            </button>
-
-                                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                                    data-url="{{ url('est_produtoImagem_delete', {produtoImagem: imagem.id}) }}"
-                                                    data-token="{{ csrf_token('deleteImagem') }}"
-                                                    data-target="#confirmationModal" data-toggle="modal">
-                                                <i class="fa fa-trash" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="pt-3">
-                                        <a href="{{ vich_uploader_asset(imagem, 'imageFile') }}"
-                                           data-lightbox="imagensDoProduto" data-title="{{ imagem.descricao }}">
-                                            <img src="{{ vich_uploader_asset(imagem, 'imageFile') }}"
-                                                 alt="{{ imagem.descricao }}" style="border: 1px dashed lightblue"
-                                                 width="150px"/>
-                                        </a>
-                                    </div>
-
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                <div class="row" id="filesUl">
+                    {% include 'Estoque/produto_form_produto_filesUl.html.twig' %}
                 </div>
 
             </div>

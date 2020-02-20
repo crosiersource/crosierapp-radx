@@ -2,8 +2,8 @@
   "devDependencies": {
     "@symfony/webpack-encore": "^0.27.0",
     "bootstrap": "4.4.1",
-    "core-js": "3",
     "copy-webpack-plugin": "^4.6.0",
+    "core-js": "3",
     "daterangepicker": "^3.0.3",
     "google-charts": "^2.0.0",
     "jquery": "3.4.1",
@@ -27,5 +27,9 @@
     "dev": "encore dev",
     "watch": "encore dev --watch",
     "build": "encore production --progress"
+  },
+  "dependencies": {
+    "blueimp-file-upload": "^10.8.0",
+    "jquery-ui": "^1.12.1"
   }
 }

@@ -79,7 +79,7 @@
                     'bootstrap_4_horizontal_layout.html.twig',
                     '@CrosierLibBase/Form/custom_types.html.twig'] %}
 
-                {{ form_start(form, {'attr': {'id': 'produtoForm'}}) }}
+                {{ form_start(form, {'attr': {'id': 'produtoForm', 'enctype': 'multipart/form-data'}}) }}
 
                 {{ form_row(form._token) }}
 
