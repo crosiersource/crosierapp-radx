@@ -147,19 +147,22 @@ class ProdutoController extends FormListController
             $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
             /** @var Produto $produto */
             $produto = $repoProduto->find($request->get('produto')['id']);
-            /** @var UploadedFile $brochureFile */
             $imageFiles = $request->files->get('produto_imagem')['imageFile'];
+            /** @var UploadedFile $imageFile */
             foreach ($imageFiles as $imageFile) {
+                $this->logger->info('Salvando ' . $imageFile->getFilename());
                 $produtoImagem = new ProdutoImagem();
                 $produtoImagem->setProduto($produto);
                 $produtoImagem->setImageFile($imageFile);
                 $this->produtoImagemEntityHandler->save($produtoImagem);
+                $this->logger->info('OK');
             }
             $r = [
                 'result' => 'OK',
                 'filesUl' => $this->renderView('Estoque/produto_form_produto_filesUl.html.twig', ['e' => $produto])
             ];
         } catch (\Exception $e) {
+            $this->logger->error('Erro no formImagemFileUpload() - ' . $e->getMessage());
             $r = ['result' => 'ERRO'];
         }
         return new JsonResponse($r);
