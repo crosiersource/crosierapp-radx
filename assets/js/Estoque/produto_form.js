@@ -47,6 +47,7 @@ $(document).ready(function () {
         },
         success: function (result, textStatus, jqXHR) {
             $('#filesUl').html(result.filesUl);
+            createUlFotosSortable();
             toastrr.success('Imagem salva com sucesso');
         },
         fail: function (result, textStatus, jqXHR) {
@@ -189,7 +190,7 @@ $(document).ready(function () {
     });
 
 
-    if ($('#ulFotosSortable').length) {
+    function createUlFotosSortable() {
         Sortable.create(ulFotosSortable,
             {
                 animation: 150,
@@ -223,8 +224,11 @@ $(document).ready(function () {
             });
     }
 
+    if ($('#ulFotosSortable').length) {
+        createUlFotosSortable();
+    }
 
-    if ($('#tbodySortableComposicao').length) {
+    function createSortableComposicao() {
         Sortable.create(tbodySortableComposicao,
             {
                 animation: 150,
@@ -255,6 +259,10 @@ $(document).ready(function () {
                         });
                     }
             });
+    }
+
+    if ($('#tbodySortableComposicao').length) {
+        createSortableComposicao();
     }
 
 
