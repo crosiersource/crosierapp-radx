@@ -29,6 +29,12 @@ $(document).ready(function () {
     let $subgrupo = $('#produto_subgrupo');
     let $btnImagemEdit = $('.btnImagemEdit');
 
+    let $produtoId = $('#produto_id');
+    let $produtoComposicaoId = $('#produtoComposicao_id');
+    let $produtoComposicaoProdutoFilho = $('#produtoComposicao_produtoFilho');
+    let $produtoComposicaoQtde = $('#produtoComposicao_qtde');
+    let $produtoComposicaoPrecoComposicao = $('#produtoComposicao_precoComposicao');
+
 
     let $imageFile = $('#produto_imagem_imageFile');
 
@@ -171,25 +177,6 @@ $(document).ready(function () {
     buildSubgrupo();
 
 
-    $('.btnComposicaoEdit').on('click', function (e) {
-
-        // produtoComposicao_produtoFilho
-        let produtoComposicao = $(this).data('json');
-        let $produtoComposicao_produtoFilho = $('#produtoComposicao_produtoFilho');
-        let text = produtoComposicao.produtoFilho.titulo ?
-            produtoComposicao.produtoFilho.titulo + ' (' + produtoComposicao.produtoFilho.id + ')' :
-            produtoComposicao.produtoFilho.nome + ' (' + produtoComposicao.produtoFilho.id + ')';
-        $produtoComposicao_produtoFilho.append(new Option(text, produtoComposicao.produtoFilho.id, true, true)).trigger('change');
-
-        $('#produtoComposicao_id').val(produtoComposicao.id);
-        $('#produtoComposicao_qtde').val(produtoComposicao.qtde);
-        $('#produtoComposicao_precoComposicao').val(Numeral(parseFloat(produtoComposicao.precoComposicao)).format('0.0,[00]'));
-
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    });
-
-
     function createUlFotosSortable() {
         Sortable.create(ulFotosSortable,
             {
@@ -264,6 +251,76 @@ $(document).ready(function () {
     if ($('#tbodySortableComposicao').length) {
         createSortableComposicao();
     }
+
+
+    function submitComposicao() {
+
+        if (!$produtoComposicaoProdutoFilho.val() || !$produtoComposicaoQtde.val() || !$produtoComposicaoPrecoComposicao.val()) {
+            toastrr.error('"É necessário informar o "Item", a "Qtde" e o "Preço (Compo)"');
+            return;
+        }
+
+        let composicao = {
+            "produtoComposicao": {
+                "id": $produtoComposicaoId.val(),
+                "produtoFilho": $produtoComposicaoProdutoFilho.val(),
+                "qtde": $produtoComposicaoQtde.val(),
+                "precoComposicao": $produtoComposicaoPrecoComposicao.val()
+            }
+        };
+
+        $.ajax({
+                dataType: "json",
+                data: composicao,
+                url: Routing.generate('est_produto_formComposicao') + '/' + $produtoId.val(),
+                type: 'POST'
+            }
+        ).done(function (data) {
+            if (data.result === 'OK') {
+                $('#divTbComposicao').html(data.divTbComposicao);
+                $produtoComposicaoId.val('');
+                $produtoComposicaoProdutoFilho.val('').trigger('change');
+                $produtoComposicaoQtde.val('');
+                $produtoComposicaoPrecoComposicao.val('');
+                $produtoComposicaoProdutoFilho.select2('focus');
+                initForm();
+                toastrr.success('Item salvo com sucesso');
+            } else {
+                toastrr.error(data.msg ? data.msg : 'Erro ao salvar item da composição');
+            }
+
+        });
+    }
+
+    $('#btnSalvarItemComposicao').on('click', function (e) {
+        submitComposicao();
+    });
+
+
+    function initForm() {
+        $('.btnComposicaoEdit').on('click', function (e) {
+
+            // produtoComposicao_produtoFilho
+            let produtoComposicao = $(this).data('json');
+
+            let text = produtoComposicao.produtoFilho.titulo ?
+                produtoComposicao.produtoFilho.titulo + ' (' + produtoComposicao.produtoFilho.id + ')' :
+                produtoComposicao.produtoFilho.nome + ' (' + produtoComposicao.produtoFilho.id + ')';
+            $produtoComposicaoProdutoFilho.append(new Option(text, produtoComposicao.produtoFilho.id, true, true)).trigger('change');
+
+            $produtoComposicaoId.val(produtoComposicao.id);
+            $produtoComposicaoQtde.val(produtoComposicao.qtde);
+            $produtoComposicaoPrecoComposicao.val(Numeral(parseFloat(produtoComposicao.precoComposicao)).format('0.0,[00]'));
+
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        });
+
+        createSortableComposicao();
+    }
+
+
+    initForm();
 
 
 });

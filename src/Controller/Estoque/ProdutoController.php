@@ -327,10 +327,10 @@ class ProdutoController extends FormListController
      * @Route("/est/produto/formComposicao/{produto}", name="est_produto_formComposicao", requirements={"produto"="\d+"})
      * @param Request $request
      * @param Produto|null $produto
-     * @return RedirectResponse|Response
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     * @return JsonResponse
      */
-    public function formComposicao(Request $request, Produto $produto)
+    public function formComposicao(Request $request, Produto $produto): JsonResponse
     {
         try {
             $produtoComposicaoArr = $request->get('produtoComposicao');
@@ -345,20 +345,28 @@ class ProdutoController extends FormListController
             } else {
                 $composicao = new ProdutoComposicao();
             }
-            $composicao->setProdutoPai($produto);
-            $composicao->setProdutoFilho($produtoFilho);
-            $composicao->setQtde(DecimalUtils::parseStr($produtoComposicaoArr['qtde']));
-            $composicao->setPrecoComposicao(DecimalUtils::parseStr($produtoComposicaoArr['precoComposicao']));
-
+            $composicao->produtoPai = $produto;
+            $composicao->produtoFilho = $produtoFilho;
+            $composicao->qtde = DecimalUtils::parseStr($produtoComposicaoArr['qtde']);
+            $composicao->precoComposicao = DecimalUtils::parseStr($produtoComposicaoArr['precoComposicao']);
             $this->produtoComposicaoEntityHandler->save($composicao);
-
-        } catch (ViewException $e) {
-            $this->addFlash('error', 'Erro ao salvar a composição');
-            $this->addFlash('error', $e->getMessage());
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Erro ao salvar a composição');
+            $produto->composicoes->add($composicao);
+            $this->produtoBusiness->fillQtdeEmEstoqueComposicao($produto);
+            $r = [
+                'result' => 'OK',
+                'divTbComposicao' => $this->renderView('Estoque/produto_form_composicao_divTbComposicao.html.twig', ['e' => $produto])
+            ];
+        } catch (ViewException | \Exception $e) {
+            $this->logger->error('Erro - formComposicao()');
+            $this->logger->error($e->getMessage());
+            $msg = $e instanceof ViewException ? $e->getMessage() : 'Erro ao salvar item da composição';
+            $r = [
+                'result' => 'ERRO',
+                'msg' => $msg
+            ];
         }
-        return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'composicao']);
+        return new JsonResponse($r);
+
     }
 
     /**
@@ -399,7 +407,7 @@ class ProdutoController extends FormListController
             if (ctype_digit($str)) {
                 $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str]]);
             } else {
-                $produtos = $repoProduto->findByFiltersSimpl([[['nome', 'titulo'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
+                $produtos = $repoProduto->findByFiltersSimpl([[['nome', 'jsonData'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
             }
             $select2js = Select2JsUtils::toSelect2DataFn($produtos, function ($e) {
                 /** @var Produto $e */

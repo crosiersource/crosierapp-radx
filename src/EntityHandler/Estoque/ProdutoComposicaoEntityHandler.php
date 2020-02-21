@@ -33,34 +33,34 @@ class ProdutoComposicaoEntityHandler extends EntityHandler
         return ProdutoComposicao::class;
     }
 
+    /**
+     * @param $produtoComposicao
+     * @return mixed|void
+     * @throws ViewException
+     */
     public function beforeSave(/** @var ProdutoComposicao $produtoComposicao */ $produtoComposicao)
     {
-
-        $composicoes = $produtoComposicao->getProdutoPai()->getComposicoes();
-
+        $composicoes = $produtoComposicao->produtoPai->getComposicoes();
         if (!$produtoComposicao->getId()) {
+            /** @var ProdutoComposicao $composicao */
+            $i=0;
             foreach ($composicoes as $composicao) {
-                if ($composicao->getProdutoFilho()->getId() === $produtoComposicao->getProdutoFilho()->getId()) {
-                    throw new ViewException('Item já existente na composição');
+                if ($composicao->produtoFilho->getId() === $produtoComposicao->produtoFilho->getId()) {
+                    $i++;
                 }
             }
+            if ($i > 1) {
+                throw new ViewException('Item já existente na composição');
+            }
         }
-        if (!$produtoComposicao->getOrdem()) {
+        if (!$produtoComposicao->ordem) {
             if ($composicoes) {
                 /** @var ProdutoComposicao $ultimo */
                 $ultimo = $composicoes[0];
-                $produtoComposicao->setOrdem($ultimo ? $ultimo->getOrdem() + 1 : 1);
+                $produtoComposicao->ordem = ($ultimo ? $ultimo->ordem + 1 : 1);
             } else {
-                $produtoComposicao->setOrdem(1);
+                $produtoComposicao->ordem = 1;
             }
-        }
-
-        $sql = 'SELECT pa.valor FROM est_produto_atributo pa JOIN est_atributo a ON pa.atributo_id = a.id WHERE a.uuid = :uuid AND pa.produto_id = :produtoId';
-        $pas = $this->getDoctrine()->getConnection()->fetchAll($sql, ['uuid' => 'c22e79c5-4dfd-4506-b3f5-53473f88bf2f', 'produtoId' => $produtoComposicao->getProdutoFilho()->getId()]);
-        if ($pas[0]['valor'] ?? false) {
-            $produtoComposicao->setPrecoAtual((float)$pas[0]['valor']);
-        } else {
-            $produtoComposicao->setPrecoAtual(0.0);
         }
     }
 
@@ -80,7 +80,7 @@ class ProdutoComposicaoEntityHandler extends EntityHandler
             /** @var ProdutoComposicao $produtoComposicao */
             $produtoComposicao = $repoProdutoComposicao->find($id);
             $ordens[$id] = $i;
-            $produtoComposicao->setOrdem($i++);
+            $produtoComposicao->ordem = $i++;
             $this->save($produtoComposicao);
         }
         return $ordens;
@@ -100,7 +100,7 @@ class ProdutoComposicaoEntityHandler extends EntityHandler
 
         /** @var ProdutoComposicao $produtoComposicao */
         foreach ($composicoes as $produtoComposicao) {
-            $produtoComposicao->setOrdem($i++);
+            $produtoComposicao->ordem = $i++;
             $this->save($produtoComposicao);
         }
     }

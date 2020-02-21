@@ -70,6 +70,13 @@
 
                     {% endfor %}
 
+                    {% if e.composicao == 'S' %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="composicao-tab" data-toggle="tab" href="#composicao" role="tab" aria-controls="composicao"
+                               aria-selected="false">Composição</a>
+                        </li>
+                    {% endif %}
+
                 </ul>
 
                 <div class="form-group row">
@@ -89,13 +96,17 @@
                     {% for aba,camposNaAba in jsonMetadata.abas %}
 
                         {# Abas fixas que possuem arquivo próprio #}
-                        {% if aba in ['Produto','Fotos','Composição'] %}
+                        {% if aba in ['Produto','Fotos'] %}
                             {% include 'Estoque/produto_form_' ~ aba|lower|transliterate ~ '.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
                         {% else %}
                             {% include 'Estoque/produto_form_aba.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
                         {% endif %}
 
                     {% endfor %}
+
+                    {% if e.composicao == 'S' %}
+                        {% include 'Estoque/produto_form_composicao.html.twig' %}
+                    {% endif %}
 
                 </div>
 

@@ -4,6 +4,9 @@ namespace App\Business\Estoque;
 
 
 use App\Entity\Estoque\Produto;
+use App\Entity\Estoque\ProdutoComposicao;
+use App\Repository\Estoque\ProdutoComposicaoRepository;
+use App\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibBaseBundle\Business\BaseBusiness;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -28,18 +31,18 @@ class ProdutoBusiness extends BaseBusiness
     public function fillQtdeEmEstoqueComposicao(Produto $produto)
     {
         $menorQtdeDisponivel = null;
-        if ($produto->getComposicoes()) {
+        if ($produto->composicao == 'S') {
 
-            $qtdeTotal = 0.0;
+                        $qtdeTotal = 0.0;
             $valorTotal = 0.0;
 
-            foreach ($produto->getComposicoes() as $composicao) {
+            foreach ($produto->composicoes as $itemComposicao) {
 
-                $composicao->qtdeEmEstoque = $composicao->produtoFilho->jsonData['qtde_estoque_atual'] ?? 0.0;
-                $qtdeTotal += $composicao->getQtde();
-                $valorTotal += $composicao->getTotalComposicao();
+                $itemComposicao->qtdeEmEstoque = $itemComposicao->produtoFilho->jsonData['qtde_estoque_total'] ?? 0.0;
+                $qtdeTotal += $itemComposicao->qtde;
+                $valorTotal += $itemComposicao->getTotalComposicao();
 
-                $qtdeDisponivel = $composicao->qtdeEmEstoque >= $composicao->qtde ? $composicao->qtde : 0;
+                $qtdeDisponivel = $itemComposicao->qtdeEmEstoque >= $itemComposicao->qtde ? bcdiv($itemComposicao->qtdeEmEstoque, $itemComposicao->qtde, 0) : 0;
                 $menorQtdeDisponivel = $menorQtdeDisponivel !== null && $menorQtdeDisponivel < $qtdeDisponivel ? $menorQtdeDisponivel : $qtdeDisponivel;
 
             }
