@@ -66,7 +66,7 @@ class ProdutoEntityHandler extends EntityHandler
         $imagens = $repoProdutoImagem->findBy(['produto' => $produto], ['ordem' => 'ASC']);
 
         $produto->jsonData['qtde_imagens'] = count($imagens);
-        $produto->jsonData['imagem1'] = $imagens[0]->getImageName();
+        $produto->jsonData['imagem1'] = $imagens ? $imagens[0]->getImageName() : '';
 
         $this->calcPorcentPreench($produto);
     }
