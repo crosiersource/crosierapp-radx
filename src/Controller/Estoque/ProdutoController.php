@@ -187,7 +187,7 @@ class ProdutoController extends FormListController
             $this->produtoImagemEntityHandler->save($produtoImagem);
             $r = [
                 'result' => 'OK',
-                'filesUl' => $this->renderView('Estoque/produto_form_produto_filesUl.html.twig', ['e' => $produto])
+                'filesUl' => $this->renderView('Estoque/produto_form_produto_filesUl.html.twig', ['e' => $produtoImagem->getProduto()])
             ];
         } catch (\Exception $e) {
             $r = ['result' => 'ERRO'];
