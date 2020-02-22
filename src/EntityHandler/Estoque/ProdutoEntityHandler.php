@@ -8,6 +8,7 @@ use App\Entity\Estoque\Produto;
 use App\Entity\Estoque\ProdutoImagem;
 use App\Entity\Estoque\Subgrupo;
 use App\Repository\Estoque\ProdutoImagemRepository;
+use App\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
@@ -79,109 +80,37 @@ class ProdutoEntityHandler extends EntityHandler
         $preench = 0;
         $camposFaltantes = '';
 
-        /** @var AppConfigRepository $repoAppConfig */
-        $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
-
-        $pesosCampos = $repoAppConfig->findOneBy(
-            [
-                'appUUID' => '440e429c-b711-4411-87ed-d95f7281cd43',
-                'chave' => 'porcentPreenchPesosCampos'
-            ]
-        )->getValor();
-        //titulo=10;caracteristicas=10;ean=1;ncm=1
-
-        $pesosKeyVal = explode(';', $pesosCampos);
-        $pesos = [];
-        foreach ($pesosKeyVal as $pesoKeyVal) {
-            $keyVal = explode('=', $pesoKeyVal);
-            $pesos[$keyVal[0]] = $keyVal[1];
-        }
-
-        $pesoTotal = $this->calcPesoTotal($produto);
-
-        if (isset($pesos['titulo'])) {
-            if ($produto->jsonData['titulo'] ?? false) {
-                $preench += $pesos['titulo'];
-            } else {
-                $camposFaltantes .= 'Título (' . DecimalUtils::roundUp(bcdiv($pesos['titulo'] * 100, $pesoTotal, 2), 0) . '%)|';
-            }
-        }
-
-        if (isset($pesos['caracteristicas'])) {
-            if ($produto->jsonData['caracteristicas'] ?? false) {
-                $preench += $pesos['caracteristicas'];
-            } else {
-                $camposFaltantes .= 'Características (' . DecimalUtils::roundUp(bcdiv($pesos['caracteristicas'] * 100, $pesoTotal, 2), 0) . '%)|';
-            }
-        }
-
-        if (isset($pesos['ean'])) {
-            if ($produto->jsonData['ean'] ?? false) {
-                $preench += $pesos['ean'];
-            } else {
-                $camposFaltantes .= 'EAN (' . DecimalUtils::roundUp(bcdiv($pesos['ean'] * 100, $pesoTotal, 2), 0) . '%)|';
-            }
-        }
-
-        if (isset($pesos['ncm'])) {
-            if ($produto->jsonData['ncm'] ?? false) {
-                $preench += $pesos['ncm'];
-            } else {
-                $camposFaltantes .= 'NCM (' . DecimalUtils::roundUp(bcdiv($pesos['ncm'] * 100, $pesoTotal, 2), 0) . '%)|';
-            }
-        }
-
         $qtdeFotosMinima = $this->getQtdeFotosMinima();
-        $qtdeImagensProduto = $produto->getImagens()->count();
-        if ($produto->getImagens()) {
-            for ($i = 1; $i <= $qtdeFotosMinima; $i++) {
-                if ($qtdeImagensProduto < $i) {
-                    $camposFaltantes .= 'Imagem ' . $i . ' (' . DecimalUtils::roundUp(bcdiv($pesos['imagem'] * 100, $pesoTotal, 2), 0) . '%)|';
+
+        $pesoTotal = $qtdeFotosMinima;
+
+        /** @var ProdutoRepository $repoProduto */
+        $repoProduto = $this->doctrine->getRepository(Produto::class);
+        $jsonMetadata = json_decode($repoProduto->getJsonMetadata(), true);
+        foreach ($jsonMetadata['campos'] as $nomeDoCampo => $metadata) {
+            if (isset($metadata['soma_preench'])) {
+                $pesoTotal += $metadata['soma_preench'];
+                if ($produto->jsonData[$nomeDoCampo] ?? false) {
+                    $preench += $metadata['soma_preench'];
                 } else {
-                    $preench += $pesos['imagem'] ?? 1;
+                    $camposFaltantes .= ($metadata['label'] ?? $nomeDoCampo) . ' (' . DecimalUtils::roundUp(bcdiv($metadata['soma_preench'] * 100, $pesoTotal, 2), 0) . '%)|';
                 }
             }
+        }
 
+        for ($i = 1; $i <= $qtdeFotosMinima; $i++) {
+            if ($produto->getImagens() && $produto->getImagens()->count() >= $i) {
+                $preench += $pesos['imagem'] ?? 1;
+            } else {
+                $camposFaltantes .= 'Imagem ' . $i . ' (1%)|';
+            }
         }
 
         $totalPreench = $preench / $pesoTotal;
 
         $produto->jsonData['porcent_preench'] = $totalPreench;
+        $produto->jsonData['porcent_preench_campos_faltantes'] = $camposFaltantes;
 
-    }
-
-    /**
-     * @param Produto $produto
-     * @return int
-     */
-    private function calcPesoTotal(Produto $produto): int
-    {
-        /** @var AppConfigRepository $repoAppConfig */
-        $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
-        $pesosCampos = $repoAppConfig->findOneBy(
-            [
-                'appUUID' => '440e429c-b711-4411-87ed-d95f7281cd43',
-                'chave' => 'porcentPreenchPesosCampos'
-            ]
-        )->getValor();
-
-        $pesoTotal = 0;
-        $pesosKeyVal = explode(';', $pesosCampos);
-        $pesos = [];
-        foreach ($pesosKeyVal as $pesoKeyVal) {
-            $keyVal = explode('=', $pesoKeyVal);
-            if ($keyVal[0] !== 'imagem') {
-                $pesoTotal += (int)$keyVal[1];
-            }
-            $pesos[$keyVal[0]] = $keyVal[1];
-        }
-
-
-        $qtdeFotosMinima = $this->getQtdeFotosMinima();
-
-        $pesoTotal += $qtdeFotosMinima * ($pesos['imagem'] ?? 1);
-
-        return $pesoTotal;
     }
 
     /**
@@ -189,7 +118,7 @@ class ProdutoEntityHandler extends EntityHandler
      */
     private function getQtdeFotosMinima(): int
     {
-        $qtdeFotosMinima = 3;
+        $qtdeFotosMinima = 0;
         try {
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
