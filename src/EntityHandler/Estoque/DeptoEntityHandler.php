@@ -20,8 +20,8 @@ class DeptoEntityHandler extends EntityHandler
 
     public function beforeSave(/** @var Depto $depto */ $depto)
     {
-        if (!$depto->getUUID()) {
-            $depto->setUUID(StringUtils::guidv4());
+        if (!$depto->UUID) {
+            $depto->UUID = StringUtils::guidv4();
         }
     }
 

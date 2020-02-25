@@ -20,14 +20,14 @@ class SubgrupoEntityHandler extends EntityHandler
 
     public function beforeSave(/** @var Subgrupo $subgrupo */ $subgrupo)
     {
-        if (!$subgrupo->getUUID()) {
-            $subgrupo->setUUID(StringUtils::guidv4());
+        if (!$subgrupo->UUID) {
+            $subgrupo->UUID = StringUtils::guidv4();
         }
-        $subgrupo->setDepto($subgrupo->getGrupo()->getDepto());
-        $subgrupo->setCodigoDepto($subgrupo->getGrupo()->getDepto()->getCodigo());
-        $subgrupo->setNomeDepto($subgrupo->getGrupo()->getDepto()->getNome());
-        $subgrupo->setCodigoGrupo($subgrupo->getGrupo()->getCodigo());
-        $subgrupo->setNomeGrupo($subgrupo->getGrupo()->getNome());
+        $subgrupo->jsonData['depto_id'] = $subgrupo->grupo->depto->getId();
+        $subgrupo->jsonData['depto_codigo'] = $subgrupo->grupo->depto->codigo;
+        $subgrupo->jsonData['depto_nome'] = $subgrupo->grupo->depto->nome;
+        $subgrupo->jsonData['grupo_codigo'] = $subgrupo->grupo->codigo;
+        $subgrupo->jsonData['grupo_nome'] = $subgrupo->grupo->nome;
     }
 
 

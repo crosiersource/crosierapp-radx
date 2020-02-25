@@ -28,7 +28,7 @@ class Depto implements EntityId
      *
      * @var string|null
      */
-    private $UUID;
+    public ?string $UUID = null;
 
     /**
      *
@@ -38,7 +38,7 @@ class Depto implements EntityId
      *
      * @var string|null
      */
-    private $codigo;
+    public ?string $codigo = null;
 
     /**
      *
@@ -47,14 +47,7 @@ class Depto implements EntityId
      *
      * @var string|null
      */
-    private $nome;
-
-    /**
-     * Transient.
-     * @Groups("entity")
-     * @var string|null
-     */
-    private $descricaoMontada;
+    public ?string $nome = null;
 
     /**
      *
@@ -66,7 +59,16 @@ class Depto implements EntityId
      *      orphanRemoval=true
      * )
      */
-    private $grupos;
+    public $grupos;
+
+    /**
+     *
+     * @ORM\Column(name="json_data", type="json")
+     * @var null|array
+     * @NotUppercase()
+     * @Groups("entity")
+     */
+    public ?array $jsonData = null;
 
 
     public function __construct()
@@ -78,84 +80,10 @@ class Depto implements EntityId
     /**
      * @return string|null
      */
-    public function getUUID(): ?string
-    {
-        return $this->UUID;
-    }
-
-    /**
-     * @param string|null $UUID
-     * @return Depto
-     */
-    public function setUUID(?string $UUID): Depto
-    {
-        $this->UUID = $UUID;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCodigo(): ?string
-    {
-        return $this->codigo;
-    }
-
-    /**
-     * @param string|null $codigo
-     * @return Depto
-     */
-    public function setCodigo(?string $codigo): Depto
-    {
-        $this->codigo = $codigo;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNome(): ?string
-    {
-        return $this->nome;
-    }
-
-    /**
-     * @param string|null $nome
-     * @return Depto
-     */
-    public function setNome(?string $nome): Depto
-    {
-        $this->nome = $nome;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getDescricaoMontada(): ?string
     {
-        $this->descricaoMontada = $this->codigo . ' - ' . $this->nome;
-        return $this->descricaoMontada;
+        return $this->codigo . ' - ' . $this->nome;
     }
-
-    /**
-     * @return Grupo[]|ArrayCollection|null
-     */
-    public function getGrupos()
-    {
-        return $this->grupos;
-    }
-
-    /**
-     * @param Grupo[]|ArrayCollection|null $grupos
-     * @return Depto
-     */
-    public function setGrupos($grupos)
-    {
-        $this->grupos = $grupos;
-        return $this;
-    }
-
 
 
 }

@@ -28,7 +28,7 @@ class Produto implements EntityId
      *
      * @var string|null
      */
-    public ?string $UUID;
+    public ?string $UUID = null;
 
     /**
      *
@@ -38,7 +38,7 @@ class Produto implements EntityId
      * @MaxDepth(1)
      * @var $depto null|Depto
      */
-    public ?Depto $depto;
+    public ?Depto $depto = null;
 
     /**
      *
@@ -48,7 +48,7 @@ class Produto implements EntityId
      * @MaxDepth(1)
      * @var $grupo null|Grupo
      */
-    public ?Grupo $grupo;
+    public ?Grupo $grupo = null;
 
     /**
      *
@@ -58,7 +58,7 @@ class Produto implements EntityId
      * @MaxDepth(1)
      * @var $subgrupo null|Subgrupo
      */
-    public ?Subgrupo $subgrupo;
+    public ?Subgrupo $subgrupo = null;
 
     /**
      *
@@ -67,7 +67,7 @@ class Produto implements EntityId
      *
      * @var $fornecedor null|Fornecedor
      */
-    public ?Fornecedor $fornecedor;
+    public ?Fornecedor $fornecedor = null;
 
     /**
      *
@@ -76,7 +76,7 @@ class Produto implements EntityId
      *
      * @var null|string
      */
-    public ?string $nome;
+    public ?string $nome = null;
 
     /**
      * ATIVO,INATIVO
@@ -86,7 +86,7 @@ class Produto implements EntityId
      *
      * @var null|string
      */
-    public ?string $status;
+    public ?string $status = null;
 
     /**
      * S,N

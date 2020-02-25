@@ -20,11 +20,11 @@ class GrupoEntityHandler extends EntityHandler
 
     public function beforeSave(/** @var Grupo $grupo */ $grupo)
     {
-        if (!$grupo->getUUID()) {
-            $grupo->setUUID(StringUtils::guidv4());
+        if (!$grupo->UUID) {
+            $grupo->UUID = StringUtils::guidv4();
         }
-        $grupo->setCodigoDepto($grupo->getDepto()->getCodigo());
-        $grupo->setNomeDepto($grupo->getDepto()->getNome());
+        $grupo->jsonData['depto_codigo'] = $grupo->depto->codigo;
+        $grupo->jsonData['depto_nome'] = $grupo->depto->nome;
     }
 
 

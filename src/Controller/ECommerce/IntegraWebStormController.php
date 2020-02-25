@@ -24,9 +24,23 @@ class IntegraWebStormController extends BaseController
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function form(IntegraWebStorm $integraWebStormBusiness)
+    public function integrarMarcas(IntegraWebStorm $integraWebStormBusiness)
     {
         $integraWebStormBusiness->integrarMarcas();
+        return new Response('OK');
+    }
+
+    /**
+     *
+     * @Route("/est/integraWebStorm/integrarDeptosGruposSubgrupos", name="est_integraWebStorm_integrarDeptosGruposSubgrupos")
+     * @param IntegraWebStorm $integraWebStormBusiness
+     * @return Response
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function integrarDeptosGruposSubgrupos(IntegraWebStorm $integraWebStormBusiness)
+    {
+        $integraWebStormBusiness->integrarDeptosGruposSubgrupos();
         return new Response('OK');
     }
 

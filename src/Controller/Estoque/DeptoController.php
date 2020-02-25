@@ -26,14 +26,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class DeptoController extends BaseController
 {
 
-    /** @var DeptoEntityHandler */
-    private $deptoEntityHandler;
+    private DeptoEntityHandler $deptoEntityHandler;
 
-    /** @var GrupoEntityHandler */
-    private $grupoEntityHandler;
+    private GrupoEntityHandler $grupoEntityHandler;
 
-    /** @var SubgrupoEntityHandler */
-    private $subgrupoEntityHandler;
+    private SubgrupoEntityHandler $subgrupoEntityHandler;
 
     /**
      * @required
