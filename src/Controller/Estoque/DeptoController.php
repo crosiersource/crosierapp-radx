@@ -83,14 +83,14 @@ class DeptoController extends BaseController
             /** @var Grupo $grupo */
             $grupo = $repoGrupo->find($request->get('grupoId'));
             $parameters['grupoSelected'] = $grupo;
-            $parameters['deptoSelected'] = $grupo->getDepto();
+            $parameters['deptoSelected'] = $grupo->depto;
         } else if ($request->get('deptoId')) {
             /** @var Depto $depto */
             $depto = $repoDepto->find($request->get('deptoId'));
             $parameters['deptoSelected'] = $depto;
-            if ($depto->getGrupos()) {
+            if ($depto->grupos) {
                 /** @var Grupo $grupo */
-                $grupo = $depto->getGrupos()->first();
+                $grupo = $depto->grupos->first();
                 if ($grupo) {
                     $parameters['grupoSelected'] = $grupo;
                 }
@@ -188,7 +188,7 @@ class DeptoController extends BaseController
         } catch (ViewException $e) {
             $this->addFlash('error', 'Erro ao deletar o grupo');
         }
-        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['deptoId' => $grupo->getDepto()->getId()]);
+        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['deptoId' => $grupo->depto->getId()]);
     }
 
 
@@ -237,128 +237,11 @@ class DeptoController extends BaseController
         } catch (ViewException $e) {
             $this->addFlash('error', 'Erro ao deletar o subgrupo');
         }
-        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $subgrupo->getGrupo()->getId()]);
+        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $subgrupo->grupo->getId()]);
     }
 
 
-    /**
-     *
-     * @Route("/est/depto/importar/", name="est_depto_importar")
-     * @return Response
-     *
-     * @throws ViewException
-     */
-    public function importar()
-    {
-        $str = '76|900|DEVERSOS                           |        |0|0|0|0|0|0|
-75|308|ELETR/ARRANQUE/ALTERN.VW/FORD      |        |0|0|0|0|0|0|
-74|208|ELETR/ARRANQUE/ALTERN.MBB/IVECO    |        |0|0|0|0|0|0|
-73|108|ELETR/ARRANQUE/ALTERN.VOLVO        |        |0|0|0|0|0|0|
-72|8|ELETR/ARRANQUE/ALTERN.SCANIA       |        |0|0|0|0|0|0|
-71|310|LUBRIFICANTES FORD/VOLKSWAGEM/DAF  |84213100|0|0|0|0|0|0|
-70|225|EMBREAGEM MBB                      |        |0|0|0|0|0|0|
-69|357|PRODUCAO PROPRIA                   |        |0|0|0|0|0|0|
-68|356|INSUMOS/PRODUCAO                   |        |0|0|0|0|0|0|
-67|56|BATERIAS                           |        |0|0|0|0|0|0|
-66|355|ACESSORIOS FORD/VOLKSWAGEM/DAF     |        |0|0|0|0|0|0|
-65|100|BENS ATIVO IMOBILIZADO             |20000000|0|0|0|0|0|0|
-64|235|DIFERENCIAL MB/IVECO               |        |0|0|0|0|0|0|
-63|26|CAMBIO SC                          |        |0|0|0|0|0|0|
-62|239|CARRETAS MB                        |        |0|0|0|0|0|0|
-61|241|CARDAN MB/IVECO                    |        |0|0|0|0|0|0|
-60|233|EIXO DT/AMORTECEDOR MB/IVECO       |        |0|0|0|0|0|0|
-59|207|BBA INJ//CANO BICO MB              |        |0|0|0|0|0|0|
-58|214|COLETOR ESC/ADM/INTER/MB/IVECO     |        |0|0|0|0|0|0|
-57|213|COMPRESSOR MB/IVECO                |        |0|0|0|0|0|0|
-56|277|MANGUEIRAS/BORRACHAS MB/IVECO      |        |0|0|0|0|0|0|
-55|255|ACESSORIOS MB/IVECO                |        |0|0|0|0|0|0|
-54|299|RETENTORES MB                      |        |0|0|0|0|0|0|
-53|224|COXIM/SUPORTES MB                  |        |0|0|0|0|0|0|
-52|10|FILTROS SC                         |        |0|0|0|0|0|0|
-51|120|BBA DAGUA/CORREIAS VV              |        |0|0|0|0|0|0|
-50|106|JUNTAS                             |        |0|0|0|0|0|0|
-49|1|MOTOR SC                           |        |0|0|0|0|0|0|
-48|298|ROLAMENTOS MB/IVECO                |        |0|0|0|0|0|0|
-47|325|EMBREAGEM VOLKSWAGEM/FORD/DAF      |        |0|0|0|0|0|0|
-46|42|EIXO TRAZ/DT/REPAROS               |        |0|0|0|0|0|0|
-45|135|DIFERENCIAL VV                     |        |0|0|0|0|0|0|
-44|139|CARRETAS VV                        |        |0|0|0|0|0|0|
-43|177|MANGUEIRAS/BORRACHAS VV            |        |0|0|0|0|0|0|
-42|118|BBA DE OLEO/FLEX.HIDRAULICO VV     |        |0|0|0|0|0|0|
-41|199|RETENTORES VV                      |        |0|0|0|0|0|0|
-40|107|BBA INJ//CANO BICO VV              |        |0|0|0|0|0|0|
-39|155|ACESSORIOS VV                      |        |0|0|0|0|0|0|
-38|198|ROLAMENTOS VV                      |        |0|0|0|0|0|0|
-37|201|MOTOR MB/IVECO                     |        |0|0|0|0|0|0|
-36|55|ACESSORIOS SC                      |        |0|0|0|0|0|0|
-35|124|COXIM/SUPORTES VV                  |        |0|0|0|0|0|0|
-34|113|COMPRESSOR VV                      |        |0|0|0|0|0|0|
-33|206|JUNTAS MB                          |        |0|0|0|0|0|0|
-32|195|LUBRIFICANTES VV                   |        |0|0|0|0|0|0|
-31|141|CARDAN VV                          |        |0|0|0|0|0|0|
-30|133|EIXO DT/AMORTECEDOR VV             |        |0|0|0|0|0|0|
-29|154|CABOS VV                           |        |0|0|0|0|0|0|
-28|126|CAMBIO VV                          |        |0|0|0|0|0|0|
-27|125|EMBREAGEM VV                       |        |0|0|0|0|0|0|
-26|242|EIXO TRAZ/DT/REPAROS MBB/IVECO     |        |0|0|0|0|0|0|
-25|210|FILTROS MB/IVECO                   |        |0|0|0|0|0|0|
-24|220|BBA DAGUA/CORREIAS MB/IVECO        |        |0|0|0|0|0|0|
-23|114|COLETOR ESC/ADM/INTERC/VV          |        |0|0|0|0|0|0|
-22|41|CARDAN SC                          |        |0|0|0|0|0|0|
-21|99|RETENTORES SC                      |        |0|0|0|0|0|0|
-20|98|ROLAMENTOS SC                      |        |0|0|0|0|0|0|
-19|95|LUBRIFICANTES SC                   |        |0|0|0|0|0|0|
-18|77|MANGUEIRAS/BORRACHAS SC            |        |0|0|0|0|0|0|
-17|54|CABOS SC                           |        |0|0|0|0|0|0|
-16|142|EIXO TRAZ/DT/REPAROS VV            |        |0|0|0|0|0|0|
-15|39|CARRETAS SC                        |        |0|0|0|0|0|0|
-14|35|DIFERENCIAL SC                     |        |0|0|0|0|0|0|
-13|33|EIXO DT/AMORTECEDOR SC             |        |0|0|0|0|0|0|
-12|226|CAMBIO MB                          |        |0|0|0|0|0|0|
-11|25|EMBREAGEM SC                       |        |0|0|0|0|0|0|
-10|24|COXIM/SUPORTES SC                  |        |0|0|0|0|0|0|
-9|20|BBA DAGUA/CORREIAS SC              |        |0|0|0|0|0|0|
-8|18|BBA DE OLEO/FLEX.HIDRAULICO SC     |        |0|0|0|0|0|0|
-7|14|COLETOR ESC/ADM/INTERC/SC          |        |0|0|0|0|0|0|
-6|13|COMPRESSOR SC                      |        |0|0|0|0|0|0|
-5|110|FILTROS VV                         |        |0|0|0|0|0|0|
-4|7|BBA INJ//CANO BICO SC              |        |0|0|0|0|0|0|
-3|6|JUNTAS SC                          |        |0|0|0|0|0|0|
-2|4|PARAFUSOS/BRACADEIRAS SC           |        |0|0|0|0|0|0|
-1|101|MOTOR VV                           |        |0|0|0|0|0|0|';
 
-        $linhas = explode("\n", $str);
-        foreach ($linhas as $linha) {
-            $campos = explode("|", $linha);
-            $depto = new Depto();
-            $depto->setCodigo(trim($campos[1]));
-            $depto->setNome(trim($campos[2]));
-            $this->entityHandler->save($depto);
-
-            $grupo = new Grupo();
-            $grupo->setDepto($depto);
-            $grupo->setCodigoDepto($depto->getCodigo());
-            $grupo->setNomeDepto($depto->getNome());
-            $grupo->setCodigo(1);
-            $grupo->setNome('GERAL');
-            $this->grupoEntityHandler->save($grupo);
-
-            $subgrupo = new Subgrupo();
-            $subgrupo->setDepto($depto);
-            $subgrupo->setCodigoDepto($depto->getCodigo());
-            $subgrupo->setNomeDepto($depto->getNome());
-            $subgrupo->setGrupo($grupo);
-            $subgrupo->setCodigoGrupo($grupo->getCodigo());
-            $subgrupo->setNomeGrupo($grupo->getNome());
-            $subgrupo->setCodigo(1);
-            $subgrupo->setNome('GERAL');
-            $this->subgrupoEntityHandler->save($subgrupo);
-
-        }
-
-        return new Response('OK');
-
-    }
 
 
 }
