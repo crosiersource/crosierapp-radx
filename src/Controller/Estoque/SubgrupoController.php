@@ -121,7 +121,7 @@ class SubgrupoController extends FormListController
      */
     public function subgrupoSelect2json(Grupo $grupo): JsonResponse
     {
-        $subgrupos = $grupo->getSubgrupos()->toArray();
+        $subgrupos = $grupo->subgrupos->toArray();
 
         $select2js = Select2JsUtils::toSelect2DataFn($subgrupos, function ($e) {
             /** @var Subgrupo $e */

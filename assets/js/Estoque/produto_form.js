@@ -216,40 +216,38 @@ $(document).ready(function () {
     }
 
     function createSortableComposicao() {
-        Sortable.create(tbodySortableComposicao,
-            {
-                animation: 150,
-                onEnd:
-                    function (/**Event*/evt) {
-                        let ids = '';
-                        $('#tbodySortableComposicao > tr').each(function () {
-                            ids += $(this).data('id') + ',';
-                        });
+        if ($('#tbodySortableComposicao').length) {
+            Sortable.create(tbodySortableComposicao,
+                {
+                    animation: 150,
+                    onEnd:
+                        function (/**Event*/evt) {
+                            let ids = '';
+                            $('#tbodySortableComposicao > tr').each(function () {
+                                ids += $(this).data('id') + ',';
+                            });
 
-                        $.ajax({
-                                dataType: "json",
-                                data: {'ids': ids},
-                                url: Routing.generate('est_produto_formComposicaoSaveOrdem'),
-                                type: 'POST'
-                            }
-                        ).done(function (data) {
-                            if (data.result === 'OK') {
-                                toastrr.success('Itens ordenados com sucesso');
+                            $.ajax({
+                                    dataType: "json",
+                                    data: {'ids': ids},
+                                    url: Routing.generate('est_produto_formComposicaoSaveOrdem'),
+                                    type: 'POST'
+                                }
+                            ).done(function (data) {
+                                if (data.result === 'OK') {
+                                    toastrr.success('Itens ordenados com sucesso');
 
-                                $.each(data.ids, function (id, ordem) {
-                                    $('#tbodySortableComposicao > tr[data-id="' + id + '"] > td[id="ordem"]').html(ordem);
-                                });
+                                    $.each(data.ids, function (id, ordem) {
+                                        $('#tbodySortableComposicao > tr[data-id="' + id + '"] > td[id="ordem"]').html(ordem);
+                                    });
 
-                            } else {
-                                toastrr.error('Erro ao ordenar itens');
-                            }
-                        });
-                    }
-            });
-    }
-
-    if ($('#tbodySortableComposicao').length) {
-        createSortableComposicao();
+                                } else {
+                                    toastrr.error('Erro ao ordenar itens');
+                                }
+                            });
+                        }
+                });
+        }
     }
 
 

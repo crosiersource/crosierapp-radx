@@ -121,7 +121,7 @@ class GrupoController extends FormListController
      */
     public function grupoSelect2json(Depto $depto): JsonResponse
     {
-        $grupos = $depto->getGrupos()->toArray();
+        $grupos = $depto->grupos->toArray();
 
         $select2js = Select2JsUtils::toSelect2DataFn($grupos, function ($e) {
             /** @var Grupo $e */
