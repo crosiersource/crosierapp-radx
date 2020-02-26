@@ -53,14 +53,14 @@ class ProdutoEntityHandler extends EntityHandler
         if (!$produto->subgrupo) {
             $produto->subgrupo = $this->doctrine->getRepository(Subgrupo::class)->find(1);
         }
-        $produto->jsonData['depto_codigo'] = $produto->depto->getCodigo();
-        $produto->jsonData['depto_nome'] = $produto->depto->getNome();
+        $produto->jsonData['depto_codigo'] = $produto->depto->codigo;
+        $produto->jsonData['depto_nome'] = $produto->depto->nome;
 
-        $produto->jsonData['grupo_codigo'] = $produto->grupo->getCodigo();
-        $produto->jsonData['grupo_nome'] = $produto->grupo->getNome();
+        $produto->jsonData['grupo_codigo'] = $produto->grupo->codigo;
+        $produto->jsonData['grupo_nome'] = $produto->grupo->nome;
 
-        $produto->jsonData['subgrupo_codigo'] = $produto->subgrupo->getCodigo();
-        $produto->jsonData['subgrupo_nome'] = $produto->subgrupo->getNome();
+        $produto->jsonData['subgrupo_codigo'] = $produto->subgrupo->codigo;
+        $produto->jsonData['subgrupo_nome'] = $produto->subgrupo->nome;
 
         /** @var ProdutoImagemRepository $repoProdutoImagem */
         $repoProdutoImagem = $this->getDoctrine()->getRepository(ProdutoImagem::class);
