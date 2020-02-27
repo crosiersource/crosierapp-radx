@@ -10,10 +10,12 @@ use App\Entity\Estoque\Subgrupo;
 use App\Repository\Estoque\ProdutoImagemRepository;
 use App\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -21,8 +23,10 @@ use Psr\Log\LoggerInterface;
  */
 class ProdutoEntityHandler extends EntityHandler
 {
-    /** @var LoggerInterface */
-    private $logger;
+
+    private LoggerInterface $logger;
+
+    private AppConfigEntityHandler $appConfigEntityHandler;
 
     /**
      * @required
@@ -32,6 +36,16 @@ class ProdutoEntityHandler extends EntityHandler
     {
         $this->logger = $logger;
     }
+
+    /**
+     * @required
+     * @param AppConfigEntityHandler $appConfigEntityHandler
+     */
+    public function setAppConfigEntityHandler(AppConfigEntityHandler $appConfigEntityHandler): void
+    {
+        $this->appConfigEntityHandler = $appConfigEntityHandler;
+    }
+
 
     public function getEntityClass(): string
     {
@@ -71,6 +85,47 @@ class ProdutoEntityHandler extends EntityHandler
 
         $this->calcPorcentPreench($produto);
     }
+
+    /**
+     * @param $produto
+     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     */
+    public function afterSave(/** @var Produto $produto */ $produto)
+    {
+        /** @var AppConfigRepository $repoAppConfig */
+        $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
+        $jsonMetadataAppConfig = $repoAppConfig->findConfigByChaveAndAppUUID('est_produto_json_metadata', $_SERVER['CROSIERAPP_UUID']);
+        $jsonMetadata = json_decode($jsonMetadataAppConfig->getValor(), true);
+
+        /** @var Connection $conn */
+        $conn = $this->getDoctrine()->getConnection();
+
+        $mudou = null;
+        foreach ($jsonMetadata['campos'] as $campo => $metadata) {
+            if (isset($metadata['sugestoes'])) {
+                $valoresNaBase = $conn->fetchAll('SELECT distinct(json_data->>"$.' . $campo . '") as val FROM est_produto WHERE json_data->>"$.' . $campo . '" NOT IN (\'\',\'null\') ORDER BY json_data->>"$.' . $campo . '"');
+                $sugestoes = [];
+                foreach ($valoresNaBase as $v) {
+                    $valExploded = explode(',', $v['val']);
+                    foreach ($valExploded as $val) {
+                        if ($val && !in_array($val, $sugestoes)) {
+                            $sugestoes[] = $val;
+                        }
+                    }
+                }
+                if (strcmp(json_encode($metadata['sugestoes']), json_encode($sugestoes)) !== 0) {
+                    $mudou .= $campo . ',';
+                    sort($sugestoes);
+                    $jsonMetadata['campos'][$campo]['sugestoes'] = $sugestoes;
+                }
+            }
+        }
+        if ($mudou) {
+            $jsonMetadataAppConfig->setValor(json_encode($jsonMetadata));
+            $this->appConfigEntityHandler->save($jsonMetadataAppConfig);
+        }
+    }
+
 
     /**
      * @param Produto $produto
