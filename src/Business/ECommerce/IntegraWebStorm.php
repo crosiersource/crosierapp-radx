@@ -60,7 +60,7 @@ class IntegraWebStorm extends BaseBusiness
             }
             $this->chave = $appConfigChave->getValor();
         } catch (\Exception $e) {
-            throw new \RuntimeException('Erro ao instanciar IntegraWebStorm');
+            throw new \RuntimeException('Erro ao instanciar IntegraWebStorm (chave ecomm_info_integra_WEBSTORM_chave ?)');
         }
         $this->deptoEntityHandler = $deptoEntityHandler;
         $this->grupoEntityHandler = $grupoEntityHandler;
@@ -101,7 +101,7 @@ class IntegraWebStorm extends BaseBusiness
                     $idIntegr = $this->integraMarca($marcaNaBase['marca']);
                     $json['marcas'][] = [
                         'nome_no_crosier' => $marcaNaBase['marca'],
-                        'webstorm_id' => $idIntegr,
+                        'ecommerce_id' => $idIntegr,
                         'integrado_em' => $now
                     ];
                     $mudou = true;
@@ -169,77 +169,104 @@ class IntegraWebStorm extends BaseBusiness
         $deptos = $repoDepto->findAll(['id' => 'ASC']);
         /** @var Depto $depto */
         foreach ($deptos as $depto) {
-
-            if (!isset($depto->jsonData['webstorm_id'])) {
-                $idNivelPai_depto = $this->integraDeptoGrupoSubgrupo($depto->nome, 1);
-                $depto->jsonData = [
-                    'webstorm_id' => $idNivelPai_depto,
-                    'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                    'integrado_por' => $this->security->getUser()->getUsername()
-                ];
-
-                $this->deptoEntityHandler->save($depto);
-            } else {
-                $idNivelPai_depto = $depto->jsonData['webstorm_id'];
-                $this->integraDeptoGrupoSubgrupo($depto->nome, 1, null, $idNivelPai_depto);
-                $depto->jsonData = [
-                    'webstorm_id' => $idNivelPai_depto,
-                    'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                    'integrado_por' => $this->security->getUser()->getUsername()
-                ];
-                $this->deptoEntityHandler->save($depto);
-            }
-
-
+            $this->integraDepto($depto);
             /** @var Grupo $grupo */
             foreach ($depto->grupos as $grupo) {
-                if (!isset($grupo->jsonData['webstorm_id'])) {
-                    $idNivelPai_grupo = $this->integraDeptoGrupoSubgrupo($grupo->nome, 2, $idNivelPai_depto);
-                    $grupo->jsonData = [
-                        'webstorm_id' => $idNivelPai_grupo,
-                        'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                        'integrado_por' => $this->security->getUser()->getUsername()
-                    ];
-                    $this->grupoEntityHandler->save($grupo);
-                } else {
-                    $idNivelPai_grupo = $grupo->jsonData['webstorm_id'];
-                    $this->integraDeptoGrupoSubgrupo($grupo->nome, 2, $idNivelPai_depto, null, $idNivelPai_grupo);
-                    $grupo->jsonData = [
-                        'webstorm_id' => $idNivelPai_grupo,
-                        'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                        'integrado_por' => $this->security->getUser()->getUsername()
-                    ];
-                    $this->grupoEntityHandler->save($grupo);
-                }
-
-
+                $this->integraGrupo($grupo);
                 /** @var Subgrupo $subgrupo */
                 foreach ($grupo->subgrupos as $subgrupo) {
-                    if (!isset($subgrupo->jsonData['webstorm_id'])) {
-                        $webstorm_id = $this->integraDeptoGrupoSubgrupo($subgrupo->nome, 3, $idNivelPai_depto, $idNivelPai_grupo);
-                        $subgrupo->jsonData = [
-                            'webstorm_id' => $webstorm_id,
-                            'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                            'integrado_por' => $this->security->getUser()->getUsername()
-                        ];
-                        $this->subgrupoEntityHandler->save($subgrupo);
-                    } else {
-                        $webstorm_id = $subgrupo->jsonData['webstorm_id'];
-                        $this->integraDeptoGrupoSubgrupo($subgrupo->nome, 3, $idNivelPai_depto, $idNivelPai_grupo, $webstorm_id);
-                        $subgrupo->jsonData = [
-                            'webstorm_id' => $webstorm_id,
-                            'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                            'integrado_por' => $this->security->getUser()->getUsername()
-                        ];
-                        $this->subgrupoEntityHandler->save($subgrupo);
-                    }
+                    $this->integraSubgrupo($subgrupo);
                 }
-
-
             }
+        }
+    }
 
+    /**
+     * @param Depto $depto
+     * @return Depto
+     * @throws ViewException
+     */
+    public function integraDepto(Depto $depto): Depto
+    {
+        if (!isset($depto->jsonData['ecommerce_id'])) {
+            $idNivelPai_depto = $this->integraDeptoGrupoSubgrupo($depto->nome, 1);
+            $depto->jsonData = [
+                'ecommerce_id' => $idNivelPai_depto,
+                'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'integrado_por' => $this->security->getUser()->getUsername()
+            ];
+        } else {
+            $idNivelPai_depto = $depto->jsonData['ecommerce_id'];
+            $this->integraDeptoGrupoSubgrupo($depto->nome, 1, null, null, $idNivelPai_depto);
+            $depto->jsonData = [
+                'ecommerce_id' => $idNivelPai_depto,
+                'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'integrado_por' => $this->security->getUser()->getUsername()
+            ];
+        }
+        /** @var Depto $rDepto */
+        $rDepto = $this->deptoEntityHandler->save($depto);
+        return $rDepto;
+    }
+
+    /**
+     * @param Grupo $grupo
+     * @return Grupo
+     * @throws ViewException
+     */
+    public function integraGrupo(Grupo $grupo): Grupo
+    {
+        $idNivelPai_depto = $grupo->depto->jsonData['ecommerce_id'];
+        if (!isset($grupo->jsonData['ecommerce_id'])) {
+            $idNivelPai_grupo = $this->integraDeptoGrupoSubgrupo($grupo->nome, 2, $idNivelPai_depto);
+            $grupo->jsonData = [
+                'ecommerce_id' => $idNivelPai_grupo,
+                'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'integrado_por' => $this->security->getUser()->getUsername()
+            ];
+        } else {
+            $idNivelPai_grupo = $grupo->jsonData['ecommerce_id'];
+            $this->integraDeptoGrupoSubgrupo($grupo->nome, 2, $idNivelPai_depto, null, $idNivelPai_grupo);
+            $grupo->jsonData = [
+                'ecommerce_id' => $idNivelPai_grupo,
+                'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'integrado_por' => $this->security->getUser()->getUsername()
+            ];
 
         }
+        /** @var Grupo $rGrupo */
+        $rGrupo = $this->grupoEntityHandler->save($grupo);
+        return $rGrupo;
+    }
+
+    /**
+     * @param Subgrupo $subgrupo
+     * @return Subgrupo
+     * @throws ViewException
+     */
+    public function integraSubgrupo(Subgrupo $subgrupo): Subgrupo
+    {
+        $idNivelPai_depto = $subgrupo->grupo->depto->jsonData['ecommerce_id'];
+        $idNivelPai_grupo = $subgrupo->grupo->jsonData['ecommerce_id'];
+        if (!isset($subgrupo->jsonData['ecommerce_id'])) {
+            $ecommerce_id = $this->integraDeptoGrupoSubgrupo($subgrupo->nome, 3, $idNivelPai_depto, $idNivelPai_grupo);
+            $subgrupo->jsonData = [
+                'ecommerce_id' => $ecommerce_id,
+                'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'integrado_por' => $this->security->getUser()->getUsername()
+            ];
+        } else {
+            $ecommerce_id = $subgrupo->jsonData['ecommerce_id'];
+            $this->integraDeptoGrupoSubgrupo($subgrupo->nome, 3, $idNivelPai_depto, $idNivelPai_grupo, $ecommerce_id);
+            $subgrupo->jsonData = [
+                'ecommerce_id' => $ecommerce_id,
+                'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'integrado_por' => $this->security->getUser()->getUsername()
+            ];
+        }
+        /** @var Subgrupo $rSubgrupo */
+        $rSubgrupo = $this->subgrupoEntityHandler->save($subgrupo);
+        return $rSubgrupo;
     }
 
     /**
@@ -249,10 +276,10 @@ class IntegraWebStorm extends BaseBusiness
      * @param int $nivel
      * @param int|null $idNivelPai1
      * @param int|null $idNivelPai2
-     * @param int|null $webstorm_id
+     * @param int|null $ecommerce_id
      * @return int
      */
-    private function integraDeptoGrupoSubgrupo(string $descricao, int $nivel, ?int $idNivelPai1 = null, ?int $idNivelPai2 = null, ?int $webstorm_id = null)
+    private function integraDeptoGrupoSubgrupo(string $descricao, int $nivel, ?int $idNivelPai1 = null, ?int $idNivelPai2 = null, ?int $ecommerce_id = null)
     {
         $client = $this->getNusoapClientImportacaoInstance();
 
@@ -267,10 +294,10 @@ class IntegraWebStorm extends BaseBusiness
         $xml = '<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                <chave>' . $this->chave . '</chave>
-               <acao>' . ($webstorm_id ? 'update' : 'insert') . '</acao>
+               <acao>' . ($ecommerce_id ? 'update' : 'insert') . '</acao>
                <modulo>departamento</modulo>
                <marca pk="idDepartamento">
-                  <idDepartamento>' . $webstorm_id . '</idDepartamento>
+                  <idDepartamento>' . $ecommerce_id . '</idDepartamento>
                   <nome>' . $descricao . '</nome>
                   <nivel>' . $nivel . '</nivel>' . $pais . '
                </marca>
@@ -284,7 +311,7 @@ class IntegraWebStorm extends BaseBusiness
             throw new \RuntimeException($client->getError());
         }
 
-        $arResultado = $client->call('departamento' . ($webstorm_id ? 'Update' : 'Add') , [
+        $arResultado = $client->call('departamento' . ($ecommerce_id ? 'Update' : 'Add'), [
             'xml' => utf8_encode($xml)
         ]);
 
@@ -293,6 +320,8 @@ class IntegraWebStorm extends BaseBusiness
 
         return (int)$xmlResult->idDepartamento->__toString();
     }
+
+
 
 
     /**

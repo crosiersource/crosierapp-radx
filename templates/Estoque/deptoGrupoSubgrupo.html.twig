@@ -41,10 +41,21 @@
                                                    id="depto_codigo" value="{{ depto.codigo }}">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control" name="depto[nome]" id="depto_nome"
+                                            <input type="text" class="form-control notuppercase" name="depto[nome]" id="depto_nome"
                                                    value="{{ depto.nome }}">
                                         </td>
                                         <td class="text-right">
+
+                                            {% if depto.jsonData.ecommerce_id|default(null) %}
+                                                <span class="badge badge-secondary">{{ depto.jsonData.ecommerce_id }}</span>
+                                            {% endif %}
+
+                                            <button type="button" class="btn btn-sm btn-outline-warning"
+                                                    data-url="{{ url('est_deptoGrupoSubgrupo_integraDepto', {'depto': depto.id}) }}"
+                                                    data-target="#confirmationModal" data-toggle="modal" title="Integrar com ecommerce">
+                                                <i class="fas fa-cloud-upload-alt"></i>
+                                            </button>
+
                                             <button type="submit" class="btn btn-sm btn-primary" value="Salvar">
                                                 <i class="fas fa-save" aria-hidden="true"></i> Salvar
                                             </button>
@@ -62,7 +73,7 @@
                                     <td></td>
                                     <td><input type="text" class="form-control" name="depto[codigo]" id="depto_codigo">
                                     </td>
-                                    <td><input type="text" class="form-control" name="depto[nome]" id="depto_nome"></td>
+                                    <td><input type="text" class="form-control notuppercase" name="depto[nome]" id="depto_nome"></td>
                                     <td class="text-right">
                                         <button type="submit" class="btn btn-primary" value="Salvar">
                                             <i class="fas fa-save" aria-hidden="true"></i> Salvar
@@ -106,15 +117,26 @@
                                                        value="{{ grupo.id }}">
                                                 <input type="hidden" name="grupo[deptoId]" id="grupo_deptoId"
                                                        value="{{ grupo.depto.id }}">
-                                                <input type="text" class="form-control" name="grupo[codigo]"
+                                                <input type="text" class="form-control notuppercase" name="grupo[codigo]"
                                                        id="grupo_codigo" value="{{ grupo.codigo }}">
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" name="grupo[nome]"
+                                                <input type="text" class="form-control notuppercase" name="grupo[nome]"
                                                        id="grupo_nome"
                                                        value="{{ grupo.nome }}">
                                             </td>
                                             <td class="text-right">
+
+                                                {% if grupo.jsonData.ecommerce_id|default(null) %}
+                                                    <span class="badge badge-secondary">{{ grupo.jsonData.ecommerce_id }}</span>
+                                                {% endif %}
+
+                                                <button type="button" class="btn btn-sm btn-outline-warning"
+                                                        data-url="{{ url('est_deptoGrupoSubgrupo_integraGrupo', {'grupo': grupo.id}) }}"
+                                                        data-target="#confirmationModal" data-toggle="modal" title="Integrar com ecommerce">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                </button>
+
                                                 <button type="submit" class="btn btn-sm btn-primary" value="Salvar">
                                                     <i class="fas fa-save" aria-hidden="true"></i> Salvar
                                                 </button>
@@ -136,7 +158,7 @@
                                         <td><input type="text" class="form-control" name="grupo[codigo]"
                                                    id="grupo_codigo">
                                         </td>
-                                        <td><input type="text" class="form-control" name="grupo[nome]" id="grupo_nome">
+                                        <td><input type="text" class="form-control notuppercase" name="grupo[nome]" id="grupo_nome">
                                         </td>
                                         <td class="text-right">
                                             <button type="submit" class="btn btn-primary" value="Salvar">
@@ -187,14 +209,26 @@
                                                        id="subgrupo_codigo" value="{{ subgrupo.codigo }}">
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" name="subgrupo[nome]"
+                                                <input type="text" class="form-control notuppercase" name="subgrupo[nome]"
                                                        id="subgrupo_nome"
                                                        value="{{ subgrupo.nome }}">
                                             </td>
                                             <td class="text-right">
+
+                                                {% if subgrupo.jsonData.ecommerce_id|default(null) %}
+                                                    <span class="badge badge-secondary">{{ subgrupo.jsonData.ecommerce_id }}</span>
+                                                {% endif %}
+
+                                                <button type="button" class="btn btn-sm btn-outline-warning"
+                                                        data-url="{{ url('est_deptoGrupoSubgrupo_integraSubgrupo', {'subgrupo': subgrupo.id}) }}"
+                                                        data-target="#confirmationModal" data-toggle="modal" title="Integrar com ecommerce">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                </button>
+
                                                 <button type="submit" class="btn btn-sm btn-primary" value="Salvar">
                                                     <i class="fas fa-save" aria-hidden="true"></i> Salvar
                                                 </button>
+
                                                 <button type="button" class="btn btn-sm btn-danger"
                                                         data-url="{{ url('est_deptoGrupoSubgrupo_subgrupoDelete', {'subgrupo' : subgrupo.id}) }}"
                                                         data-target="#confirmationModal" data-toggle="modal">
@@ -213,7 +247,7 @@
                                         <td><input type="text" class="form-control" name="subgrupo[codigo]"
                                                    id="subgrupo_codigo">
                                         </td>
-                                        <td><input type="text" class="form-control" name="subgrupo[nome]" id="subgrupo_nome">
+                                        <td><input type="text" class="form-control notuppercase" name="subgrupo[nome]" id="subgrupo_nome">
                                         </td>
                                         <td class="text-right">
                                             <button type="submit" class="btn btn-primary" value="Salvar">

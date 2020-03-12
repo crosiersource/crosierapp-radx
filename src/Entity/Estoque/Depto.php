@@ -44,6 +44,7 @@ class Depto implements EntityId
      *
      * @ORM\Column(name="nome", type="string", nullable=false)
      * @Groups("entity")
+     * @NotUppercase()
      *
      * @var string|null
      */

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Estoque;
 
+use App\Business\ECommerce\IntegraWebStorm;
 use App\Entity\Estoque\Depto;
 use App\Entity\Estoque\Grupo;
 use App\Entity\Estoque\Subgrupo;
@@ -118,8 +119,8 @@ class DeptoController extends BaseController
         } else {
             $depto = new Depto();
         }
-        $depto->setCodigo($deptoArr['codigo']);
-        $depto->setNome($deptoArr['nome']);
+        $depto->codigo = $deptoArr['codigo'];
+        $depto->nome = $deptoArr['nome'];
         $this->deptoEntityHandler->save($depto);
         return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['deptoId' => $depto->getId()]);
     }
@@ -166,9 +167,9 @@ class DeptoController extends BaseController
         $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
         /** @var Depto $depto */
         $depto = $repoDepto->find($grupoArr['deptoId']);
-        $grupo->setDepto($depto);
-        $grupo->setCodigo($grupoArr['codigo']);
-        $grupo->setNome($grupoArr['nome']);
+        $grupo->depto = $depto;
+        $grupo->codigo = $grupoArr['codigo'];
+        $grupo->nome = $grupoArr['nome'];
         $this->grupoEntityHandler->save($grupo);
         return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $grupo->getId()]);
     }
@@ -215,9 +216,9 @@ class DeptoController extends BaseController
         $repoGrupo = $this->getDoctrine()->getRepository(Grupo::class);
         /** @var Grupo $grupo */
         $grupo = $repoGrupo->find($subgrupoArr['grupoId']);
-        $subgrupo->setGrupo($grupo);
-        $subgrupo->setCodigo($subgrupoArr['codigo']);
-        $subgrupo->setNome($subgrupoArr['nome']);
+        $subgrupo->grupo = $grupo;
+        $subgrupo->codigo = $subgrupoArr['codigo'];
+        $subgrupo->nome = $subgrupoArr['nome'];
         $this->subgrupoEntityHandler->save($subgrupo);
         return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $grupo->getId()]);
     }
@@ -240,8 +241,53 @@ class DeptoController extends BaseController
         return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $subgrupo->grupo->getId()]);
     }
 
+    /**
+     *
+     * @Route("/est/deptoGrupoSubgrupo/integraDepto/{depto}", name="est_deptoGrupoSubgrupo_integraDepto", requirements={"depto"="\d+"})
+     * @param IntegraWebStorm $integraWebStorm
+     * @param Depto $depto
+     * @return RedirectResponse
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function integraDepto(IntegraWebStorm $integraWebStorm, Depto $depto)
+    {
+        $integraWebStorm->integraDepto($depto);
+        $this->addFlash('success', 'Depto integrado com sucesso');
+        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['deptoId' => $depto->getId()]);
+    }
 
+    /**
+     *
+     * @Route("/est/deptoGrupoSubgrupo/integraGrupo/{grupo}", name="est_deptoGrupoSubgrupo_integraGrupo", requirements={"grupo"="\d+"})
+     * @param IntegraWebStorm $integraWebStorm
+     * @param Grupo $grupo
+     * @return RedirectResponse
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function integraGrupo(IntegraWebStorm $integraWebStorm, Grupo $grupo)
+    {
+        $integraWebStorm->integraGrupo($grupo);
+        $this->addFlash('success', 'Grupo integrado com sucesso');
+        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $grupo->getId()]);
+    }
 
+    /**
+     *
+     * @Route("/est/deptoGrupoSubgrupo/integraSubgrupo/{subgrupo}", name="est_deptoGrupoSubgrupo_integraSubgrupo", requirements={"subgrupo"="\d+"})
+     * @param IntegraWebStorm $integraWebStorm
+     * @param Subgrupo $subgrupo
+     * @return RedirectResponse
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function integraSubgrupo(IntegraWebStorm $integraWebStorm, Subgrupo $subgrupo)
+    {
+        $integraWebStorm->integraSubgrupo($subgrupo);
+        $this->addFlash('success', 'Subgrupo integrado com sucesso');
+        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['subgrupoId' => $subgrupo->getId()]);
+    }
 
 
 }

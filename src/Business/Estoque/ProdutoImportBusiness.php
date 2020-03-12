@@ -322,8 +322,8 @@ class ProdutoImportBusiness
                 $grupo = $repoGrupo->findOneBy(['codigo' => $valor]);
                 if (!$grupo) {
                     $grupo = new Grupo();
-                    $grupo->setCodigo($valor);
-                    $grupo->setNome('NÃO ENCONTRADO NA IMPORTAÇÃO');
+                    $grupo->codigo = $valor;
+                    $grupo->nome = 'NÃO ENCONTRADO NA IMPORTAÇÃO';
                     $this->grupoEntityHandler->save($grupo, false);
                 }
                 return $grupo->getId();
