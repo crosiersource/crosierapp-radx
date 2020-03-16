@@ -471,9 +471,9 @@ class IntegraWebStorm extends BaseBusiness
     public function integraProduto(Produto $produto)
     {
         // Verifica se o depto, grupo e subgrupo já estão integrados
-        $idDepto = $produto->depto->jsonData['ecommerce_id'] ?? $this->integraDepto($produto->depto);
-        $idGrupo = $produto->grupo->jsonData['ecommerce_id'] ?? $this->integraGrupo($produto->grupo);
-        $idSubgrupo = $produto->subgrupo->jsonData['ecommerce_id'] ?? $this->integraSubgrupo($produto->subgrupo);
+        $idDepto = $produto->depto->jsonData['ecommerce_id'] ?? $this->integraDepto($produto->depto)->getId();
+        $idGrupo = $produto->grupo->jsonData['ecommerce_id'] ?? $this->integraGrupo($produto->grupo)->getId();
+        $idSubgrupo = $produto->subgrupo->jsonData['ecommerce_id'] ?? $this->integraSubgrupo($produto->subgrupo)->getId();
 
         $idMarca = $this->verificaOuIntegraMarca($produto->jsonData['marca']);
 
