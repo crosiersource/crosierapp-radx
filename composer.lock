@@ -1,18 +1,19 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "e3430e34394d2e18d6ac0f0a0b8bbbe6",
     "packages": [
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "dev-master",
+            "version": "9999999-dev",
             "dist": {
                 "type": "path",
                 "url": "../crosierlib-base",
-                "reference": "57cbe919c986352f8a5746911178d6116af16115"
+                "reference": "11bd71828bf2b97190c32652f8aeff6551525d08",
+                "shasum": null
             },
             "require": {
                 "ext-bcmath": "*",
@@ -1981,16 +1982,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.64",
+            "version": "1.0.65",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "d13c43dbd4b791f815215959105a008515d1a2e0"
+                "reference": "8f17b3ba67097aafb8318cd5c553b1acf7c891c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/d13c43dbd4b791f815215959105a008515d1a2e0",
-                "reference": "d13c43dbd4b791f815215959105a008515d1a2e0",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/8f17b3ba67097aafb8318cd5c553b1acf7c891c8",
+                "reference": "8f17b3ba67097aafb8318cd5c553b1acf7c891c8",
                 "shasum": ""
             },
             "require": {
@@ -2061,34 +2062,34 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2020-02-05T18:14:17+00:00"
+            "time": "2020-03-08T18:53:20+00:00"
         },
         {
             "name": "markbaker/complex",
-            "version": "1.4.7",
+            "version": "1.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MarkBaker/PHPComplex.git",
-                "reference": "1ea674a8308baf547cbcbd30c5fcd6d301b7c000"
+                "reference": "8eaa40cceec7bf0518187530b2e63871be661b72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MarkBaker/PHPComplex/zipball/1ea674a8308baf547cbcbd30c5fcd6d301b7c000",
-                "reference": "1ea674a8308baf547cbcbd30c5fcd6d301b7c000",
+                "url": "https://api.github.com/repos/MarkBaker/PHPComplex/zipball/8eaa40cceec7bf0518187530b2e63871be661b72",
+                "reference": "8eaa40cceec7bf0518187530b2e63871be661b72",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.6.0|^7.0.0"
             },
             "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
-                "phpcompatibility/php-compatibility": "^8.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+                "phpcompatibility/php-compatibility": "^9.0",
                 "phpdocumentor/phpdocumentor": "2.*",
                 "phploc/phploc": "2.*",
                 "phpmd/phpmd": "2.*",
                 "phpunit/phpunit": "^4.8.35|^5.4.0",
                 "sebastian/phpcpd": "2.*",
-                "squizlabs/php_codesniffer": "^3.3.0"
+                "squizlabs/php_codesniffer": "^3.4.0"
             },
             "type": "library",
             "autoload": {
@@ -2156,7 +2157,7 @@
                 "complex",
                 "mathematics"
             ],
-            "time": "2018-10-13T23:28:42+00:00"
+            "time": "2020-03-11T20:15:49+00:00"
         },
         {
             "name": "markbaker/matrix",
@@ -2404,16 +2405,16 @@
         },
         {
             "name": "nfephp-org/sped-common",
-            "version": "v5.0.44",
+            "version": "v5.0.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-common.git",
-                "reference": "0108a87d6b5577b76fca78d683450906ea611130"
+                "reference": "c4eec84e6f04efa40bea25167e0b820edef5eef2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-common/zipball/0108a87d6b5577b76fca78d683450906ea611130",
-                "reference": "0108a87d6b5577b76fca78d683450906ea611130",
+                "url": "https://api.github.com/repos/nfephp-org/sped-common/zipball/c4eec84e6f04efa40bea25167e0b820edef5eef2",
+                "reference": "c4eec84e6f04efa40bea25167e0b820edef5eef2",
                 "shasum": ""
             },
             "require": {
@@ -2472,7 +2473,7 @@
                 "nfephp",
                 "sped"
             ],
-            "time": "2019-12-06T12:50:35+00:00"
+            "time": "2020-03-13T16:59:56+00:00"
         },
         {
             "name": "nfephp-org/sped-da",
@@ -2480,12 +2481,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-da.git",
-                "reference": "4ea538474da7e47a15dcbf78b249a577a79d1106"
+                "reference": "3cb77dce54163e14cdbd52c97bf8085bb63dc22a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-da/zipball/4ea538474da7e47a15dcbf78b249a577a79d1106",
-                "reference": "4ea538474da7e47a15dcbf78b249a577a79d1106",
+                "url": "https://api.github.com/repos/nfephp-org/sped-da/zipball/3cb77dce54163e14cdbd52c97bf8085bb63dc22a",
+                "reference": "3cb77dce54163e14cdbd52c97bf8085bb63dc22a",
                 "shasum": ""
             },
             "require": {
@@ -2542,7 +2543,7 @@
                 "nfephp",
                 "sped"
             ],
-            "time": "2020-02-29T13:32:08+00:00"
+            "time": "2020-03-13T20:47:26+00:00"
         },
         {
             "name": "nfephp-org/sped-gtin",
@@ -2610,16 +2611,16 @@
         },
         {
             "name": "nfephp-org/sped-nfe",
-            "version": "v5.0.98",
+            "version": "v5.0.100",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-nfe.git",
-                "reference": "775b9dc6cca2fd2672a7c36c2ef95f2bbcd0bacd"
+                "reference": "cf0baf005691c3a9e252314150c7dac18adbb2ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/775b9dc6cca2fd2672a7c36c2ef95f2bbcd0bacd",
-                "reference": "775b9dc6cca2fd2672a7c36c2ef95f2bbcd0bacd",
+                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/cf0baf005691c3a9e252314150c7dac18adbb2ee",
+                "reference": "cf0baf005691c3a9e252314150c7dac18adbb2ee",
                 "shasum": ""
             },
             "require": {
@@ -2679,39 +2680,39 @@
                 "nfephp",
                 "sped"
             ],
-            "time": "2020-02-19T15:07:13+00:00"
+            "time": "2020-03-12T12:18:08+00:00"
         },
         {
             "name": "ocramius/package-versions",
-            "version": "1.5.1",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ocramius/PackageVersions.git",
-                "reference": "1d32342b8c1eb27353c8887c366147b4c2da673c"
+                "reference": "651c372efc914aea8223e049f85afaf65e09ba23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ocramius/PackageVersions/zipball/1d32342b8c1eb27353c8887c366147b4c2da673c",
-                "reference": "1d32342b8c1eb27353c8887c366147b4c2da673c",
+                "url": "https://api.github.com/repos/Ocramius/PackageVersions/zipball/651c372efc914aea8223e049f85afaf65e09ba23",
+                "reference": "651c372efc914aea8223e049f85afaf65e09ba23",
                 "shasum": ""
             },
             "require": {
-                "composer-plugin-api": "^1.0.0",
-                "php": "^7.3.0"
+                "composer-plugin-api": "^1.1.0",
+                "php": "^7.4.0"
             },
             "require-dev": {
-                "composer/composer": "^1.8.6",
-                "doctrine/coding-standard": "^6.0.0",
-                "ext-zip": "*",
-                "infection/infection": "^0.13.4",
-                "phpunit/phpunit": "^8.2.5",
-                "vimeo/psalm": "^3.4.9"
+                "composer/composer": "^1.9.3",
+                "doctrine/coding-standard": "^7.0.2",
+                "ext-zip": "^1.15.0",
+                "infection/infection": "^0.15.3",
+                "phpunit/phpunit": "^9.0.1",
+                "vimeo/psalm": "^3.9.3"
             },
             "type": "composer-plugin",
             "extra": {
                 "class": "PackageVersions\\Installer",
                 "branch-alias": {
-                    "dev-master": "1.6.x-dev"
+                    "dev-master": "1.99.x-dev"
                 }
             },
             "autoload": {
@@ -2730,7 +2731,7 @@
                 }
             ],
             "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
-            "time": "2019-07-17T15:49:50+00:00"
+            "time": "2020-03-06T11:34:16+00:00"
         },
         {
             "name": "ocramius/proxy-manager",
