@@ -26,3 +26,5 @@ assets/static/fos_js_routes.json
 src/Entity/uppercaseFields.json
 
 /public/images/*
+
+/files/Fiscal/download_xmls/*

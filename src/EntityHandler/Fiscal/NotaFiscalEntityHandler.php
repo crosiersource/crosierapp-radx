@@ -19,11 +19,9 @@ class NotaFiscalEntityHandler extends EntityHandler
     /** @var Security */
     protected $security;
 
-    /** @var NotaFiscalBusiness */
-    private $notaFiscalBusiness;
+    private NotaFiscalBusiness $notaFiscalBusiness;
 
-    /** @var NotaFiscalItemEntityHandler */
-    private $notaFiscalItemEntityHandler;
+    private NotaFiscalItemEntityHandler $notaFiscalItemEntityHandler;
 
     /**
      * @param Security $security
@@ -113,7 +111,6 @@ class NotaFiscalEntityHandler extends EntityHandler
         $notaFiscal->setCidadeEmitente(null);
         $notaFiscal->setEstadoEmitente(null);
         $notaFiscal->setFoneEmitente(null);
-
 
 
         if ($notaFiscal->getItens() && $notaFiscal->getItens()->count() > 0) {
