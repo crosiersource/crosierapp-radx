@@ -66,12 +66,12 @@
                         {% for item in venda.itens %}
                             <tr>
                                 <td>{{ item.ordem }}</td>
-                                <td>{{ item.ncReduzido }}</td>
-                                <td>{{ item.ncDescricao }}</td>
-                                <td>{{ item.ncm }}</td>
+                                <td>{{ item.produto.jsonData.reduzido }}</td>
+                                <td>{{ item.produto.nome }}</td>
+                                <td>{{ item.produto.jsonData.ncm }}</td>
                                 <td>{{ item.qtde|number_format(2,',','.') }}</td>
                                 <td>{{ item.precoVenda|number_format(2,',','.') }}</td>
-                                <td>{{ item.totalItem|number_format(2,',','.') }}</td>
+                                <td>{{ item.total|number_format(2,',','.') }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>

@@ -30,17 +30,13 @@ use Symfony\Component\Serializer\Serializer;
 class EmissaoFiscalPVController extends BaseController
 {
 
-    /** @var NotaFiscalBusiness */
-    private $notaFiscalBusiness;
+    private NotaFiscalBusiness $notaFiscalBusiness;
 
-    /** @var NFeUtils */
-    private $nfeUtils;
+    private NFeUtils $nfeUtils;
 
-    /** @var CrosierEntityIdAPIClient */
-    private $crosierEntityIdAPIClient;
+    private CrosierEntityIdAPIClient $crosierEntityIdAPIClient;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * @required
@@ -226,7 +222,7 @@ class EmissaoFiscalPVController extends BaseController
      */
     public function consultarStatus(NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
     {
-        $notaFiscal = $this->notaFiscalBusiness->consultarStatus($notaFiscal);
+        $this->notaFiscalBusiness->consultarStatus($notaFiscal);
         return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
     }
 
@@ -234,8 +230,9 @@ class EmissaoFiscalPVController extends BaseController
      *
      * @Route("/fis/emissaofiscalpv/consultarCNPJ/{cnpj}/{uf}", name="fis_emissaofiscalpv_consultarCNPJ")
      * @param string $cnpj
+     * @param string $uf
      * @return Response
-     * @throws \Exception
+     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
     public function consultarCNPJ(string $cnpj, string $uf): Response
     {
@@ -248,58 +245,6 @@ class EmissaoFiscalPVController extends BaseController
 
         return new Response($json);
     }
-
-
-//    /**
-//     *
-//     * @Route("/fis/getXmls", name="fis_getXmls")
-//     * @return Response
-//     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
-//     */
-//    public function getXmls(NotaFiscalEntityHandler $eh)
-//    {
-//        $mesano = '201910';
-//        $pastaUnimake = $_SERVER['FISCAL_UNIMAKE_PASTAROOT'];
-//
-//        $r = $mesano . '<hr>';
-//
-//        /** @var Connection $conn */
-//        $conn = $eh->getDoctrine()->getConnection();
-//
-//        $files = scandir($pastaUnimake . '/enviado/Autorizados/' . $mesano, SCANDIR_SORT_NONE);
-//        foreach ($files as $file) {
-//            if (strpos($file, 'procNFe') === FALSE || substr($file, -3) !== 'xml') {
-//                continue;
-//            }
-//            $contents = file_get_contents($pastaUnimake . '/enviado/Autorizados/' . $mesano . '/' . $file);
-//            $nfeLoaded = simplexml_load_string($contents);
-//
-//            /** @var NotaFiscal $nfe */
-//            $nfe = $this->getDoctrine()->getRepository(NotaFiscal::class)
-//                ->findOneBy([
-//                    'serie' => $nfeLoaded->NFe->infNFe->ide->serie,
-//                    'numero' => $nfeLoaded->NFe->infNFe->ide->nNF,
-//                    'ambiente' => 'PROD',
-//                ]);
-//
-//            if ($nfe) {
-//                if (!$nfe->getXmlNota()) {
-//
-//                    $r .= $nfe->getId() . ' atualizada! <br>';
-//
-//                    $conn->update('fis_nf', ['xml_nota' => $contents], ['id' => $nfe->getId()]);
-//
-////                    $nfe->setXmlNota($contents);
-////                    $eh->save($nfe);
-//                }
-//            } else {
-//                $r .= '<b>' . $mesano . '/' . $file . ' não tem na base! </b><br>';
-//            }
-//
-//        }
-//
-//        return new Response($r);
-//    }
 
 
 }

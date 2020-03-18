@@ -2,8 +2,9 @@
 
 namespace App\Entity\Vendas;
 
-
+use App\Entity\CRM\Cliente;
 use App\Entity\RH\Funcionario;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -25,21 +26,12 @@ class Venda implements EntityId
 
     /**
      *
-     * @ORM\Column(name="desconto_especial", type="decimal", nullable=false, precision=15, scale=2)
-     * @var null|float
-     *
-     * @Groups("entity")
-     */
-    public ?float $descontoEspecial;
-
-    /**
-     *
-     * @ORM\Column(name="desconto_plano", type="decimal", nullable=false, precision=15, scale=2)
+     * @ORM\Column(name="pv", type="integer", nullable=true)
      * @Groups("entity")
      *
-     * @var null|float
+     * @var null|integer
      */
-    public ?float $descontoPlano;
+    public ?int $pv = null;
 
     /**
      *
@@ -48,52 +40,17 @@ class Venda implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtVenda;
+    public ?\DateTime $dtVenda = null;
 
     /**
      *
-     * @ORM\Column(name="historicoDesconto", type="string", nullable=true, length=2000)
+     * @ORM\ManyToOne(targetEntity="App\Entity\CRM\Cliente")
+     * @ORM\JoinColumn(name="plano_pagto_id", nullable=false)
      * @Groups("entity")
      *
-     * @var null|string
+     * @var null|Cliente
      */
-    public ?string $historicoDesconto;
-
-    /**
-     *
-     * @ORM\Column(name="mesano", type="string", nullable=false, length=6)
-     * @Groups("entity")
-     *
-     * @var null|string
-     */
-    public ?string $mesano;
-
-    /**
-     *
-     * @ORM\Column(name="pv", type="integer", nullable=true)
-     * @Groups("entity")
-     *
-     * @var null|integer
-     */
-    public ?int $pv;
-
-    /**
-     *
-     * @ORM\Column(name="sub_total", type="decimal", nullable=false, precision=15, scale=2)
-     * @Groups("entity")
-     *
-     * @var null|float
-     */
-    public ?float $subTotal;
-
-    /**
-     *
-     * @ORM\Column(name="valor_total", type="decimal", nullable=false, precision=15, scale=2)
-     * @Groups("entity")
-     *
-     * @var null|float
-     */
-    public ?float $valorTotal;
+    public ?Cliente $cliente = null;
 
     /**
      *
@@ -103,7 +60,7 @@ class Venda implements EntityId
      *
      * @var null|PlanoPagto
      */
-    public ?PlanoPagto $planoPagto;
+    public ?PlanoPagto $planoPagto = null;
 
     /**
      *
@@ -113,34 +70,52 @@ class Venda implements EntityId
      *
      * @var null|Funcionario
      */
-    public ?Funcionario $vendedor;
+    public ?Funcionario $vendedor = null;
 
     /**
      *
-     * @ORM\Column(name="deletado", type="boolean", nullable=true)
+     * @ORM\Column(name="sub_total", type="decimal", nullable=false, precision=15, scale=2)
      * @Groups("entity")
      *
-     * @var null|boolean
+     * @var null|float
      */
-    public ?bool $deletado;
+    public ?float $subTotal = null;
 
     /**
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Vendas\TipoVenda")
-     * @ORM\JoinColumn(name="tipo_venda_id", nullable=false)
-     * @Groups("entity")
+     * @ORM\Column(name="desconto_especial", type="decimal", nullable=false, precision=15, scale=2)
+     * @var null|float
      *
-     * @var null|TipoVenda
+     * @Groups("entity")
      */
-    public ?TipoVenda $tipoVenda;
+    public ?float $descontoEspecial = null;
 
     /**
-     * @ORM\Column(name="cliente_id", type="bigint", nullable=true)
+     *
+     * @ORM\Column(name="historico_desconto", type="string", nullable=true, length=2000)
      * @Groups("entity")
      *
-     * @var null|integer
+     * @var null|string
      */
-    public ?int $cliente;
+    public ?string $historicoDesconto = null;
+
+    /**
+     *
+     * @ORM\Column(name="desconto_plano", type="decimal", nullable=false, precision=15, scale=2)
+     * @Groups("entity")
+     *
+     * @var null|float
+     */
+    public ?float $descontoPlano = null;
+
+    /**
+     *
+     * @ORM\Column(name="valor_total", type="decimal", nullable=false, precision=15, scale=2)
+     * @Groups("entity")
+     *
+     * @var null|float
+     */
+    public ?float $valorTotal = null;
 
     /**
      *
@@ -149,7 +124,7 @@ class Venda implements EntityId
      *
      * @var null|string
      */
-    public ?string $status;
+    public ?string $status = null;
 
     /**
      *
@@ -158,7 +133,16 @@ class Venda implements EntityId
      *
      * @var null|string
      */
-    public ?string $obs;
+    public ?string $obs = null;
+
+    /**
+     *
+     * @ORM\Column(name="json_data", type="json")
+     * @var null|array
+     * @NotUppercase()
+     * @Groups("entity")
+     */
+    public ?array $jsonData = null;
 
     /**
      *

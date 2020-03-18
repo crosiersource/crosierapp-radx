@@ -13,6 +13,7 @@ use App\Entity\Fiscal\NotaFiscalItem;
 use App\Entity\Fiscal\NotaFiscalVenda;
 use App\Entity\Fiscal\TipoNotaFiscal;
 use App\Entity\Vendas\Venda;
+use App\Entity\Vendas\VendaItem;
 use App\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use App\EntityHandler\Fiscal\NotaFiscalHistoricoEntityHandler;
 use App\EntityHandler\Fiscal\NotaFiscalItemEntityHandler;
@@ -39,35 +40,29 @@ class NotaFiscalBusiness extends BaseBusiness
 
     private Connection $conn;
 
-    /** @var SpedNFeBusiness */
-    private $spedNFeBusiness;
+    private SpedNFeBusiness $spedNFeBusiness;
 
-    /** @var NotaFiscalEntityHandler */
-    private $notaFiscalEntityHandler;
+    private NotaFiscalEntityHandler $notaFiscalEntityHandler;
 
-    /** @var NotaFiscalItemEntityHandler */
-    private $notaFiscalItemEntityHandler;
+    private NotaFiscalItemEntityHandler $notaFiscalItemEntityHandler;
 
-    /** @var NotaFiscalVendaEntityHandler */
-    private $notaFiscalVendaEntityHandler;
+    private NotaFiscalVendaEntityHandler $notaFiscalVendaEntityHandler;
 
-    /** @var NotaFiscalHistoricoEntityHandler */
-    private $notaFiscalHistoricoEntityHandler;
+    private NotaFiscalHistoricoEntityHandler $notaFiscalHistoricoEntityHandler;
 
-    /** @var CrosierEntityIdAPIClient */
-    private $crosierEntityIdAPIClient;
+    private CrosierEntityIdAPIClient $crosierEntityIdAPIClient;
 
-    /** @var NFeUtils */
-    private $nfeUtils;
+    private NFeUtils $nfeUtils;
 
     /**
      * Não podemos usar o doctrine->getRepository porque ele não injeta as depêndencias que estão com @ required lá
      * @var NotaFiscalRepository
      */
-    private $repoNotaFiscal;
+    private NotaFiscalRepository $repoNotaFiscal;
 
     /**
      * @required
+     * @param Connection $conn
      */
     public function setConn(Connection $conn): void
     {
@@ -210,33 +205,34 @@ class NotaFiscalBusiness extends BaseBusiness
             $notaFiscal->setTranspModalidadeFrete('SEM_FRETE');
 
             $notaFiscal->setIndicadorFormaPagto(
-                $venda->getPlanoPagto()->getCodigo() === '1.00' ? IndicadorFormaPagto::VISTA['codigo'] : IndicadorFormaPagto::PRAZO['codigo']);
+                $venda->planoPagto->codigo === '1.00' ? IndicadorFormaPagto::VISTA['codigo'] : IndicadorFormaPagto::PRAZO['codigo']);
 
             $notaFiscal = $this->notaFiscalEntityHandler->deleteAllItens($notaFiscal);
             $this->getDoctrine()->flush();
 
             // Atenção, aqui tem que verificar a questão do arredondamento
-            if ($venda->getSubTotal() > 0.0) {
-                $fatorDesconto = 1 - round(bcdiv($venda->getValorTotal(), $venda->getSubTotal(), 4), 2);
+            if ($venda->subTotal > 0.0) {
+                $fatorDesconto = 1 - round(bcdiv($venda->valorTotal, $venda->subTotal, 4), 2);
             } else {
                 $fatorDesconto = 1;
             }
 
             $somaDescontosItens = 0.0;
             $ordem = 1;
-            foreach ($venda->getItens() as $vendaItem) {
+            /** @var VendaItem $vendaItem */
+            foreach ($venda->itens as $vendaItem) {
 
                 $nfItem = new NotaFiscalItem();
                 $nfItem->setNotaFiscal($notaFiscal);
 
-                if ($vendaItem->getNcm()) {
+                if ($vendaItem->jsonData['ncm']) {
                     /** @var NCMRepository $repoNCM */
                     $repoNCM = $this->getDoctrine()->getRepository(NCM::class);
-                    $existe = $repoNCM->findBy(['codigo' => $vendaItem->getNcm()]);
+                    $existe = $repoNCM->findBy(['codigo' => $vendaItem->jsonData['ncm']]);
                     if (!$existe) {
                         $nfItem->setNcm('62179000'); // FIXME: RTA
                     } else {
-                        $nfItem->setNcm($vendaItem->getNcm());
+                        $nfItem->setNcm($vendaItem->jsonData['ncm']);
                     }
                 } else {
                     $nfItem->setNcm('62179000'); // FIXME: RTA
@@ -245,32 +241,32 @@ class NotaFiscalBusiness extends BaseBusiness
 
                 $nfItem->setOrdem($ordem++);
 
-                $nfItem->setQtde($vendaItem->getQtde());
-                $nfItem->setValorUnit($vendaItem->getPrecoVenda());
-                $nfItem->setValorTotal($vendaItem->getTotalItem());
+                $nfItem->setQtde($vendaItem->qtde);
+                $nfItem->setValorUnit($vendaItem->precoVenda);
+                $nfItem->setValorTotal($vendaItem->total);
 
-                $vDesconto = round(bcmul($vendaItem->getTotalItem(), $fatorDesconto, 4), 2);
+                $vDesconto = round(bcmul($vendaItem->total, $fatorDesconto, 4), 2);
                 $nfItem->setValorDesconto($vDesconto);
 
                 // Somando aqui pra verificar depois se o total dos descontos dos itens bate com o desconto global da nota.
                 $somaDescontosItens += $vDesconto;
 
-                $nfItem->setSubTotal($vendaItem->getTotalItem());
+                $nfItem->setSubTotal($vendaItem->total);
 
                 $nfItem->setIcmsAliquota(0.0);
                 $nfItem->setCfop('5102');
-                if ($vendaItem->getProduto() && $vendaItem->getProduto()->getUnidade() && $vendaItem->getProduto()->getUnidade()->getLabel()) {
-                    $nfItem->setUnidade($vendaItem->getProduto()->getUnidade()->getLabel());
+                if ($vendaItem->jsonData['tamanho'] ?? null) {
+                    $nfItem->setUnidade($vendaItem->produto->jsonData['unidade_produto']);
                 } else {
                     $nfItem->setUnidade('PC');
                 }
 
-                if ($vendaItem->getProduto() !== null) {
-                    $produto = $this->getDoctrine()->getRepository(Produto::class)->findOneBy(['id' => $vendaItem->getProduto()->getId()]);
-                    $nfItem->setCodigo($vendaItem->getProduto()->getId());
-                    $nfItem->setDescricao(trim($vendaItem->getProduto()->getNome()));
+                if ($vendaItem->produto !== null) {
+                    $produto = $this->getDoctrine()->getRepository(Produto::class)->findOneBy(['id' => $vendaItem->produto->getId()]);
+                    $nfItem->setCodigo($vendaItem->produto->getId());
+                    $nfItem->setDescricao(trim($vendaItem->produto->nome));
                 } else {
-                    $nfItem->setCodigo($vendaItem->getNcReduzido()); // FIXME: melhorar
+                    $nfItem->setCodigo($vendaItem->produto->jsonData['reduzido']);
                     $nfItem->setDescricao(trim($vendaItem->getNcDescricao()));
                 }
 

@@ -34,30 +34,21 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class SpedNFeBusiness
 {
 
-    /** @var NotaFiscalEntityHandler */
-    private $notaFiscalEntityHandler;
+    private NotaFiscalEntityHandler $notaFiscalEntityHandler;
 
-    /** @var NotaFiscalCartaCorrecaoEntityHandler */
-    private $notaFiscalCartaCorrecaoEntityHandler;
+    private NotaFiscalCartaCorrecaoEntityHandler $notaFiscalCartaCorrecaoEntityHandler;
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    /** @var CrosierEntityIdAPIClient */
-    private $crosierEntityIdAPIClient;
+    private CrosierEntityIdAPIClient $crosierEntityIdAPIClient;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /** @var NFeUtils */
-    private $nfeUtils;
+    private NFeUtils $nfeUtils;
 
-    /** @var ParameterBagInterface */
-    private $params;
-    /**
-     * @var NotaFiscalEventoEntityHandler
-     */
-    private $notaFiscalEventoEntityHandler;
+    private ParameterBagInterface $params;
+
+    private NotaFiscalEventoEntityHandler $notaFiscalEventoEntityHandler;
 
 
     /**

@@ -16,8 +16,8 @@ use App\Repository\Fiscal\NotaFiscalRepository;
 use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  *
@@ -26,23 +26,17 @@ use Doctrine\ORM\EntityManagerInterface;
 class DistDFeBusiness
 {
 
-    /** @var DistDFeEntityHandler */
-    private $distDFeEntityHandler;
+    private DistDFeEntityHandler $distDFeEntityHandler;
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /** @var NFeUtils */
-    private $nfeUtils;
+    private NFeUtils $nfeUtils;
 
-    /** @var NotaFiscalEntityHandler */
-    private $notaFiscalEntityHandler;
+    private NotaFiscalEntityHandler $notaFiscalEntityHandler;
 
-    /** @var NotaFiscalEventoEntityHandler */
-    private $notaFiscalEventoEntityHandler;
+    private NotaFiscalEventoEntityHandler $notaFiscalEventoEntityHandler;
 
     /**
      * @param EntityManagerInterface $doctrine
