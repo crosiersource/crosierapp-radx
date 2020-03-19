@@ -255,7 +255,7 @@ class NotaFiscalBusiness extends BaseBusiness
 
                 $nfItem->setIcmsAliquota(0.0);
                 $nfItem->setCfop('5102');
-                if ($vendaItem->jsonData['tamanho'] ?? null) {
+                if ($vendaItem->produto->jsonData['unidade_produto'] ?? null) {
                     $nfItem->setUnidade($vendaItem->produto->jsonData['unidade_produto']);
                 } else {
                     $nfItem->setUnidade('PC');
