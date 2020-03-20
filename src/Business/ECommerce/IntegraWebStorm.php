@@ -493,8 +493,9 @@ class IntegraWebStorm extends BaseBusiness
                <acao>' . ($produtoEcommerceId ? 'update' : 'insert') . '</acao>
                <modulo>produto</modulo>
                <produto pk="idProduto">' .
-            ($produtoEcommerceId ? '<idProduto>' . $produtoEcommerceId . '</idProduto>' : '') .
-            '<idMarca>' . $idMarca . '</idMarca>' .
+            ($produtoEcommerceId ? '<idProduto>' . $produtoEcommerceId . '</idProduto>' : '');
+        $xml .= $idMarca ? '<idMarca>' . $idMarca . '</idMarca>' : '';
+        $xml .=
             '<departamento pk="idDepartamento"><idDepartamento>' . $idDepto . '</idDepartamento></departamento>' .
             '<departamento pk="idDepartamento"><idDepartamento>' . $idGrupo . '</idDepartamento></departamento>' .
             '<departamento pk="idDepartamento"><idDepartamento>' . $idSubgrupo . '</idDepartamento></departamento>' .
