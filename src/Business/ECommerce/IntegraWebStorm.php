@@ -481,9 +481,9 @@ class IntegraWebStorm extends BaseBusiness
 
         $dimensoes = explode('|', $produto->jsonData['dimensoes']);
 
-        $altura = $dimensoes[0];
-        $largura = $dimensoes[1];
-        $comprimento = $dimensoes[2];
+        $altura = $dimensoes[0] ?? 0.0;
+        $largura = $dimensoes[1] ?? 0.0;
+        $comprimento = $dimensoes[2] ?? 0.0;
 
         $produtoEcommerceId = $produto->jsonData['ecommerce_id'] ?? null;
 
