@@ -475,7 +475,9 @@ class IntegraWebStorm extends BaseBusiness
         $idGrupo = $produto->grupo->jsonData['ecommerce_id'] ?? $this->integraGrupo($produto->grupo)->getId();
         $idSubgrupo = $produto->subgrupo->jsonData['ecommerce_id'] ?? $this->integraSubgrupo($produto->subgrupo)->getId();
 
-        $idMarca = $this->verificaOuIntegraMarca($produto->jsonData['marca']);
+        if ($produto->jsonData['marca'] ?? false) {
+            $idMarca = $this->verificaOuIntegraMarca($produto->jsonData['marca']);
+        }
 
         $dimensoes = explode('|', $produto->jsonData['dimensoes']);
 
@@ -504,29 +506,6 @@ class IntegraWebStorm extends BaseBusiness
             '<descricao-itens-inclusos>' . htmlspecialchars($produto->jsonData['itens_inclusos'] ?? '') . '</descricao-itens-inclusos>' .
             '<descricao-especificacoes-tecnicas>' . htmlspecialchars($produto->jsonData['especif-tec'] ?? '') . '</descricao-especificacoes-tecnicas>';
 
-        foreach ($produto->imagens as $imagem) {
-            $url = $_SERVER['CROSIERAPP_URL'] . $this->uploaderHelper->asset($imagem, 'imageFile');
-            $xml .= '<imagens>
-				<url>' . $url . '</url>
-				<prioridade>' . ($imagem->getOrdem() - 1) . '</prioridade>
-			</imagens>';
-        }
-
-
-        $xml .=
-            '<itensVenda>
-				<idItemVenda></idItemVenda>
-				<codigo>' . $produto->jsonData['referencia'] . '</codigo>
-				<preco>' . ($produto->jsonData['preco_site'] ?? $produto->jsonData['preco_tabela'] ?? 0.0) . '</preco>
-				<estoque>999999</estoque>
-				<estoqueMin>0</estoqueMin>
-				<situacao>1</situacao>
-				<peso>' . $produto->jsonData['peso'] . '</peso>
-				<altura>' . $altura . '</altura>
-				<largura>' . $largura . '</largura>
-				<comprimento>' . $comprimento . '</comprimento>';
-
-
         /** @var AppConfig $appConfig */
         $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
         if (!$appConfig) {
@@ -551,8 +530,28 @@ class IntegraWebStorm extends BaseBusiness
             }
         }
 
+        foreach ($produto->imagens as $imagem) {
+            $url = $_SERVER['CROSIERAPP_URL'] . $this->uploaderHelper->asset($imagem, 'imageFile');
+            $xml .= '<imagens>
+				<url>' . $url . '</url>
+				<prioridade>' . ($imagem->getOrdem() - 1) . '</prioridade>
+			</imagens>';
+        }
+
+
         $xml .=
-            '</itensVenda></produto>' .
+            '<itensVenda>
+				<idItemVenda></idItemVenda>
+				<codigo>' . $produto->jsonData['referencia'] . '</codigo>
+				<preco>' . ($produto->jsonData['preco_site'] ?? $produto->jsonData['preco_tabela'] ?? 0.0) . '</preco>
+				<estoque>999999</estoque>
+				<estoqueMin>0</estoqueMin>
+				<situacao>1</situacao>
+				<peso>' . $produto->jsonData['peso'] . '</peso>
+				<altura>' . $altura . '</altura>
+				<largura>' . $largura . '</largura>
+				<comprimento>' . $comprimento . '</comprimento>
+            </itensVenda></produto>' .
             '</ws_integracao>]]>';
 
         $client = $this->getNusoapClientImportacaoInstance();
