@@ -475,6 +475,7 @@ class IntegraWebStorm extends BaseBusiness
         $idGrupo = $produto->grupo->jsonData['ecommerce_id'] ?? $this->integraGrupo($produto->grupo)->getId();
         $idSubgrupo = $produto->subgrupo->jsonData['ecommerce_id'] ?? $this->integraSubgrupo($produto->subgrupo)->getId();
 
+        $idMarca = null;
         if ($produto->jsonData['marca'] ?? false) {
             $idMarca = $this->verificaOuIntegraMarca($produto->jsonData['marca']);
         }
