@@ -83,91 +83,14 @@ class IntegraWebStorm extends BaseBusiness
     }
 
 
-    /**
-     * @param string $marca
-     * @return int
-     * @throws ViewException
-     */
-    public function verificaOuIntegraMarca(string $marca): int
-    {
-        /** @var AppConfig $appConfigMarcas */
-        $appConfigMarcas = $this->repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'ecomm_info_integra_marcas'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
-        if (!$appConfigMarcas) {
-            throw new \LogicException('ecomm_info_integra_marcas N/D');
-        }
-
-        $json = json_decode($appConfigMarcas->getValor(), true);
-        /** @var array $marca */
-        foreach ($json['marcas'] as $marcaCadastrada) {
-            if ($marcaCadastrada['nome_no_crosier'] === $marca && $marcaCadastrada['ecommerce_id']) {
-                return $marcaCadastrada['ecommerce_id'];
-            }
-        }
-        // se chegou aqui, é porque ainda não existe
-        return $this->integraMarca($marca);
-    }
-
-    /**
-     * Integra as marcas que ainda não tenham sido integradas.
-     *
-     *
-     * @throws ViewException
-     */
-    public function integrarMarcas(): void
-    {
-        try {
-            /** @var AppConfig $appConfigMarcas */
-            $appConfigMarcas = $this->repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'ecomm_info_integra_marcas'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
-            if (!$appConfigMarcas) {
-                throw new \LogicException('ecomm_info_integra_marcas N/D');
-            }
-
-            $json = json_decode($appConfigMarcas->getValor(), true);
-
-            $marcasNaBase = $this->appConfigEntityHandler
-                ->getDoctrine()->getConnection()->fetchAll('SELECT distinct(trim(json_data->>"$.marca")) as marca FROM est_produto WHERE trim(IFNULL(json_data->>"$.marca",\'\')) NOT IN (\'\',\'null\')');
-
-            $jsonMarcas = [];
-            foreach ($json['marcas'] as $marcaNoJson) {
-                $jsonMarcas[] = $marcaNoJson['nome_no_crosier'];
-            }
-
-            $now = (new \DateTime())->format('Y-m-d H:i:s');
-
-            $mudou = false;
-
-            foreach ($marcasNaBase as $marcaNaBase) {
-                if (!in_array($marcaNaBase['marca'], $jsonMarcas)) {
-                    $idIntegr = $this->integraMarca($marcaNaBase['marca']);
-                    $json['marcas'][] = [
-                        'nome_no_crosier' => $marcaNaBase['marca'],
-                        'ecommerce_id' => $idIntegr,
-                        'integrado_em' => $now
-                    ];
-                    $mudou = true;
-                }
-            }
-
-            if ($mudou) {
-                $json['ultima_integracao'] = (new \DateTime())->format('Y-m-d H:i:s');
-                $json['integrado_por'] = $this->security->getUser()->getUsername();
-                $appConfigMarcas->setValor(json_encode($json));
-                $this->appConfigEntityHandler->save($appConfigMarcas);
-            }
-        } catch (\Exception $e) {
-            $this->logger->error('Erro ao marcar app_config (estoque.dthrAtualizacao)');
-            $this->logger->error($e->getMessage());
-            throw new ViewException('Erro - integrarMarcas()');
-        }
-    }
 
     /**
      * @param string $marca
      * @return int
+     * @throws ViewException
      */
     private function integraMarca(string $marca): int
     {
-
         $client = $this->getNusoapClientImportacaoInstance();
 
         $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
@@ -182,7 +105,7 @@ class IntegraWebStorm extends BaseBusiness
             </ws_integracao>]]>';
 
         $arResultado = $client->call('marcaAdd', [
-            'xml' => utf8_encode($xml)
+            'xml' => utf8_decode($xml)
         ]);
 
         if ($client->faultcode) {
@@ -195,7 +118,14 @@ class IntegraWebStorm extends BaseBusiness
 
         $xmlResult = simplexml_load_string($arResultado);
 
-        return (int)$xmlResult->idMarca->__toString();
+        /** @var AppConfig $appConfig */
+        $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
+        $jsonMetadata = json_decode($appConfig->getValor(), true);
+        $jsonMetadata['campos']['marca']['info_integr_ecommerce']['sugestoes_ids'][$marca] = (int)$xmlResult->idMarca->__toString();
+        $appConfig->setValor(json_encode($jsonMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $this->appConfigEntityHandler->save($appConfig);
+
+        return $jsonMetadata['campos']['marca']['info_integr_ecommerce']['sugestoes_ids'][$marca];
     }
 
 
@@ -222,7 +152,7 @@ class IntegraWebStorm extends BaseBusiness
             </ws_integracao>]]>';
 
         $arResultado = $client->call('tipoCaracteristicaAdd', [
-            'xml' => utf8_encode($xml)
+            'xml' => utf8_decode($xml)
         ]);
 
         if ($client->faultcode) {
@@ -243,7 +173,7 @@ class IntegraWebStorm extends BaseBusiness
         $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
         $jsonMetadata = json_decode($appConfig->getValor(), true);
         $jsonMetadata['campos'][$campo]['info_integr_ecommerce']['ecommerce_id'] = (int)$xmlResult->idTipoCaracteristica->__toString();
-        $appConfig->setValor(json_encode($jsonMetadata));
+        $appConfig->setValor(json_encode($jsonMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         $this->appConfigEntityHandler->save($appConfig);
 
         return $jsonMetadata['campos'][$campo]['info_integr_ecommerce']['ecommerce_id'];
@@ -276,7 +206,7 @@ class IntegraWebStorm extends BaseBusiness
             </ws_integracao>]]>';
 
         $arResultado = $client->call('caracteristicaAdd', [
-            'xml' => utf8_encode($xml)
+            'xml' => utf8_decode($xml)
         ]);
 
         if ($client->faultcode) {
@@ -293,7 +223,7 @@ class IntegraWebStorm extends BaseBusiness
         $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
         $jsonMetadata = json_decode($appConfig->getValor(), true);
         $jsonMetadata['campos'][$campo]['info_integr_ecommerce']['sugestoes_ids'][$caracteristica] = (int)$xmlResult->caracteristicas->caracteristica->idCaracteristica->__toString();
-        $appConfig->setValor(json_encode($jsonMetadata));
+        $appConfig->setValor(json_encode($jsonMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         $this->appConfigEntityHandler->save($appConfig);
 
         return $jsonMetadata['campos'][$campo]['info_integr_ecommerce']['sugestoes_ids'][$caracteristica];
@@ -445,7 +375,7 @@ class IntegraWebStorm extends BaseBusiness
             </ws_integracao>]]>';
 
         $arResultado = $client->call('departamento' . ($ecommerce_id ? 'Update' : 'Add'), [
-            'xml' => utf8_encode($xml)
+            'xml' => utf8_decode($xml)
         ]);
 
         if ($client->faultcode) {
@@ -470,6 +400,16 @@ class IntegraWebStorm extends BaseBusiness
      */
     public function integraProduto(Produto $produto)
     {
+
+        /** @var AppConfig $appConfig */
+        $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
+        if (!$appConfig) {
+            throw new \LogicException('est_produto_json_metadata N / D');
+        }
+
+        $jsonCampos = json_decode($appConfig->getValor(), true)['campos'];
+
+
         // Verifica se o depto, grupo e subgrupo já estão integrados
         $idDepto = $produto->depto->jsonData['ecommerce_id'] ?? $this->integraDepto($produto->depto)->getId();
         $idGrupo = $produto->grupo->jsonData['ecommerce_id'] ?? $this->integraGrupo($produto->grupo)->getId();
@@ -477,7 +417,7 @@ class IntegraWebStorm extends BaseBusiness
 
         $idMarca = null;
         if ($produto->jsonData['marca'] ?? false) {
-            $idMarca = $this->verificaOuIntegraMarca($produto->jsonData['marca']);
+            $idMarca = $jsonCampos['marca']['info_integr_ecommerce']['sugestoes_ids'][$produto->jsonData['marca']] ?? $this->integraMarca($produto->jsonData['marca']);
         }
 
         $dimensoes = explode('|', $produto->jsonData['dimensoes']);
@@ -508,17 +448,16 @@ class IntegraWebStorm extends BaseBusiness
             '<descricao-itens-inclusos>' . htmlspecialchars($produto->jsonData['itens_inclusos'] ?? '') . '</descricao-itens-inclusos>' .
             '<descricao-especificacoes-tecnicas>' . htmlspecialchars($produto->jsonData['especif-tec'] ?? '') . '</descricao-especificacoes-tecnicas>';
 
-        /** @var AppConfig $appConfig */
-        $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
-        if (!$appConfig) {
-            throw new \LogicException('ecomm_info_integra_marcas N / D');
-        }
-
-        $jsonCampos = json_decode($appConfig->getValor(), true)['campos'];
 
         foreach ($produto->jsonData as $campo => $valor) {
             if (isset($jsonCampos[$campo]['info_integr_ecommerce']['tipo_campo_ecommerce']) && $jsonCampos[$campo]['info_integr_ecommerce']['tipo_campo_ecommerce'] === 'caracteristica') {
-                $ecommerceId_tipoCaracteristica = $jsonCampos[$campo]['info_integr_ecommerce']['ecommerce_id'] ?? $this->integraTipoCaracteristica($campo, $jsonCampos[$campo]['label']);
+
+                if ($jsonCampos[$campo]['info_integr_ecommerce']['ecommerce_id'] ?: null) {
+                    $ecommerceId_tipoCaracteristica = (int)$jsonCampos[$campo]['info_integr_ecommerce']['ecommerce_id'];
+                } else {
+                    $ecommerceId_tipoCaracteristica = (int)$this->integraTipoCaracteristica($campo, $jsonCampos[$campo]['label']);
+                }
+
                 if ($jsonCampos[$campo]['tipo'] === 'tags') {
                     $valoresTags = explode(',', $valor);
                     foreach ($valoresTags as $valorTag) {
@@ -570,7 +509,11 @@ class IntegraWebStorm extends BaseBusiness
             throw new \RuntimeException($client->getError());
         }
 
-        $xmlResult = simplexml_load_string($arResultado);
+        $xmlResult = simplexml_load_string(html_entity_decode($arResultado));
+
+        if ($xmlResult->erros->erro ?? false) {
+            throw new \RuntimeException($xmlResult->erros->erro->__toString());
+        }
 
         if (!$produtoEcommerceId) {
             $produto->jsonData['ecommerce_id'] = (int)$xmlResult->produto->produto->idProduto->__toString();
@@ -594,7 +537,7 @@ class IntegraWebStorm extends BaseBusiness
             if (!$endpoint) {
                 throw new \RuntimeException('endpoint não informado');
             }
-            $client = new \nusoap_client($endpoint, 'wsdl');
+            $client = new \nusoap_client($endpoint, 'wsdl', false, false, false, false, 300, 300);
             $client->setEndpoint($endpoint);
             $client->soap_defencoding = 'UTF - 8';
             $client->decode_utf8 = false;
@@ -623,7 +566,7 @@ class IntegraWebStorm extends BaseBusiness
             if (!$endpoint) {
                 throw new \RuntimeException('endpoint não informado');
             }
-            $client = new \nusoap_client($endpoint . '?wsdl', 'wsdl');
+            $client = new \nusoap_client($endpoint, 'wsdl', false, false, false, false, 300, 300);
             $client->setEndpoint('https://rodoponta.webstorm.com.br/webservice/serverImportacao');
             $client->soap_defencoding = 'iso-8859-1';
             $client->decode_utf8 = false;
