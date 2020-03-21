@@ -265,7 +265,8 @@ class NotaFiscalType extends AbstractType
             $builder->add('naturezaOperacao', TextType::class, [
                 'label' => 'Natureza da Operação',
                 'required' => true,
-                'disabled' => $disabled
+                'disabled' => $disabled,
+                'attr' => ['maxlength' => 60]
             ]);
 
             $builder->add('entradaSaida', ChoiceType::class, [

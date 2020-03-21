@@ -621,15 +621,15 @@ class EmissaoNFeController extends FormListController
      */
     public function downloadXML(NotaFiscal $nf): Response
     {
-        // ????????
-        // Provide a name for your file with extension
         $filename = $nf->getChaveAcesso() . '.xml';
-
 
         $nf = $this->spedNFeBusiness->gerarXML($nf);
 
         $tools = $this->nfeUtils->getToolsEmUso();
         $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
+
+        $this->notaFiscalBusiness->handleIdeFields($nf);
+
         $fileContent = $tools->signNFe($nf->getXmlNota());
 
         // The dinamically created content of the file
