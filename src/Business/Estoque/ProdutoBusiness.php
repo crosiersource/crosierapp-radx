@@ -33,7 +33,7 @@ class ProdutoBusiness extends BaseBusiness
         $menorQtdeDisponivel = null;
         if ($produto->composicao == 'S') {
 
-                        $qtdeTotal = 0.0;
+            $qtdeTotal = 0.0;
             $valorTotal = 0.0;
 
             foreach ($produto->composicoes as $itemComposicao) {

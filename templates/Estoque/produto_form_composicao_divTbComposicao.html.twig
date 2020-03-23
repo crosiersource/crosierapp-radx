@@ -74,7 +74,7 @@
         <td></td>
         <td class="text-right">
             {{ e.composicaoEstoqueDisponivel|default(0) }}
-            {% if e.composicaoEstoqueDisponivel < 1 %}
+            {% if e.composicaoEstoqueDisponivel|default(0) < 1 %}
                 <br/>
                 <span class="badge badge-warning">Em falta</span>
             {% endif %}
