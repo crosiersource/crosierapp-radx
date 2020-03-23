@@ -150,7 +150,6 @@ CREATE TABLE `fin_carteira` (
   `codigo` int(11) NOT NULL,
   `descricao` varchar(40) NOT NULL,
 
-  `atual` bit(1) NOT NULL DEFAULT b'1',
   `banco_id` bigint(20) DEFAULT NULL,
   `agencia` varchar(30)  DEFAULT NULL,
   `conta` varchar(30)  DEFAULT NULL,
