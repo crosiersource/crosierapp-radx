@@ -21,7 +21,20 @@ function getDatatablesColumns() {
             data: 'e',
             title: 'Número/Série',
             render: function (data, type, row) {
-                return "<b>" + String(data.numero ? data.numero : '0').padStart(6, "0") + "</b>/" + String(data.serie ? data.serie : 0).padStart(3, "0");
+
+                let html = '';
+                html += '<div class="float-left">';
+                html += "<b>" + String(data.numero ? data.numero : '0').padStart(6, "0") + "</b>/" + String(data.serie ? data.serie : 0).padStart(3, "0");
+                html += '</div><div class="float-right">';
+
+                if (data.nsu) {
+                    html += '<span class="badge badge-pill badge-secondary">' + data.nsu + '</span>';
+                }
+                html += '</div>';
+                return html;
+
+
+                return
             }
         },
         {
@@ -73,9 +86,25 @@ function getDatatablesColumns() {
                 let colHtml = "";
 
                 let downloadXMLurl = Routing.generate('nfesFornecedores_downloadXML', {'nf': data.id});
-                colHtml += '<button type="button"' +
+
+                let manifestarCienciaUrl = Routing.generate('nfesFornecedores_manifestar', {'nf': data.id});
+
+                let pdfUrl = Routing.generate('fis_emissaonfe_imprimir', {'notaFiscal': data.id});
+
+                colHtml += '<button type="button" title="Manifestar Ciência da Operação"' +
+                    'class="btn btn-outline-primary btn-sm" ' +
+                    'data-url="' + manifestarCienciaUrl + '" ' +
+                    'data-target="#confirmationModal" data-toggle="modal">' +
+                    '<i class="fas fa-eye"></i></button> ';
+
+                colHtml += '<button type="button" title="Download do XML"' +
                     'class="btn btn-primary btn-sm" onclick="window.open(\'' + downloadXMLurl + '\', \'_blank\')">' +
                     '<i class="fas fa-file-code"></i></button> ';
+
+                colHtml += '<a role="button" value="Imprimir" title="Ver PDF" class="btn btn-sm btn-outline-secondary mr-1" ' +
+                    'href="' + pdfUrl + '" target="_blank"> ' +
+                    '<i class="fas fa-file-pdf" aria-hidden="true"></i> ' +
+                    '</a>';
 
                 let routeEdit = null;
                 if (data.resumo) {

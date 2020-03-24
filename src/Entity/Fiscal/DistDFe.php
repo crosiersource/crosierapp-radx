@@ -23,44 +23,52 @@ class DistDFe implements EntityId
 
     /**
      *
-     * @ORM\Column(name="tipo_distdfe", type="string", nullable=true)
+     * @ORM\Column(name="documento", type="string")
      * @var null|string
      * @Groups("entity")
      */
-    private $tipoDistDFe;
+    public ?string $documento = null;
+
+    /**
+     *
+     * @ORM\Column(name="tipo_distdfe", type="string")
+     * @var null|string
+     * @Groups("entity")
+     */
+    public ?string $tipoDistDFe = null;
 
     /**
      * Se é referente a um DF próprio.
      *
-     * @ORM\Column(name="proprio", type="boolean", nullable=true)
+     * @ORM\Column(name="proprio", type="boolean")
      * @var null|bool
      * @Groups("entity")
      */
-    private $proprio;
+    public ?bool $proprio = null;
 
     /**
      *
-     * @ORM\Column(name="chnfe", type="string", nullable=true, length=44)
+     * @ORM\Column(name="chnfe", type="string", length=44)
      * @var null|string
      * @Groups("entity")
      */
-    private $chave;
+    public ?string $chave = null;
 
     /**
      *
-     * @ORM\Column(name="tp_evento", type="integer", nullable=true)
+     * @ORM\Column(name="tp_evento", type="integer")
      * @var null|int
      * @Groups("entity")
      */
-    private $tpEvento;
+    public ?int $tpEvento = null;
 
     /**
      *
-     * @ORM\Column(name="nseq_evento", type="integer", nullable=true)
+     * @ORM\Column(name="nseq_evento", type="integer")
      * @var null|int
      * @Groups("entity")
      */
-    private $nSeqEvento;
+    public ?int $nSeqEvento = null;
 
     /**
      *
@@ -68,235 +76,55 @@ class DistDFe implements EntityId
      * @var null|int
      * @Groups("entity")
      */
-    private $nsu;
+    public ?int $nsu = null;
 
     /**
      *
-     * @ORM\Column(name="xml", type="string", nullable=true)
+     * @ORM\Column(name="xml", type="string")
      * @var null|string
      *
      * @NotUppercase()
      */
-    private $xml;
+    public ?string $xml = null;
 
     /**
      *
-     * @ORM\Column(name="status", length=255, type="string", nullable=true)
+     * @ORM\Column(name="status", length=255, type="string")
      * @var null|string
      * @Groups("entity")
      * @NotUppercase()
      */
-    private $status;
+    public ?string $status = null;
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Fiscal\NotaFiscal")
-     * @ORM\JoinColumn(name="nota_fiscal_id", nullable=true)
+     * @ORM\JoinColumn(name="nota_fiscal_id")
      *
      * @var $notaFiscal null|NotaFiscal
      */
-    private $notaFiscal;
+    public ?NotaFiscal $notaFiscal = null;
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Fiscal\NotaFiscalEvento")
-     * @ORM\JoinColumn(name="nota_fiscal_evento_id", nullable=true)
+     * @ORM\JoinColumn(name="nota_fiscal_evento_id")
      *
      * @var $notaFiscalEvento null|NotaFiscalEvento
      */
-    private $notaFiscalEvento;
+    public ?NotaFiscalEvento $notaFiscalEvento = null;
 
-
-    /**
-     * @return string|null
-     */
-    public function getTipoDistDFe(): ?string
-    {
-        return $this->tipoDistDFe;
-    }
-
-    /**
-     * @param string|null $tipoDistDFe
-     * @return DistDFe
-     */
-    public function setTipoDistDFe(?string $tipoDistDFe): DistDFe
-    {
-        $this->tipoDistDFe = $tipoDistDFe;
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getProprio(): ?bool
-    {
-        return $this->proprio;
-    }
-
-    /**
-     * @param bool|null $proprio
-     * @return DistDFe
-     */
-    public function setProprio(?bool $proprio): DistDFe
-    {
-        $this->proprio = $proprio;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getChave(): ?string
-    {
-        return $this->chave;
-    }
-
-    /**
-     * @param string|null $chave
-     * @return DistDFe
-     */
-    public function setChave(?string $chave): DistDFe
-    {
-        $this->chave = $chave;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getTpEvento(): ?int
-    {
-        return $this->tpEvento;
-    }
-
-    /**
-     * @param int|null $tpEvento
-     * @return DistDFe
-     */
-    public function setTpEvento(?int $tpEvento): DistDFe
-    {
-        $this->tpEvento = $tpEvento;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getNSeqEvento(): ?int
-    {
-        return $this->nSeqEvento;
-    }
-
-    /**
-     * @param int|null $nSeqEvento
-     * @return DistDFe
-     */
-    public function setNSeqEvento(?int $nSeqEvento): DistDFe
-    {
-        $this->nSeqEvento = $nSeqEvento;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getNsu(): ?int
-    {
-        return $this->nsu;
-    }
-
-    /**
-     * @param int|null $nsu
-     * @return DistDFe
-     */
-    public function setNsu(?int $nsu): DistDFe
-    {
-        $this->nsu = $nsu;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param string|null $status
-     * @return DistDFe
-     */
-    public function setStatus(?string $status): DistDFe
-    {
-        $this->status = $status;
-        return $this;
-    }
 
     /**
      * @return \SimpleXMLElement|null
      */
     public function getXMLDecoded(): ?\SimpleXMLElement
     {
-        if ($this->getXml() && $this->getXml() !== 'Nenhum documento localizado') {
-            $xmlUnzip = gzdecode(base64_decode($this->getXml()));
+        if ($this->xml && $this->xml !== 'Nenhum documento localizado') {
+            $xmlUnzip = gzdecode(base64_decode($this->xml));
             return simplexml_load_string($xmlUnzip);
         }
         return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getXml(): ?string
-    {
-        return $this->xml;
-    }
-
-    /**
-     * @param string|null $xml
-     * @return DistDFe
-     */
-    public function setXml(?string $xml): DistDFe
-    {
-        $this->xml = $xml;
-        return $this;
-    }
-
-    /**
-     * @return NotaFiscal|null
-     */
-    public function getNotaFiscal(): ?NotaFiscal
-    {
-        return $this->notaFiscal;
-    }
-
-    /**
-     * @param NotaFiscal|null $notaFiscal
-     * @return DistDFe
-     */
-    public function setNotaFiscal(?NotaFiscal $notaFiscal): DistDFe
-    {
-        $this->notaFiscal = $notaFiscal;
-        return $this;
-    }
-
-    /**
-     * @return NotaFiscalEvento|null
-     */
-    public function getNotaFiscalEvento(): ?NotaFiscalEvento
-    {
-        return $this->notaFiscalEvento;
-    }
-
-    /**
-     * @param NotaFiscalEvento|null $notaFiscalEvento
-     * @return DistDFe
-     */
-    public function setNotaFiscalEvento(?NotaFiscalEvento $notaFiscalEvento): DistDFe
-    {
-        $this->notaFiscalEvento = $notaFiscalEvento;
-        return $this;
     }
 
     /**

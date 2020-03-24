@@ -62,24 +62,27 @@ class DistDFeBusiness
     }
 
     /**
+     * @param string $cnpj
+     * @return int
      * @throws ViewException
      */
-    public function obterDistDFesAPartirDoUltimoNSU(): int
+    public function obterDistDFesAPartirDoUltimoNSU(string $cnpj): int
     {
         /** @var DistDFeRepository $repo */
         $repo = $this->doctrine->getRepository(DistDFe::class);
-        $ultNSU = $repo->findUltimoNSU();
-        return $this->obterDistDFes($ultNSU);
+        $ultNSU = $repo->findUltimoNSU($cnpj);
+        return $this->obterDistDFes($ultNSU, $cnpj);
     }
 
     /**
      * Obtém as DistDFes emitidas contra o CNPJ a partir do $nsu informado
      *
      * @param int $nsu
+     * @param string $cnpj
      * @return int
      * @throws ViewException
      */
-    public function obterDistDFes(int $nsu): int
+    public function obterDistDFes(int $nsu, string $cnpj): int
     {
         $qtdeObtida = 0;
 
@@ -114,8 +117,9 @@ class DistDFeBusiness
                     if (!$existe) {
                         $xml = $doc->__toString();
                         $dfe = new DistDFe();
-                        $dfe->setNsu($nsu);
-                        $dfe->setXml($xml);
+                        $dfe->nsu = $nsu;
+                        $dfe->xml = $xml;
+                        $dfe->documento = $cnpj;
                         $this->distDFeEntityHandler->save($dfe);
                         $qtdeObtida++;
                     }
@@ -152,12 +156,14 @@ class DistDFeBusiness
 
     /**
      * @return array
+     * @throws ViewException
      */
     public function getNSUsPulados(): array
     {
         /** @var DistDFeRepository $repo */
         $repo = $this->doctrine->getRepository(DistDFe::class);
-        $nsus = $repo->findAllNSUs();
+        $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+        $nsus = $repo->findAllNSUs($cnpjEmUso);
         $pulados = [];
         $primeiro = $nsus[0];
         $ultimo = $nsus[count($nsus) - 1];
@@ -198,8 +204,8 @@ class DistDFeBusiness
             }
 
             $dfe = new DistDFe();
-            $dfe->setNsu($nsu);
-            $dfe->setXml($xml);
+            $dfe->nsu = $nsu;
+            $dfe->xml = $xml;
             $this->distDFeEntityHandler->save($dfe);
             return true;
         } catch (\Exception $e) {
@@ -215,11 +221,11 @@ class DistDFeBusiness
      */
     public function reprocessarDistDFe(DistDFe $distDFe): void
     {
-        switch ($distDFe->getTipoDistDFe()) {
+        switch ($distDFe->tipoDistDFe) {
             case 'NFEPROC':
-                $nf = $this->nfeProc2NotaFiscal($distDFe->getXMLDecoded(), $distDFe->getNotaFiscal());
-                $distDFe->setNotaFiscal($nf);
-                $distDFe->setStatus('PROCESSADO');
+                $nf = $this->nfeProc2NotaFiscal($distDFe->getXMLDecoded(), $distDFe->notaFiscal);
+                $distDFe->notaFiscal = $nf;
+                $distDFe->status = 'PROCESSADO';
                 $this->distDFeEntityHandler->save($distDFe);
                 break;
             case 'RESNFE':
@@ -245,10 +251,17 @@ class DistDFeBusiness
     public function nfeProc2NotaFiscal(\SimpleXMLElement $xml, NotaFiscal $nf = null): NotaFiscal
     {
         if (!$nf) {
-            $nf = new NotaFiscal();
+            $nf = $this->doctrine->getRepository(NotaFiscal::class)->findOneBy(['chaveAcesso' => substr($xml->NFe->infNFe['Id'][0], 3)]);
+            if (!$nf) {
+                $nf = new NotaFiscal();
+            }
         }
 
         $nfeConfigs = $this->nfeUtils->getNFeConfigsEmUso();
+
+        $nf->setResumo(false);
+        $nf->setXmlNota($xml->asXML());
+
         $nf->setDocumentoDestinatario(preg_replace("/[^0-9]/", '', $nfeConfigs['cnpj']));
         $nf->setXNomeDestinatario($nfeConfigs['razaosocial']);
         $nf->setInscricaoEstadualDestinatario($nfeConfigs['ie']);
@@ -307,7 +320,6 @@ class DistDFeBusiness
             $this->notaFiscalEntityHandler->handleSavingEntityId($nfItem);
 
             $nf->addItem($nfItem);
-
         }
 
         // FRETE
@@ -341,7 +353,6 @@ class DistDFeBusiness
         /** @var NotaFiscal $nf */
         $nf = $this->notaFiscalEntityHandler->save($nf);
 
-
         return $nf;
     }
 
@@ -358,12 +369,24 @@ class DistDFeBusiness
         try {
             $xml = $distDFe->getXMLDecoded();
             if (!$xml) {
-                throw new ViewException('Erro ao fazer o parse do xml para NF (chave: ' . $distDFe->getChave() . ')');
+                throw new ViewException('Erro ao fazer o parse do xml para NF (chave: ' . $distDFe->chave . ')');
             }
 
-            $nf = $distDFe->getNotaFiscal() ?? new NotaFiscal();
-            $nf->setXmlNota($distDFe->getXml());
-            $nf->setChaveAcesso($distDFe->getChave());
+            if ($distDFe->notaFiscal) {
+                $nf = $distDFe->notaFiscal;
+            } else {
+                /** @var NotaFiscalRepository $repoNotaFiscal */
+                $repoNotaFiscal = $this->doctrine->getRepository(NotaFiscal::class);
+                /** @var NotaFiscal $nf */
+                $nf = $repoNotaFiscal->findOneBy(['chaveAcesso' => $distDFe->chave]);
+                if (!$nf) {
+                    $nf = new NotaFiscal();
+                }
+            }
+            $nf->setXmlNota($distDFe->xml);
+            $nf->setChaveAcesso($distDFe->chave);
+            $nf->nsu = $distDFe->nsu;
+            $nf->setResumo(true);
 
             $nf->setDtEmissao(DateTimeUtils::parseDateStr($xml->dhEmi->__toString()));
 
@@ -390,12 +413,12 @@ class DistDFeBusiness
 
             /** @var NotaFiscal $nf */
             $nf = $this->notaFiscalEntityHandler->save($nf);
-            $distDFe->setStatus('PROCESSADO');
-            $distDFe->setNotaFiscal($nf);
+            $distDFe->status = 'PROCESSADO';
+            $distDFe->notaFiscal = $nf;
 
         } catch (\Throwable $e) {
             $this->logger->error('Erro para a chave: ' . $nf->getChaveAcesso());
-            $distDFe->setStatus('ERRO AO PROCESSAR');
+            $distDFe->status = 'ERRO AO PROCESSAR';
         }
 
         return $this->distDFeEntityHandler->save($distDFe);
@@ -409,19 +432,19 @@ class DistDFeBusiness
     {
         try {
 
-            if (strpos($distDFe->getTipoDistDFe(), 'EVENTO') === FALSE) {
+            if (strpos($distDFe->tipoDistDFe, 'EVENTO') === FALSE) {
                 throw new ViewException('DistDFe não é sobre evento');
             }
 
             /** @var NotaFiscalRepository $repoNotaFiscal */
             $repoNotaFiscal = $this->doctrine->getRepository(NotaFiscal::class);
             /** @var NotaFiscal $nf */
-            $nf = $repoNotaFiscal->findOneBy(['chaveAcesso' => $distDFe->getChave()]);
+            $nf = $repoNotaFiscal->findOneBy(['chaveAcesso' => $distDFe->chave]);
             if (!$nf) {
-                throw new ViewException('Evento para NF que não consta no BD (chave: ' . $distDFe->getChave() . ')');
+                throw new ViewException('Evento para NF que não consta no BD (chave: ' . $distDFe->chave . ')');
             }
 
-            $nfEvento = $distDFe->getNotaFiscalEvento() ?? new NotaFiscalEvento();
+            $nfEvento = $distDFe->notaFiscalEvento ?? new NotaFiscalEvento();
 
             $xml = $distDFe->getXMLDecoded();
             if (!$xml) {
@@ -446,24 +469,24 @@ class DistDFeBusiness
             }
 
             try {
-                $nfEvento->setXml($distDFe->getXml());
+                $nfEvento->setXml($distDFe->xml);
                 $nfEvento->setNotaFiscal($nf);
                 $nfEvento->setTpEvento($tpEvento);
                 $nfEvento->setNSeqEvento($nSeqEvento);
                 $nfEvento->setDescEvento($descEvento);
                 $this->notaFiscalEventoEntityHandler->save($nfEvento);
-                $distDFe->setNSeqEvento($nSeqEvento);
-                $distDFe->setTpEvento($tpEvento);
-                $distDFe->setNotaFiscalEvento($nfEvento);
-                $distDFe->setNotaFiscal($nfEvento->getNotaFiscal());
-                $distDFe->setStatus('PROCESSADO');
+                $distDFe->nSeqEvento = $nSeqEvento;
+                $distDFe->tpEvento = $tpEvento;
+                $distDFe->notaFiscalEvento = $nfEvento;
+                $distDFe->notaFiscal = $nfEvento->getNotaFiscal();
+                $distDFe->status = 'PROCESSADO';
             } catch (\Exception $e) {
-                throw new ViewException('Erro ao salvar fis_nf ou fis_distdfe (chave ' . $distDFe->getChave() . ')');
+                throw new ViewException('Erro ao salvar fis_nf ou fis_distdfe (chave ' . $distDFe->chave . ')');
             }
         } catch (\Exception $e) {
-            $this->logger->error('Erro ao processar DistDFe: salvando evento para NFe (chave ' . $distDFe->getChave() . ')');
+            $this->logger->error('Erro ao processar DistDFe: salvando evento para NFe (chave ' . $distDFe->chave . ')');
             $this->logger->error($e->getMessage());
-            $distDFe->setStatus('ERRO AO PROCESSAR');
+            $distDFe->status = 'ERRO AO PROCESSAR';
         }
 
         $this->distDFeEntityHandler->save($distDFe);
@@ -494,11 +517,13 @@ class DistDFeBusiness
         try {
             /** @var DistDFeRepository $repoDistDFe */
             $repoDistDFe = $this->doctrine->getRepository(DistDFe::class);
+            $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+            $distDFesAProcessar =  $repoDistDFe->findDistDFeNotInNotaFiscal($cnpjEmUso);
 
-            $distDFesAProcessar = $repoDistDFe->findDistDFeNotInNotaFiscal();
 
-            /** @var DistDFe $distDFe */
-            foreach ($distDFesAProcessar as $distDFe) {
+            foreach ($distDFesAProcessar as $distDFeId) {
+                /** @var DistDFe $distDFe */
+                $distDFe = $repoDistDFe->find($distDFeId);
                 // gzdecode(base64_decode($distDFe->getXml()))
                 $xml = $distDFe->getXMLDecoded();
                 if (!$xml) {
@@ -508,12 +533,12 @@ class DistDFeBusiness
 
                 if ($xmlName === 'nfeProc') {
                     $nf = $this->nfeProc2NotaFiscal($distDFe->getXMLDecoded());
-                    $distDFe->setNotaFiscal($nf);
+                    $distDFe->notaFiscal = $nf;
                     $this->distDFeEntityHandler->save($distDFe);
                 } elseif ($xmlName === 'resNFe') {
                     $this->resNfe2NotaFiscal($distDFe);
                 } else {
-                    $this->logger->error('Erro ao processar DistDFe: não reconhecido (chave ' . $distDFe->getChave() . ')');
+                    $this->logger->error('Erro ao processar DistDFe: não reconhecido (chave ' . $distDFe->chave . ')');
                 }
             }
         } catch (\Exception $e) {
@@ -530,19 +555,22 @@ class DistDFeBusiness
     {
         /** @var DistDFeRepository $repoDistDFe */
         $repoDistDFe = $this->doctrine->getRepository(DistDFe::class);
-        $distDFesAProcessar = $repoDistDFe->findDistDFeNotInNotaFiscalEvento();
+
+        $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+        $distDFesAProcessar = $repoDistDFe->findDistDFeNotInNotaFiscalEvento($cnpjEmUso);
 
         /** @var NotaFiscalRepository $repoNotaFiscal */
         $repoNotaFiscal = $this->doctrine->getRepository(NotaFiscal::class);
 
         /** @var DistDFe $distDFe */
-        foreach ($distDFesAProcessar as $distDFe) {
-
+        foreach ($distDFesAProcessar as $distDFeId) {
             try {
+                /** @var DistDFe $distDFe */
+                $distDFe = $repoDistDFe->find($distDFeId);
                 /** @var NotaFiscal $nf */
-                $nf = $repoNotaFiscal->findOneBy(['chaveAcesso' => $distDFe->getChave()]);
+                $nf = $repoNotaFiscal->findOneBy(['chaveAcesso' => $distDFe->chave]);
                 if (!$nf) {
-                    throw new ViewException('Evento para NF que não consta no BD (chave: ' . $distDFe->getChave() . ')');
+                    throw new ViewException('Evento para NF que não consta no BD (chave: ' . $distDFe->chave . ')');
                 }
                 $xml = $distDFe->getXMLDecoded();
                 if (!$xml) {
@@ -568,24 +596,24 @@ class DistDFeBusiness
 
                 try {
                     $nfEvento = new NotaFiscalEvento();
-                    $nfEvento->setXml($distDFe->getXml());
+                    $nfEvento->setXml($distDFe->xml);
                     $nfEvento->setNotaFiscal($nf);
                     $nfEvento->setTpEvento($tpEvento);
                     $nfEvento->setNSeqEvento($nSeqEvento);
                     $nfEvento->setDescEvento($descEvento);
                     $this->notaFiscalEventoEntityHandler->save($nfEvento);
 
-                    $distDFe->setNSeqEvento($nSeqEvento);
-                    $distDFe->setTpEvento($tpEvento);
-                    $distDFe->setNotaFiscalEvento($nfEvento);
-                    $distDFe->setStatus('PROCESSADO');
+                    $distDFe->nSeqEvento = $nSeqEvento;
+                    $distDFe->tpEvento = $tpEvento;
+                    $distDFe->notaFiscalEvento = $nfEvento;
+                    $distDFe->status = 'PROCESSADO';
                 } catch (\Exception $e) {
-                    throw new ViewException('Erro ao salvar fis_nf ou fis_distdfe (chave ' . $distDFe->getChave() . ')');
+                    throw new ViewException('Erro ao salvar fis_nf ou fis_distdfe (chave ' . $distDFe->chave . ')');
                 }
             } catch (\Exception $e) {
-                $this->logger->error('Erro ao processar DistDFe: salvando evento para NFe (chave ' . $distDFe->getChave() . ')');
+                $this->logger->error('Erro ao processar DistDFe: salvando evento para NFe (chave ' . $distDFe->chave . ')');
                 $this->logger->error($e->getMessage());
-                $distDFe->setStatus('ERRO AO PROCESSAR');
+                $distDFe->status = 'ERRO AO PROCESSAR';
             }
 
             $this->distDFeEntityHandler->save($distDFe);
@@ -660,29 +688,26 @@ class DistDFeBusiness
                 if ($xmlName === 'nfeProc') {
                     $chave = $xml->protNFe->infProt->chNFe->__toString();
                     $cnpj = $xml->NFe->infNFe->emit->CNPJ->__toString();;
-                }
-                if ($xmlName === 'resNFe') {
+                } elseif ($xmlName === 'resNFe') {
                     $chave = $xml->chNFe->__toString();
                     $cnpj = $xml->CNPJ->__toString();
-                }
-                if ($xmlName === 'resEvento') {
+                } elseif ($xmlName === 'resEvento') {
                     $chave = $xml->chNFe->__toString();
                     $cnpj = $xml->CNPJ->__toString();
-                    $distDFe->setTpEvento((int)$xml->tpEvento->__toString());
-                    $distDFe->setNSeqEvento((int)$xml->nSeqEvento->__toString());
-                }
-                if ($xmlName === 'procEventoNFe') {
+                    $distDFe->tpEvento = (int)$xml->tpEvento->__toString();
+                    $distDFe->nSeqEvento = (int)$xml->nSeqEvento->__toString();
+                } elseif ($xmlName === 'procEventoNFe') {
                     $chave = $xml->evento->infEvento->chNFe->__toString();
                     $cnpj = $xml->evento->infEvento->CNPJ->__toString();
-                    $distDFe->setTpEvento((int)$xml->evento->infEvento->tpEvento->__toString());
-                    $distDFe->setNSeqEvento((int)$xml->evento->infEvento->nSeqEvento->__toString());
+                    $distDFe->tpEvento = (int)$xml->evento->infEvento->tpEvento->__toString();
+                    $distDFe->nSeqEvento = (int)$xml->evento->infEvento->nSeqEvento->__toString();
                 }
                 if (!$chave) {
                     throw new \RuntimeException('Não consegui encontrar a chave');
                 }
-                $distDFe->setProprio($nfeConfigs['cnpj'] === $cnpj);
-                $distDFe->setTipoDistDFe($xml->getName());
-                $distDFe->setChave($chave);
+                $distDFe->proprio = $nfeConfigs['cnpj'] === $cnpj;
+                $distDFe->tipoDistDFe = $xml->getName();
+                $distDFe->chave = $chave;
                 $this->distDFeEntityHandler->save($distDFe);
             } catch (\Exception $e) {
                 $this->logger->error('Erro ao extrair chave do DistDFe id=' . $distDFe->getId());

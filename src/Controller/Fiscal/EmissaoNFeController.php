@@ -356,10 +356,6 @@ class EmissaoNFeController extends FormListController
      */
     public function imprimir(NotaFiscal $notaFiscal): RedirectResponse
     {
-//        $this->notaFiscalBusiness->imprimir($notaFiscal);
-//        $this->addFlash('success', 'Nota Fiscal enviada para reimpressão!');
-//        return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
-
         try {
             $xml = $notaFiscal->getXmlNota();
             $danfe = new Danfe($xml);

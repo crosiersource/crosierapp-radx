@@ -39,7 +39,6 @@ class NotaFiscal implements EntityId
      */
     private $ambiente;
 
-
     /**
      *
      * Número randômico utilizado na geração do nome do arquivo XML, para poder saber qual foi o nome do último arquivo gerado, evitando duplicidades.
@@ -481,7 +480,6 @@ class NotaFiscal implements EntityId
      */
     private $a03idNfReferenciada;
 
-
     /**
      *
      * @ORM\Column(name="xml_nota", type="string", nullable=true)
@@ -560,6 +558,15 @@ class NotaFiscal implements EntityId
      * @Groups("entity")
      */
     private $dtManifestDest;
+
+    /**
+     *
+     * @ORM\Column(name="nsu", type="integer", nullable=false)
+     * @var null|int
+     *
+     * @Groups("entity")
+     */
+    public $nsu;
 
     /**
      *

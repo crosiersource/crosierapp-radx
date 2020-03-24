@@ -26,14 +26,11 @@ class NFesFornecedoresController extends FormListController
     /** @var NotaFiscalEntityHandler */
     protected $entityHandler;
 
-    /** @var NFeUtils */
-    private $nfeUtils;
+    private NFeUtils $nfeUtils;
 
-    /** @var NotaFiscalBusiness */
-    private $notaFiscalBusiness;
+    private NotaFiscalBusiness $notaFiscalBusiness;
 
-    /** @var SpedNFeBusiness */
-    private $spedNFeBusiness;
+    private SpedNFeBusiness $spedNFeBusiness;
 
     /**
      * @required
@@ -139,7 +136,7 @@ class NFesFornecedoresController extends FormListController
     {
         $params =
             [
-                'listView' => 'nfeFornecedores/nfesFornecedoresList.html.twig',
+                'listView' => 'Fiscal/nfeFornecedores/nfesFornecedoresList.html.twig',
                 'listRoute' => 'nfesFornecedores_list',
                 'listRouteAjax' => 'nfesFornecedores_datatablesJsList',
                 'listPageTitle' => 'NFe - Fornecedores',
@@ -212,7 +209,7 @@ class NFesFornecedoresController extends FormListController
      */
     public function manifestar(Request $request, NotaFiscal $nf): Response
     {
-        $codManifest = $request->get('codManifest');
+        $codManifest = $request->get('codManifest') ?? '210210';
         try {
             $this->spedNFeBusiness->manifestar($nf, $codManifest);
             $this->addFlash('success', 'NF manifestada com sucesso.');
