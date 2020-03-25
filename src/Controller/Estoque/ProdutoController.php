@@ -480,7 +480,7 @@ class ProdutoController extends FormListController
                 $imagem['subgrupo_id'] . '/' . $imagem['image_name'];
 
             if ($arquivos[$imagem['image_name']] !== $caminhoQueDeveriaSer) {
-                mkdir($parameterBag->get('kernel.project_dir') .
+                @mkdir($parameterBag->get('kernel.project_dir') .
                     '/public/images/produtos/' .
                     $imagem['depto_id'] . '/' .
                     $imagem['grupo_id'] . '/' .
