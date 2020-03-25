@@ -18,7 +18,9 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -442,6 +444,56 @@ class ProdutoController extends FormListController
         } catch (ViewException $e) {
             return new JsonResponse(['result' => 'FALHA']);
         }
+    }
+
+    /**
+     *
+     * @Route("/est/produto/moveImages/", name="est_produto_moveImages")
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function moveImages(Connection $conn, ParameterBagInterface $parameterBag) {
+
+        $pasta = $parameterBag->get('kernel.project_dir') . '/public/images/produtos';
+        exec('find ' . $pasta, $output);
+
+        $arquivos = [];
+        foreach ($output as $arq) {
+            $arquivos[basename($arq)] = $arq;
+        }
+
+        $imagens = $conn->fetchAll('select i.id, i.produto_id, depto_id, grupo_id, subgrupo_id, image_name from est_produto p, est_produto_imagem i where p.id = i.produto_id');
+
+        $result = [];
+
+        foreach ($imagens as $imagem) {
+
+            if (!isset($arquivos[$imagem['image_name']])) {
+                $result[] = 'ERRO: ' . $imagem['image_name'] . ' não existe no disco do ' . $imagem['produto_id'];
+                continue;
+            }
+
+            $caminhoQueDeveriaSer = $parameterBag->get('kernel.project_dir') .
+                '/public/images/produtos/' .
+                $imagem['depto_id'] . '/' .
+                $imagem['grupo_id'] . '/' .
+                $imagem['subgrupo_id'] . '/' . $imagem['image_name'];
+
+            if ($arquivos[$imagem['image_name']] !== $caminhoQueDeveriaSer) {
+                @mkdir($parameterBag->get('kernel.project_dir') .
+                    '/public/images/produtos/' .
+                    $imagem['depto_id'] . '/' .
+                    $imagem['grupo_id'] . '/' .
+                    $imagem['subgrupo_id'] . '/');
+
+                rename($arquivos[$imagem['image_name']], $caminhoQueDeveriaSer);
+                $result[] = 'ERRO: ' . $imagem['image_name'] . ' deveria estar em ' . $caminhoQueDeveriaSer . ' (e não em '. $arquivos[$imagem['image_name']] . ') do ' . $imagem['produto_id'];
+            }
+        }
+
+        return new Response(implode('<br>', $result));
+
+
     }
 
 }

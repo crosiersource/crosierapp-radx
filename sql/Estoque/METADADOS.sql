@@ -215,6 +215,7 @@ CREATE TABLE `est_produto_imagem`
     `ordem`              integer,
 
     UNIQUE KEY `UK_est_produto_imagem` (`produto_id`, `ordem`),
+    UNIQUE KEY `UK_est_produto_imagem_image_name` (`image_name`),
     KEY `K_est_produto_imagem_produto` (`produto_id`),
     CONSTRAINT `FK_est_produto_imagem_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`),
 
