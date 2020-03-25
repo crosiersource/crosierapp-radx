@@ -448,7 +448,7 @@ class ProdutoController extends FormListController
 
     /**
      *
-     * @Route("/est/produto/moveImages/", name="est_produto_moveImages")
+     * @Route("/est/produto//", name="est_produto_moveImages")
      * @return Response
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
@@ -480,11 +480,11 @@ class ProdutoController extends FormListController
                 $imagem['subgrupo_id'] . '/' . $imagem['image_name'];
 
             if ($arquivos[$imagem['image_name']] !== $caminhoQueDeveriaSer) {
-                @mkdir($parameterBag->get('kernel.project_dir') .
+                mkdir($parameterBag->get('kernel.project_dir') .
                     '/public/images/produtos/' .
                     $imagem['depto_id'] . '/' .
                     $imagem['grupo_id'] . '/' .
-                    $imagem['subgrupo_id'] . '/');
+                    $imagem['subgrupo_id'] . '/', 0777, true);
 
                 rename($arquivos[$imagem['image_name']], $caminhoQueDeveriaSer);
                 $result[] = 'ERRO: ' . $imagem['image_name'] . ' deveria estar em ' . $caminhoQueDeveriaSer . ' (e não em '. $arquivos[$imagem['image_name']] . ') do ' . $imagem['produto_id'];
