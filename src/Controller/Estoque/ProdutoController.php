@@ -448,7 +448,7 @@ class ProdutoController extends FormListController
 
     /**
      *
-     * @Route("/est/produto//", name="est_produto_moveImages")
+     * @Route("/est/produto/moveImages/", name="est_produto_moveImages")
      * @return Response
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
