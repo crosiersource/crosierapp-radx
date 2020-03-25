@@ -91,11 +91,13 @@ function getDatatablesColumns() {
 
                 let pdfUrl = Routing.generate('fis_emissaonfe_imprimir', {'notaFiscal': data.id});
 
-                colHtml += '<button type="button" title="Manifestar Ciência da Operação"' +
-                    'class="btn btn-outline-primary btn-sm" ' +
-                    'data-url="' + manifestarCienciaUrl + '" ' +
-                    'data-target="#confirmationModal" data-toggle="modal">' +
-                    '<i class="fas fa-eye"></i></button> ';
+                if (!data.manifestDest) {
+                    colHtml += '<button type="button" title="Manifestar Ciência da Operação"' +
+                        'class="btn btn-outline-primary btn-sm" ' +
+                        'data-url="' + manifestarCienciaUrl + '" ' +
+                        'data-target="#confirmationModal" data-toggle="modal">' +
+                        '<i class="fas fa-eye"></i></button> ';
+                }
 
                 colHtml += '<button type="button" title="Download do XML"' +
                     'class="btn btn-primary btn-sm" onclick="window.open(\'' + downloadXMLurl + '\', \'_blank\')">' +

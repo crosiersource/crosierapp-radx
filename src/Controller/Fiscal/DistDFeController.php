@@ -10,6 +10,7 @@ use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -110,6 +111,8 @@ class DistDFeController extends FormListController
                 'listPageTitle' => 'DistDFes',
                 'listId' => 'distDFeList',
             ];
+        $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsEmUso();
+        $params['page_subTitle'] = StringUtils::mascararCnpjCpf($nfeConfigsEmUso['cnpj']) . ' - ' . $nfeConfigsEmUso['razaosocial'];
 
         return $this->doList($request, $params);
     }
@@ -132,10 +135,11 @@ class DistDFeController extends FormListController
      *
      * @Route("/fis/distDFe/obterDistDFes/{primeiroNSU}", name="distDFe_obterDistDFes")
      *
+     * @param Request $request
      * @param int|null $primeiroNSU
      * @return Response
      */
-    public function obterDistDFes(int $primeiroNSU = null): Response
+    public function obterDistDFes(Request $request, int $primeiroNSU = null): Response
     {
         try {
             $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
@@ -146,10 +150,12 @@ class DistDFeController extends FormListController
             }
             $this->addFlash('info', $q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
             $this->distDFeBusiness->extrairChaveETipoDosDistDFes();
+            $this->distDFeBusiness->processarDistDFesObtidos();
         } catch (ViewException $e) {
             $this->addFlash('error', $e->getMessage());
         }
-        return $this->redirectToRoute('distDFe_list');
+        $route = $request->get('redirectToRoute') ?? 'distDFe_list';
+        return $this->redirectToRoute($route);
     }
 
     /**

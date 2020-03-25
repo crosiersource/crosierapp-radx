@@ -10,8 +10,12 @@ use App\Form\Fiscal\ConfigToolsType;
 use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -23,17 +27,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class NFeUtilsController extends BaseController
 {
 
-    /** @var SpedNFeBusiness */
-    private $spedNFeBusiness;
+    private SpedNFeBusiness $spedNFeBusiness;
 
-    /** @var DistDFeBusiness */
-    private $distDFeBusiness;
+    private DistDFeBusiness $distDFeBusiness;
 
-    /** @var NFeUtils */
-    private $nfeUtils;
+    private NFeUtils $nfeUtils;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * @required
@@ -208,6 +208,56 @@ class NFeUtilsController extends BaseController
         $vParams['form'] = $form->createView();
 
         return $this->doRender('/Fiscal/configTools.html.twig', $vParams);
+    }
+
+
+    /**
+     *
+     * @Route("/fis/nfeUtils/selecionarContribuinte", name="fis_nfeUtils_selecionarContribuinte")
+     *
+     * @param Request $request
+     * @param Connection $conn
+     * @return Response
+     * @throws ViewException
+     */
+    public function selecionarContribuinte(Request $request, Connection $conn): ?Response
+    {
+        try {
+            if ($request->get('btnSalvar')) {
+                $contribuinteId = $request->get('contribuinteId');
+                $conn->update('cfg_app_config',
+                    ['valor' => $contribuinteId],
+                    [
+                        'app_uuid' => $_SERVER['CROSIERAPP_UUID'],
+                        'chave' => 'nfeConfigsIdEmUso_' . $this->getUser()->getUsername()
+                    ]
+                );
+            }
+
+            $rContribuintes = $conn->fetchAll('SELECT id, valor FROM cfg_app_config WHERE chave LIKE \'nfeConfigs\\_%\'');
+
+            $contribuintes = [];
+            $idAtual = $this->nfeUtils->getNfeConfigsIdEmUso();
+            foreach ($rContribuintes as $rContribuinte) {
+                $nfeConfigs = json_decode($rContribuinte['valor'], true);
+                $contribuintes[] = [
+                    'id' => $rContribuinte['id'],
+                    'empresa' => StringUtils::mascararCnpjCpf($nfeConfigs['cnpj']) . ' - ' . $nfeConfigs['razaosocial'],
+                    'checked' => $idAtual === (int)$rContribuinte['id'] ? 'checked' : ''
+                ];
+            }
+            $params['contribuintes'] = $contribuintes;
+            $params['page_title'] = 'Selecionar Contribuinte';
+
+            return $this->doRender('Fiscal/selecionarContribuinte.html.twig', $params);
+        } catch (DBALException | ViewException $e) {
+            $msg = 'Erro ao alternarNfeConfigsIdEmUso';
+            if ($e instanceof ViewException) {
+                $msg .= ' (' . $e->getMessage() . ')';
+            }
+            $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsEmUso();
+            return new JsonResponse(['result' => 'ERR', 'msg' => $msg, 'nfeConfigsEmUso' => $nfeConfigsEmUso]);
+        }
     }
 
 

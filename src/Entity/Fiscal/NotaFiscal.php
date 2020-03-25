@@ -546,6 +546,8 @@ class NotaFiscal implements EntityId
      *
      * @ORM\Column(name="manifest_dest", type="string", length=255, nullable=true)
      * @var null|string
+     *
+     * @Groups("entity")
      */
     private $manifestDest;
 

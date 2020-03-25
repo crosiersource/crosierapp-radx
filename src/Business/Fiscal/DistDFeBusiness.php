@@ -502,17 +502,17 @@ class DistDFeBusiness
     public function processarDistDFesObtidos(): void
     {
         // Primeiro processa os DistDFes dos tipos NFEPROC e RESNFE
-        $this->processarDistDFesObtidosDeNFes();
+        $this->processarDistDFesParaNFes();
         // Depois processa os DistDFes dos tipos PROCEVENTONFE e RESEVENTO
-        $this->processarDistDFesObtidosDeEventos();
+        $this->processarDistDFesParaEventos();
     }
 
     /**
-     * Processo que extrai a DFe e salva como uma entidade NotaFiscal ou como um NotaFiscalEvento.
+     * Extrai a DFe e salva como uma entidade NotaFiscal.
      *
      * @throws ViewException
      */
-    public function processarDistDFesObtidosDeNFes(): void
+    public function processarDistDFesParaNFes(): void
     {
         try {
             /** @var DistDFeRepository $repoDistDFe */
@@ -551,7 +551,7 @@ class DistDFeBusiness
     /**
      *
      */
-    public function processarDistDFesObtidosDeEventos(): void
+    public function processarDistDFesParaEventos(): void
     {
         /** @var DistDFeRepository $repoDistDFe */
         $repoDistDFe = $this->doctrine->getRepository(DistDFe::class);

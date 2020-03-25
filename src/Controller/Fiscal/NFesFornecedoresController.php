@@ -9,7 +9,9 @@ use App\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use App\Form\Fiscal\NotaFiscalType;
 use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -134,6 +136,8 @@ class NFesFornecedoresController extends FormListController
      */
     public function list(Request $request)
     {
+        $nfeConfigs = $this->nfeUtils->getNFeConfigsEmUso();
+        $empresa = StringUtils::mascararCnpjCpf($nfeConfigs['cnpj']) . ' - ' . $nfeConfigs['razaosocial'];
         $params =
             [
                 'listView' => 'Fiscal/nfeFornecedores/nfesFornecedoresList.html.twig',
@@ -141,6 +145,7 @@ class NFesFornecedoresController extends FormListController
                 'listRouteAjax' => 'nfesFornecedores_datatablesJsList',
                 'listPageTitle' => 'NFe - Fornecedores',
                 'listId' => 'nfesFornecedoresList',
+                'page_subTitle' => $empresa
             ];
 
 
@@ -152,7 +157,7 @@ class NFesFornecedoresController extends FormListController
      * @Route("/fis/nfesFornecedores/datatablesJsList/", name="nfesFornecedores_datatablesJsList")
      * @param Request $request
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      */
     public function datatablesJsList(Request $request)
     {
@@ -217,7 +222,7 @@ class NFesFornecedoresController extends FormListController
             $this->logger->error('Erro ao manifestar (nf.id = ' . $nf->getId() . ', codManifest = ' . $codManifest . ')');
             $this->addFlash('error', 'Erro ao manifestar a NF');
         }
-        return $this->redirectToRoute('nfesFornecedores_formResumo', ['id' => $nf->getId()]);
+        return $this->redirectToRoute('nfesFornecedores_list');
     }
 
 
