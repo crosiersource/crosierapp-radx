@@ -17,6 +17,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 /**
  * @author Carlos Eduardo Pauluk
@@ -27,6 +28,8 @@ class ProdutoEntityHandler extends EntityHandler
     private LoggerInterface $logger;
 
     private AppConfigEntityHandler $appConfigEntityHandler;
+
+    private UploaderHelper $uploaderHelper;
 
     /**
      * @required
@@ -46,6 +49,14 @@ class ProdutoEntityHandler extends EntityHandler
         $this->appConfigEntityHandler = $appConfigEntityHandler;
     }
 
+    /**
+     * @required
+     * @param UploaderHelper $uploaderHelper
+     */
+    public function setUploaderHelper(UploaderHelper $uploaderHelper): void
+    {
+        $this->uploaderHelper = $uploaderHelper;
+    }
 
     public function getEntityClass(): string
     {
@@ -166,6 +177,37 @@ class ProdutoEntityHandler extends EntityHandler
         $produto->jsonData['porcent_preench'] = $totalPreench;
         $produto->jsonData['porcent_preench_campos_faltantes'] = $camposFaltantes;
 
+        $this->verificaPathDasImagens($produto);
+
+    }
+
+    /**
+     * @param Produto $produto
+     */
+    private function verificaPathDasImagens(Produto $produto)
+    {
+        /** @var ProdutoImagem $imagem */
+        foreach ($produto->imagens as $imagem) {
+            $arquivo = $this->parameterBag->get('kernel.project_dir') . '/public' . $this->uploaderHelper->asset($imagem, 'imageFile');
+            if (!file_exists($arquivo)) {
+                /** @var Connection $conn */
+                $conn = $this->getDoctrine()->getConnection();
+                // Como ainda não foi salvo (estou no beforeSave), então ainda posso pegar os valores anteriores na base
+                $rImagem = $conn->fetchAll('select i.id, i.produto_id, depto_id, grupo_id, subgrupo_id, image_name from est_produto p, est_produto_imagem i where p.id = i.produto_id AND i.id = :image_id', ['image_id' => $imagem->getId()]);
+
+                $caminhoAntigo = $this->parameterBag->get('kernel.project_dir') .
+                    '/public/images/produtos/' .
+                    $rImagem[0]['depto_id'] . '/' .
+                    $rImagem[0]['grupo_id'] . '/' .
+                    $rImagem[0]['subgrupo_id'] . '/' . $rImagem[0]['image_name'];
+
+                $somenteNovaPasta = str_replace(basename($arquivo), '', $arquivo);
+
+                @mkdir($somenteNovaPasta, 0777, true);
+                rename($caminhoAntigo, $arquivo);
+
+            }
+        }
     }
 
     /**

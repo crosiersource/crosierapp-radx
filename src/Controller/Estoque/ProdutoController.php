@@ -447,8 +447,11 @@ class ProdutoController extends FormListController
     }
 
     /**
+     * Resolvendo problema para quando foram alterados depto/grupo/subgrupo de produto, mas isso não refletiu no path das imagens.
      *
      * @Route("/est/produto/moveImages/", name="est_produto_moveImages")
+     * @param Connection $conn
+     * @param ParameterBagInterface $parameterBag
      * @return Response
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
