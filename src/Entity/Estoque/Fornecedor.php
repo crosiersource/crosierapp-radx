@@ -2,9 +2,11 @@
 
 namespace App\Entity\Estoque;
 
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  *
@@ -20,179 +22,76 @@ class Fornecedor implements EntityId
 
     /**
      *
-     * @ORM\Column(name="nome", type="string", nullable=false)
-     * @var null|string
+     * @ORM\Column(name="codigo", type="string")
+     * @var string|null
+     *
+     * @Groups("entity")
      */
-    private $nome;
+    public ?string $codigo = null;
 
     /**
      *
-     * @ORM\Column(name="nome_fantasia", type="string", nullable=true)
+     * @ORM\Column(name="nome", type="string")
      * @var null|string
+     *
+     * @Groups("entity")
      */
-    private $nomeFantasia;
+    public ?string $nome = null;
 
     /**
      *
-     * @ORM\Column(name="categoria", type="string", nullable=true)
+     * @ORM\Column(name="nome_fantasia", type="string")
      * @var null|string
+     *
+     * @Groups("entity")
      */
-    private $categoria;
+    public ?string $nomeFantasia = null;
+
+    /**
+     *
+     * @ORM\Column(name="categoria", type="string")
+     * @var null|string
+     *
+     * @Groups("entity")
+     */
+    public ?string $categoria = null;
 
     /**
      * CPF ou CNPJ.
      *
-     * @ORM\Column(name="documento", type="string", nullable=true)
+     * @ORM\Column(name="documento", type="string")
      * @var null|string
+     *
+     * @Groups("entity")
      */
-    private $documento;
+    public ?string $documento = null;
 
     /**
      *
-     * @ORM\Column(name="inscricao_estadual", type="string", nullable=true)
+     * @ORM\Column(name="inscricao_estadual", type="string")
      * @var null|string
+     *
+     * @Groups("entity")
      */
-    private $inscricaoEstadual;
+    public ?string $inscricaoEstadual = null;
 
     /**
      *
-     * @ORM\Column(name="codigo", type="string", nullable=false)
+     * @ORM\Column(name="obs", type="string")
      * @var null|string
+     *
+     * @Groups("entity")
      */
-    private $codigo;
+    public ?string $obs;
 
     /**
      *
-     * @ORM\Column(name="obs", type="string", nullable=true)
-     * @var null|string
+     * @ORM\Column(name="json_data", type="json")
+     * @var null|array
+     * @NotUppercase()
+     * @Groups("entity")
      */
-    private $obs;
-
-    /**
-     * @return string|null
-     */
-    public function getNome(): ?string
-    {
-        return $this->nome;
-    }
-
-    /**
-     * @param string|null $nome
-     * @return Fornecedor
-     */
-    public function setNome(?string $nome): Fornecedor
-    {
-        $this->nome = $nome;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNomeFantasia(): ?string
-    {
-        return $this->nomeFantasia;
-    }
-
-    /**
-     * @param string|null $nomeFantasia
-     * @return Fornecedor
-     */
-    public function setNomeFantasia(?string $nomeFantasia): Fornecedor
-    {
-        $this->nomeFantasia = $nomeFantasia;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCategoria(): ?string
-    {
-        return $this->categoria;
-    }
-
-    /**
-     * @param string|null $categoria
-     * @return Fornecedor
-     */
-    public function setCategoria(?string $categoria): Fornecedor
-    {
-        $this->categoria = $categoria;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDocumento(): ?string
-    {
-        return $this->documento;
-    }
-
-    /**
-     * @param string|null $documento
-     * @return Fornecedor
-     */
-    public function setDocumento(?string $documento): Fornecedor
-    {
-        $this->documento = $documento;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getInscricaoEstadual(): ?string
-    {
-        return $this->inscricaoEstadual;
-    }
-
-    /**
-     * @param string|null $inscricaoEstadual
-     * @return Fornecedor
-     */
-    public function setInscricaoEstadual(?string $inscricaoEstadual): Fornecedor
-    {
-        $this->inscricaoEstadual = $inscricaoEstadual;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCodigo(): ?string
-    {
-        return $this->codigo;
-    }
-
-    /**
-     * @param string|null $codigo
-     * @return Fornecedor
-     */
-    public function setCodigo(?string $codigo): Fornecedor
-    {
-        $this->codigo = $codigo;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param string|null $obs
-     * @return Fornecedor
-     */
-    public function setObs(?string $obs): Fornecedor
-    {
-        $this->obs = $obs;
-        return $this;
-    }
+    public ?array $jsonData = null;
 
 
 }

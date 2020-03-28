@@ -72,11 +72,9 @@ CREATE TABLE `ven_venda`
     `valor_total`        decimal(19, 2)                      NOT NULL,
     `desconto_especial`  decimal(19, 2)                      NOT NULL,
     `desconto_plano`     decimal(19, 2)                      NOT NULL,
-    `historicoDesconto`  varchar(2000) COLLATE utf8_swedish_ci DEFAULT NULL,
-    `mesano`             varchar(6) COLLATE utf8_swedish_ci  NOT NULL,
+    `historico_desconto`  varchar(2000) COLLATE utf8_swedish_ci DEFAULT NULL,
     `plano_pagto_id`     bigint(20)                          NOT NULL,
     `vendedor_id`        bigint(20)                          NOT NULL,
-    `deletado`           bit(1)                                DEFAULT NULL,
     `tipo_venda_id`      bigint(20)                          NOT NULL,
     `cliente_id`         bigint(20)                            DEFAULT NULL,
     `status`             varchar(30) COLLATE utf8_swedish_ci NOT NULL,
@@ -157,25 +155,5 @@ CREATE TABLE `ven_venda_item`
 
 
 
-
-
-
-DROP TABLE IF EXISTS `ven_venda_item_atributo`;
-
-CREATE TABLE `ven_venda_item_atributo`
-(
-    `venda_item_id` bigint(20) NOT NULL,
-    `atributo_id`      bigint(20) NOT NULL,
-
-    PRIMARY KEY (`venda_item_id`, `atributo_id`),
-
-    KEY `K_ven_venda_item_atributo_venda_item_id` (`venda_item_id`),
-    CONSTRAINT `FK_ven_venda_item_atributo_venda_item_id` FOREIGN KEY (`venda_item_id`) REFERENCES `ven_venda_item` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-    KEY `K_ven_venda_item_atributo_atributo` (`atributo_id`),
-    CONSTRAINT `FK_ven_venda_item_atributo_atributo` FOREIGN KEY (`atributo_id`) REFERENCES `est_atributo` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
-
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
 
 

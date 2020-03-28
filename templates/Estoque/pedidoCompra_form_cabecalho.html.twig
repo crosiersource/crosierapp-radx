@@ -1,0 +1,51 @@
+<div class="tab-pane fade show active" id="cabecalho" role="tabpanel" aria-labelledby="cabecalho-tab">
+
+    <div class="container" style="margin-bottom: 50px">
+
+        {{ form_row(form._token) }}
+
+        <div class="row">
+            <div class="col-md-3 col-sm-12">
+                {{ form_row(form.id) }}
+            </div>
+            <div class="col-md-4 col-sm-12">
+                {{ form_row(form.dtEmissao) }}
+            </div>
+            <div class="col-md-5 col-sm-12">
+                {{ form_row(form.status) }}
+            </div>
+        </div>
+
+        {{ form_row(form.responsavel) }}
+
+        {{ form_row(form.fornecedor) }}
+
+        <div class="row">
+            <div class="col-md-3 col-sm-12">
+                {{ form_row(form.dtPrevEntrega) }}
+            </div>
+            <div class="col-md-9 col-sm-12">
+                {{ form_row(form.prazosPagto) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                {{ form_row(form.subtotal) }}
+            </div>
+            <div class="col-md-4 col-sm-12">
+                {{ form_row(form.desconto) }}
+            </div>
+            <div class="col-md-4 col-sm-12">
+                {{ form_row(form.total) }}
+            </div>
+        </div>
+
+
+        {{ form_row(form.obs) }}
+
+
+    </div>
+
+
+</div>

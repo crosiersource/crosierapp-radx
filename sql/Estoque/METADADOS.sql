@@ -201,8 +201,6 @@ CREATE TABLE `est_produto`
 
 
 
-
-
 DROP TABLE IF EXISTS `est_produto_imagem`;
 
 CREATE TABLE `est_produto_imagem`
@@ -279,17 +277,17 @@ CREATE TABLE `est_produto_preco`
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
     `lista_id`           bigint(20)     NOT NULL,
     `produto_id`         bigint(20)     NOT NULL,
-    `coeficiente`        decimal(19, 2) NOT NULL,
-    `custo_operacional`  decimal(19, 2) NOT NULL,
+    `coeficiente`        decimal(15, 2) NOT NULL,
+    `custo_operacional`  decimal(15, 2) NOT NULL,
     `dt_custo`           date           NOT NULL,
     `dt_preco_venda`     date           NOT NULL,
-    `margem`             decimal(19, 2) NOT NULL,
+    `margem`             decimal(15, 2) NOT NULL,
     `prazo`              int(11)        NOT NULL,
-    `preco_custo`        decimal(19, 2) NOT NULL,
-    `preco_prazo`        decimal(19, 2) NOT NULL,
-    `preco_promo`        decimal(19, 2),
-    `preco_vista`        decimal(19, 2) NOT NULL,
-    `custo_financeiro`   decimal(19, 2) NOT NULL,
+    `preco_custo`        decimal(15, 2) NOT NULL,
+    `preco_prazo`        decimal(15, 2) NOT NULL,
+    `preco_promo`        decimal(15, 2),
+    `preco_vista`        decimal(15, 2) NOT NULL,
+    `custo_financeiro`   decimal(15, 2) NOT NULL,
 
 
     UNIQUE KEY `UK_est_produto_preco` (`produto_id`, `lista_id`),
@@ -330,8 +328,8 @@ CREATE TABLE `est_produto_composicao`
     `produto_filho_id`   bigint(20)     NOT NULL,
     `ordem`              integer        NOT NULL,
     `qtde`               decimal(15, 3) NOT NULL,
-    `preco_atual`        decimal(19, 2) NOT NULL,
-    `preco_composicao`   decimal(19, 2) NOT NULL,
+    `preco_atual`        decimal(15, 2) NOT NULL,
+    `preco_composicao`   decimal(15, 2) NOT NULL,
 
     UNIQUE KEY `UK_est_produto_composicao` (`produto_pai_id`, `produto_filho_id`),
 
@@ -358,14 +356,13 @@ CREATE TABLE `est_produto_composicao`
 
 
 
-
 DROP TABLE IF EXISTS `est_produto_saldo`;
 
 CREATE TABLE `est_produto_saldo`
 (
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
     `produto_id`         bigint(20)     NOT NULL,
-    `qtde`               decimal(19, 2) NOT NULL,
+    `qtde`               decimal(15, 2) NOT NULL,
 
     KEY `K_est_produto_saldo_produto` (`produto_id`),
     CONSTRAINT `FK_est_produto_saldo_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -391,8 +388,6 @@ CREATE TABLE `est_produto_saldo`
 
 
 
-
-
 DROP TABLE IF EXISTS `est_fornecedor`;
 
 CREATE TABLE `est_fornecedor`
@@ -406,6 +401,7 @@ CREATE TABLE `est_fornecedor`
     `inscricao_estadual` varchar(20),
     `codigo`             VARCHAR(50)  NOT NULL,
     `obs`                varchar(5000),
+    `json_data`          json,
 
     UNIQUE KEY `UK_est_fornecedor_codigo` (`codigo`),
 
@@ -529,8 +525,83 @@ CREATE TABLE `est_unidade_produto`
   COLLATE = utf8_swedish_ci;
 
 
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `est_pedidocompra`;
+
+CREATE TABLE `est_pedidocompra`
+(
+    `id`                 bigint(20)  NOT NULL AUTO_INCREMENT,
+    `dt_emissao`         datetime    NOT NULL,
+    `dt_prev_entrega`    datetime    NOT NULL,
+    `prazos_pagto`       varchar(50),
+    `responsavel`        varchar(80),
+    `fornecedor_id`      bigint(20),
+    `fornecedor_nome`    VARCHAR(200) GENERATED ALWAYS AS (`json_data` ->> '$.fornecedor_nome'),
+    `subtotal`           decimal(15, 2),
+    `desconto`           decimal(15, 2),
+    `total`              decimal(15, 2),
+    `status`             varchar(30) NOT NULL,
+    `obs`                varchar(3000),
+    `json_data`          json,
+
+    KEY `K_est_pedidocompra_fornecedor` (`fornecedor_id`),
+    CONSTRAINT `FK_est_pedidocompra_fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `est_fornecedor` (`id`),
+
+    -- campo de controle
+    PRIMARY KEY (`id`),
+    `inserted`           datetime    NOT NULL,
+    `updated`            datetime    NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)  NOT NULL,
+    `user_inserted_id`   bigint(20)  NOT NULL,
+    `user_updated_id`    bigint(20)  NOT NULL,
+    KEY `K_est_pedidocompra_estabelecimento` (`estabelecimento_id`),
+    KEY `K_est_pedidocompra_user_inserted` (`user_inserted_id`),
+    KEY `K_est_pedidocompra_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_est_pedidocompra_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_est_pedidocompra_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_est_pedidocompra_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_swedish_ci;
 
 
 
+DROP TABLE IF EXISTS `est_pedidocompra_item`;
 
+CREATE TABLE `est_pedidocompra_item`
+(
+    `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
+    `pedidocompra_id`    bigint(20)     NOT NULL,
+    `ordem`              int(11)        NOT NULL,
+    `qtde`               decimal(15, 2) NOT NULL,
+    `referencia`         varchar(50)    NOT NULL,
+    `descricao`          varchar(500)   NOT NULL,
+    `preco_custo`        decimal(15, 2),
+    `desconto`           decimal(15, 2),
+    `total`              decimal(15, 2),
+    `json_data`          json,
+
+    KEY `K_est_pedidocompra_item_pedidocompra` (`pedidocompra_id`),
+    CONSTRAINT `FK_est_pedidocompra_item_pedidocompra` FOREIGN KEY (`pedidocompra_id`) REFERENCES `est_pedidocompra` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+
+    -- campo de controle
+    PRIMARY KEY (`id`),
+    `inserted`           datetime       NOT NULL,
+    `updated`            datetime       NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)     NOT NULL,
+    `user_inserted_id`   bigint(20)     NOT NULL,
+    `user_updated_id`    bigint(20)     NOT NULL,
+    KEY `K_est_pedidocompra_item_estabelecimento` (`estabelecimento_id`),
+    KEY `K_est_pedidocompra_item_user_inserted` (`user_inserted_id`),
+    KEY `K_est_pedidocompra_item_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_est_pedidocompra_item_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_est_pedidocompra_item_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_est_pedidocompra_item_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_swedish_ci;
 

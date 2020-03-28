@@ -1,0 +1,32 @@
+{% extends '@CrosierLibBase/list.html.twig' %}
+
+
+
+{% block campos_pesquisar %}
+
+    <div class="form-group">
+        <label>Dt Emissao</label>
+        <div class="row">
+            <div class="col">
+                <input type="date" size="15" class="form-control" name="filter[dtEmissao][i]"
+                       value="{{ filter.dtEmissao.i|default('') }}">
+            </div>
+            <div class="col">
+                <input type="date" size="15" class="form-control" name="filter[dtEmissao][f]"
+                       value="{{ filter.dtEmissao.f|default('') }}">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="p_descricao">Cliente</label>
+        <input type="text" class="form-control" id="filter[clienteNome]" name="filter[clienteNome]"
+               value="{{ filter.clienteNome|default('') }}">
+    </div>
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/Estoque/pedidoCompra_list.js') }}"></script>
+{% endblock %}
