@@ -533,7 +533,7 @@ CREATE TABLE `est_pedidocompra`
 (
     `id`                 bigint(20)  NOT NULL AUTO_INCREMENT,
     `dt_emissao`         datetime    NOT NULL,
-    `dt_prev_entrega`    datetime    NOT NULL,
+    `dt_prev_entrega`    datetime,
     `prazos_pagto`       varchar(50),
     `responsavel`        varchar(80),
     `fornecedor_id`      bigint(20),

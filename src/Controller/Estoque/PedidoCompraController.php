@@ -10,6 +10,8 @@ use App\EntityHandler\Estoque\PedidoCompraItemEntityHandler;
 use App\Form\Estoque\PedidoCompraItemType;
 use App\Form\Estoque\PedidoCompraType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -150,6 +152,10 @@ class PedidoCompraController extends FormListController
      */
     public function formItem(Request $request, PedidoCompra $pedidoCompra, PedidoCompraItem $pedidoCompraItem = null)
     {
+        /** @var AppConfigRepository $repoAppConfig */
+        $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+        $jsonMetadata = json_decode($repoAppConfig->findByChave('est_pedidocompra_json_metadata'), true);
+
         if (!$pedidoCompraItem) {
             $pedidoCompraItem = new PedidoCompraItem();
             $pedidoCompraItem->pedidoCompra = $pedidoCompra;
@@ -160,10 +166,24 @@ class PedidoCompraController extends FormListController
             'formRoute' => 'est_pedidoCompraItem_form',
             'formPageTitle' => 'Item do PedidoCompra',
             'routeParams' => ['pedidoCompra' => $pedidoCompra->getId()],
-            'entityHandler' => $this->pedidoCompraItemEntityHandler
+            'entityHandler' => $this->pedidoCompraItemEntityHandler,
+            'jsonMetadata' => $jsonMetadata
         ];
         return $this->doForm($request, $pedidoCompraItem, $params);
     }
+
+    public function handleRequestOnValid(Request $request, $entity): void
+    {
+        if ($entity instanceof PedidoCompraItem) {
+            /** @var AppConfigRepository $repoAppConfig */
+            $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+            $jsonMetadata = json_decode($repoAppConfig->findByChave('est_pedidocompra_json_metadata'), true);
+            if ($jsonMetadata['vinculoAoEstoque'] === 'porProduto') {
+                $entity->jsonData['produto'] = $request->get('produto');
+            }
+        }
+    }
+
 
     /**
      * @Route("/est/pedidoCompraItem/delete/{pedidoCompraItem}", name="est_pedidoCompraItem_delete", defaults={"pedidoCompraItem"=null}, requirements={"pedidoCompraItem"="\d+"})

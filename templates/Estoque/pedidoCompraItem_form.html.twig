@@ -12,6 +12,7 @@
                 <div class="row">
                     <div class="col-8">
                         <h3>Item do Pedido</h3>
+                        <h7>Pedido {{ e.pedidoCompra.id|strpad(6) }} - {{ e.pedidoCompra.dtEmissao|date('d/m/Y H:i') }}</h7>
                     </div>
                     <div class="col-4 text-right">
                         <button type="button" class="btn btn-secondary"
@@ -30,6 +31,14 @@
                 {{ form_start(form) }}
 
                 {{ form_row(form._token) }}
+
+                {% if jsonMetadata.vinculoAoEstoque|default('') == 'porProduto' %}
+                    <div class="form-group">
+                        <label for="produto">Produto</label>
+                        <select id="produto" name="produto" class="form-control" data-val="{{ e.jsonData.produto|default('') }}">
+                        </select>
+                    </div>
+                {% endif %}
 
                 <div class="row">
                     <div class="col-md-3 col-sm-12">
@@ -74,4 +83,9 @@
     </div>
 
 
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/Estoque/pedidoCompraItem_form.js') }}"></script>
 {% endblock %}

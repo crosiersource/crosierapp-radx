@@ -15,6 +15,7 @@ use App\Repository\Estoque\ProdutoImagemRepository;
 use App\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
@@ -425,7 +426,6 @@ class ProdutoController extends FormListController
         }
     }
 
-
     /**
      *
      * @Route("/est/produto/formComposicaoSaveOrdem/", name="est_produto_formComposicaoSaveOrdem")
@@ -455,7 +455,8 @@ class ProdutoController extends FormListController
      * @return Response
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
-    public function moveImages(Connection $conn, ParameterBagInterface $parameterBag) {
+    public function moveImages(Connection $conn, ParameterBagInterface $parameterBag)
+    {
 
         $pasta = $parameterBag->get('kernel.project_dir') . '/public/images/produtos';
         exec('find ' . $pasta, $output);
@@ -490,13 +491,69 @@ class ProdutoController extends FormListController
                     $imagem['subgrupo_id'] . '/', 0777, true);
 
                 rename($arquivos[$imagem['image_name']], $caminhoQueDeveriaSer);
-                $result[] = 'ERRO: ' . $imagem['image_name'] . ' deveria estar em ' . $caminhoQueDeveriaSer . ' (e não em '. $arquivos[$imagem['image_name']] . ') do ' . $imagem['produto_id'];
+                $result[] = 'ERRO: ' . $imagem['image_name'] . ' deveria estar em ' . $caminhoQueDeveriaSer . ' (e não em ' . $arquivos[$imagem['image_name']] . ') do ' . $imagem['produto_id'];
             }
         }
 
         return new Response(implode('<br>', $result));
+    }
 
 
+    /**
+     *
+     * @Route("/est/produto/findById/{produto}", name="est_produto_findById", requirements={"produto"="\d+"})
+     * @param Produto $produto
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findById(Produto $produto): JsonResponse
+    {
+        try {
+            $produtoJson = EntityIdUtils::serialize($produto);
+            return new JsonResponse(
+                [
+                    'result' => 'OK',
+                    'produto' => $produtoJson
+                ]
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['result' => 'ERRO']
+            );
+        }
+    }
+
+    /**
+     *
+     * @Route("/est/produto/findProdutoByIdOuNome/", name="est_produto_findProdutoByIdOuNome")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findProdutoByIdOuNome(Request $request): JsonResponse
+    {
+        try {
+            $str = $request->get('term');
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+
+            if (ctype_digit($str)) {
+                $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str]]);
+            } else {
+                $produtos = $repoProduto->findByFiltersSimpl([[['nome'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
+            }
+            $select2js = Select2JsUtils::toSelect2DataFn($produtos, function ($e) {
+                /** @var Produto $e */
+                return ($e->jsonData['titulo'] ?: $e->nome) . ' (' . $e->getId() . ')';
+            });
+            return new JsonResponse(
+                ['results' => $select2js]
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['results' => []]
+            );
+        }
     }
 
 }
