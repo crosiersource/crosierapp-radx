@@ -387,6 +387,7 @@ CREATE TABLE `est_produto_saldo`
   COLLATE = utf8_swedish_ci;
 
 
+SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS `est_fornecedor`;
 
@@ -396,14 +397,9 @@ CREATE TABLE `est_fornecedor`
 
     `nome`               VARCHAR(255) NOT NULL,
     `nome_fantasia`      VARCHAR(255),
-    `categoria`          VARCHAR(255),
     `documento`          varchar(20),
     `inscricao_estadual` varchar(20),
-    `codigo`             VARCHAR(50)  NOT NULL,
-    `obs`                varchar(5000),
     `json_data`          json,
-
-    UNIQUE KEY `UK_est_fornecedor_codigo` (`codigo`),
 
     -- campo de controle
     PRIMARY KEY (`id`),
@@ -577,7 +573,7 @@ CREATE TABLE `est_pedidocompra_item`
     `pedidocompra_id`    bigint(20)     NOT NULL,
     `ordem`              int(11)        NOT NULL,
     `qtde`               decimal(15, 2) NOT NULL,
-    `referencia`         varchar(50)    NOT NULL,
+    `referencia`         varchar(50),
     `descricao`          varchar(500)   NOT NULL,
     `preco_custo`        decimal(15, 2),
     `desconto`           decimal(15, 2),

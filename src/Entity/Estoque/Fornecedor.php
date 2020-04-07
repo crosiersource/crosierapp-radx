@@ -20,14 +20,6 @@ class Fornecedor implements EntityId
 
     use EntityIdTrait;
 
-    /**
-     *
-     * @ORM\Column(name="codigo", type="string")
-     * @var string|null
-     *
-     * @Groups("entity")
-     */
-    public ?string $codigo = null;
 
     /**
      *
@@ -48,15 +40,6 @@ class Fornecedor implements EntityId
     public ?string $nomeFantasia = null;
 
     /**
-     *
-     * @ORM\Column(name="categoria", type="string")
-     * @var null|string
-     *
-     * @Groups("entity")
-     */
-    public ?string $categoria = null;
-
-    /**
      * CPF ou CNPJ.
      *
      * @ORM\Column(name="documento", type="string")
@@ -74,15 +57,6 @@ class Fornecedor implements EntityId
      * @Groups("entity")
      */
     public ?string $inscricaoEstadual = null;
-
-    /**
-     *
-     * @ORM\Column(name="obs", type="string")
-     * @var null|string
-     *
-     * @Groups("entity")
-     */
-    public ?string $obs;
 
     /**
      *

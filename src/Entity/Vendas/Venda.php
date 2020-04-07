@@ -64,16 +64,6 @@ class Venda implements EntityId
 
     /**
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\RH\Funcionario")
-     * @ORM\JoinColumn(name="vendedor_id", nullable=false)
-     * @Groups("entity")
-     *
-     * @var null|Funcionario
-     */
-    public ?Funcionario $vendedor = null;
-
-    /**
-     *
      * @ORM\Column(name="sub_total", type="decimal", nullable=false, precision=15, scale=2)
      * @Groups("entity")
      *
