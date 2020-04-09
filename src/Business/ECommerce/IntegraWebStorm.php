@@ -713,7 +713,7 @@ class IntegraWebStorm extends BaseBusiness
 
     /**
      * @param Produto $produto
-     * @return int
+     * @return void
      * @throws ViewException
      */
     public function integraProduto(Produto $produto): void
@@ -736,11 +736,13 @@ class IntegraWebStorm extends BaseBusiness
             $idMarca = $this->integraMarca($produto->jsonData['marca']);
         }
 
-        $dimensoes = explode('|', $produto->jsonData['dimensoes']);
-
-        $altura = $dimensoes[0] ?? 0.0;
-        $largura = $dimensoes[1] ?? 0.0;
-        $comprimento = $dimensoes[2] ?? 0.0;
+        $dimensoes = [];
+        if (isset($produto->jsonData['dimensoes'])) {
+            $dimensoes = explode('|', $produto->jsonData['dimensoes']);
+        }
+        $altura = $dimensoes[0] ?? '';
+        $largura = $dimensoes[1] ?? '';
+        $comprimento = $dimensoes[2] ?? '';
 
         $produtoEcommerceId = $produto->jsonData['ecommerce_id'] ?? null;
 
@@ -762,6 +764,7 @@ class IntegraWebStorm extends BaseBusiness
             '<nome>' . $produto->jsonData['titulo'] . '</nome>' .
             '<descricao-caracteristicas>' . htmlspecialchars($produto->jsonData['caracteristicas'] ?? '') . '</descricao-caracteristicas>' .
             '<descricao-itens-inclusos>' . htmlspecialchars($produto->jsonData['itens_inclusos'] ?? '') . '</descricao-itens-inclusos>' .
+            '<descricao-compativel-com>' . htmlspecialchars($produto->jsonData['compativel_com'] ?? '') . '</descricao-compativel-com>' .
             '<descricao-especificacoes-tecnicas>' . htmlspecialchars($produto->jsonData['especif_tec'] ?? '') . '</descricao-especificacoes-tecnicas>';
 
 
@@ -804,7 +807,7 @@ class IntegraWebStorm extends BaseBusiness
 				<estoque>999999</estoque>
 				<estoqueMin>0</estoqueMin>
 				<situacao>1</situacao>
-				<peso>' . $produto->jsonData['peso'] . '</peso>
+				<peso>' . ($produto->jsonData['peso'] ?? '') . '</peso>
 				<altura>' . $altura . '</altura>
 				<largura>' . $largura . '</largura>
 				<comprimento>' . $comprimento . '</comprimento>
