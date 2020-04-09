@@ -814,8 +814,9 @@ class IntegraWebStorm extends BaseBusiness
             </itensVenda></produto>' .
             '</ws_integracao>]]>';
 
-        echo "<pre>";
+        echo "<textarea>";
         echo $xml;
+        echo "</textarea>";
 
         $client = $this->getNusoapClientImportacaoInstance();
 
