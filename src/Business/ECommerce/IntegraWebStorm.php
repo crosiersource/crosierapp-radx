@@ -790,13 +790,13 @@ class IntegraWebStorm extends BaseBusiness
             }
         }
 
-//        foreach ($produto->imagens as $imagem) {
-//            $url = $_SERVER['CROSIERAPP_URL'] . $this->uploaderHelper->asset($imagem, 'imageFile');
-//            $xml .= '<imagens>
-//				<url>' . $url . '</url>
-//				<prioridade>' . ($imagem->getOrdem() - 1) . '</prioridade>
-//			</imagens>';
-//        }
+        foreach ($produto->imagens as $imagem) {
+            $url = $_SERVER['CROSIERAPP_URL'] . $this->uploaderHelper->asset($imagem, 'imageFile');
+            $xml .= '<imagens>
+				<url>' . $url . '</url>
+				<prioridade>' . ($imagem->getOrdem() - 1) . '</prioridade>
+			</imagens>';
+        }
 
 
         $xml .=
@@ -813,6 +813,9 @@ class IntegraWebStorm extends BaseBusiness
 				<comprimento>' . $comprimento . '</comprimento>
             </itensVenda></produto>' .
             '</ws_integracao>]]>';
+
+        echo "<pre>";
+        echo $xml;
 
         $client = $this->getNusoapClientImportacaoInstance();
 
