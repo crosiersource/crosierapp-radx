@@ -808,6 +808,7 @@ class IntegraWebStorm extends BaseBusiness
 				<estoqueMin>0</estoqueMin>
 				<situacao>1</situacao>
 				<peso>' . ($produto->jsonData['peso'] ?? '') . '</peso>
+				<ean>' . ($produto->jsonData['ean'] ?? '') . '</ean>
 				<altura>' . $altura . '</altura>
 				<largura>' . $largura . '</largura>
 				<comprimento>' . $comprimento . '</comprimento>
