@@ -222,10 +222,11 @@ class NotaFiscalBusiness extends BaseBusiness
             /** @var VendaItem $vendaItem */
             foreach ($venda->itens as $vendaItem) {
 
+
                 $nfItem = new NotaFiscalItem();
                 $nfItem->setNotaFiscal($notaFiscal);
 
-                if ($vendaItem->jsonData['ncm']) {
+                if ($vendaItem->jsonData['ncm'] ?? null) {
                     /** @var NCMRepository $repoNCM */
                     $repoNCM = $this->getDoctrine()->getRepository(NCM::class);
                     $existe = $repoNCM->findBy(['codigo' => $vendaItem->jsonData['ncm']]);
@@ -266,8 +267,8 @@ class NotaFiscalBusiness extends BaseBusiness
                     $nfItem->setCodigo($vendaItem->produto->getId());
                     $nfItem->setDescricao(trim($vendaItem->produto->nome));
                 } else {
-                    $nfItem->setCodigo($vendaItem->produto->jsonData['reduzido']);
-                    $nfItem->setDescricao(trim($vendaItem->getNcDescricao()));
+                    $nfItem->setCodigo($vendaItem->jsonData['produto']['reduzido'] ?? 00000);
+                    $nfItem->setDescricao(trim($vendaItem->jsonData['produto']['descricao']) ?? 'PRODUTO 00000');
                 }
 
                 $this->notaFiscalEntityHandler->handleSavingEntityId($nfItem);

@@ -64,7 +64,7 @@
                 <tbody>
                 {% for item in dados.rs %}
                     <tr>
-                        <td>{{ "%02d"|format(item.vendedor.codigo) }} - {{ item.vendedor.nomeEkt }}</td>
+                        <td>{{ "%02d"|format(item.vendedor.codigo) }} - {{ item.jsonData['vendedor_nome']|default('') }}</td>
                         <td class="text-right">{{ item.total|number_format(2,',','.') }}</td>
                     </tr>
                 {% endfor %}
