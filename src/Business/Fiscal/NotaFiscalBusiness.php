@@ -164,7 +164,7 @@ class NotaFiscalBusiness extends BaseBusiness
     public function saveNotaFiscalVenda(Venda $venda, NotaFiscal $notaFiscal, bool $alterouTipo): ?NotaFiscal
     {
         try {
-            $this->getDoctrine()->beginTransaction();
+
 
             /** @var NotaFiscalVendaRepository $repoNotaFiscalVenda */
             $repoNotaFiscalVenda = $this->getDoctrine()->getRepository(NotaFiscalVenda::class);
@@ -176,6 +176,16 @@ class NotaFiscalBusiness extends BaseBusiness
             } else {
                 $novaNota = true;
             }
+
+            if ($notaFiscal->getId()) {
+                /** @var Connection $conn */
+                $conn = $this->notaFiscalEntityHandler->getDoctrine()->getConnection();
+                $conn->delete('fis_nf_item', ['nota_fiscal_id' => $notaFiscal->getId()]);
+            }
+            $notaFiscal->deleteAllItens();
+
+
+            $this->getDoctrine()->beginTransaction();
 
             $notaFiscal->setEntradaSaida('S');
 
@@ -244,15 +254,16 @@ class NotaFiscalBusiness extends BaseBusiness
 
                 $nfItem->setQtde($vendaItem->qtde);
                 $nfItem->setValorUnit($vendaItem->precoVenda);
-                $nfItem->setValorTotal($vendaItem->total);
+                $valorTotalItem = bcmul($vendaItem->qtde, $vendaItem->precoVenda, 2);
+                $nfItem->setValorTotal($valorTotalItem);
 
-                $vDesconto = round(bcmul($vendaItem->total, $fatorDesconto, 4), 2);
+                $vDesconto = round(bcmul($valorTotalItem, $fatorDesconto, 4), 2);
                 $nfItem->setValorDesconto($vDesconto);
 
                 // Somando aqui pra verificar depois se o total dos descontos dos itens bate com o desconto global da nota.
                 $somaDescontosItens += $vDesconto;
 
-                $nfItem->setSubTotal($vendaItem->total);
+                $nfItem->setSubTotal($valorTotalItem);
 
                 $nfItem->setIcmsAliquota(0.0);
                 $nfItem->setCfop('5102');

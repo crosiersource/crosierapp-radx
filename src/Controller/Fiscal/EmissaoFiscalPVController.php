@@ -89,16 +89,22 @@ class EmissaoFiscalPVController extends BaseController
         $repoNotaFiscalVenda = $this->getDoctrine()->getRepository(NotaFiscalVenda::class);
         /** @var NotaFiscal $notaFiscal */
         $notaFiscal = $repoNotaFiscalVenda->findNotaFiscalByVenda($venda);
+        $notaFiscalId = null;
         if (!$notaFiscal) {
             $notaFiscal = new NotaFiscal();
             $notaFiscal->setTipoNotaFiscal('NFCE');
             $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+        } else {
+            $notaFiscalId = $notaFiscal->getId();
         }
 
         $tipoAnterior = $notaFiscal->getTipoNotaFiscal();
 
         $form = $this->createForm(NotaFiscalType::class, $notaFiscal);
         $form->handleRequest($request);
+        if ($notaFiscalId) {
+            $notaFiscal->setId($notaFiscalId);
+        }
 
         $tipoAtual = $notaFiscal->getTipoNotaFiscal();
 
