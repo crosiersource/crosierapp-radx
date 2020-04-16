@@ -7,11 +7,18 @@ import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources
 
 import Moment from 'moment';
 
+import 'select2/dist/css/select2.css';
+import 'select2';
+import 'select2/dist/js/i18n/pt-BR.js';
+import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
+
 
 Routing.setRoutingData(routes);
 
 
 $(document).ready(function () {
+
+    
 
     let $movimentacao_id = $('#movimentacao_id');
 

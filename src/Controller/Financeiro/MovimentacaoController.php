@@ -348,7 +348,7 @@ class MovimentacaoController extends FormListController
      */
     public function edit(UrlMatcherInterface $urlMatcher, Request $request, Movimentacao $movimentacao): RedirectResponse
     {
-        $url = $movimentacao->getTipoLancto()->getUrl();
+        $url = $movimentacao->getTipoLancto()->url;
         $matcher = $urlMatcher->match($url);
         $params = ['id' => $movimentacao->getId(), 'request' => $request];
 //        if (strpos($movimentacao->getTipoLancto()->getDescricao(), 'PARCELAMENTO') !== FALSE) {
