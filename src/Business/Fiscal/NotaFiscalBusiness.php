@@ -516,22 +516,27 @@ class NotaFiscalBusiness extends BaseBusiness
 
         $this->addHistorico($notaFiscal, -1, 'INICIANDO FATURAMENTO');
         if ($this->permiteFaturamento($notaFiscal)) {
-            if ($notaFiscal->getNRec()) {
-                $this->spedNFeBusiness->consultaRecibo($notaFiscal);
-                if ($notaFiscal->getCStat() === 502) {
-                    $notaFiscal->setChaveAcesso(null); // será regerada no handleIdeFields()
-                }
-            }
-            $this->handleIdeFields($notaFiscal);
-            $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
 
-            $notaFiscal = $this->spedNFeBusiness->enviaNFe($notaFiscal);
-            if ($notaFiscal) {
-                $this->addHistorico($notaFiscal, $notaFiscal->getCStat() ?: -1, $notaFiscal->getXMotivo(), 'FATURAMENTO PROCESSADO');
-                // $this->imprimir($notaFiscal);
-            } else {
-                $this->addHistorico($notaFiscal, -2, 'PROBLEMA AO FATURAR');
+            try {
+                if ($notaFiscal->getNRec()) {
+                    $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+                    if ($notaFiscal->getCStat() === 502) {
+                        $notaFiscal->setChaveAcesso(null); // será regerada no handleIdeFields()
+                    }
+                }
+                $this->handleIdeFields($notaFiscal);
+                $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+                $notaFiscal = $this->spedNFeBusiness->enviaNFe($notaFiscal);
+                if ($notaFiscal) {
+                    $this->addHistorico($notaFiscal, $notaFiscal->getCStat() ?: -1, $notaFiscal->getXMotivo(), 'FATURAMENTO PROCESSADO');
+                    // $this->imprimir($notaFiscal);
+                } else {
+                    $this->addHistorico($notaFiscal, -2, 'PROBLEMA AO FATURAR');
+                }
+            } catch (ViewException $e) {
+                $this->addHistorico($notaFiscal, -2, $e->getMessage());
             }
+
         } else {
             $this->addHistorico($notaFiscal, 0, 'NOTA FISCAL NÃO FATURÁVEL. STATUS = [' . $notaFiscal->getCStat() . ']');
         }

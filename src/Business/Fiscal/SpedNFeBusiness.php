@@ -20,6 +20,7 @@ use CrosierSource\CrosierLibBaseBundle\Repository\Base\MunicipioRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\ORM\EntityManagerInterface;
+use NFePHP\Common\Exception\ValidatorException;
 use NFePHP\NFe\Common\Standardize;
 use NFePHP\NFe\Complements;
 use Psr\Log\LoggerInterface;
@@ -460,7 +461,11 @@ class SpedNFeBusiness
         } catch (\Throwable $e) {
             $this->logger->error('enviaNFe - id: ' . $notaFiscal->getId());
             $this->logger->error($e->getMessage());
-            throw new ViewException('Erro ao enviar a NFe');
+            $msg = 'Erro ao enviar a NFe';
+            if ($e instanceof ValidatorException) {
+                $msg .= ' (' . $e->getMessage() . ')';
+            }
+            throw new ViewException($msg);
         }
     }
 
