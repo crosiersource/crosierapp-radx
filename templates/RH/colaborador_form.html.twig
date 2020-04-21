@@ -1,0 +1,367 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/RH/colaborador_form.css') }}">
+{% endblock %}
+
+
+{% block page_content %}
+
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Colaborador</h3>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+                {{ form_start(form) }}
+                {{ form_widget(form._token) }}
+
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-12">
+                        {{ form_row(form.id) }}
+                    </div>
+                    <div class="col-md-5 col-sm-12">
+                        {{ form_row(form.nome) }}
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        {{ form_row(form.atual) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {% if e.imageName %}
+                            <div class="text-center">
+                                <a href="{{ vich_uploader_asset(e, 'imageFile') }}"
+                                   data-lightbox="colaboradorLightBox" data-title="{{ e.nome }}">
+                                    <img src="{{ vich_uploader_asset(e, 'imageFile') }}"
+                                         alt="{{ e.nome }}" class="mx-auto d-block img-fluid img-thumbnail"
+                                         width="150px"/>
+                                </a>
+                                <button type="button" name="btnDeletarImagem" value="Deletar" id="btnDeletarImagem"
+                                        data-form="colaborador" data-target="#confirmationModal" data-toggle="modal"
+                                        class="btn btn-outline-danger btn-sm mt-1">
+                                    <i class="fas fa-trash" aria-hidden="true"></i> Deletar
+                                </button>
+                            </div>
+                        {% else %}
+                            {{ form_row(form.imageFile) }}
+                        {% endif %}
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.jsonData.pai_nome) }}
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.jsonData.mae_nome) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.jsonData.dt_nascimento) }}
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.jsonData.raca) }}
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.jsonData.sexo) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.jsonData.deficiente) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.jsonData.tipo_deficiencia) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.jsonData.nacionalidade) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.jsonData.chegada_ao_brasil) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5 col-sm-12">
+                        {{ form_row(form.jsonData.naturalidade_cidade) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.jsonData.naturalidade_estado) }}
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.jsonData.tipo_sanguineo) }}
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Endereço</h5>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.end_logradouro) }}
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.end_numero) }}
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.end_complemento) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.end_bairro) }}
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                {{ form_row(form.jsonData.end_cidade) }}
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.end_estado) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.end_cep) }}
+                            </div>
+                            <div class="col-md-5 col-sm-12">
+                                {{ form_row(form.jsonData.telefone) }}
+                            </div>
+                            <div class="col-md-5 col-sm-12">
+                                {{ form_row(form.jsonData.celular) }}
+                            </div>
+                        </div>
+
+                        {{ form_row(form.jsonData.email) }}
+
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Documentos</h5>
+
+                        <div class="row">
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.cpf) }}
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.rg) }}
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.rg_emissao) }}
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.rg_orgao) }}
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.rg_uf) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.habilitacao) }}
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                {{ form_row(form.jsonData.habilitacao_categoria) }}
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.habilitacao_validade) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.ctps) }}
+                            </div>
+                            <div class="col-md-5 col-sm-12">
+                                {{ form_row(form.jsonData.ctps_emissao) }}
+                            </div>
+                            <div class="col-md-5 col-sm-12">
+                                {{ form_row(form.jsonData.pis) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.carteira_reservista) }}
+                            </div>
+                            <div class="col-md-5 col-sm-12">
+                                {{ form_row(form.jsonData.reg_profissional) }}
+                            </div>
+                            <div class="col-md-5 col-sm-12">
+                                {{ form_row(form.jsonData.conselho) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.titulo_eleitor) }}
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.titulo_eleitor_zona) }}
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.titulo_eleitor_secao) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.grau_instrucao) }}
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.estado_civil) }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Empresa</h5>
+
+                        <div class="row">
+                            <div class="col-md-9 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_nome) }}
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_cnpj) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_end_logradouro) }}
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_end_numero) }}
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_end_complemento) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_end_bairro) }}
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_end_cidade) }}
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_end_estado) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_end_cep) }}
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_telefone) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_matricula) }}
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.empresa_contrato) }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Dados Contratuais</h5>
+
+                        <div class="row">
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.dt_admissao) }}
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.cargo_funcao) }}
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.jsonData.cbo) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12">
+                                {{ form_row(form.jsonData.salario_inicial) }}
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                {{ form_row(form.jsonData.departamento) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                {{ form_row(form.jsonData.sindicato) }}
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                {{ form_row(form.jsonData.carga_horaria) }}
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.jsonData.forma_pagto) }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col text-right">
+                        <button type="submit" class="btn btn-primary" value="Salvar">
+                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                        </button>
+                    </div>
+                </div>
+
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/RH/colaborador_form.js') }}"></script>
+{% endblock %}

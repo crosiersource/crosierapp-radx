@@ -29,7 +29,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $codigo;
+    public ?int $codigo;
 
     /**
      *
@@ -38,7 +38,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $nomeEkt;
+    public ?string $nomeEkt;
 
     /**
      *
@@ -47,7 +47,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $clt;
+    public ?bool $clt;
 
     /**
      *
@@ -56,7 +56,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $dtNascimento;
+    public ?\DateTime $dtNascimento;
 
     /**
      *
@@ -65,7 +65,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $email;
+    public ?string $email;
 
     /**
      *
@@ -74,7 +74,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $estadoCivil;
+    public ?string $estadoCivil;
 
     /**
      *
@@ -83,7 +83,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $fone1;
+    public ?string $fone1;
 
     /**
      *
@@ -92,7 +92,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $fone2;
+    public ?string $fone2;
 
     /**
      *
@@ -101,7 +101,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $fone3;
+    public ?string $fone3;
 
     /**
      *
@@ -110,7 +110,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $fone4;
+    public ?string $fone4;
 
     /**
      *
@@ -119,7 +119,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $naturalidade;
+    public ?string $naturalidade;
 
     /**
      *
@@ -128,14 +128,14 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $rg;
+    public ?string $rg;
 
     /**
      *
      * @ORM\Column(name="senha", type="string", nullable=true, length=200)
      * @var null|string
      */
-    private $senha;
+    public ?string $senha;
 
     /**
      *
@@ -144,8 +144,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $vendedorComissionado;
-
+    public ?bool $vendedorComissionado;
 
     /**
      *
@@ -155,7 +154,7 @@ class Funcionario implements EntityId
      *
      * @var null|Pessoa
      */
-    private ?Pessoa $pessoa;
+    public ?Pessoa $pessoa;
 
     /**
      *
@@ -165,7 +164,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $dtEmissaoRg;
+    public ?\DateTime $dtEmissaoRg;
 
     /**
      *
@@ -174,7 +173,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $estadoRg;
+    public ?string $estadoRg;
 
     /**
      *
@@ -183,7 +182,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $orgaoEmissorRg;
+    public ?string $orgaoEmissorRg;
 
     /**
      *
@@ -192,7 +191,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $sexo;
+    public ?string $sexo;
 
     /**
      *
@@ -201,7 +200,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $dtAdmissao;
+    public ?\DateTime $dtAdmissao;
 
     /**
      *
@@ -210,7 +209,7 @@ class Funcionario implements EntityId
      *
      * @Groups("entity")
      */
-    private $dtDemissao;
+    public ?\DateTime $dtDemissao;
 
     /**
      *
@@ -222,7 +221,7 @@ class Funcionario implements EntityId
      *      orphanRemoval=true
      * )
      */
-    private $cargos;
+    public $cargos;
 
 
     /**

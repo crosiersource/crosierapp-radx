@@ -78,6 +78,8 @@ Encore
     .addEntry('Financeiro/movimentacaoForm_recorrente', './assets/js/Financeiro/movimentacaoForm_recorrente.js')
     .addEntry('Financeiro/movimentacaoImportForm', './assets/js/Financeiro/movimentacaoImportForm.js')
 
+    .addEntry('RH/colaborador_form', './assets/js/RH/colaborador_form.js')
+
 
 
     /*
