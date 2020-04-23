@@ -165,9 +165,9 @@ class NFeUtilsController extends BaseController
      *
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws ViewException
      */
-    public function configToolsForm(Request $request, SessionInterface $session): ?Response
+    public function configToolsForm(Request $request): ?Response
     {
         if ($request->get('id')) {
             $this->nfeUtils->saveNfeConfigsIdEmUso($request->get('id'));

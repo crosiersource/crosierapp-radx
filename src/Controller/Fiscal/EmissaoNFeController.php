@@ -497,7 +497,6 @@ class EmissaoNFeController extends FormListController
                 'listId' => 'emissaoNFeList',
             ];
 
-        // $params['filter']['serie'] = $request->get('filter')['serie'] ?? $this->nfeUtils->getNFeConfigs()['serieNFe'];
         return $this->doList($request, $params);
     }
 

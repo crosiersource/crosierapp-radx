@@ -459,7 +459,8 @@ class NotaFiscalBusiness extends BaseBusiness
             }
 
             if (!$notaFiscal->getSerie()) {
-                $notaFiscal->setSerie($notaFiscal->getTipoNotaFiscal() === 'NFE' ? $nfeConfigs['serieNFe'] : $nfeConfigs['serieNFCe']);
+                $ambiente = $nfeConfigs['tpAmb'] === 1 ? 'PROD' : 'HOM';
+                $notaFiscal->setSerie($notaFiscal->getTipoNotaFiscal() === 'NFE' ? $nfeConfigs['serie_NFE_' . $ambiente] : $nfeConfigs['serie_NFCE_' . $ambiente]);
             }
 
             if (!$notaFiscal->getCnf()) {
