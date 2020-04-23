@@ -149,7 +149,6 @@ class DistDFeController extends FormListController
                 $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso);
             }
             $this->addFlash('info', $q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
-            $this->distDFeBusiness->extrairChaveETipoDosDistDFes();
             $this->distDFeBusiness->processarDistDFesObtidos();
         } catch (ViewException $e) {
             $this->addFlash('error', $e->getMessage());

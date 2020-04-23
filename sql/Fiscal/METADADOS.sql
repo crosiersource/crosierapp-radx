@@ -160,7 +160,6 @@ CREATE TABLE `fis_nf`
     CONSTRAINT `FK_fis_nf_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
     CONSTRAINT `FK_fis_nf_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 18739
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
 
@@ -189,7 +188,7 @@ CREATE TABLE `fis_nf_item`
     `cfop`               varchar(20)    NOT NULL,
     `codigo`             varchar(50)    NOT NULL,
     `descricao`          varchar(2000)  NOT NULL,
-    `icms`               decimal(19, 2) NOT NULL,
+    `icms`               decimal(15, 2),
     `ncm`                varchar(20)    NOT NULL,
     `ordem`              int(11)        NOT NULL,
     `qtde`               decimal(19, 2) NOT NULL,
@@ -204,31 +203,26 @@ CREATE TABLE `fis_nf_item`
     `ncm_existente`      bit(1),
     `fis_nf_itemcol`     varchar(45),
     `csosn`              int(11),
-
-
-    -- campo de controle
     `inserted`           datetime       NOT NULL,
     `updated`            datetime       NOT NULL,
     `version`            int(11),
     `estabelecimento_id` bigint(20)     NOT NULL,
     `user_inserted_id`   bigint(20)     NOT NULL,
     `user_updated_id`    bigint(20)     NOT NULL,
+    `ean`                varchar(50),
     PRIMARY KEY (`id`),
+    UNIQUE KEY `UK_fis_nf_item` (`nota_fiscal_id`, `ordem`),
     KEY `K_fis_nf_item_estabelecimento` (`estabelecimento_id`),
     KEY `K_fis_nf_item_user_inserted` (`user_inserted_id`),
     KEY `K_fis_nf_item_user_updated` (`user_updated_id`),
-    CONSTRAINT `FK_fis_nf_item_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `FK_fis_nf_item_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_fis_nf_item_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
-
-
-    UNIQUE KEY `UK_fis_nf_item` (`nota_fiscal_id`, `ordem`),
     KEY `K_fis_nf_item_nota_fiscal` (`nota_fiscal_id`),
-    CONSTRAINT `FK_fis_nf_item_nota_fiscal` FOREIGN KEY (`nota_fiscal_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `FK_fis_nf_item_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_fis_nf_item_nota_fiscal` FOREIGN KEY (`nota_fiscal_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `FK_fis_nf_item_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_fis_nf_item_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
-
 
 
 DROP TABLE IF EXISTS `fis_nf_cartacorrecao`;
@@ -240,30 +234,26 @@ CREATE TABLE `fis_nf_cartacorrecao`
     `carta_correcao`     varchar(1000),
     `seq`                int(11)    NOT NULL,
     `dt_carta_correcao`  datetime   NOT NULL,
-    `msg_retorno`        varchar(1000),
-
-    -- campo de controle
     `inserted`           datetime   NOT NULL,
     `updated`            datetime   NOT NULL,
     `version`            int(11),
     `estabelecimento_id` bigint(20) NOT NULL,
     `user_inserted_id`   bigint(20) NOT NULL,
     `user_updated_id`    bigint(20) NOT NULL,
+    `msg_retorno`        varchar(2000),
     PRIMARY KEY (`id`),
+    UNIQUE KEY `UK_fis_nf_cartacorrecao` (`nota_fiscal_id`, `seq`),
     KEY `K_fis_nf_cartacorrecao_estabelecimento` (`estabelecimento_id`),
     KEY `K_fis_nf_cartacorrecao_user_inserted` (`user_inserted_id`),
     KEY `K_fis_nf_cartacorrecao_user_updated` (`user_updated_id`),
-    CONSTRAINT `FK_fis_nf_cartacorrecao_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `FK_fis_nf_cartacorrecao_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_fis_nf_cartacorrecao_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
-
-    UNIQUE KEY `UK_fis_nf_cartacorrecao` (`nota_fiscal_id`, `seq`),
     KEY `K_fis_nf_cartacorrecao_nota_fiscal` (`nota_fiscal_id`),
-    CONSTRAINT `FK_fis_nf_cartacorrecao_nota_fiscal` FOREIGN KEY (`nota_fiscal_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `FK_fis_nf_cartacorrecao_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_fis_nf_cartacorrecao_nota_fiscal` FOREIGN KEY (`nota_fiscal_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `FK_fis_nf_cartacorrecao_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_fis_nf_cartacorrecao_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
-
 
 
 DROP TABLE IF EXISTS `fis_nf_venda`;
@@ -310,26 +300,21 @@ CREATE TABLE `fis_nf_historico`
     `descricao`          varchar(2000) NOT NULL,
     `obs`                varchar(255),
     `dt_historico`       datetime      NOT NULL,
-
-    PRIMARY KEY (`id`),
-    KEY `fis_nf_id` (`fis_nf_id`),
-    CONSTRAINT `fis_nf_historico_fk1` FOREIGN KEY (`fis_nf_id`) REFERENCES `fis_nf` (`id`),
-
-
-    -- campo de controle
     `inserted`           datetime      NOT NULL,
     `updated`            datetime      NOT NULL,
     `version`            int(11),
     `estabelecimento_id` bigint(20)    NOT NULL,
     `user_inserted_id`   bigint(20)    NOT NULL,
     `user_updated_id`    bigint(20)    NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `fis_nf_id` (`fis_nf_id`),
     KEY `K_fis_nf_historico_estabelecimento` (`estabelecimento_id`),
     KEY `K_fis_nf_historico_user_inserted` (`user_inserted_id`),
     KEY `K_fis_nf_historico_user_updated` (`user_updated_id`),
-    CONSTRAINT `FK_fis_nf_historico_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
     CONSTRAINT `FK_fis_nf_historico_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_fis_nf_historico_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
-
+    CONSTRAINT `FK_fis_nf_historico_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_fis_nf_historico_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `fis_nf_historico_fk1` FOREIGN KEY (`fis_nf_id`) REFERENCES `fis_nf` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci
@@ -341,23 +326,24 @@ DROP TABLE IF EXISTS `fis_distdfe`;
 
 CREATE TABLE `fis_distdfe`
 (
-    `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
-    `chnfe`              char(44),
-    `tp_evento`          int(11),
-    `nseq_evento`        int(11),
-    `tipo_distdfe`       varchar(50),
-    `nsu`                bigint(20) NOT NULL,
-    `xml`                longtext   NOT NULL,
-    `status`             varchar(255),
-    `nota_fiscal_id`     bigint(20),
-
-    `inserted`           datetime   NOT NULL,
-    `updated`            datetime   NOT NULL,
-    `version`            int(11),
-    `estabelecimento_id` bigint(20) NOT NULL,
-    `user_inserted_id`   bigint(20) NOT NULL,
-    `user_updated_id`    bigint(20) NOT NULL,
-
+    `id`                    bigint(20) NOT NULL AUTO_INCREMENT,
+    `documento`             varchar(14),
+    `chnfe`                 char(44),
+    `tp_evento`             int(11),
+    `nseq_evento`           int(11),
+    `tipo_distdfe`          varchar(50),
+    `nsu`                   bigint(20) NOT NULL,
+    `xml`                   longtext   NOT NULL,
+    `inserted`              datetime   NOT NULL,
+    `updated`               datetime   NOT NULL,
+    `version`               int(11),
+    `estabelecimento_id`    bigint(20) NOT NULL,
+    `user_inserted_id`      bigint(20) NOT NULL,
+    `user_updated_id`       bigint(20) NOT NULL,
+    `status`                varchar(255),
+    `nota_fiscal_id`        bigint(20),
+    `proprio`               bit(1),
+    `nota_fiscal_evento_id` bigint(20),
     PRIMARY KEY (`id`),
     UNIQUE KEY `fis_distdfe_nsu` (`nsu`),
     KEY `K_fis_distdfe_estabelecimento` (`estabelecimento_id`),
@@ -381,10 +367,9 @@ CREATE TABLE `fis_nf_evento`
     `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
     `nota_fiscal_id`     bigint(20)   NOT NULL,
     `tp_evento`          int(11)      NOT NULL,
+    `nseq_evento`        int(11)      NOT NULL,
     `desc_evento`        varchar(200) NOT NULL,
     `xml`                longtext     NOT NULL,
-
-    -- campo de controle
     `inserted`           datetime     NOT NULL,
     `updated`            datetime     NOT NULL,
     `version`            int(11),
@@ -395,13 +380,11 @@ CREATE TABLE `fis_nf_evento`
     KEY `K_fis_nf_evento_estabelecimento` (`estabelecimento_id`),
     KEY `K_fis_nf_evento_user_inserted` (`user_inserted_id`),
     KEY `K_fis_nf_evento_user_updated` (`user_updated_id`),
-    CONSTRAINT `FK_fis_nf_evento_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `FK_fis_nf_evento_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_fis_nf_evento_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
-
     KEY `K_fis_nf_evento_nota_fiscal` (`nota_fiscal_id`),
-    CONSTRAINT `FK_fis_nf_evento_nota_fiscal` FOREIGN KEY (`nota_fiscal_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `FK_fis_nf_evento_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_fis_nf_evento_nota_fiscal` FOREIGN KEY (`nota_fiscal_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `FK_fis_nf_evento_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_fis_nf_evento_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
-

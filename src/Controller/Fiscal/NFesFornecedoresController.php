@@ -103,12 +103,7 @@ class NFesFornecedoresController extends FormListController
      */
     public function formResumo(Request $request, NotaFiscal $notaFiscal)
     {
-        $form = $this->createForm(NotaFiscalType::class, $notaFiscal);
-        $response = $this->doRender('/Fiscal/nfeFornecedores/formResumo.html.twig', [
-            'form' => $form->createView(),
-            'notaFiscal' => $notaFiscal
-        ]);
-        return $response;
+        return $this->doRender('/Fiscal/nfeFornecedores/formResumo.html.twig', ['notaFiscal' => $notaFiscal]);
     }
 
     /**

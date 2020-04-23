@@ -501,6 +501,7 @@ class DistDFeBusiness
      */
     public function processarDistDFesObtidos(): void
     {
+        $this->extrairChaveETipoDosDistDFes();
         // Primeiro processa os DistDFes dos tipos NFEPROC e RESNFE
         $this->processarDistDFesParaNFes();
         // Depois processa os DistDFes dos tipos PROCEVENTONFE e RESEVENTO
