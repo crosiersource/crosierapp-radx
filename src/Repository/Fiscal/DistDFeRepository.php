@@ -90,7 +90,9 @@ class DistDFeRepository extends FilterRepository
     {
         /** @var Connection $conn */
         $conn = $this->getEntityManager()->getConnection();
-        return $conn->fetchAll('SELECT id FROM fis_distdfe WHERE tipo_distdfe IN(\'PROCEVENTONFE\',\'RESEVENTO\') AND (chnfe,tp_evento,nseq_evento) NOT IN (SELECT nf.chave_acesso, evento.tp_evento, evento.nseq_evento FROM fis_nf nf, fis_nf_evento evento WHERE evento.nota_fiscal_id = nf.id)', ['documento' => $documento]);
+        return $conn->fetchAll('SELECT id FROM fis_distdfe WHERE tipo_distdfe IN(\'PROCEVENTONFE\',\'RESEVENTO\') AND 
+                                 (chnfe,tp_evento,nseq_evento) NOT IN (SELECT nf.chave_acesso, evento.tp_evento, evento.nseq_evento FROM fis_nf nf, fis_nf_evento evento WHERE evento.nota_fiscal_id = nf.id) 
+                                 AND chnfe IN (SELECT chave_acesso FROM fis_nf)', ['documento' => $documento]);
     }
 
 }

@@ -442,7 +442,7 @@ class DistDFeBusiness
             /** @var NotaFiscal $nf */
             $nf = $repoNotaFiscal->findOneBy(['chaveAcesso' => $distDFe->chave]);
             if (!$nf) {
-                throw new ViewException('Evento para NF que não consta no BD (chave: ' . $distDFe->chave . ')');
+                throw new ViewException('Erro ao reprocessar. Evento para NF que não consta no BD (chave: ' . $distDFe->chave . ')');
             }
 
             $nfEvento = $distDFe->notaFiscalEvento ?? new NotaFiscalEvento();
@@ -485,7 +485,7 @@ class DistDFeBusiness
                 throw new ViewException('Erro ao salvar fis_nf ou fis_distdfe (chave ' . $distDFe->chave . ')');
             }
         } catch (\Exception $e) {
-            $this->logger->error('Erro ao processar DistDFe: salvando evento para NFe (chave ' . $distDFe->chave . ')');
+            $this->logger->error('Erro ao reprocessar DistDFe: salvando evento para NFe (chave ' . $distDFe->chave . ')');
             $this->logger->error($e->getMessage());
             $distDFe->status = 'ERRO AO PROCESSAR';
         }
@@ -572,7 +572,7 @@ class DistDFeBusiness
                 /** @var NotaFiscal $nf */
                 $nf = $repoNotaFiscal->findOneBy(['chaveAcesso' => $distDFe->chave]);
                 if (!$nf) {
-                    throw new ViewException('Evento para NF que não consta no BD (chave: ' . $distDFe->chave . ')');
+                    throw new ViewException('Erro ao processar. Evento para NF que não consta no BD (chave: ' . $distDFe->chave . ')');
                 }
                 $xml = $distDFe->getXMLDecoded();
                 if (!$xml) {
