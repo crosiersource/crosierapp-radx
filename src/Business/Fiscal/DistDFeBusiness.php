@@ -258,7 +258,8 @@ class DistDFeBusiness
         }
 
         $nfeConfigs = $this->nfeUtils->getNFeConfigsEmUso();
-
+        $ambiente = $nfeConfigs['tpAmb'] === 1 ? 'PROD' : 'HOM';
+        $nf->setAmbiente($ambiente);
         $nf->setResumo(false);
         $nf->setXmlNota($xml->asXML());
 
