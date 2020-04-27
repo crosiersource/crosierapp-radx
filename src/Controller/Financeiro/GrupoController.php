@@ -3,14 +3,14 @@
 namespace App\Controller\Financeiro;
 
 
-use App\Entity\Financeiro\Grupo;
-use App\Entity\Financeiro\GrupoItem;
-use App\EntityHandler\Financeiro\GrupoEntityHandler;
 use App\Form\Financeiro\GrupoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Grupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\GrupoEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -111,7 +111,7 @@ class GrupoController extends FormListController
      */
     public function delete(Request $request, Grupo $grupo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $grupo);
+        return $this->doDelete($request, $grupo, []);
     }
 
 

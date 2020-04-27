@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6dc976afa418e96c606e3c9f41987e24",
+    "content-hash": "e3a5c572626e9d95094e69d9e4fb1fe4",
     "packages": [
         {
             "name": "crosiersource/crosierlib-base",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "../crosierlib-base",
-                "reference": "ace7f2c9d84c37f9d9f45d33f3b42f5c8d280e82",
+                "reference": "3ea2763e77bbb994056cd2918de553f36a9249fd",
                 "shasum": null
             },
             "require": {
@@ -59,6 +59,64 @@
                 }
             ],
             "description": "Pacote base do Crosier",
+            "transport-options": {
+                "symlink": true
+            }
+        },
+        {
+            "name": "crosiersource/crosierlib-radx",
+            "version": "9999999-dev",
+            "dist": {
+                "type": "path",
+                "url": "../crosierlib-radx",
+                "reference": "a098209fa3371db084b97d7a59b7e4a41fe6a0b8",
+                "shasum": null
+            },
+            "require": {
+                "crosiersource/crosierlib-base": "@dev",
+                "ext-bcmath": "*",
+                "ext-ctype": "*",
+                "ext-curl": "*",
+                "ext-iconv": "*",
+                "ext-intl": "*",
+                "ext-json": "*",
+                "ext-simplexml": "*",
+                "ext-zip": "*",
+                "php": "7.4.*",
+                "php-http/guzzle6-adapter": "^1.1",
+                "scienta/doctrine-json-functions": "~4.1",
+                "symfony/cache": "5.0.*",
+                "symfony/console": "5.0.*",
+                "symfony/debug-bundle": "5.0.*",
+                "symfony/form": "5.0.*",
+                "symfony/monolog-bundle": "^3.0",
+                "symfony/orm-pack": "1.*",
+                "symfony/security-bundle": "5.0.*",
+                "symfony/serializer-pack": "1.*",
+                "symfony/validator": "5.0.*",
+                "twig/extensions": "^1.5"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "CrosierSource\\CrosierLibRadxBundle\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Carlos Eduardo Pauluk",
+                    "email": "carlospauluk@gmail.com"
+                }
+            ],
+            "description": "Bundle para o CrosierApp Radx",
             "transport-options": {
                 "symlink": true
             }
@@ -463,16 +521,16 @@
         },
         {
             "name": "doctrine/doctrine-bundle",
-            "version": "2.0.7",
+            "version": "2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineBundle.git",
-                "reference": "6926771140ee87a823c3b2c72602de9dda4490d3"
+                "reference": "b0e0deb6e700438401ede433a15a6372d2285202"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/6926771140ee87a823c3b2c72602de9dda4490d3",
-                "reference": "6926771140ee87a823c3b2c72602de9dda4490d3",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/b0e0deb6e700438401ede433a15a6372d2285202",
+                "reference": "b0e0deb6e700438401ede433a15a6372d2285202",
                 "shasum": ""
             },
             "require": {
@@ -551,7 +609,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2020-01-18T11:56:15+00:00"
+            "time": "2020-04-23T10:52:09+00:00"
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
@@ -3056,23 +3114,20 @@
         },
         {
             "name": "phpdocumentor/reflection-common",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionCommon.git",
-                "reference": "63a995caa1ca9e5590304cd845c15ad6d482a62a"
+                "reference": "6568f4687e5b41b054365f9ae03fcb1ed5f2069b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/63a995caa1ca9e5590304cd845c15ad6d482a62a",
-                "reference": "63a995caa1ca9e5590304cd845c15ad6d482a62a",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/6568f4687e5b41b054365f9ae03fcb1ed5f2069b",
+                "reference": "6568f4687e5b41b054365f9ae03fcb1ed5f2069b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~6"
             },
             "type": "library",
             "extra": {
@@ -3104,7 +3159,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2018-08-07T13:53:10+00:00"
+            "time": "2020-04-27T09:25:28+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -3207,16 +3262,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.11.0",
+            "version": "1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "c2a205e82f9cf1cc9fab86b79e808d86dd680470"
+                "reference": "f79611d6dc1f6b7e8e30b738fc371b392001dbfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/c2a205e82f9cf1cc9fab86b79e808d86dd680470",
-                "reference": "c2a205e82f9cf1cc9fab86b79e808d86dd680470",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/f79611d6dc1f6b7e8e30b738fc371b392001dbfd",
+                "reference": "f79611d6dc1f6b7e8e30b738fc371b392001dbfd",
                 "shasum": ""
             },
             "require": {
@@ -3296,7 +3351,7 @@
                 "xls",
                 "xlsx"
             ],
-            "time": "2020-03-02T13:09:03+00:00"
+            "time": "2020-04-27T08:12:48+00:00"
         },
         {
             "name": "picqer/php-barcode-generator",
@@ -8758,7 +8813,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "crosiersource/crosierlib-base": 20
+        "crosiersource/crosierlib-base": 20,
+        "crosiersource/crosierlib-radx": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -3,11 +3,11 @@
 namespace App\Controller\Financeiro;
 
 
-use App\Entity\Financeiro\CentroCusto;
-use App\EntityHandler\Financeiro\CentroCustoEntityHandler;
 use App\Form\Financeiro\CentroCustoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\CentroCusto;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\CentroCustoEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

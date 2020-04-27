@@ -2,27 +2,14 @@
 
 namespace App\Controller\Financeiro;
 
-use App\Business\Financeiro\MovimentacaoBusiness;
-use App\Entity\Financeiro\Cadeia;
-use App\Entity\Financeiro\Carteira;
-use App\Entity\Financeiro\Categoria;
-use App\Entity\Financeiro\GrupoItem;
-use App\Entity\Financeiro\Modo;
-use App\Entity\Financeiro\Movimentacao;
-use App\Entity\Financeiro\TipoLancto;
-use App\EntityHandler\Financeiro\CadeiaEntityHandler;
-use App\EntityHandler\Financeiro\MovimentacaoEntityHandler;
 use App\Form\Financeiro\MovimentacaoAlterarEmLoteType;
 use App\Form\Financeiro\MovimentacaoChequeProprioType;
 use App\Form\Financeiro\MovimentacaoPagtoType;
 use App\Form\Financeiro\MovimentacaoTransferenciaEntreCarteirasType;
 use App\Form\Financeiro\MovimentacaoType;
-use App\Repository\Financeiro\CarteiraRepository;
-use App\Repository\Financeiro\CategoriaRepository;
-use App\Repository\Financeiro\ModoRepository;
-use App\Repository\Financeiro\MovimentacaoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Repository\Financeiro\ModoRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
@@ -30,6 +17,19 @@ use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Cadeia;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\CadeiaEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,17 +47,13 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 class MovimentacaoController extends FormListController
 {
 
-    /** @var MovimentacaoBusiness */
-    private $business;
+    private MovimentacaoBusiness $business;
 
-    /** @var SessionInterface */
-    private $session;
+    private SessionInterface $session;
 
-    /** @var CadeiaEntityHandler */
-    private $cadeiaEntityHandler;
+    private CadeiaEntityHandler $cadeiaEntityHandler;
 
-    /** @var EntityIdUtils */
-    private $entityIdUtils;
+    private EntityIdUtils $entityIdUtils;
 
     /**
      * @required
@@ -464,8 +460,6 @@ class MovimentacaoController extends FormListController
                             $this->addFlash('success', 'Registro salvo com sucesso!');
                             $this->afterSave($movimentacao);
                             return $this->redirectTo($request, $movimentacao, $params['formRoute']);
-                        } catch (ViewException $e) {
-                            $this->addFlash('error', $e->getMessage());
                         } catch (\Exception $e) {
                             $msg = ExceptionUtils::treatException($e);
                             $this->addFlash('error', $msg);

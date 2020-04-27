@@ -2,14 +2,7 @@
 
 namespace App\Controller\Financeiro;
 
-use App\Business\Financeiro\MovimentacaoBusiness;
-use App\Entity\Financeiro\Carteira;
-use App\Entity\Financeiro\Categoria;
-use App\Entity\Financeiro\Modo;
-use App\Entity\Financeiro\Movimentacao;
-use App\EntityHandler\Financeiro\MovimentacaoEntityHandler;
 use App\Form\Financeiro\MovimentacaoCaixaType;
-use App\Repository\Financeiro\MovimentacaoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
@@ -18,6 +11,13 @@ use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,14 +32,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class MovimentacaoCaixaController extends FormListController
 {
 
-    /** @var MovimentacaoEntityHandler */
     protected $entityHandler;
 
-    /** @var MovimentacaoBusiness */
-    private $business;
+    private MovimentacaoBusiness $business;
 
-    /** @var EntityIdUtils */
-    private $entityIdUtils;
+    private EntityIdUtils $entityIdUtils;
 
     /**
      * @required

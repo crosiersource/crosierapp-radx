@@ -2,6 +2,9 @@
     "crosiersource/crosierlib-base": {
         "version": "dev-master"
     },
+    "crosiersource/crosierlib-radx": {
+        "version": "9999999-dev"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
