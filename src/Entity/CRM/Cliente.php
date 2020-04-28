@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  *
- * @ORM\Entity(repositoryClass="App\Repository\Cliente\ClienteRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CRM\ClienteRepository")
  * @ORM\Table(name="crm_cliente")
  *
  * @author Carlos Eduardo Pauluk
