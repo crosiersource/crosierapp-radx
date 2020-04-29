@@ -166,7 +166,8 @@ class DistDFeController extends FormListController
     public function obterDistDFesDeNSUsPulados(): Response
     {
         try {
-            $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados();
+            $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+            $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados($cnpjEmUso);
             return new Response($q . ' DFe\'s obtidos');
         } catch (ViewException $e) {
             return new Response($e->getMessage());
@@ -183,8 +184,14 @@ class DistDFeController extends FormListController
     public function obterDFePorNSU(int $nsu): Response
     {
         try {
-            $this->distDFeBusiness->obterDistDFeByNSU($nsu);
-            return new Response(' DFe obtido');
+            $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+            $r = $this->distDFeBusiness->obterDistDFeByNSU($nsu, $cnpjEmUso);
+            if ($r) {
+                $this->addFlash('success', 'DFe obtido');
+            } else {
+                $this->addFlash('warn', 'DFe já existente');
+            }
+            return $this->redirectToRoute('distDFe_list');
         } catch (ViewException $e) {
             return new Response($e->getMessage());
         }

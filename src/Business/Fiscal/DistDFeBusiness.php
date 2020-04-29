@@ -140,14 +140,16 @@ class DistDFeBusiness
 
 
     /**
+     * @param string $cnpj
+     * @return int
      * @throws ViewException
      */
-    public function obterDistDFesDeNSUsPulados(): int
+    public function obterDistDFesDeNSUsPulados(string $cnpj): int
     {
         $nsusPulados = $this->getNSUsPulados();
         $qtde = 0;
         foreach ($nsusPulados as $nsu) {
-            $this->obterDistDFeByNSU($nsu);
+            $this->obterDistDFeByNSU($nsu, $cnpj);
             $qtde++;
             sleep(3);
         }
@@ -179,35 +181,48 @@ class DistDFeBusiness
     /**
      *
      * @param int $nsu
+     * @param string $cnpj
      * @return bool
      * @throws ViewException
      */
-    public function obterDistDFeByNSU(int $nsu): bool
+    public function obterDistDFeByNSU(int $nsu, string $cnpj): bool
     {
         try {
             $tools = $this->nfeUtils->getToolsEmUso();
             $tools->model('55');
             $tools->setEnvironment(1);
 
+            /** @var DistDFeRepository $repo */
+            $repo = $this->doctrine->getRepository(DistDFe::class);
+
             $resp = $tools->sefazDistDFe(0, $nsu);
             $xmlResp = simplexml_load_string($resp);
             $xmlResp->registerXPathNamespace('soap', 'http://www.w3.org/2003/05/soap-envelope');
             $r = $xmlResp->xpath('//soap:Body');
 
-            $xml = 'Nenhum documento localizado';
             if ($r[0]->nfeDistDFeInteresseResponse->nfeDistDFeInteresseResult->retDistDFeInt->loteDistDFeInt->docZip ?: false) {
                 $doc = $r[0]->nfeDistDFeInteresseResponse->nfeDistDFeInteresseResult->retDistDFeInt->loteDistDFeInt->docZip[0];
                 $nsuRetornado = (int)$doc->attributes()['NSU'];
                 if ($nsuRetornado === $nsu) {
-                    $xml = gzdecode(base64_decode($doc->__toString()));
+                    $xml = $doc->__toString();
+// gzdecode(base64_decode($xml))
+                    $existe = $repo->findOneBy(['nsu' => $nsu]);
+                    if (!$existe) {
+                        $dfe = new DistDFe();
+                        $dfe->nsu = $nsu;
+                        $dfe->xml = $xml;
+                        $dfe->documento = $cnpj;
+                        $this->distDFeEntityHandler->save($dfe);
+                    } else {
+                        return false;
+                    }
+                    return true;
+                } else {
+                    throw new ViewException('NSU difere do retornado.');
                 }
+            } else {
+                throw new ViewException('NSU não encontrado.');
             }
-
-            $dfe = new DistDFe();
-            $dfe->nsu = $nsu;
-            $dfe->xml = $xml;
-            $this->distDFeEntityHandler->save($dfe);
-            return true;
         } catch (\Exception $e) {
             $this->logger->error('Erro ao obter DFe (NSU: ' . $nsu . ')');
             $this->logger->error($e->getMessage());
@@ -519,7 +534,7 @@ class DistDFeBusiness
             /** @var DistDFeRepository $repoDistDFe */
             $repoDistDFe = $this->doctrine->getRepository(DistDFe::class);
             $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
-            $distDFesAProcessar =  $repoDistDFe->findDistDFeNotInNotaFiscal($cnpjEmUso);
+            $distDFesAProcessar = $repoDistDFe->findDistDFeNotInNotaFiscal($cnpjEmUso);
 
 
             foreach ($distDFesAProcessar as $distDFeId) {
