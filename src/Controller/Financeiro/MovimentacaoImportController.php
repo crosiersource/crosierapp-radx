@@ -2,17 +2,17 @@
 
 namespace App\Controller\Financeiro;
 
-use App\Business\Financeiro\MovimentacaoBusiness;
-use App\Business\Financeiro\MovimentacaoImporter;
-use App\Entity\Financeiro\Carteira;
-use App\Entity\Financeiro\GrupoItem;
-use App\Entity\Financeiro\Movimentacao;
-use App\EntityHandler\Financeiro\MovimentacaoEntityHandler;
 use App\Form\Financeiro\MovimentacaoAlterarEmLoteType;
 use App\Form\Financeiro\MovimentacaoType;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoImporter;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,22 +32,17 @@ use Symfony\Component\Serializer\Serializer;
 class MovimentacaoImportController extends BaseController
 {
 
-    /** @var MovimentacaoBusiness */
-    private $business;
+    private MovimentacaoBusiness $business;
 
-    /** @var MovimentacaoImporter */
-    private $movimentacaoImporter;
+    private MovimentacaoImporter $movimentacaoImporter;
 
-    /** @var MovimentacaoEntityHandler */
-    private $entityHandler;
+    private MovimentacaoEntityHandler $entityHandler;
 
-    /** @var SessionInterface */
-    private $session;
+    private SessionInterface $session;
 
-    /** @var StoredViewInfoBusiness */
-    private $storedViewInfoBusiness;
+    private StoredViewInfoBusiness $storedViewInfoBusiness;
 
-    private $vParams = array();
+    private array $vParams = array();
 
     /**
      * @required
@@ -476,6 +471,7 @@ class MovimentacaoImportController extends BaseController
     {
         $movsImportadas = $this->session->get('movsImportadas');
         $nMovsImportadas = [];
+        /** @var Movimentacao $movImportada */
         foreach ($movsImportadas as $movImportada) {
             if (!$movImportada->getId()) {
                 $nMovsImportadas[] = $movImportada;

@@ -3,13 +3,13 @@
 namespace App\Controller\Financeiro;
 
 
-use App\Business\Financeiro\RegistroConferenciaBusiness;
-use App\Entity\Financeiro\RegistroConferencia;
-use App\EntityHandler\Financeiro\RegistroConferenciaEntityHandler;
 use App\Form\Financeiro\RegistroConferenciaType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\RegistroConferenciaBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\RegistroConferencia;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\RegistroConferenciaEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistroConferenciaController extends FormListController
 {
 
-    /** @var RegistroConferenciaBusiness */
-    private $business;
+    private RegistroConferenciaBusiness $business;
 
     /**
      * @required
@@ -57,7 +56,7 @@ class RegistroConferenciaController extends FormListController
      * @Route("/fin/registroConferencia/form/{id}", name="registroConferencia_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param RegistroConferencia|null $registroConferencia
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
@@ -77,7 +76,7 @@ class RegistroConferenciaController extends FormListController
      *
      * @Route("/fin/registroConferencia/list/", name="registroConferencia_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
@@ -100,7 +99,7 @@ class RegistroConferenciaController extends FormListController
      * @Route("/fin/registroConferencia/datatablesJsList/", name="registroConferencia_datatablesJsList")
      * @param Request $request
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
@@ -114,20 +113,20 @@ class RegistroConferenciaController extends FormListController
      * @Route("/fin/registroConferencia/delete/{id}/", name="registroConferencia_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param RegistroConferencia $registroConferencia
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function delete(Request $request, RegistroConferencia $registroConferencia): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function delete(Request $request, RegistroConferencia $registroConferencia): RedirectResponse
     {
-        return $this->doDelete($request, $registroConferencia);
+        return $this->doDelete($request, $registroConferencia, []);
     }
 
     /**
      *
      * @Route("/fin/registroConferencia/gerarProximo/{id}/", name="registroConferencia_gerarProximo", requirements={"id"="\d+"})
      * @param RegistroConferencia $registroConferencia
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */

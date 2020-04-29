@@ -3,11 +3,11 @@
 namespace App\Controller\Financeiro;
 
 
-use App\Entity\Financeiro\BandeiraCartao;
-use App\EntityHandler\Financeiro\BandeiraCartaoEntityHandler;
 use App\Form\Financeiro\BandeiraCartaoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\BandeiraCartao;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\BandeiraCartaoEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +43,7 @@ class BandeiraCartaoController extends FormListController
      * @Route("/fin/bandeiraCartao/form/{id}", name="bandeiraCartao_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param BandeiraCartao|null $bandeiraCartao
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
@@ -63,7 +63,7 @@ class BandeiraCartaoController extends FormListController
      *
      * @Route("/fin/bandeiraCartao/list/", name="bandeiraCartao_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)

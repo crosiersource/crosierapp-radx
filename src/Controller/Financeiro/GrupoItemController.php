@@ -3,19 +3,19 @@
 namespace App\Controller\Financeiro;
 
 
-use App\Business\Financeiro\GrupoBusiness;
-use App\Business\Financeiro\MovimentacaoBusiness;
-use App\Entity\Financeiro\Grupo;
-use App\Entity\Financeiro\GrupoItem;
-use App\Entity\Financeiro\Movimentacao;
-use App\EntityHandler\Financeiro\GrupoItemEntityHandler;
 use App\Form\Financeiro\GrupoItemType;
-use App\Repository\Financeiro\GrupoItemRepository;
-use App\Repository\Financeiro\MovimentacaoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\GrupoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Grupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\GrupoItemEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\GrupoItemRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,11 +33,9 @@ use Symfony\Component\Serializer\Serializer;
 class GrupoItemController extends FormListController
 {
 
-    /** @var GrupoBusiness */
-    private $grupoBusiness;
+    private GrupoBusiness $grupoBusiness;
 
-    /** @var MovimentacaoBusiness */
-    private $movimentacaoBusiness;
+    private MovimentacaoBusiness $movimentacaoBusiness;
 
     /**
      * @required
@@ -120,7 +118,7 @@ class GrupoItemController extends FormListController
      */
     public function delete(Request $request, GrupoItem $grupoItem): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $grupoItem);
+        return $this->doDelete($request, $grupoItem, []);
     }
 
 
@@ -148,14 +146,12 @@ class GrupoItemController extends FormListController
     /**
      *
      * @Route("/fin/grupoItem/list/{pai}", name="grupoItem_list", requirements={"pai"="\d+"})
-     * @param Request $request
      * @param Grupo $pai
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
-     *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
-    public function list(Request $request, Grupo $pai): Response
+    public function list(Grupo $pai): Response
     {
         /** @var GrupoItemRepository $repo */
         $repo = $this->getDoctrine()->getRepository(GrupoItem::class);
@@ -218,6 +214,7 @@ class GrupoItemController extends FormListController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
@@ -253,7 +250,9 @@ class GrupoItemController extends FormListController
                     $this->addFlash('error', 'Nenhum item de grupo de movimentações encontrado');
                     return $this->redirectToRoute('grupo_list');
                 }
-                $grupoItem = $ultimaMov[0]->getGrupoItem();
+                /** @var Movimentacao $ultMov */
+                $ultMov = $ultimaMov[0];
+                $grupoItem = $ultMov->getGrupoItem();
             } else {
                 $grupoItem = $grupo->getItens()->last();
             }
@@ -273,6 +272,8 @@ class GrupoItemController extends FormListController
 
         $grupoItens = $grupoItem->getPai()->getItens()->toArray();
         uasort($grupoItens, function ($a, $b) {
+            /** @var GrupoItem $a */
+            /** @var GrupoItem $b */
             return $a->getDtVencto() < $b->getDtVencto();
         });
         $grupoItensOptions = Select2JsUtils::toSelect2DataFn($grupoItens, function ($e) {
