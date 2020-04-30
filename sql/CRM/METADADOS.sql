@@ -5,8 +5,8 @@ DROP TABLE IF EXISTS `crm_cliente`;
 CREATE TABLE `crm_cliente`
 (
     `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
-    `nome`               VARCHAR(255),
-    `documento`          varchar(20) NOT NULL,
+    `nome`               VARCHAR(255) NOT NULL,
+    `documento`          varchar(20),
     `json_data`          json,
 
     -- campo de controle

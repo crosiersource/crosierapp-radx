@@ -2,11 +2,10 @@
 
 namespace App\Entity\Vendas;
 
-use App\Entity\CRM\Cliente;
-use App\Entity\RH\Funcionario;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -44,8 +43,8 @@ class Venda implements EntityId
 
     /**
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\CRM\Cliente")
-     * @ORM\JoinColumn(name="plano_pagto_id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente")
+     * @ORM\JoinColumn(name="cliente_id")
      * @Groups("entity")
      *
      * @var null|Cliente
