@@ -820,6 +820,8 @@ class IntegraWebStorm extends BaseBusiness
                         str_replace($pathinfo['basename'], '', $parsedUrl['path'])  .
                         $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
                     $imgUtils->save($file1080);
+                } else {
+                    $url1080 = $url;
                 }
             }
 
