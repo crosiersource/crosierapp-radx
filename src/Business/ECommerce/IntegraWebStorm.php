@@ -19,6 +19,9 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\WebUtils\WebUtils;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Security;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
@@ -60,13 +63,16 @@ class IntegraWebStorm extends BaseBusiness
 
     private ?array $marcasNaWebStorm = null;
 
+    private ParameterBagInterface $params;
+
     public function __construct(AppConfigEntityHandler $appConfigEntityHandler,
                                 Security $security,
                                 DeptoEntityHandler $deptoEntityHandler,
                                 GrupoEntityHandler $grupoEntityHandler,
                                 SubgrupoEntityHandler $subgrupoEntityHandler,
                                 ProdutoEntityHandler $produtoEntityHandler,
-                                UploaderHelper $uploaderHelper)
+                                UploaderHelper $uploaderHelper,
+                                ParameterBagInterface $params)
     {
         $this->appConfigEntityHandler = $appConfigEntityHandler;
         $this->security = $security;
@@ -87,6 +93,7 @@ class IntegraWebStorm extends BaseBusiness
         $this->subgrupoEntityHandler = $subgrupoEntityHandler;
         $this->produtoEntityHandler = $produtoEntityHandler;
         $this->uploaderHelper = $uploaderHelper;
+        $this->params = $params;
     }
 
 
@@ -762,6 +769,7 @@ class IntegraWebStorm extends BaseBusiness
             '<prazoXD>0</prazoXD>' .
             '<conjunto />' .
             '<nome>' . $produto->jsonData['titulo'] . '</nome>' .
+            '<referencia>' . ($produto->jsonData['referencia'] ?? '') . '</referencia>' .
             '<descricao-caracteristicas>' . htmlspecialchars($produto->jsonData['caracteristicas'] ?? '') . '</descricao-caracteristicas>' .
             '<descricao-itens-inclusos>' . htmlspecialchars($produto->jsonData['itens_inclusos'] ?? '') . '</descricao-itens-inclusos>' .
             '<descricao-compativel-com>' . htmlspecialchars($produto->jsonData['compativel_com'] ?? '') . '</descricao-compativel-com>' .
@@ -792,8 +800,31 @@ class IntegraWebStorm extends BaseBusiness
 
         foreach ($produto->imagens as $imagem) {
             $url = $_SERVER['CROSIERAPP_URL'] . $this->uploaderHelper->asset($imagem, 'imageFile');
+            // verifica se existe a imagem "_1080.ext"
+            $pathinfo = pathinfo($url);
+            $parsedUrl = parse_url($url);
+            $url1080 = $pathinfo['dirname'] . '/' . $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
+            if (!WebUtils::urlNot404($url1080)) {
+                $imgDims = getimagesize($url);
+                if ($imgDims[0] > 1500 || $imgDims[1] > 1500) {
+                    $imgUtils = new ImageUtils();
+                    $imgUtils->load($url);
+                    if ($imgDims[0] >= $imgDims[1]) {
+                        // largura maior que altura
+                        $imgUtils->resizeToWidth(1080);
+                    } else {
+                        $imgUtils->resizeToHeight(1080);
+                    }
+                    // '%kernel.project_dir%/public/images/produtos'
+                    $file1080 = $this->params->get('kernel.project_dir') . '/public' .
+                        str_replace($pathinfo['basename'], '', $parsedUrl['path'])  .
+                        $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
+                    $imgUtils->save($file1080);
+                }
+            }
+
             $xml .= '<imagens>
-				<url>' . $url . '</url>
+				<url>' . $url1080 . '</url>
 				<prioridade>' . ($imagem->getOrdem() - 1) . '</prioridade>
 			</imagens>';
         }
@@ -802,7 +833,7 @@ class IntegraWebStorm extends BaseBusiness
         $xml .=
             '<itensVenda>
 				<idItemVenda></idItemVenda>
-				<codigo>' . $produto->jsonData['referencia'] . '</codigo>
+				<codigo>' . $produto->getId() . '</codigo>
 				<preco>' . ($produto->jsonData['preco_site'] ?? $produto->jsonData['preco_tabela'] ?? 0.0) . '</preco>
 				<estoque>999999</estoque>
 				<estoqueMin>0</estoqueMin>
@@ -820,6 +851,8 @@ class IntegraWebStorm extends BaseBusiness
         echo "</textarea>";
 
         $client = $this->getNusoapClientImportacaoInstance();
+
+//        $xml = str_replace('&nbsp;', ' ', $xml);
 
         $arResultado = $client->call('produto' . ($produtoEcommerceId ? 'Update' : 'Add'), [
             'xml' => utf8_decode($xml)
