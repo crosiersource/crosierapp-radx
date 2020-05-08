@@ -3,7 +3,7 @@
 namespace App\Controller\Financeiro;
 
 use App\Form\Financeiro\CarteiraType;
-use App\Repository\Financeiro\CarteiraRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;

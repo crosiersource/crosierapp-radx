@@ -2,8 +2,8 @@
 
 namespace App\Business\Vendas;
 
-use App\Entity\Vendas\Venda;
-use App\EntityHandler\Vendas\VendaEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;

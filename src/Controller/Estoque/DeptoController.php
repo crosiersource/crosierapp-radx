@@ -3,15 +3,15 @@
 namespace App\Controller\Estoque;
 
 use App\Business\ECommerce\IntegraWebStorm;
-use App\Entity\Estoque\Depto;
-use App\Entity\Estoque\Grupo;
-use App\Entity\Estoque\Subgrupo;
-use App\EntityHandler\Estoque\DeptoEntityHandler;
-use App\EntityHandler\Estoque\GrupoEntityHandler;
-use App\EntityHandler\Estoque\SubgrupoEntityHandler;
-use App\Repository\Estoque\DeptoRepository;
-use App\Repository\Estoque\GrupoRepository;
-use App\Repository\Estoque\SubgrupoRepository;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\DeptoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\GrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\SubgrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\SubgrupoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;

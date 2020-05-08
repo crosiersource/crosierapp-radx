@@ -4,8 +4,8 @@ namespace App\Controller\Fiscal;
 
 use App\Business\Fiscal\DistDFeBusiness;
 use App\Business\Fiscal\SpedNFeBusiness;
-use App\Entity\Fiscal\DistDFe;
-use App\EntityHandler\Fiscal\DistDFeEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\DistDFe;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\DistDFeEntityHandler;
 use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;

@@ -2,8 +2,8 @@
 
 namespace App\Business\Estoque;
 
-use App\Entity\Estoque\Fornecedor;
-use App\Entity\Estoque\FornecedorTipo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\FornecedorTipo;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use Doctrine\ORM\EntityManagerInterface;
 

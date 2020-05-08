@@ -2,22 +2,22 @@
 
 namespace App\Business\Fiscal;
 
-use App\Entity\Fiscal\FinalidadeNF;
-use App\Entity\Fiscal\ModalidadeFrete;
-use App\Entity\Fiscal\NotaFiscal;
-use App\Entity\Fiscal\NotaFiscalCartaCorrecao;
-use App\Entity\Fiscal\TipoNotaFiscal;
-use App\EntityHandler\Fiscal\NotaFiscalCartaCorrecaoEntityHandler;
-use App\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Municipio;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\MunicipioRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\FileUtils\FileUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\ModalidadeFrete;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalCartaCorrecao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\TipoNotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalCartaCorrecaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Classe que trata da integração com o Unimake (UniNfe).

@@ -3,12 +3,12 @@
 namespace App\Business\Estoque;
 
 
-use App\Entity\Estoque\Fornecedor;
-use App\Entity\Estoque\Grupo;
-use App\EntityHandler\Estoque\FornecedorEntityHandler;
-use App\EntityHandler\Estoque\GrupoEntityHandler;
-use App\Repository\Estoque\FornecedorRepository;
-use App\Repository\Estoque\GrupoRepository;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\FornecedorEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\GrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\FornecedorRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;

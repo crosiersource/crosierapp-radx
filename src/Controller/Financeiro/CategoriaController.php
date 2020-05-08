@@ -3,7 +3,7 @@
 namespace App\Controller\Financeiro;
 
 use App\Form\Financeiro\CategoriaType;
-use App\Repository\Financeiro\CategoriaRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;

@@ -3,9 +3,9 @@
 namespace App\Controller\Vendas\API;
 
 use App\Business\Vendas\VendaBusiness;
-use App\Entity\Vendas\Venda;
-use App\Entity\Vendas\VendaItem;
-use App\EntityHandler\Vendas\VendaEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\VendaItem;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseAPIEntityIdController;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\APIProblem;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;

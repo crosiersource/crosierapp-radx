@@ -2,7 +2,7 @@
 
 namespace App\Form\Fiscal;
 
-use App\Entity\Fiscal\NotaFiscalItem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;

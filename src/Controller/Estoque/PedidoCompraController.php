@@ -3,10 +3,10 @@
 namespace App\Controller\Estoque;
 
 
-use App\Entity\Estoque\PedidoCompra;
-use App\Entity\Estoque\PedidoCompraItem;
-use App\EntityHandler\Estoque\PedidoCompraEntityHandler;
-use App\EntityHandler\Estoque\PedidoCompraItemEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\PedidoCompra;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\PedidoCompraItem;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\PedidoCompraEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\PedidoCompraItemEntityHandler;
 use App\Form\Estoque\PedidoCompraItemType;
 use App\Form\Estoque\PedidoCompraType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;

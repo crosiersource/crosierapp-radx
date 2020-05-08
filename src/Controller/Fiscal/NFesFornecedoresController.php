@@ -4,8 +4,8 @@ namespace App\Controller\Fiscal;
 
 use App\Business\Fiscal\NotaFiscalBusiness;
 use App\Business\Fiscal\SpedNFeBusiness;
-use App\Entity\Fiscal\NotaFiscal;
-use App\EntityHandler\Fiscal\NotaFiscalEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use App\Form\Fiscal\NotaFiscalType;
 use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;

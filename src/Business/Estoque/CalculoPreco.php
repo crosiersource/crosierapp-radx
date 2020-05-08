@@ -4,7 +4,8 @@
 namespace App\Business\Estoque;
 
 
-use App\Repository\Estoque\DepreciacaoPrecoRepository;
+
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DepreciacaoPrecoRepository;
 
 /**
  * Lógicas para cálculo de preços.

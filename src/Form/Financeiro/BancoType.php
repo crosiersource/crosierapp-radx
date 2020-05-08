@@ -2,7 +2,7 @@
 
 namespace App\Form\Financeiro;
 
-use App\Entity\Financeiro\Banco;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Banco;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;

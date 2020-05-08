@@ -3,8 +3,8 @@
 namespace App\Form\Fiscal;
 
 use App\Business\Fiscal\NotaFiscalBusiness;
-use App\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;

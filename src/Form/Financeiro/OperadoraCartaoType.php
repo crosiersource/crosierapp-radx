@@ -2,9 +2,10 @@
 
 namespace App\Form\Financeiro;
 
-use App\Entity\Financeiro\OperadoraCartao;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;

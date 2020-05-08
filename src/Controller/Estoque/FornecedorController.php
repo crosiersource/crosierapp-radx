@@ -2,12 +2,12 @@
 
 namespace App\Controller\Estoque;
 
-use App\Entity\Estoque\Fornecedor;
-use App\Entity\Estoque\Produto;
-use App\EntityHandler\Estoque\FornecedorEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\FornecedorEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\FornecedorRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
 use App\Form\Estoque\FornecedorType;
-use App\Repository\Estoque\FornecedorRepository;
-use App\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;

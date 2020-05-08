@@ -3,11 +3,8 @@
 namespace App\Business\Estoque;
 
 
-use App\Entity\Estoque\Produto;
-use App\Entity\Estoque\ProdutoComposicao;
-use App\Repository\Estoque\ProdutoComposicaoRepository;
-use App\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibBaseBundle\Business\BaseBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**

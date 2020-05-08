@@ -2,8 +2,8 @@
 
 namespace App\Form\Financeiro;
 
-use App\Entity\Financeiro\Banco;
-use App\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Banco;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

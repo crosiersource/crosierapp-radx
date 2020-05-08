@@ -2,10 +2,10 @@
 
 namespace App\Controller\RH;
 
-use App\Entity\RH\Colaborador;
-use App\EntityHandler\RH\ColaboradorEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\RH\ColaboradorEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
 use App\Form\RH\ColaboradorType;
-use App\Repository\RH\ColaboradorRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;

@@ -2,16 +2,16 @@
 
 namespace App\Business\Fiscal;
 
-use App\Entity\Fiscal\FinalidadeNF;
-use App\Entity\Fiscal\ModalidadeFrete;
-use App\Entity\Fiscal\NotaFiscal;
-use App\Entity\Fiscal\NotaFiscalCartaCorrecao;
-use App\Entity\Fiscal\NotaFiscalEvento;
-use App\Entity\Fiscal\TipoNotaFiscal;
-use App\EntityHandler\Fiscal\NotaFiscalCartaCorrecaoEntityHandler;
-use App\EntityHandler\Fiscal\NotaFiscalEntityHandler;
-use App\EntityHandler\Fiscal\NotaFiscalEventoEntityHandler;
-use App\Repository\Fiscal\NotaFiscalRepository;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\ModalidadeFrete;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalCartaCorrecao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalEvento;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\TipoNotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalCartaCorrecaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEventoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalRepository;
 use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Municipio;

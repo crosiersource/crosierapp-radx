@@ -2,17 +2,17 @@
 
 namespace App\Form\Estoque;
 
-use App\Entity\Estoque\Depto;
-use App\Entity\Estoque\Fornecedor;
-use App\Entity\Estoque\Grupo;
-use App\Entity\Estoque\Produto;
-use App\Entity\Estoque\Subgrupo;
-use App\Repository\Estoque\DeptoRepository;
-use App\Repository\Estoque\FornecedorRepository;
-use App\Repository\Estoque\GrupoRepository;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\FornecedorRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -65,7 +65,7 @@ class ProdutoType extends AbstractType
             /** @var DeptoRepository $repoDeptos */
             $repoDeptos = $this->doctrine->getRepository(Depto::class);
             $deptos = $repoDeptos->findAll(['codigo' => 'ASC']);
-            $builder->add('depto', EntityType::class, [
+            $builder->add('depto', EntityType::class, array(
                 'label' => 'Depto',
                 'placeholder' => '...',
                 'class' => Depto::class,
@@ -73,10 +73,10 @@ class ProdutoType extends AbstractType
                 'choice_label' => function (?Depto $depto) {
                     return $depto ? $depto->getDescricaoMontada() : null;
                 },
-                'attr' => [
+                'attr' => array(
                     'class' => 'autoSelect2'
-                ],
-            ]);
+                ),
+            ));
 
             $grupos = [];
             if ($produto && $produto->depto ?? false) {

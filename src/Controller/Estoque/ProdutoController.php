@@ -3,16 +3,16 @@
 namespace App\Controller\Estoque;
 
 use App\Business\Estoque\ProdutoBusiness;
-use App\Entity\Estoque\Produto;
-use App\Entity\Estoque\ProdutoComposicao;
-use App\Entity\Estoque\ProdutoImagem;
-use App\EntityHandler\Estoque\ProdutoComposicaoEntityHandler;
-use App\EntityHandler\Estoque\ProdutoEntityHandler;
-use App\EntityHandler\Estoque\ProdutoImagemEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoComposicao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoImagem;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoComposicaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoImagemEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoComposicaoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoImagemRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
 use App\Form\Estoque\ProdutoType;
-use App\Repository\Estoque\ProdutoComposicaoRepository;
-use App\Repository\Estoque\ProdutoImagemRepository;
-use App\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;

@@ -2,7 +2,7 @@
 
 namespace App\Form\Fiscal;
 
-use App\Entity\Fiscal\NotaFiscalCartaCorrecao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalCartaCorrecao;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

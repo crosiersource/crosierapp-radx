@@ -5,7 +5,7 @@ namespace App\Controller\Fiscal;
 
 use App\Business\Fiscal\DistDFeBusiness;
 use App\Business\Fiscal\SpedNFeBusiness;
-use App\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use App\Form\Fiscal\ConfigToolsType;
 use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;

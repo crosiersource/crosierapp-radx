@@ -3,12 +3,12 @@
 namespace App\Controller\Fiscal;
 
 use App\Business\Fiscal\NotaFiscalBusiness;
-use App\Entity\Fiscal\FinalidadeNF;
-use App\Entity\Fiscal\NotaFiscal;
-use App\Entity\Fiscal\NotaFiscalVenda;
-use App\Entity\Vendas\Venda;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalVenda;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
+use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalVendaRepository;
 use App\Form\Fiscal\NotaFiscalType;
-use App\Repository\Fiscal\NotaFiscalVendaRepository;
 use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
