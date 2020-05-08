@@ -19,20 +19,6 @@ class IntegraWebStormController extends BaseController
 
     /**
      *
-     * @Route("/est/integraWebStorm/integrarMarcas", name="est_integraWebStorm_integrarMarcas")
-     * @param IntegraWebStorm $integraWebStormBusiness
-     * @return Response
-     * @throws ViewException
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function integrarMarcas(IntegraWebStorm $integraWebStormBusiness)
-    {
-        $integraWebStormBusiness->integrarMarcas();
-        return new Response('OK');
-    }
-
-    /**
-     *
      * @Route("/est/integraWebStorm/integrarDeptosGruposSubgrupos", name="est_integraWebStorm_integrarDeptosGruposSubgrupos")
      * @param IntegraWebStorm $integraWebStormBusiness
      * @return Response

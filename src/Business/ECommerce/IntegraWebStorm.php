@@ -762,6 +762,7 @@ class IntegraWebStorm extends BaseBusiness
             '<prazoXD>0</prazoXD>' .
             '<conjunto />' .
             '<nome>' . $produto->jsonData['titulo'] . '</nome>' .
+            '<referencia>' . ($produto->jsonData['referencia'] ?? '') . '</referencia>' .
             '<descricao-caracteristicas>' . htmlspecialchars($produto->jsonData['caracteristicas'] ?? '') . '</descricao-caracteristicas>' .
             '<descricao-itens-inclusos>' . htmlspecialchars($produto->jsonData['itens_inclusos'] ?? '') . '</descricao-itens-inclusos>' .
             '<descricao-compativel-com>' . htmlspecialchars($produto->jsonData['compativel_com'] ?? '') . '</descricao-compativel-com>' .
@@ -802,7 +803,7 @@ class IntegraWebStorm extends BaseBusiness
         $xml .=
             '<itensVenda>
 				<idItemVenda></idItemVenda>
-				<codigo>' . $produto->jsonData['referencia'] . '</codigo>
+				<codigo>' . $produto->getId() . '</codigo>
 				<preco>' . ($produto->jsonData['preco_site'] ?? $produto->jsonData['preco_tabela'] ?? 0.0) . '</preco>
 				<estoque>999999</estoque>
 				<estoqueMin>0</estoqueMin>
@@ -820,6 +821,8 @@ class IntegraWebStorm extends BaseBusiness
         echo "</textarea>";
 
         $client = $this->getNusoapClientImportacaoInstance();
+
+//        $xml = str_replace('&nbsp;', ' ', $xml);
 
         $arResultado = $client->call('produto' . ($produtoEcommerceId ? 'Update' : 'Add'), [
             'xml' => utf8_decode($xml)
