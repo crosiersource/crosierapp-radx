@@ -80,6 +80,8 @@ Encore
 
     .addEntry('RH/colaborador_form', './assets/js/RH/colaborador_form.js')
 
+    .addEntry('CRM/cliente_list', './assets/js/CRM/cliente_list.js')
+
 
 
     /*
