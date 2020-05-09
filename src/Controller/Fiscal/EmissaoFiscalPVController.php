@@ -2,16 +2,14 @@
 
 namespace App\Controller\Fiscal;
 
-use App\Business\Fiscal\NotaFiscalBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
-use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
-use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalVenda;
-use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
-use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalVendaRepository;
 use App\Form\Fiscal\NotaFiscalType;
-use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,6 +35,7 @@ class EmissaoFiscalPVController extends BaseController
     private CrosierEntityIdAPIClient $crosierEntityIdAPIClient;
 
     private LoggerInterface $logger;
+
 
     /**
      * @required
@@ -84,11 +83,9 @@ class EmissaoFiscalPVController extends BaseController
      */
     public function form(Request $request, Venda $venda)
     {
-        // Verifica se a venda já tem uma NotaFiscal associada
-        /** @var NotaFiscalVendaRepository $repoNotaFiscalVenda */
-        $repoNotaFiscalVenda = $this->getDoctrine()->getRepository(NotaFiscalVenda::class);
+
         /** @var NotaFiscal $notaFiscal */
-        $notaFiscal = $repoNotaFiscalVenda->findNotaFiscalByVenda($venda);
+        $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
         $notaFiscalId = null;
         if (!$notaFiscal) {
             $notaFiscal = new NotaFiscal();

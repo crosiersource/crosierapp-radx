@@ -2,7 +2,7 @@
 
 namespace App\Controller\Fiscal;
 
-use App\Business\Fiscal\NotaFiscalBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

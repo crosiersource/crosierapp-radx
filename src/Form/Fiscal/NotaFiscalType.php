@@ -2,7 +2,7 @@
 
 namespace App\Form\Fiscal;
 
-use App\Business\Fiscal\NotaFiscalBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use Symfony\Component\Form\AbstractType;

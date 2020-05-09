@@ -3,11 +3,11 @@
 namespace App\Controller\Fiscal;
 
 
-use App\Business\Fiscal\DistDFeBusiness;
-use App\Business\Fiscal\SpedNFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use App\Form\Fiscal\ConfigToolsType;
-use App\Utils\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;

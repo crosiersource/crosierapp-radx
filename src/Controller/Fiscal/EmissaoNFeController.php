@@ -2,8 +2,8 @@
 
 namespace App\Controller\Fiscal;
 
-use App\Business\Fiscal\NotaFiscalBusiness;
-use App\Business\Fiscal\SpedNFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalCartaCorrecao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalItem;
@@ -14,7 +14,7 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalRepository;
 use App\Form\Fiscal\NotaFiscalCartaCorrecaoType;
 use App\Form\Fiscal\NotaFiscalItemType;
 use App\Form\Fiscal\NotaFiscalType;
-use App\Utils\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -998,17 +998,18 @@ class EmissaoNFeController extends FormListController
      */
     public function consultarRecibo(NotaFiscal $notaFiscal): Response
     {
-        $result = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+        $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+        $xml = $notaFiscal->getXMLDecoded();
         $r = [];
-        $r[] = 'cStat: ' . $result->cStat;
-        $r[] = 'xMotivo: ' . $result->xMotivo;
-        $r[] = 'dhRecbto: ' . $result->dhRecbto;
-        $r[] = 'protNFe.chNFe: ' . $result->protNFe->infProt->chNFe;
-        $r[] = 'protNFe.dhRecbto: ' . $result->protNFe->infProt->dhRecbto;
-        $r[] = 'protNFe.nProt: ' . $result->protNFe->infProt->nProt;
-        $r[] = 'protNFe.digVal: ' . $result->protNFe->infProt->digVal;
-        $r[] = 'protNFe.cStat: ' . $result->protNFe->infProt->cStat;
-        $r[] = 'protNFe.xMotivo: ' . $result->protNFe->infProt->xMotivo;
+        $r[] = 'cStat: ' . $xml->cStat;
+        $r[] = 'xMotivo: ' . $xml->xMotivo;
+        $r[] = 'dhRecbto: ' . $xml->dhRecbto;
+        $r[] = 'protNFe.chNFe: ' . $xml->protNFe->infProt->chNFe;
+        $r[] = 'protNFe.dhRecbto: ' . $xml->protNFe->infProt->dhRecbto;
+        $r[] = 'protNFe.nProt: ' . $xml->protNFe->infProt->nProt;
+        $r[] = 'protNFe.digVal: ' . $xml->protNFe->infProt->digVal;
+        $r[] = 'protNFe.cStat: ' . $xml->protNFe->infProt->cStat;
+        $r[] = 'protNFe.xMotivo: ' . $xml->protNFe->infProt->xMotivo;
 
         return new Response(implode('<br>', $r));
     }
