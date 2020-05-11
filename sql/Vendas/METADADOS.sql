@@ -1,20 +1,58 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 
+
+DROP TABLE IF EXISTS `ven_plano_pagto`;
+
+CREATE TABLE `ven_plano_pagto`
+(
+    `id`                 bigint(20)  NOT NULL AUTO_INCREMENT,
+    `codigo`             varchar(20) NOT NULL,
+    `descricao`          varchar(200),
+    `json_data`          json,
+
+    UNIQUE KEY `UK_ven_plano_pagto` (`codigo`),
+
+    -- campos de controle
+    PRIMARY KEY (`id`),
+    `inserted`           datetime    NOT NULL,
+    `updated`            datetime    NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)  NOT NULL,
+    `user_inserted_id`   bigint(20)  NOT NULL,
+    `user_updated_id`    bigint(20)  NOT NULL,
+    KEY `K_ven_plano_pagto_estabelecimento` (`estabelecimento_id`),
+    KEY `K_ven_plano_pagto_user_inserted` (`user_inserted_id`),
+    KEY `K_ven_plano_pagto_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_ven_plano_pagto_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_ven_plano_pagto_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_ven_plano_pagto_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_swedish_ci;
+
+
 DROP TABLE IF EXISTS `ven_venda`;
 
 CREATE TABLE `ven_venda`
 (
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
     `dt_venda`           datetime       NOT NULL,
+    `plano_pagto_id`     bigint(20)     NOT NULL,
     `cliente_id`         bigint(20),
+    `subtotal`           decimal(15, 2) NOT NULL,
+    `descontos`          decimal(15, 2) NOT NULL,
     `valor_total`        decimal(15, 2) NOT NULL,
     `json_data`          json,
+
+    KEY `K_ven_venda_plano_pagto` (`plano_pagto_id`),
+    CONSTRAINT `FK_ven_venda_plano_pagto` FOREIGN KEY (`plano_pagto_id`) REFERENCES `ven_plano_pagto` (`id`),
 
     KEY `K_ven_venda_cliente` (`cliente_id`),
     CONSTRAINT `FK_ven_venda_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `crm_cliente` (`id`),
 
-    -- campo de controle
+    -- campos de controle
     PRIMARY KEY (`id`),
     `inserted`           datetime       NOT NULL,
     `updated`            datetime       NOT NULL,
@@ -53,7 +91,7 @@ CREATE TABLE `ven_venda_item`
     CONSTRAINT `FK_ven_venda_item_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`),
     CONSTRAINT `FK_ven_venda_item_venda` FOREIGN KEY (`venda_id`) REFERENCES `ven_venda` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 
-    -- campo de controle
+    -- campos de controle
     PRIMARY KEY (`id`),
     `inserted`           datetime       NOT NULL,
     `updated`            datetime       NOT NULL,
