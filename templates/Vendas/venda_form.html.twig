@@ -28,42 +28,141 @@
                     <div class="col-md-2 col-sm-12">
                         {{ form_row(form.id) }}
                     </div>
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-2 col-sm-12">
                         {{ form_row(form.dtVenda) }}
                     </div>
-                    <div class="col-md-6 col-sm-12">
+                    <div class="col-md-4 col-sm-12">
                         {{ form_row(form.status) }}
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.jsonData.canal) }}
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-7 col-sm-12">
-                        {{ form_row(form.cliente) }}
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.vendedor) }}
                     </div>
                     <div class="col-md-5 col-sm-12">
+                        {{ form_row(form.cliente) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
                         {{ form_row(form.planoPagto) }}
                     </div>
                 </div>
 
 
-                <div class="row">
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.subtotal) }}
+                <div class="row mb-3">
+                    <div class="col text-right">
+                        <button type="submit" class="btn btn-primary" value="Salvar">
+                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                        </button>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.desconto) }}
+                </div>
+
+
+                <div class="card">
+                    <div class="card-header">
+
+                        <div class="row">
+                            <div class="col-8">
+                                <h5>Itens</h5>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.valorTotal) }}
+
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12">
+
+                                <div class="form-group">
+                                    <label for="item_produto">Produto</label>
+                                    <select id="item_produto" name="item[produto]"
+                                            data-route-url="/est/produto/findProdutoByIdOuNome"
+                                            class="form-control">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label for="item_qtde">Qtde</label>
+                                    <div class="input-group">
+                                        <input type="text" id="item_qtde" name="item[qtde]"
+                                               disabled="disabled" class="crsr-dec3 form-control">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="item_unidade">UN</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label for="item_precoVenda">Vlr Un</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$</span>
+                                        </div>
+                                        <input type="text" id="item_precoVenda" name="item[precoVenda]"
+                                               disabled="disabled" class="crsr-dec3 form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label for="item_desconto">Desc</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$</span>
+                                        </div>
+                                        <input type="text" id="item_desconto" name="item[desconto]"
+                                               disabled="disabled" class="crsr-dec3 form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label for="item_valorTotal">Vlr Total</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$</span>
+                                        </div>
+                                        <input type="text" id="item_valorTotal" name="item[valorTotal]"
+                                               disabled="disabled" class="crsr-dec3 form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
 
 
                 <div class="row">
-                    <div class="col text-right">
-                        <button type="submit" class="btn btn-primary" value="Salvar">
-                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                        </button>
+                    <div class="col-md-8 col-sm-12">
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.subtotal) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.desconto) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.valorTotal) }}
                     </div>
                 </div>
 
@@ -83,5 +182,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/RH/colaborador_form.js') }}"></script>
+    <script src="{{ asset('build/Vendas/venda_form.js') }}"></script>
 {% endblock %}

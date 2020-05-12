@@ -544,7 +544,7 @@ class ProdutoController extends FormListController
             }
             $select2js = Select2JsUtils::toSelect2DataFn($produtos, function ($e) {
                 /** @var Produto $e */
-                return ($e->jsonData['titulo'] ?: $e->nome) . ' (' . $e->getId() . ')';
+                return str_pad($e->getId(), 9, '0', STR_PAD_LEFT) . ' - ' . $e->nome;
             });
             return new JsonResponse(
                 ['results' => $select2js]
@@ -555,5 +555,38 @@ class ProdutoController extends FormListController
             );
         }
     }
+
+    /**
+     *
+     * @Route("/est/produto/findProdutosByIdOuNomeJson/", name="est_produto_findProdutosByIdOuNomeJson")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findProdutosByIdOuNomeJson(Request $request, EntityIdUtils $entityIdUtils): JsonResponse
+    {
+        try {
+            $str = $request->get('term');
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+
+            if (ctype_digit($str)) {
+                $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str]]);
+            } else {
+                $produtos = $repoProduto->findByFiltersSimpl([[['nome'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
+            }
+
+            $produtosSerials = $entityIdUtils->serializeAll($produtos);
+
+            return new JsonResponse(
+                ['results' => $produtosSerials]
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['results' => []]
+            );
+        }
+    }
+
 
 }

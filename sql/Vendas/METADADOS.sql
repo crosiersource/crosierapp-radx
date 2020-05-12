@@ -35,19 +35,24 @@ CREATE TABLE `ven_plano_pagto`
 
 
 
-INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
 VALUES (null, now(), now(), 0, 1, 1, 1, '001', 'A VISTA (ESPÉCIE)', true);
 
-INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
 VALUES (null, now(), now(), 0, 1, 1, 1, '002', 'A VISTA (CHEQUE)', true);
 
-INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
 VALUES (null, now(), now(), 0, 1, 1, 1, '003', 'A VISTA (CARTÃO DÉBITO)', true);
 
-INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
 VALUES (null, now(), now(), 0, 1, 1, 1, '011', 'CARTÃO DE CRÉDITO (30DD/VENCTO)', true);
 
-INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
 VALUES (null, now(), now(), 0, 1, 1, 1, '012', 'CARTÃO DE CRÉDITO (2X)', true);
 
 
@@ -58,6 +63,7 @@ CREATE TABLE `ven_venda`
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
     `dt_venda`           datetime       NOT NULL,
     `plano_pagto_id`     bigint(20)     NOT NULL,
+    `vendedor_id`        bigint(20),
     `cliente_id`         bigint(20),
     `subtotal`           decimal(15, 2) NOT NULL,
     `desconto`           decimal(15, 2) NOT NULL,
@@ -67,6 +73,9 @@ CREATE TABLE `ven_venda`
 
     KEY `K_ven_venda_plano_pagto` (`plano_pagto_id`),
     CONSTRAINT `FK_ven_venda_plano_pagto` FOREIGN KEY (`plano_pagto_id`) REFERENCES `ven_plano_pagto` (`id`),
+
+    KEY `K_ven_venda_vendedor` (`plano_pagto_id`),
+    CONSTRAINT `FK_ven_venda_vendedor` FOREIGN KEY (`vendedor_id`) REFERENCES `rh_colaborador` (`id`),
 
     KEY `K_ven_venda_cliente` (`cliente_id`),
     CONSTRAINT `FK_ven_venda_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `crm_cliente` (`id`),

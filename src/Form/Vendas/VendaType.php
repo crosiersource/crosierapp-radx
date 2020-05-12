@@ -8,7 +8,9 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\PlanoPagto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
@@ -76,8 +78,8 @@ class VendaType extends AbstractType
                 'attr' => ['readonly' => 'readonly']
             ]);
 
-            $modoChoices = $choices['planosPagto'] ?? $this->doctrine->getRepository(PlanoPagto::class)
-                    ->findByFiltersSimpl([['ativo', 'EQ', true]], ['codigo' => 'ASC']);
+            $modoChoices = $this->doctrine->getRepository(PlanoPagto::class)
+                ->findByFiltersSimpl([['ativo', 'EQ', true]], ['codigo' => 'ASC']);
 
             $builder->add('planoPagto', EntityType::class, [
                 'label' => 'Modo',
@@ -90,6 +92,23 @@ class VendaType extends AbstractType
                 },
                 'required' => false,
                 'attr' => ['class' => 'autoSelect2 focusOnReady']
+            ]);
+
+
+            $vendedorChoices = $this->doctrine->getRepository(Colaborador::class)
+                ->findByFiltersSimpl([['atual', 'EQ', true]], ['nome' => 'ASC']);
+
+            $builder->add('vendedor', EntityType::class, [
+                'label' => 'Vendedor',
+                'class' => Colaborador::class,
+                'placeholder' => '...',
+                'choices' => $vendedorChoices,
+                'empty_data' => 0,
+                'choice_label' => function (?Colaborador $colaborador) {
+                    return $colaborador ? $colaborador->nome : null;
+                },
+                'required' => false,
+                'attr' => ['class' => 'autoSelect2']
             ]);
 
             $clientes = [null];
