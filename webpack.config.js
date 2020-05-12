@@ -82,6 +82,8 @@ Encore
 
     .addEntry('CRM/cliente_list', './assets/js/CRM/cliente_list.js')
 
+    .addEntry('Vendas/vendasPorDia_list', './assets/js/Vendas/vendasPorDia_list.js')
+
 
 
     /*

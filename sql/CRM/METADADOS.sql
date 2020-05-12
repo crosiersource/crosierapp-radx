@@ -26,3 +26,7 @@ CREATE TABLE `crm_cliente`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
+
+
+
+INSERT INTO crm_cliente(id, nome, documento, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id) value (null, 'CONSUMIDOR NÃO IDENTIFICADO', '99999999999', now(), now(), 0, 1, 1, 1);

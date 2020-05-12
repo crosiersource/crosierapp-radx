@@ -6,9 +6,13 @@ namespace App\Controller\CRM;
 use App\Form\CRM\ClienteType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\CRM\ClienteEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -107,6 +111,31 @@ class ClienteController extends FormListController
     public function delete(Request $request, Cliente $cliente): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->doDelete($request, $cliente, []);
+    }
+
+
+    /**
+     *
+     * @Route("/crm/cliente/findClienteByStr/", name="crm_cliente_findClienteByStr")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_CRM", statusCode=403)
+     */
+    public function findClienteByStr(Request $request): JsonResponse
+    {
+        $str = $request->get('term') ?? '';
+        /** @var ClienteRepository $repoCliente */
+        $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+        $clientes = $repoCliente->findByFiltersSimpl([[['nome','documento'], 'LIKE', $str]], ['nome' => 'ASC']);
+        $select2js = Select2JsUtils::toSelect2DataFn($clientes, function ($e) {
+            /** @var Cliente $e */
+            return StringUtils::mascararCnpjCpf($e->documento) . ' - ' . $e->nome;
+        });
+        return new JsonResponse(
+            ['results' => $select2js]
+        );
     }
 
 

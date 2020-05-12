@@ -2,7 +2,14 @@
 
 namespace App\Controller\Estoque;
 
-use App\Business\Estoque\ProdutoBusiness;
+use App\Form\Estoque\ProdutoType;
+use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Estoque\ProdutoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoComposicao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoImagem;
@@ -12,13 +19,6 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoImagemEntity
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoComposicaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoImagemRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
-use App\Form\Estoque\ProdutoType;
-use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
-use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
-use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
-use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;

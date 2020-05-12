@@ -6,21 +6,22 @@ DROP TABLE IF EXISTS `ven_plano_pagto`;
 
 CREATE TABLE `ven_plano_pagto`
 (
-    `id`                 bigint(20)  NOT NULL AUTO_INCREMENT,
-    `codigo`             varchar(20) NOT NULL,
-    `descricao`          varchar(200),
+    `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
+    `codigo`             varchar(20)  NOT NULL,
+    `descricao`          varchar(200) NOT NULL,
+    `ativo`              bit(1)       NOT NULL,
     `json_data`          json,
 
     UNIQUE KEY `UK_ven_plano_pagto` (`codigo`),
 
     -- campos de controle
     PRIMARY KEY (`id`),
-    `inserted`           datetime    NOT NULL,
-    `updated`            datetime    NOT NULL,
+    `inserted`           datetime     NOT NULL,
+    `updated`            datetime     NOT NULL,
     `version`            int(11),
-    `estabelecimento_id` bigint(20)  NOT NULL,
-    `user_inserted_id`   bigint(20)  NOT NULL,
-    `user_updated_id`    bigint(20)  NOT NULL,
+    `estabelecimento_id` bigint(20)   NOT NULL,
+    `user_inserted_id`   bigint(20)   NOT NULL,
+    `user_updated_id`    bigint(20)   NOT NULL,
     KEY `K_ven_plano_pagto_estabelecimento` (`estabelecimento_id`),
     KEY `K_ven_plano_pagto_user_inserted` (`user_inserted_id`),
     KEY `K_ven_plano_pagto_user_updated` (`user_updated_id`),
@@ -33,6 +34,23 @@ CREATE TABLE `ven_plano_pagto`
   COLLATE = utf8_swedish_ci;
 
 
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '001', 'A VISTA (ESPÉCIE)', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '002', 'A VISTA (CHEQUE)', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '003', 'A VISTA (CARTÃO DÉBITO)', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '011', 'CARTÃO DE CRÉDITO (30DD/VENCTO)', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id, codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '012', 'CARTÃO DE CRÉDITO (2X)', true);
+
+
 DROP TABLE IF EXISTS `ven_venda`;
 
 CREATE TABLE `ven_venda`
@@ -42,8 +60,9 @@ CREATE TABLE `ven_venda`
     `plano_pagto_id`     bigint(20)     NOT NULL,
     `cliente_id`         bigint(20),
     `subtotal`           decimal(15, 2) NOT NULL,
-    `descontos`          decimal(15, 2) NOT NULL,
+    `desconto`           decimal(15, 2) NOT NULL,
     `valor_total`        decimal(15, 2) NOT NULL,
+    `status`             varchar(50)    NOT NULL,
     `json_data`          json,
 
     KEY `K_ven_venda_plano_pagto` (`plano_pagto_id`),

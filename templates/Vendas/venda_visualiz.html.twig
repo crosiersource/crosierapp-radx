@@ -1,0 +1,139 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+{% block page_content %}
+
+
+    <div class="container">
+        <div class="card" style="margin-bottom: 50px;">
+            <div class="card-header">
+
+                <div class="d-flex flex-wrap align-items-center">
+
+                    <div class="mr-1">
+                        <h3>Venda</h3>
+                    </div>
+
+                    <div class="d-sm-flex flex-nowrap ml-auto">
+
+                        <a role="button" class="btn btn-outline-primary"
+                           href="{{ url('crd_venda_carnePDF', {'venda': venda.id}) }}" target="_blank">
+                            <i class="fas fa-print" aria-hidden="true"></i> Imprimir Carnê
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <form action="{{ url('crd_venda_form') }}" method="post" name="formVenda" id="formVenda">
+
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" for="venda_cliente">Cliente</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="venda_cliente" readonly
+                                   class="form-control" value="{{ venda.cliente.cpf|mascararCnpjCpf }} - {{ venda.cliente.nome }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" for="venda_dtCompra">Data</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="venda_dtCompra" readonly
+                                   class="form-control" value="{{ venda.dtCompra|date('d/m/Y') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" for="venda_autorizado">Autorizado</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="venda_autorizado" readonly
+                                   class="form-control" value="{{ venda.quemComprou|default('') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" for="venda_subTotal">Subtotal</label>
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">R$ </span>
+                                </div>
+                                <input type="text" id="venda_subTotal" readonly
+                                       class="crsr-money form-control" value="{{ venda.subTotal|number_format(2,',','.')  }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" for="venda_valor">Valor Total</label>
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">R$ </span>
+                                </div>
+                                <input type="text" id="venda_valor" readonly
+                                       class="crsr-money form-control" value="{{ venda.total|number_format(2,',','.')  }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" for="venda_planoPagto">Plano Pagto</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="venda_planoPagto" readonly
+                                   class="form-control" value="{{ venda.codPlanoPagto|default('') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" for="venda_pvs">PV(s)</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="venda_pvs" readonly
+                                   class="form-control" value="{{ venda.pv|default('') }}">
+                        </div>
+                    </div>
+
+
+                    {% if venda.parcelas is defined %}
+                        <div class="table-responsive-sm mb-3">
+
+
+                            <table class="table table-sm table-striped table-hover crsr-datatable display compact">
+                                <thead>
+                                <tr>
+                                    <td>Parcela</td>
+                                    <td>Vencto</td>
+                                    <td>Valor</td>
+                                </tr>
+                                </thead>
+                                {% for parcela in venda.parcelas %}
+                                    <tr>
+                                        <td>{{ "%02d"|format(parcela.numParcela) }}</td>
+                                        <td class="text-center">{{ parcela.dtVencto|date('d/m/Y') }}</td>
+                                        <td class="text-right">{{ parcela.valor|number_format(2,',','.') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+
+                        </div>
+
+                    {% endif %}
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/Crediario/venda.js') }}"></script>
+{% endblock %}

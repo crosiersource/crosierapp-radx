@@ -2,15 +2,18 @@
 
 namespace App\Controller\Vendas;
 
-use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use App\Form\Vendas\VendaType;
+use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
+use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -24,7 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @package Cliente\Controller\Crediario
  * @author Carlos Eduardo Pauluk
  */
-class VendaController extends BaseController
+class VendaController extends FormListController
 {
 
     private Pdf $knpSnappyPdf;
@@ -40,165 +43,83 @@ class VendaController extends BaseController
     }
 
     /**
+     * @required
+     * @param VendaEntityHandler $entityHandler
+     */
+    public function setEntityHandler(VendaEntityHandler $entityHandler): void
+    {
+        $this->entityHandler = $entityHandler;
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     */
+    public function getFilterDatas(array $params): array
+    {
+        return [
+            new FilterData(['nome', 'cpf'], 'LIKE', 'str', $params),
+        ];
+    }
+
+    /**
      *
-     * @Route("/crd/venda/form", name="crd_venda_form")
+     * @Route("/ven/venda/form/{id}", name="ven_venda_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
-     * @return Response
-     *
-     * @IsGranted("ROLE_CREDIARIO", statusCode=403)
-     * @throws \Exception
+     * @param Venda|null $venda
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
-    public function formVenda(Request $request): Response
+    public function form(Request $request, Venda $venda = null)
     {
-        $params = [];
+        $params = [
+            'listRoute' => 'ven_venda_listPorDia',
+            'typeClass' => VendaType::class,
+            'formView' => 'Vendas/venda_form.html.twig',
+            'formRoute' => 'ven_venda_form',
+            'formPageTitle' => 'Venda'
+        ];
 
-        $venda = $request->get('venda');
-        if ($venda ?? false) {
-
-            $clienteId = $venda['cliente'];
-            /** @var ClienteRepository $repoCliente */
-            $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
-            /** @var Cliente $cliente */
-            $cliente = $repoCliente->find($clienteId);
-
-
-            $params['clienteOptions'] = json_encode(
-                Select2JsUtils::toSelect2DataFn([$cliente],
-                    function ($e) {
-                        /** @var Cliente $e */
-                        return $e->nome;
-                    },
-                    $clienteId));
-
-
-            $numParcelas = $venda['numParcelas'];
-
-            $valorTotal = DecimalUtils::parseStr($venda['valor']);
-            $dtPrimeira = DateTimeUtils::parseDateStr($venda['dtPrimeira']);
-
-            $parcelas = $this->vendaBusiness->gerarParcelas($valorTotal, $numParcelas, $dtPrimeira);
-
-            $params['parcelas'] = $parcelas;
-
-            if ($venda['pvs'] ?? false) {
-                $venda['pvs'] = implode(',', $venda['pvs']);
-            }
-
-            $params['venda'] = $venda;
-
-            if ($request->get('btnSalvar')) {
-                try {
-                    $venda = $this->vendaBusiness->salvarVenda($params);
-                    return $this->redirectToRoute('crd_venda_visualiz', ['venda' => $venda->getId()]);
-                } catch (ViewException $e) {
-                    $this->addFlash('error', $e->getMessage());
-                    $this->getLogger()->error($e->getMessage());
-                } catch (\Throwable $e) {
-                    $this->addFlash('error', 'Erro ao salvar venda');
-                    $this->getLogger()->error($e->getMessage());
-                }
-            }
-        } else {
-            $dtPrimeira = new \DateTime();
-            $dtPrimeira->setDate($dtPrimeira->format('Y'), (int)$dtPrimeira->format('m') + 1, $dtPrimeira->format('d'))->setTime(0, 0);
-            $venda['dtPrimeira'] = $dtPrimeira->format('d/m/Y');
-            $params['venda'] = $venda;
+        if (!$venda) {
+            $venda = new Venda();
+            $venda->dtVenda = new \DateTime();
+            $venda->status = 'PV';
+            $venda->subtotal = 0.0;
+            $venda->desconto = 0.0;
         }
-        return $this->doRender('/Crediario/venda.html.twig', $params);
+
+        return $this->doForm($request, $venda, $params);
     }
-
-    /**
-     *
-     * @Route("/crd/venda/visualiz/{venda}", name="crd_venda_visualiz", requirements={"venda"="\d+"})
-     * @param Venda $venda
-     * @return Response
-     *
-     * @IsGranted("ROLE_CREDIARIO", statusCode=403)
-     */
-    public function visualizVenda(Venda $venda): Response
-    {
-        $params = [];
-        $params['venda'] = $venda;
-        return $this->doRender('/Crediario/venda_visualiz.html.twig', $params);
-    }
-
-    /**
-     *
-     * @Route("/crd/venda/carnePDF/{venda}", name="crd_venda_carnePDF", requirements={"venda"="\d+"})
-     * @ParamConverter("venda", class="App\Entity\Crediario\Venda", options={"id" = "venda"})
-     * @param Venda $venda
-     *
-     * @return Response
-     * @throws \Exception
-     * @IsGranted("ROLE_CREDIARIO", statusCode=403)
-     */
-    public function carnePDF(Venda $venda): Response
-    {
-        $params['venda'] = $venda;
-        $params['agora'] = new \DateTime();
-        $html = $this->renderView('/Crediario/PDF/carne.html.twig', $params);
-
-        $this->knpSnappyPdf->setOption('page-width', '8cm');
-        $this->knpSnappyPdf->setOption('page-height', '32cm');
-
-        return new PdfResponse(
-            $this->knpSnappyPdf->getOutputFromHtml($html),
-            'carne.pdf', 'application/pdf', 'inline'
-        );
-
-    }
-
-    /**
-     *
-     * @Route("/crd/venda/carneHTML/{venda}", name="crd_venda_carneHTML", requirements={"venda"="\d+"})
-     * @ParamConverter("venda", class="App\Entity\Crediario\Venda", options={"id" = "venda"})
-     * @param Venda $venda
-     *
-     * @return Response
-     * @throws \Exception
-     * @IsGranted("ROLE_CREDIARIO", statusCode=403)
-     */
-    public function carneHTML(Venda $venda): Response
-    {
-        $params['venda'] = $venda;
-        $params['agora'] = new \DateTime();
-        $html = $this->renderView('/Crediario/PDF/carne.html.twig', $params);
-
-        return $this->render('/Crediario/PDF/carne.html.twig', $params);
-
-    }
-
 
     /**
      *
      * @Route("/ven/venda/listPorDia/{dia}", name="ven_venda_listPorDia")
+     * @param Request $request
      * @param \DateTime $dia
      * @return Response
      *
-     * @throws \Exception
-     * @IsGranted("ROLE_CREDIARIO", statusCode=403)
+     * @throws ViewException
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function vendasPorDia(\DateTime $dia = null): Response
+    public function vendasPorDia(Request $request, \DateTime $dia = null): Response
     {
         if (!$dia) {
             $dia = new \DateTime();
         }
         $params = [];
 
-        /** @var VendaRepository $repoVenda */
-        $repoVenda = $this->getDoctrine()->getRepository(Venda::class);
-        $vendas = $repoVenda->findPorDia($dia);
-
-
-        $params['vendas'] = $vendas;
         $params['dia'] = $dia->format('d/m/Y');
 
-        $params['valorTotalVendasDia'] = $repoVenda->findTotalVendasDia($dia);
-        $params['valorTotalVendasDia_semContrato'] = $repoVenda->findTotalVendasDia($dia, false);
-        $params['valorTotalVendasDia_comContrato'] = $repoVenda->findTotalVendasDia($dia, true);
-
-
-        return $this->doRender('/Crediario/vendas_list.html.twig', $params);
+        $params = [
+            'formRoute' => 'ven_venda_form',
+            'listView' => 'Vendas/vendasPorDia_list.html.twig',
+            'listRoute' => 'ven_venda_listPorDia',
+            'listPageTitle' => 'Vendas',
+            'listPageSubtitle' => $params['dia'],
+            'listId' => 'ven_venda_listPorDia'
+        ];
+        return $this->doListSimpl($request, $params);
     }
 
 

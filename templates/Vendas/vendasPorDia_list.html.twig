@@ -1,0 +1,94 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+
+
+            <div class="d-flex flex-wrap align-items-center">
+
+                <div class="d-sm-flex text-nowrap mr-1">
+                    <h3 class="text-dark">Vendas</h3>
+                </div>
+
+                <div class="d-sm-flex ml-auto">
+
+
+                    <input type="text" class="form-control" id="filterDia"
+                           name="filter[dia]" data-mask="00/00/0000"
+                           style="width: 180px; text-align: center"
+                           value="{{ dia|default('') }}">
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="card-body">
+
+
+            <div class="table-responsive-sm">
+
+                <table class="table table-sm table-striped table-hover crsr-datatable">
+
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Id</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Dados</th>
+                        <th scope="col">Valor Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for venda in dados %}
+
+
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ venda.id }}</td>
+                            <td>
+                                    {{ venda.cliente.documento|default('')|mascararCnpjCpf }} - {{ venda.cliente.nome }}
+                            </td>
+                            <td>
+                                <div class="float-left">
+                                    Plano Pagto: {{ venda.planoPagto.codigo }}<br>
+                                </div>
+                            </td>
+                            <td class="text-right">
+                                R$ {{ venda.valorTotal|number_format(2,',','.') }}
+                            </td>
+                            <td class="text-right">
+
+                                <a class="btn btn-sm btn-primary"
+                                   href="{{ url('ven_venda_form', {'venda':venda.id}) }}"
+                                   role="button" title="Visualizar venda">
+                                    <i class="far fa-file-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/Vendas/vendasPorDia_list.js') }}"></script>
+{% endblock %}
