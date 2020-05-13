@@ -30,6 +30,39 @@
 
         <div class="card-body">
 
+            <form name="form_listReposicao_filter" id="form_listReposicao_filter">
+                <div class="row">
+
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_dtVenda" class="required">Dt Venda</label>
+                            <input type="text" id="filter_dtVenda" name="filter[dtVenda]"
+                                   class="crsr-date form-control" maxlength="10"
+                                   value="{{ filter['dtVenda']|default('') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_canal" class="required">Canal</label>
+                            <select id="filter_canal" name="filter[canal]"
+                                    data-options="{{ canais }}"
+                                    class="form-control autoSelect2"
+                                    data-val="{{ filter['canal']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-12 text-right">
+                        <div class="form-group">
+                            <label for="btnFiltrar" class="required">&nbsp;</label>
+                            <button type="submit" class="btn btn-block btn-primary" id="btnFiltrar">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
 
             <div class="table-responsive-sm">
 

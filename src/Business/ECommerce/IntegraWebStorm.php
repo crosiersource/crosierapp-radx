@@ -3,17 +3,6 @@
 
 namespace App\Business\ECommerce;
 
-use App\Entity\Estoque\Depto;
-use App\Entity\Estoque\Grupo;
-use App\Entity\Estoque\Produto;
-use App\Entity\Estoque\Subgrupo;
-use App\EntityHandler\Estoque\DeptoEntityHandler;
-use App\EntityHandler\Estoque\GrupoEntityHandler;
-use App\EntityHandler\Estoque\ProdutoEntityHandler;
-use App\EntityHandler\Estoque\SubgrupoEntityHandler;
-use App\Repository\Estoque\DeptoRepository;
-use App\Repository\Estoque\GrupoRepository;
-use App\Repository\Estoque\SubgrupoRepository;
 use CrosierSource\CrosierLibBaseBundle\Business\BaseBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
@@ -21,6 +10,17 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\WebUtils\WebUtils;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\DeptoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\GrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\SubgrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\SubgrupoRepository;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Security;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;

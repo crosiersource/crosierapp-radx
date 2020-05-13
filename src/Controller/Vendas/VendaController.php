@@ -158,13 +158,14 @@ class VendaController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['nome', 'cpf'], 'LIKE', 'str', $params),
+            new FilterData(['dtVenda'], 'EQ', 'dtVenda', $params),
+            new FilterData(['canal'], 'EQ', 'canal', $params),
         ];
     }
 
     /**
      *
-     * @Route("/ven/venda/listPorDia/{dia}", name="ven_venda_listPorDia")
+     * @Route("/ven/venda/listPorDia", name="ven_venda_listPorDia")
      * @param Request $request
      * @param \DateTime $dia
      * @return Response
@@ -172,14 +173,16 @@ class VendaController extends FormListController
      * @throws ViewException
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function vendasPorDia(Request $request, \DateTime $dia = null): Response
+    public function vendasPorDia(Request $request): Response
     {
-        if (!$dia) {
-            $dia = new \DateTime();
-        }
         $params = [];
 
-        $params['dia'] = $dia->format('d/m/Y');
+        $filter = $request->get('filter');
+
+        if (!isset($filter['dtVenda'])) {
+            $params['fixedFilters']['dtVenda'] = (new \DateTime())->format('Y-m-d');
+        }
+
 
         $params = [
             'formRoute' => 'ven_venda_form',
