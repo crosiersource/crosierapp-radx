@@ -65,16 +65,6 @@ class VendaController extends FormListController
     }
 
 
-    /**
-     * @param array $params
-     * @return array
-     */
-    public function getFilterDatas(array $params): array
-    {
-        return [
-            new FilterData(['nome', 'cpf'], 'LIKE', 'str', $params),
-        ];
-    }
 
     /**
      *
@@ -162,6 +152,17 @@ class VendaController extends FormListController
 
 
     /**
+     * @param array $params
+     * @return array
+     */
+    public function getFilterDatas(array $params): array
+    {
+        return [
+            new FilterData(['nome', 'cpf'], 'LIKE', 'str', $params),
+        ];
+    }
+
+    /**
      *
      * @Route("/ven/venda/listPorDia/{dia}", name="ven_venda_listPorDia")
      * @param Request $request
@@ -195,7 +196,7 @@ class VendaController extends FormListController
      *
      * @Route("/ven/venda/deleteItem/{item}", name="ven_venda_deleteItem", requirements={"item"="\d+"})
      * @param Request $request
-     * @param Grupo $grupo
+     * @param VendaItem $item
      * @return RedirectResponse
      *
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
