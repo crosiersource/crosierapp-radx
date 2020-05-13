@@ -2,14 +2,10 @@
 
 namespace App\Form\Vendas;
 
-use App\Entity\Relatorios\RelCliente01;
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
-use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\PlanoPagto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
@@ -17,9 +13,7 @@ use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -78,20 +72,20 @@ class VendaType extends AbstractType
                 'attr' => ['readonly' => 'readonly']
             ]);
 
-            $modoChoices = $this->doctrine->getRepository(PlanoPagto::class)
+            $planoChoices = $this->doctrine->getRepository(PlanoPagto::class)
                 ->findByFiltersSimpl([['ativo', 'EQ', true]], ['codigo' => 'ASC']);
 
             $builder->add('planoPagto', EntityType::class, [
-                'label' => 'Modo',
+                'label' => 'Pagto',
                 'class' => PlanoPagto::class,
                 'placeholder' => '...',
-                'choices' => $modoChoices,
+                'choices' => $planoChoices,
                 'empty_data' => 0,
                 'choice_label' => function (?PlanoPagto $planoPagto) {
                     return $planoPagto ? $planoPagto->codigo . ' - ' . $planoPagto->descricao : null;
                 },
-                'required' => false,
-                'attr' => ['class' => 'autoSelect2 focusOnReady']
+                'required' => true,
+                'attr' => ['class' => 'autoSelect2']
             ]);
 
 
@@ -107,8 +101,8 @@ class VendaType extends AbstractType
                 'choice_label' => function (?Colaborador $colaborador) {
                     return $colaborador ? $colaborador->nome : null;
                 },
-                'required' => false,
-                'attr' => ['class' => 'autoSelect2']
+                'required' => true,
+                'attr' => ['class' => 'autoSelect2 ' . (!$venda->getId() ? 'focusOnReady' : '')]
             ]);
 
             $clientes = [null];
@@ -153,6 +147,7 @@ class VendaType extends AbstractType
                 'attr' => [
                     'class' => 'crsr-money'
                 ],
+                'disabled' => true,
                 'required' => false
             ]);
 

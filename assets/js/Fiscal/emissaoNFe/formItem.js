@@ -11,8 +11,6 @@ $(document).ready(function () {
     let $valorTotal = $('#nota_fiscal_item_valor_total');
 
     function resValorTotal() {
-        $valorTotal.val(valorTotal).maskMoney('mask');
-
         let qtde = $qtde.maskMoney('unmasked')[0];
         let valorUnit = $valorUnit.maskMoney('unmasked')[0];
 

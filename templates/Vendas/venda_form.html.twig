@@ -79,9 +79,8 @@
 
                                 <div class="form-group">
                                     <label for="item_produto">Produto</label>
-                                    <select id="item_produto" name="item[produto]"
-                                            data-route-url="/est/produto/findProdutoByIdOuNome"
-                                            class="form-control">
+                                    <input type="hidden" id="item_id" name="item[id]">
+                                    <select id="item_produto" name="item[produto]" class="form-control {{ e.id ? 'focusOnReady' : '' }}">
                                     </select>
                                 </div>
                             </div>
@@ -91,7 +90,7 @@
                                     <label for="item_qtde">Qtde</label>
                                     <div class="input-group">
                                         <input type="text" id="item_qtde" name="item[qtde]"
-                                               disabled="disabled" class="crsr-dec3 form-control">
+                                               class="crsr-dec3 form-control">
                                         <div class="input-group-append">
                                             <span class="input-group-text" id="item_unidade">UN</span>
                                         </div>
@@ -107,7 +106,7 @@
                                             <span class="input-group-text">R$</span>
                                         </div>
                                         <input type="text" id="item_precoVenda" name="item[precoVenda]"
-                                               disabled="disabled" class="crsr-dec3 form-control">
+                                               readonly="readonly" class="crsr-money form-control disabled">
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +119,7 @@
                                             <span class="input-group-text">R$</span>
                                         </div>
                                         <input type="text" id="item_desconto" name="item[desconto]"
-                                               disabled="disabled" class="crsr-dec3 form-control">
+                                               class="crsr-money form-control">
                                     </div>
                                 </div>
                             </div>
@@ -133,36 +132,103 @@
                                             <span class="input-group-text">R$</span>
                                         </div>
                                         <input type="text" id="item_valorTotal" name="item[valorTotal]"
-                                               disabled="disabled" class="crsr-dec3 form-control">
+                                               readonly="readonly" class="crsr-money form-control disabled">
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
-                    </div>
-                </div>
+                        <div class="table-responsive-sm">
+                            <table class="table table-sm table-striped table-hover">
+
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Produto</th>
+                                    <th scope="col">Qtde</th>
+                                    <th scope="col">Vlr Unit</th>
+                                    <th scope="col">Desc</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {% for item in e.itens %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ item.descricao }}</td>
+                                        <td class="text-right">{{ item.qtde|number_format(2,',','.') }}</td>
+                                        <td class="text-right">{{ item.precoVenda|number_format(2,',','.') }}</td>
+                                        <td class="text-right">{{ item.desconto|number_format(2,',','.') }}</td>
+                                        <td class="text-right">{{ item.total|number_format(2,',','.') }}</td>
+                                        <td class="text-right">
+                                            {% if e.status != 'FINALIZADO' %}
+
+                                                <button type="button" class="btn btn-sm btn-primary btnEditProduto"
+                                                        data-item-id="{{ item.id }}"
+                                                        data-item-produto-id="{{ item.produto.id }}"
+                                                        data-item-descricao="{{ item.descricao|default('') }}"
+                                                        data-item-unidade="{{ item.produto.jsonData.unidade|default('') }}"
+                                                        data-item-qtde="{{ item.qtde|default('') }}"
+                                                        data-item-preco-venda="{{ item.precoVenda|default('') }}"
+                                                        data-item-desconto="{{ item.desconto|number_format(2,',','.') }}">
+                                                    <i class="fas fa-wrench" aria-hidden="true"></i>
+                                                </button>
+
+                                                <button type="button" class="btn btn-sm btn-danger"
+                                                        data-url="{{ url('ven_venda_deleteItem', {'item': item.id}) }}"
+                                                        data-token="{{ csrf_token('ven_venda_deleteItem') }}"
+                                                        data-target="#confirmationModal" data-toggle="modal">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
 
 
-                <div class="row">
-                    <div class="col-md-8 col-sm-12">
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.subtotal) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-8 col-sm-12">
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.desconto) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-8 col-sm-12">
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.valorTotal) }}
+                        <div class="row">
+                            <div class="col-md-8 col-sm-12">
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Subtotal</label>
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.subtotal) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8 col-sm-12">
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Descontos</label>
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.desconto) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8 col-sm-12">
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Valor Total</label>
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form.valorTotal) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
