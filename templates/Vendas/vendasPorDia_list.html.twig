@@ -15,13 +15,6 @@
                 </div>
 
                 <div class="d-sm-flex ml-auto">
-
-
-                    <input type="text" class="form-control" id="filterDia"
-                           name="filter[dia]" data-mask="00/00/0000"
-                           style="width: 180px; text-align: center"
-                           value="{{ dia|default('') }}">
-
                 </div>
             </div>
 
@@ -37,7 +30,7 @@
                         <div class="form-group">
                             <label for="filter_dtVenda" class="required">Dt Venda</label>
                             <input type="text" id="filter_dtVenda" name="filter[dtVenda]"
-                                   class="crsr-date form-control" maxlength="10"
+                                   class="crsr-date form-control bootstrap-datepicker" maxlength="10"
                                    value="{{ filter['dtVenda'] }}">
                         </div>
                     </div>

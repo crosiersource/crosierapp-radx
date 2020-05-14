@@ -8,19 +8,34 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\WebUtils\WebUtils;
+use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\PlanoPagto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\VendaItem;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\CRM\ClienteEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\DeptoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\GrupoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\SubgrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaItemEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\SubgrupoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Security;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -55,6 +70,12 @@ class IntegraWebStorm extends BaseBusiness
 
     private ProdutoEntityHandler $produtoEntityHandler;
 
+    private VendaEntityHandler $vendaEntityHandler;
+
+    private VendaItemEntityHandler $vendaItemEntityHandler;
+
+    private ClienteEntityHandler $clienteEntityHandler;
+
     private UploaderHelper $uploaderHelper;
 
     private ?array $tiposCaracteristicasNaWebStorm = null;
@@ -72,7 +93,10 @@ class IntegraWebStorm extends BaseBusiness
                                 SubgrupoEntityHandler $subgrupoEntityHandler,
                                 ProdutoEntityHandler $produtoEntityHandler,
                                 UploaderHelper $uploaderHelper,
-                                ParameterBagInterface $params)
+                                ParameterBagInterface $params,
+                                ClienteEntityHandler $clienteEntityHandler,
+                                VendaEntityHandler $vendaEntityHandler,
+                                VendaItemEntityHandler $vendaItemEntityHandler)
     {
         $this->appConfigEntityHandler = $appConfigEntityHandler;
         $this->security = $security;
@@ -94,6 +118,9 @@ class IntegraWebStorm extends BaseBusiness
         $this->produtoEntityHandler = $produtoEntityHandler;
         $this->uploaderHelper = $uploaderHelper;
         $this->params = $params;
+        $this->clienteEntityHandler = $clienteEntityHandler;
+        $this->vendaEntityHandler = $vendaEntityHandler;
+        $this->vendaItemEntityHandler = $vendaItemEntityHandler;
     }
 
 
@@ -108,7 +135,7 @@ class IntegraWebStorm extends BaseBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <chave>TYzIFWVpnWzZVbKZjVtBnWXRkRWRVM=A3SWVUNPJVbxM1UxoVWWJDN4ZlRB1</chave>
+                    <chave>' . $this->chave . '</chave>
                     <acao>select</acao>
                     <modulo>registros</modulo>    
                     <filtro>
@@ -215,7 +242,7 @@ class IntegraWebStorm extends BaseBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <chave>TYzIFWVpnWzZVbKZjVtBnWXRkRWRVM=A3SWVUNPJVbxM1UxoVWWJDN4ZlRB1</chave>
+                    <chave>' . $this->chave . '</chave>
                     <acao>select</acao>
                     <modulo>registros</modulo>    
                     <filtro>
@@ -256,7 +283,7 @@ class IntegraWebStorm extends BaseBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <chave>TYzIFWVpnWzZVbKZjVtBnWXRkRWRVM=A3SWVUNPJVbxM1UxoVWWJDN4ZlRB1</chave>
+                    <chave>' . $this->chave . '</chave>
                     <acao>select</acao>
                     <modulo>registros</modulo>    
                     <filtro>
@@ -372,13 +399,11 @@ class IntegraWebStorm extends BaseBusiness
     }
 
     /**
-     * @param string $campo
      * @param int $ecommerceId_tipoCaracteristica
      * @param string $caracteristica
      * @return int
-     * @throws ViewException
      */
-    private function integraCaracteristica(string $campo, int $ecommerceId_tipoCaracteristica, string $caracteristica): int
+    private function integraCaracteristica(int $ecommerceId_tipoCaracteristica, string $caracteristica): int
     {
         $tiposCaracteristicasNaWebStorm = $this->selectTiposCaracteristicasNaWebStorm();
 
@@ -788,11 +813,11 @@ class IntegraWebStorm extends BaseBusiness
                 if ($jsonCampos[$campo]['tipo'] === 'tags') {
                     $valoresTags = explode(',', $valor);
                     foreach ($valoresTags as $valorTag) {
-                        $ecommerceId_caracteristica = $this->integraCaracteristica($campo, $ecommerceId_tipoCaracteristica, $valorTag);
+                        $ecommerceId_caracteristica = $this->integraCaracteristica($ecommerceId_tipoCaracteristica, $valorTag);
                         $xml .= '<caracteristicaProduto><idCaracteristica>' . $ecommerceId_caracteristica . '</idCaracteristica></caracteristicaProduto>';
                     }
                 } else {
-                    $ecommerceId_caracteristica = $this->integraCaracteristica($campo, $ecommerceId_tipoCaracteristica, $valor);
+                    $ecommerceId_caracteristica = $this->integraCaracteristica($ecommerceId_tipoCaracteristica, $valor);
                     $xml .= '<caracteristicaProduto><idCaracteristica>' . $ecommerceId_caracteristica . '</idCaracteristica></caracteristicaProduto>';
                 }
             }
@@ -817,7 +842,7 @@ class IntegraWebStorm extends BaseBusiness
                     }
                     // '%kernel.project_dir%/public/images/produtos'
                     $file1080 = $this->params->get('kernel.project_dir') . '/public' .
-                        str_replace($pathinfo['basename'], '', $parsedUrl['path'])  .
+                        str_replace($pathinfo['basename'], '', $parsedUrl['path']) .
                         $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
                     $imgUtils->save($file1080);
                 } else {
@@ -882,6 +907,218 @@ class IntegraWebStorm extends BaseBusiness
         }
 
         $produto->jsonData['ecommerce_integrado_em'] = (new \DateTime())->format('d/m/Y H:i:s');
+
+    }
+
+    /**
+     * @param \DateTime $dtVenda
+     */
+    public function obterVendas(\DateTime $dtVenda)
+    {
+        // 1 = Novo; 2 = Editado; 3 = Integrado
+        // Para pedidos que ainda não foram consultados, o status é 1
+        // Após o retorno pelo serviço, o status vai para 3
+        // Deve-se, portanto, consultar primeiro com 1 e depois com 3
+        $this->obterVendasPorStatus($dtVenda, 1);
+        $pedidos = $this->obterVendasPorStatus($dtVenda, 3);
+        foreach ($pedidos->pedido as $pedido) {
+            $this->integrarVenda($pedido);
+        }
+    }
+
+    /**
+     * @param \DateTime $dtVenda
+     * @param int $status
+     * @return \SimpleXMLElement|void|null
+     */
+    private function obterVendasPorStatus(\DateTime $dtVenda, int $status)
+    {
+
+
+        $dtIni = (clone $dtVenda)->setTime(0, 0);
+        $dtFim = (clone $dtVenda)->setTime(23, 59, 59, 999999);
+        $dtFim->setDate(2020, 05, 24);
+        $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>    
+                    <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <chave>' . $this->chave . '</chave>
+                    <acao>select</acao>
+                    <modulo>pedido</modulo>    
+                    <filtro>
+                        <idPedido></idPedido>
+                        <idCliente></idCliente>
+                        <cpf_cnpj></cpf_cnpj>
+                        <dataInicial>' . $dtIni->format('Y-m-d H:i:s') . '</dataInicial>
+                        <dataFinal>2020-05-24 23:59:59</dataFinal>
+                        <status></status>
+                        <statusNoWebservice>' . $status . '</statusNoWebservice>
+                    </filtro>
+                    </ws_integracao>]]>';
+
+        $client = $this->getNusoapClientExportacaoInstance();
+
+        $arResultado = $client->call('pedidoSelect', [
+            'xml' => utf8_decode($xml)
+        ]);
+
+        if ($client->faultcode) {
+            throw new \RuntimeException($client->faultcode);
+        }
+        if ($client->getError()) {
+            throw new \RuntimeException($client->getError());
+        }
+
+        $xmlResult = simplexml_load_string($arResultado);
+
+        if ($xmlResult->erros ?? false) {
+            throw new \RuntimeException($xmlResult->erros->erro->__toString());
+        }
+
+        return $xmlResult->resultado->filtro ?? null;
+
+    }
+
+    /**
+     * @param \SimpleXMLElement $pedido
+     * @throws ViewException
+     */
+    private function integrarVenda(\SimpleXMLElement $pedido)
+    {
+
+        /** @var Connection $conn */
+        $conn = $this->getDoctrine()->getConnection();
+
+        $venda = null;
+        try {
+            // verifica se já existe uma ven_venda com o json_data.webstorm_idPedido
+            $venda = $conn->fetchAssoc('SELECT * FROM ven_venda WHERE json_data->>"$.webstorm_idPedido" = :webstorm_idPedido', ['webstorm_idPedido' => $pedido->idPedido]);
+        } catch (DBALException $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        if ($venda) {
+            // se já existe, só confere o status
+            $vendaJsonData = json_decode($venda['json_data'], true);
+            if ($vendaJsonData['webstorm_status'] != $pedido->status) {
+                $vendaJsonData['webstorm_statusId'] = $pedido->status;
+                $vendaJsonData['webstorm_statusDesc'] = $pedido->desStatus;
+                $venda['json_data'] = json_encode($vendaJsonData);
+                try {
+                    $conn->update('ven_venda', $venda, ['id' => $venda['id']]);
+                } catch (DBALException $e) {
+                    throw new ViewException('Erro ao alterar status da venda. (webstorm_idPedido = ' . $pedido->idPedido . ')');
+                }
+            }
+            return;
+        }
+
+        $venda = new Venda();
+        $venda->dtVenda = DateTimeUtils::parseDateStr($pedido->dataPedido->__toString());
+
+        /** @var PlanoPagtoRepository $repoPlanoPagto */
+        $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
+        $planoPagtoNaoInformado = $repoPlanoPagto->findOneBy(['codigo' => 999]);
+        $venda->planoPagto = $planoPagtoNaoInformado;
+
+        /** @var ColaboradorRepository $repoColaborador */
+        $repoColaborador = $this->getDoctrine()->getRepository(Colaborador::class);
+        $vendedorNaoIdentificado = $repoColaborador->findOneBy(['cpf' => '99999999999']);
+        $venda->vendedor = $vendedorNaoIdentificado;
+        $venda->status = 'PV';
+
+        $cliente = null;
+        try {
+            // verifica se já existe uma ven_venda com o json_data.webstorm_idPedido
+            $cliente = $conn->fetchAssoc('SELECT id FROM crm_cliente WHERE documento = :documento', ['documento' => $pedido->cliente->cpf_cnpj]);
+        } catch (DBALException $e) {
+            $this->logger->error($e->getMessage());
+        }
+        if (!$cliente) {
+            $cliente = new Cliente();
+            $cliente->documento = $pedido->cliente->cpf_cnpj;
+            $cliente->nome = $pedido->cliente->nome;
+            $cliente->jsonData['canal'] = 'ECOMMERCE';
+            $cliente->jsonData['dtNascimento'] = $pedido->cliente->dataNascimento_dataCriacao;
+            $cliente->jsonData['email'] = $pedido->cliente->email;
+            $cliente->jsonData['sexo'] = $pedido->cliente->sexo;
+            $cliente = $this->clienteEntityHandler->save($cliente);
+        } else {
+            /** @var ClienteRepository $repoCliente */
+            $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+            $cliente = $repoCliente->find($cliente['id']);
+        }
+        $venda->cliente = $cliente;
+
+
+        $venda->jsonData['canal'] = 'ECOMMERCE';
+        $obs = [];
+        $obs[] = 'IP: ' . ($pedido->ip ?? null);
+        $obs[] = 'Entrega: ' . ($pedido->entrega->logradouro ?? null) . ', ' . ($pedido->entrega->numero ?? null) . ' (' . ($pedido->entrega->complemento ?? null) . ') ' .
+            ($pedido->entrega->bairro ?? null) . ' - ' . ($pedido->entrega->cidade ?? null) . '-' . ($pedido->entrega->estado ?? null) . ' - CEP: ' . ($pedido->entrega->cep ?? null) .
+            ' . Telefone: ' . ($pedido->entrega->telefone ?? null);
+        $obs[] = 'Frete: ' . ($pedido->entrega->frete ?? null);
+        $obs[] = '';
+        $obs[] = 'Pagamento: ' . ($pedido->pagamentos->pagamento->tipoFormaPagamento ?? null) . ' - ' .
+            ($pedido->pagamentos->pagamento->nomeFormaPagamento ?? null);
+        $obs[] = 'Desconto: ' . ($pedido->pagamentos->pagamento->desconto ?? null);
+        $obs[] = 'Parcelas: ' . ($pedido->pagamentos->pagamento->parcelas ?? null);
+        $obs[] = 'Valor Parcela: ' . ($pedido->pagamentos->pagamento->parcelas ?? null);
+
+
+        $venda->jsonData['obs'] = implode(PHP_EOL, $obs);
+
+        $venda->jsonData['webstorm_statusId'] = $pedido->status->__toString();
+        $venda->jsonData['webstorm_statusDesc'] = $pedido->desStatus->__toString();
+
+        $conn->beginTransaction();
+        $this->vendaEntityHandler->save($venda);
+
+        /** @var ProdutoRepository $repoProduto */
+        $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+
+        $ordem = 1;
+        foreach ($pedido->produtos->produto as $produtoWebStorm) {
+            /** @var Produto $produto */
+            $produto = null;
+            try {
+                // verifica se já existe uma ven_venda com o json_data.webstorm_idPedido
+                $sProduto = $conn->fetchAssoc('SELECT id FROM est_produto WHERE json_data->>"$.ecommerce_id" = :idProduto', ['idProduto' => $produtoWebStorm->idProduto->__toString()]);
+                $produto = $repoProduto->find($sProduto['id']);
+            } catch (DBALException $e) {
+                throw new ViewException('Erro ao integrar venda. Erro ao pesquisar produto (idProduto = ' . $produtoWebStorm->idProduto . ')');
+            }
+            $vendaItem = new VendaItem();
+            $vendaItem->venda = $venda;
+            $vendaItem->descricao = $produto->nome;
+            $vendaItem->ordem = $ordem++;
+            $vendaItem->precoVenda = $produtoWebStorm->valorUnitario->__toString();
+            $vendaItem->qtde = $produtoWebStorm->quantidade->__toString();
+            $vendaItem->subtotal = bcmul($vendaItem->precoVenda, $vendaItem->qtde, 2);
+            $vendaItem->produto = $produto;
+
+            $vendaItem->jsonData['webstorm_idItemVenda'] = $produtoWebStorm->idItemVenda->__toString();
+            $vendaItem->jsonData['webstorm_codigo'] = $produtoWebStorm->codigo->__toString();
+
+            $this->vendaItemEntityHandler->save($vendaItem);
+
+        }
+
+        $conn->commit();
+        // 1 - Não Finalizado
+        // 2 - Aguardando Pagamento
+        // 3 - Pedido Pendente
+        // 4 - Pedido Atendido
+        // 5 - Pedido Cancelado
+        // 6 - Pedido Aprovado
+        // 7 - Aguardando Entrega
+        // 8 - Pedido Separado
+
+
+        // verifica se já existe um crm_cliente com documento = cpf_cnpj
+
+        // pesquisa os produtos pelo json_data.ecommerce_id
+
+        // Adiciona no ven_venda json_data.obs os demais dados (entrega e pagamento)
+
 
     }
 

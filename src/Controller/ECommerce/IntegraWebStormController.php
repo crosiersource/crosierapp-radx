@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -43,6 +44,27 @@ class IntegraWebStormController extends BaseController
     public function integrarProduto(IntegraWebStorm $integraWebStormBusiness, Produto $produto)
     {
         $integraWebStormBusiness->integraProduto($produto);
+        return new Response('OK');
+    }
+
+
+    /**
+     *
+     * @Route("/est/integraWebStorm/obterVendas/{dtVenda}", name="est_integraWebStorm_obterVendas", defaults={"dtVenda": null})
+     * @ParamConverter("dtVenda", options={"format": "Y-m-d"})
+     *
+     * @param IntegraWebStorm $integraWebStormBusiness
+     * @param \DateTime $dtVenda
+     * @return Response
+     * @throws \Exception
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function obterVendas(IntegraWebStorm $integraWebStormBusiness, ?\DateTime $dtVenda = null)
+    {
+        if (!$dtVenda) {
+            $dtVenda = new \DateTime();
+        }
+        $integraWebStormBusiness->obterVendas($dtVenda);
         return new Response('OK');
     }
 
