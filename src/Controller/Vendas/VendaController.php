@@ -4,7 +4,10 @@ namespace App\Controller\Vendas;
 
 use App\Form\Vendas\VendaType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
@@ -63,7 +66,6 @@ class VendaController extends FormListController
     {
         $this->vendaItemEntityHandler = $vendaItemEntityHandler;
     }
-
 
 
     /**
@@ -158,8 +160,8 @@ class VendaController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['dtVenda'], 'EQ', 'dtVenda', $params),
-            new FilterData(['canal'], 'EQ', 'canal', $params),
+            new FilterData(['dtVenda'], 'EQ', 'dtVenda', $params, 'date'),
+            new FilterData(['canal'], 'EQ', 'canal', $params, null, true),
         ];
     }
 
@@ -175,23 +177,30 @@ class VendaController extends FormListController
      */
     public function vendasPorDia(Request $request): Response
     {
-        $params = [];
-
-        $filter = $request->get('filter');
-
-        if (!isset($filter['dtVenda'])) {
-            $params['fixedFilters']['dtVenda'] = (new \DateTime())->format('Y-m-d');
-        }
-
-
         $params = [
             'formRoute' => 'ven_venda_form',
             'listView' => 'Vendas/vendasPorDia_list.html.twig',
             'listRoute' => 'ven_venda_listPorDia',
             'listPageTitle' => 'Vendas',
-            'listPageSubtitle' => $params['dia'],
             'listId' => 'ven_venda_listPorDia'
         ];
+
+        /** @var AppConfigRepository $repoAppConfig */
+        $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+        $jsonMetadata = json_decode($repoAppConfig->findByChave('ven_venda_json_metadata'), true);
+        $sugestoes = $jsonMetadata['campos']['canal']['sugestoes'];
+        $sugestoes = array_combine($sugestoes, $sugestoes);
+        $params['canais'] = json_encode(array_merge(['TODAS' => null], $sugestoes));
+
+        $filter = $request->get('filter');
+
+        if (!isset($filter['dtVenda'])) {
+            $dtVenda = new \DateTime();
+            $params['fixedFilters']['filter']['dtVenda'] = $dtVenda->format('Y-m-d');
+        } else {
+            $dtVenda = DateTimeUtils::parseDateStr($filter['dtVenda']);
+        }
+        // $params['filter']['dtVenda'] = $dtVenda;
         return $this->doListSimpl($request, $params);
     }
 
