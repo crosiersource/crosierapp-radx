@@ -1,12 +1,14 @@
 {
   "devDependencies": {
-    "@symfony/webpack-encore": "^0.27.0",
+    "@symfony/webpack-encore": "^0.30.0",
+    "blueimp-file-upload": "^10.8.0",
     "bootstrap": "4.4.1",
-    "copy-webpack-plugin": "^4.6.0",
-    "core-js": "3",
+    "copy-webpack-plugin": "^5.1.1",
+    "core-js": "^3.0.0",
     "daterangepicker": "^3.0.3",
     "google-charts": "^2.0.0",
     "jquery": "^3.5.0",
+    "jquery-ui": "^1.12.1",
     "lightbox2": "^2.11.1",
     "moment": "^2.23.0",
     "node-sass": "^4.13.0",
@@ -18,9 +20,7 @@
     "sprintf-js": "^1.1.2",
     "summernote": "0.8.12",
     "toastr": "^2.1.4",
-    "webpack-notifier": "^1.7.0",
-    "blueimp-file-upload": "^10.8.0",
-    "jquery-ui": "^1.12.1"
+    "webpack-notifier": "^1.7.0"
   },
   "license": "UNLICENSED",
   "private": true,

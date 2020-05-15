@@ -67,10 +67,10 @@
     "vich/uploader-bundle": "^1.13"
   },
   "require-dev": {
-    "symfony/debug-bundle": "5.0.*",
-    "symfony/var-dumper": "5.0.*",
-    "sensiolabs/security-checker": "6.0.*",
-    "symfony/debug": "^4.4"
+    "symfony/debug-pack": "*",
+    "symfony/maker-bundle": "^1.0",
+    "symfony/profiler-pack": "*",
+    "symfony/test-pack": "*"
   },
   "config": {
     "minimum-stability": "dev",
@@ -99,7 +99,6 @@
   },
   "scripts": {
     "auto-scripts": {
-      "security-checker security:check": "script",
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     },

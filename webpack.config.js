@@ -1,18 +1,20 @@
 var Encore = require('@symfony/webpack-encore');
 
+// Manually configure the runtime environment if not already configured yet by the "encore" command.
+// It's useful when you use tools that rely on webpack.config.js file.
+if (!Encore.isRuntimeEnvironmentConfigured()) {
+    Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
+}
+
 const webpack = require('webpack');
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 Encore
-// directory where compiled assets will be stored
+    // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
     .setPublicPath('/build')
-    // only needed for CDN's or sub-directory deploy
-    //.setManifestKeyPrefix('build/')
-
-    // fixes modules that expect jQuery to be global
     .autoProvidejQuery()
     .addPlugin(new CopyWebpackPlugin([
         // copies to {output}/static
@@ -20,7 +22,9 @@ Encore
     ]))
     // o summmernote tem esta dependência, mas não é necessária
     .addPlugin(new webpack.IgnorePlugin(/^codemirror$/))
-    .enableSassLoader()
+    // only needed for CDN's or sub-directory deploy
+    //.setManifestKeyPrefix('build/')
+
     /*
      * ENTRY CONFIG
      *
@@ -28,9 +32,8 @@ Encore
      * (including one that's included on every page - e.g. "app")
      *
      * Each entry will result in one JavaScript file (e.g. app.js)
-     * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
+     * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
-    // .createSharedEntry('bse_layout', './assets/js/bse/layout.js')
     .addEntry('Estoque/atributo_list', './assets/js/Estoque/atributo_list.js')
     .addEntry('Estoque/grupoAtributo_list', './assets/js/Estoque/grupoAtributo_list.js')
     .addEntry('Estoque/produto_list', './assets/js/Estoque/produto_list.js')
@@ -86,7 +89,13 @@ Encore
     .addEntry('Vendas/vendasPorDia_list', './assets/js/Vendas/vendasPorDia_list.js')
     .addEntry('Vendas/venda_form', './assets/js/Vendas/venda_form.js')
 
+    // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
+    // .splitEntryChunks()
 
+    // will require an extra script tag for runtime.js
+    // but, you probably want this, unless you're building a single-page app
+    // .enableSingleRuntimeChunk()
+    .disableSingleRuntimeChunk()
 
     /*
      * FEATURE CONFIG
@@ -100,20 +109,30 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
-    .configureBabel(() => {
-    }, {
-        useBuiltIns: 'usage',
-        corejs: 3
+
+    // enables @babel/preset-env polyfills
+    .configureBabelPresetEnv((config) => {
+        config.useBuiltIns = 'usage';
+        config.corejs = 3;
     })
-    .enableSingleRuntimeChunk()
+
 // enables Sass/SCSS support
 //.enableSassLoader()
 
 // uncomment if you use TypeScript
 //.enableTypeScriptLoader()
 
+// uncomment to get integrity="..." attributes on your script & link tags
+// requires WebpackEncoreBundle 1.4 or higher
+//.enableIntegrityHashes(Encore.isProduction())
+
 // uncomment if you're having problems with a jQuery plugin
 //.autoProvidejQuery()
+
+// uncomment if you use API Platform Admin (composer req api-admin)
+//.enableReactPreset()
+//.addEntry('admin', './assets/js/admin.js')
 ;
 
 module.exports = Encore.getWebpackConfig();
+
