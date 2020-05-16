@@ -308,7 +308,7 @@ class IntegraWebStorm extends BaseBusiness
                 throw new \RuntimeException($client->getError());
             }
 
-            $xmlResult = simplexml_load_string($arResultado);
+            $xmlResult = simplexml_load_string(utf8_encode($arResultado));
 
             if ($xmlResult->erros ?? false) {
                 throw new \RuntimeException($xmlResult->erros->erro->__toString());
@@ -903,10 +903,10 @@ class IntegraWebStorm extends BaseBusiness
 
         if (!$produtoEcommerceId) {
             $produto->jsonData['ecommerce_id'] = (int)$xmlResult->produto->produto->idProduto->__toString();
-            $this->produtoEntityHandler->save($produto);
         }
 
-        $produto->jsonData['ecommerce_integrado_em'] = (new \DateTime())->format('d/m/Y H:i:s');
+        $produto->jsonData['ecommerce_dt_integr'] = (new \DateTime())->format('d/m/Y H:i:s');
+        $this->produtoEntityHandler->save($produto);
 
     }
 

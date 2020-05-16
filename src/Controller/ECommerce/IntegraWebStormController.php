@@ -8,6 +8,7 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -37,14 +38,14 @@ class IntegraWebStormController extends BaseController
      * @Route("/est/integraWebStorm/integrarProduto/{produto}", name="est_integraWebStorm_integrarProduto")
      * @param IntegraWebStorm $integraWebStormBusiness
      * @param Produto $produto
-     * @return Response
+     * @return RedirectResponse
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function integrarProduto(IntegraWebStorm $integraWebStormBusiness, Produto $produto)
+    public function integrarProduto(IntegraWebStorm $integraWebStormBusiness, Produto $produto): RedirectResponse
     {
         $integraWebStormBusiness->integraProduto($produto);
-        return new Response('OK');
+        return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'ecommerce']);
     }
 
 

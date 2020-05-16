@@ -1,0 +1,29 @@
+<div class="tab-pane fade" id="ecommerce" role="tabpanel" aria-labelledby="ecommerce-tab">
+
+    {% if e.id %}
+        <div class="card">
+
+            <div class="card-body">
+
+
+                {{ form_row(form.jsonData['ecommerce_id']) }}
+                {{ form_row(form.jsonData['ecommerce_dt_integr']) }}
+
+
+
+                <div class="row">
+                    <div class="col text-right">
+                        <button type="button" class="btn btn-outline-danger" value="Integrar" title="Integrar produto ao ecommerce"
+                                data-url="{{ url('est_integraWebStorm_integrarProduto', {'produto': e.id}) }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-cloud-upload-alt"></i> Integrar
+                        </button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    {% endif %}
+
+</div>

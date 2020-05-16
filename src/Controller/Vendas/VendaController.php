@@ -73,7 +73,7 @@ class VendaController extends FormListController
      * @Route("/ven/venda/form/{id}", name="ven_venda_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */

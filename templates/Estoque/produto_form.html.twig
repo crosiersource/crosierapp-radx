@@ -77,6 +77,13 @@
                         </li>
                     {% endif %}
 
+                    {% if is_granted('ROLE_ESTOQUE_ECOMMERCE') %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="ecommerce-tab" data-toggle="tab" href="#ecommerce" role="tab" aria-controls="ecommerce"
+                               aria-selected="false">E-Commerce</a>
+                        </li>
+                    {% endif %}
+
                 </ul>
 
                 <div class="form-group row">
@@ -106,6 +113,10 @@
 
                     {% if e.composicao == 'S' %}
                         {% include 'Estoque/produto_form_composicao.html.twig' %}
+                    {% endif %}
+
+                    {% if is_granted('ROLE_ESTOQUE_ECOMMERCE') %}
+                        {% include 'Estoque/produto_form_ecommerce.html.twig' %}
                     {% endif %}
 
                 </div>
