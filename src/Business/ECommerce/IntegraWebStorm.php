@@ -906,12 +906,14 @@ class IntegraWebStorm extends BaseBusiness
         }
 
         $produto->jsonData['ecommerce_dt_integr'] = (new \DateTime())->format('d/m/Y H:i:s');
+        $produto->jsonData['ecommerce_integr_por'] = $this->security->getUser()->getNome();
         $this->produtoEntityHandler->save($produto);
 
     }
 
     /**
      * @param \DateTime $dtVenda
+     * @throws ViewException
      */
     public function obterVendas(\DateTime $dtVenda)
     {

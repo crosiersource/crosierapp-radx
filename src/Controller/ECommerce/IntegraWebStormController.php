@@ -44,7 +44,15 @@ class IntegraWebStormController extends BaseController
      */
     public function integrarProduto(IntegraWebStorm $integraWebStormBusiness, Produto $produto): RedirectResponse
     {
-        $integraWebStormBusiness->integraProduto($produto);
+        try {
+            $start = microtime(true);
+            $integraWebStormBusiness->integraProduto($produto);
+            $tt = (int) (microtime(true) - $start);
+            $this->addFlash('success', 'Produto integrado com sucesso (em ' . $tt . 's)');
+        } catch (ViewException $e) {
+            $this->addFlash('error', 'Erro ao integrar produto (' . $e->getMessage() . ')');
+        }
+
         return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'ecommerce']);
     }
 
