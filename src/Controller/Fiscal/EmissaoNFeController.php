@@ -699,12 +699,17 @@ class EmissaoNFeController extends FormListController
         $verifNumeros = [];
 
         $problemas = [];
+        $problemas[] = 'CNPJ: ' . $nfeConfigs['cnpj'];
 
         /** @var NotaFiscal $nf */
         foreach ($nfes as $nf) {
             $this->logger->info($nf->getTipoNotaFiscal() . '. Série: ' . $nf->getSerie() . ', Número: ' . $nf->getNumero() . '.');
             if (!$nf->getNumero()) {
                 $this->logger->info('Nota sem número. Continuando...');
+                continue;
+            }
+            if (!$nf->getCStat()) {
+                $this->logger->info('Nota sem "cstat". Continuando...');
                 continue;
             }
 
@@ -725,6 +730,9 @@ class EmissaoNFeController extends FormListController
                 $fileContent = $tools->signNFe($nf->getXmlNota());
                 $nf->setXmlNota($fileContent);
                 $this->entityHandler->save($nf);
+            }
+            if (!$nf->getXMLDecoded()) {
+                $this->logger->info('getXMLDecoded não encontrado para nota ' . $nf->getChaveAcesso());
             }
             if ($nf->getXMLDecoded()->getName() !== 'nfeProc') {
                 $this->logger->info('XML sem o nfeProc. Consultando status...');

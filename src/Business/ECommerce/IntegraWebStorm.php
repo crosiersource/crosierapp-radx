@@ -750,7 +750,7 @@ class IntegraWebStorm extends BaseBusiness
      * @return void
      * @throws ViewException
      */
-    public function integraProduto(Produto $produto): void
+    public function integraProduto(Produto $produto, bool $integrarImagens = true): void
     {
         /** @var AppConfig $appConfig */
         $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
@@ -779,6 +779,10 @@ class IntegraWebStorm extends BaseBusiness
         $comprimento = $dimensoes[2] ?? '';
 
         $produtoEcommerceId = $produto->jsonData['ecommerce_id'] ?? null;
+
+        if (!$integrarImagens && !$produtoEcommerceId) {
+            throw new ViewException('Produto ainda não integrado. É necessário integrar as imagens!');
+        }
 
         $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -825,37 +829,39 @@ class IntegraWebStorm extends BaseBusiness
             }
         }
 
-        foreach ($produto->imagens as $imagem) {
-            $url = $_SERVER['CROSIERAPP_URL'] . $this->uploaderHelper->asset($imagem, 'imageFile');
-            // verifica se existe a imagem "_1080.ext"
-            $pathinfo = pathinfo($url);
-            $parsedUrl = parse_url($url);
-            $url1080 = $pathinfo['dirname'] . '/' . $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
-            if (!WebUtils::urlNot404($url1080)) {
-                $imgDims = getimagesize($url);
-                if ($imgDims[0] > 1500 || $imgDims[1] > 1500) {
-                    $imgUtils = new ImageUtils();
-                    $imgUtils->load($url);
-                    if ($imgDims[0] >= $imgDims[1]) {
-                        // largura maior que altura
-                        $imgUtils->resizeToWidth(1080);
+        if ($integrarImagens) {
+            foreach ($produto->imagens as $imagem) {
+                $url = $_SERVER['CROSIERAPP_URL'] . $this->uploaderHelper->asset($imagem, 'imageFile');
+                // verifica se existe a imagem "_1080.ext"
+                $pathinfo = pathinfo($url);
+                $parsedUrl = parse_url($url);
+                $url1080 = $pathinfo['dirname'] . '/' . $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
+                if (!WebUtils::urlNot404($url1080)) {
+                    $imgDims = getimagesize($url);
+                    if ($imgDims[0] > 1500 || $imgDims[1] > 1500) {
+                        $imgUtils = new ImageUtils();
+                        $imgUtils->load($url);
+                        if ($imgDims[0] >= $imgDims[1]) {
+                            // largura maior que altura
+                            $imgUtils->resizeToWidth(1080);
+                        } else {
+                            $imgUtils->resizeToHeight(1080);
+                        }
+                        // '%kernel.project_dir%/public/images/produtos'
+                        $file1080 = $this->params->get('kernel.project_dir') . '/public' .
+                            str_replace($pathinfo['basename'], '', $parsedUrl['path']) .
+                            $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
+                        $imgUtils->save($file1080);
                     } else {
-                        $imgUtils->resizeToHeight(1080);
+                        $url1080 = $url;
                     }
-                    // '%kernel.project_dir%/public/images/produtos'
-                    $file1080 = $this->params->get('kernel.project_dir') . '/public' .
-                        str_replace($pathinfo['basename'], '', $parsedUrl['path']) .
-                        $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
-                    $imgUtils->save($file1080);
-                } else {
-                    $url1080 = $url;
                 }
-            }
 
-            $xml .= '<imagens>
+                $xml .= '<imagens>
 				<url>' . $url1080 . '</url>
 				<prioridade>' . ($imagem->getOrdem() - 1) . '</prioridade>
 			</imagens>';
+            }
         }
 
 

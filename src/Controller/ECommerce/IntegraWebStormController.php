@@ -9,6 +9,7 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -36,17 +37,22 @@ class IntegraWebStormController extends BaseController
     /**
      *
      * @Route("/est/integraWebStorm/integrarProduto/{produto}", name="est_integraWebStorm_integrarProduto")
+     * @param Request $request
      * @param IntegraWebStorm $integraWebStormBusiness
      * @param Produto $produto
      * @return RedirectResponse
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function integrarProduto(IntegraWebStorm $integraWebStormBusiness, Produto $produto): RedirectResponse
+    public function integrarProduto(Request $request, IntegraWebStorm $integraWebStormBusiness, Produto $produto): RedirectResponse
     {
         try {
             $start = microtime(true);
-            $integraWebStormBusiness->integraProduto($produto);
-            $tt = (int) (microtime(true) - $start);
+            $integrarImagens = null;
+            if ($request->query->has('integrarImagens')) {
+                $integrarImagens = $request->query->get('integrarImagens');
+            }
+            $integraWebStormBusiness->integraProduto($produto, $integrarImagens);
+            $tt = (int)(microtime(true) - $start);
             $this->addFlash('success', 'Produto integrado com sucesso (em ' . $tt . 's)');
         } catch (ViewException $e) {
             $this->addFlash('error', 'Erro ao integrar produto (' . $e->getMessage() . ')');
