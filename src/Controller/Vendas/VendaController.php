@@ -70,7 +70,7 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/ven/venda/form/{id}", name="ven_venda_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/ven/venda/form/{venda}", name="ven_venda_form", defaults={"venda"=null}, requirements={"venda"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
