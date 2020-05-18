@@ -39,7 +39,6 @@ class IntegraWebStormController extends BaseController
      * @param IntegraWebStorm $integraWebStormBusiness
      * @param Produto $produto
      * @return RedirectResponse
-     * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
     public function integrarProduto(IntegraWebStorm $integraWebStormBusiness, Produto $produto): RedirectResponse

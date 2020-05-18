@@ -409,10 +409,12 @@ class IntegraWebStorm extends BaseBusiness
 
         $idCaracteristicaNaWebStorm = null;
 
-        foreach ($tiposCaracteristicasNaWebStorm[$ecommerceId_tipoCaracteristica]['caracteristicas'] as $id => $caracteristicaNaWebStorm) {
-            if ($caracteristicaNaWebStorm['nome'] === $caracteristica) {
-                $idCaracteristicaNaWebStorm = $id;
-                break;
+        if ($tiposCaracteristicasNaWebStorm[$ecommerceId_tipoCaracteristica]['caracteristicas'] ?? null) {
+            foreach ($tiposCaracteristicasNaWebStorm[$ecommerceId_tipoCaracteristica]['caracteristicas'] as $id => $caracteristicaNaWebStorm) {
+                if ($caracteristicaNaWebStorm['nome'] === $caracteristica) {
+                    $idCaracteristicaNaWebStorm = $id;
+                    break;
+                }
             }
         }
 
