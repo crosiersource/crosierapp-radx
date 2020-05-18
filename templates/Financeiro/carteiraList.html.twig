@@ -1,5 +1,5 @@
 {% extends '@CrosierLibBase/list.html.twig' %}
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Financeiro/carteiraList.js') }}"></script>
+    {{ encore_entry_script_tags('Financeiro/carteiraList') }}
 {% endblock %}

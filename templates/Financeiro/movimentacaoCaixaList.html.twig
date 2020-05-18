@@ -206,5 +206,5 @@
 
 
     {% block down_scripts %}
-        <script src="{{ asset('build/Financeiro/movimentacaoCaixaList.js') }}"></script>
+        {{ encore_entry_script_tags('Financeiro/movimentacaoCaixaList') }}
     {% endblock %}

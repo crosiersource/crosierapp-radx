@@ -235,5 +235,5 @@
 {% endblock %}
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Financeiro/movimentacaoImport.js') }}"></script>
+    {{ encore_entry_script_tags('Financeiro/movimentacaoImport') }}
 {% endblock %}

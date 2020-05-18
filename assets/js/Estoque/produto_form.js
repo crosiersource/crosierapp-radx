@@ -6,8 +6,18 @@ import routes from '../../static/fos_js_routes.json';
 import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
 
 import Sortable from 'sortablejs';
+
+import 'bootstrap';
+import 'popper.js';
 import 'summernote/dist/summernote-bs4.js';
 import 'summernote/dist/summernote-bs4.css';
+
+import 'select2/dist/css/select2.css';
+import 'select2';
+import 'select2/dist/js/i18n/pt-BR.js';
+import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
+
+
 import toastrr from "toastr";
 
 import 'lightbox2/dist/css/lightbox.css';
@@ -23,6 +33,9 @@ Numeral.locale('pt-br');
 
 
 $(document).ready(function () {
+
+    $.fn.select2.defaults.set("theme", "bootstrap");
+    $.fn.select2.defaults.set("language", "pt-BR");
 
     let $depto = $('#produto_depto');
     let $grupo = $('#produto_grupo');
@@ -120,9 +133,10 @@ $(document).ready(function () {
                 results.unshift({"id": "", "text": ""});
 
                 $grupo.select2({
+                        width: '100%',
+                        dropdownAutoWidth: true,
                         placeholder: "...",
-                        data: results,
-                        width: '100%'
+                        data: results
                     }
                 );
                 // Se veio o valor do PHP...
@@ -132,7 +146,11 @@ $(document).ready(function () {
             });
         } else {
             $grupo.empty().trigger("change");
-            $grupo.select2();
+            $grupo.select2({
+                width: '100%',
+                dropdownAutoWidth: true,
+                placeholder: "..."
+            });
         }
     }
 
@@ -157,9 +175,10 @@ $(document).ready(function () {
                 results.unshift({"id": "", "text": ""});
 
                 $subgrupo.select2({
+                        width: '100%',
+                        dropdownAutoWidth: true,
                         placeholder: "...",
-                        data: results,
-                        width: '100%'
+                        data: results
                     }
                 );
                 // Se veio o valor do PHP...
@@ -169,7 +188,11 @@ $(document).ready(function () {
             });
         } else {
             $subgrupo.empty().trigger("change");
-            $subgrupo.select2();
+            $subgrupo.select2({
+                width: '100%',
+                dropdownAutoWidth: true,
+                placeholder: "..."
+            });
         }
     }
 

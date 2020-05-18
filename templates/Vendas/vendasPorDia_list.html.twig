@@ -59,7 +59,7 @@
 
             <div class="table-responsive-sm">
 
-                <table class="table table-sm table-striped table-hover crsr-datatable">
+                <table class="table table-sm table-striped table-hover crsr-datatable" id="vendasPorDia_table">
 
                     <thead>
                     <tr>
@@ -116,5 +116,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Vendas/vendasPorDia_list.js') }}"></script>
+    {{ encore_entry_script_tags('Vendas/vendasPorDia_list') }}
 {% endblock %}

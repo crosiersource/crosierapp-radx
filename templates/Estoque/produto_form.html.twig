@@ -3,7 +3,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('build/Estoque/produto_form.css') }}">
+    {{ encore_entry_link_tags('Estoque/produto_form') }}
 {% endblock %}
 
 
@@ -132,5 +132,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Estoque/produto_form.js') }}"></script>
+    {{ encore_entry_script_tags('Estoque/produto_form') }}
 {% endblock %}

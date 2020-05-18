@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('build/RH/colaborador_form.css') }}">
+    {{ encore_entry_link_tags('RH/colaborador_form') }}
 {% endblock %}
 
 
@@ -358,12 +358,9 @@
     </div>
 
 
-
-
-
 {% endblock %}
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/RH/colaborador_form.js') }}"></script>
+    {{ encore_entry_script_tags('RH/colaborador_form') }}
 {% endblock %}
