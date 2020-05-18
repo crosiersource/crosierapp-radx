@@ -73,9 +73,6 @@ class ProdutoType extends AbstractType
                 'choice_label' => function (?Depto $depto) {
                     return $depto ? $depto->getDescricaoMontada() : null;
                 },
-                'attr' => array(
-                    'class' => 'autoSelect2'
-                ),
             ));
 
             $grupos = [];

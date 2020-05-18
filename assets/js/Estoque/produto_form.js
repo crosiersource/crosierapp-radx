@@ -113,8 +113,19 @@ $(document).ready(function () {
 
     $('.summernote').summernote();
 
+    $depto.select2({
+        width: '100%',
+        dropdownAutoWidth: true,
+        placeholder: "..."
+    });
+
     $depto.on('select2:select select2:clear', function () {
-        buildGrupo()
+        $grupo.data('val', '');
+        $grupo.val('');
+        buildGrupo();
+        $subgrupo.data('val', '');
+        $subgrupo.val('');
+        buildSubgrupo();
     });
 
     function buildGrupo() {
@@ -139,13 +150,10 @@ $(document).ready(function () {
                         data: results
                     }
                 );
-                // Se veio o valor do PHP...
-                if (val) {
-                    $grupo.val(val).trigger('change');
-                }
+                $grupo.val(val).trigger('change');
             });
         } else {
-            $grupo.empty().trigger("change");
+            $grupo.empty().val('').trigger("change");
             $grupo.select2({
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -156,6 +164,8 @@ $(document).ready(function () {
 
 
     $grupo.on('select2:select select2:clear', function () {
+        $subgrupo.data('val', '');
+        $subgrupo.val('');
         buildSubgrupo()
     });
 
@@ -187,7 +197,7 @@ $(document).ready(function () {
                 }
             });
         } else {
-            $subgrupo.empty().trigger("change");
+            $subgrupo.empty().val('').trigger("change");
             $subgrupo.select2({
                 width: '100%',
                 dropdownAutoWidth: true,
