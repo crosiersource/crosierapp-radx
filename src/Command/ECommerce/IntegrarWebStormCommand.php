@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Command\Estoque;
+
+use App\Business\ECommerce\IntegraWebStorm;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+/**
+ *
+ * @author Carlos Eduardo Pauluk
+ */
+class IntegrarWebStormCommand extends Command
+{
+
+    private IntegraWebStorm $integraWebStorm;
+
+    /**
+     * @param IntegraWebStorm $integraWebStorm
+     * @return IntegrarWebStormCommand
+     */
+    public function setIntegraWebStorm(IntegraWebStorm $integraWebStorm): IntegrarWebStormCommand
+    {
+        $this->integraWebStorm = $integraWebStorm;
+        return $this;
+    }
+
+
+    protected function configure()
+    {
+        $this->setName('crosierappradx:integrarWebStorm');
+        $this->addArgument('tipoIntegracao', InputArgument::REQUIRED, 'Tipo de Integração: "vendas"');
+        $this->addArgument('dtBase', InputArgument::OPTIONAL, 'Data Base');
+    }
+
+    /**
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \Exception
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $tipoIntegracao = $input->getArgument('tipoIntegracao');
+        $dtBase = DateTimeUtils::parseDateStr($input->getArgument('dtBase'));
+        switch ($tipoIntegracao) {
+            case 'vendas':
+                try {
+                    $output->writeln('Obtendo vendas');
+                    $qtdeVendas = $this->integraWebStorm->obterVendas($dtBase);
+                    $output->writeln('OK: ' . $qtdeVendas . ' integrada(s)');
+                } catch (ViewException $e) {
+                    $output->writeln('Erro ao obterVendas');
+                    $output->writeln($e->getMessage());
+                    $output->writeln($e->getTraceAsString());
+                }
+                break;
+            default:
+                throw new \RuntimeException('tipoIntegracao desconhecido: ' . $tipoIntegracao);
+        }
+        return 1;
+    }
+
+
+}

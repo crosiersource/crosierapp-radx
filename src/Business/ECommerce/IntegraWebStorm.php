@@ -915,9 +915,10 @@ class IntegraWebStorm extends BaseBusiness
 
     /**
      * @param \DateTime $dtVenda
+     * @return int
      * @throws ViewException
      */
-    public function obterVendas(\DateTime $dtVenda)
+    public function obterVendas(\DateTime $dtVenda): int
     {
         // 1 = Novo; 2 = Editado; 3 = Integrado
         // Para pedidos que ainda não foram consultados, o status é 1
@@ -928,6 +929,7 @@ class IntegraWebStorm extends BaseBusiness
         foreach ($pedidos->pedido as $pedido) {
             $this->integrarVenda($pedido);
         }
+        return count($pedidos);
     }
 
     /**

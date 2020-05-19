@@ -157,7 +157,7 @@
                                 {% for item in e.itens %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
-                                        <td>{{ item.descricao }}</td>
+                                        <td>{{ item.id|strpad(9) }}{{ item.descricao }}</td>
                                         <td class="text-right">{{ item.qtde|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.precoVenda|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.desconto|number_format(2,',','.') }}</td>
