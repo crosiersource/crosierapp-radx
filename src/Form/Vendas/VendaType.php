@@ -3,6 +3,7 @@
 namespace App\Form\Vendas;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
@@ -10,6 +11,7 @@ use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\PlanoPagto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -191,8 +193,26 @@ class VendaType extends AbstractType
                 ]);
 
                 $builder->remove('jsonData');
-                $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => $data['jsonData'] ?? null]);
+                $builder->add('jsonData', JsonType::class,
+                    [
+                        'jsonMetadata' => $jsonMetadata,
+                        'jsonData' => ($data['jsonData'] ?? null)
+                    ]);
 
+            }
+        );
+
+
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($jsonMetadata) {
+                /** @var Venda $venda */
+                $venda = $event->getData();
+                if ($venda->getId()) {
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM ven_venda WHERE id = :id', ['id' => $venda->getId()])['json_data'] ?? '{}', true);
+                    $venda->jsonData = array_merge($jsonDataOrig, $venda->jsonData);
+                    $event->setData($venda);
+                }
             }
         );
 
