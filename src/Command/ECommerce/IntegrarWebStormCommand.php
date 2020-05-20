@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Estoque;
+namespace App\Command\ECommerce;
 
 use App\Business\ECommerce\IntegraWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -20,15 +20,13 @@ class IntegrarWebStormCommand extends Command
     private IntegraWebStorm $integraWebStorm;
 
     /**
+     * @required
      * @param IntegraWebStorm $integraWebStorm
-     * @return IntegrarWebStormCommand
      */
-    public function setIntegraWebStorm(IntegraWebStorm $integraWebStorm): IntegrarWebStormCommand
+    public function setIntegraWebStorm(IntegraWebStorm $integraWebStorm): void
     {
         $this->integraWebStorm = $integraWebStorm;
-        return $this;
     }
-
 
     protected function configure()
     {
@@ -48,12 +46,15 @@ class IntegrarWebStormCommand extends Command
     {
         $tipoIntegracao = $input->getArgument('tipoIntegracao');
         $dtBase = DateTimeUtils::parseDateStr($input->getArgument('dtBase'));
+        if (!$dtBase) {
+            $dtBase = new \DateTime();
+        }
         switch ($tipoIntegracao) {
             case 'vendas':
                 try {
                     $output->writeln('Obtendo vendas');
                     $qtdeVendas = $this->integraWebStorm->obterVendas($dtBase);
-                    $output->writeln('OK: ' . $qtdeVendas . ' integrada(s)');
+                    $output->writeln('OK: ' . $qtdeVendas . ' venda(s) integrada(s)');
                 } catch (ViewException $e) {
                     $output->writeln('Erro ao obterVendas');
                     $output->writeln($e->getMessage());

@@ -40,8 +40,8 @@ class IntegraWebStormController extends BaseController
      * @param Request $request
      * @param IntegraWebStorm $integraWebStormBusiness
      * @param Produto $produto
-     * @return RedirectResponse
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     * @return RedirectResponse
      */
     public function integrarProduto(Request $request, IntegraWebStorm $integraWebStormBusiness, Produto $produto): RedirectResponse
     {
@@ -50,6 +50,8 @@ class IntegraWebStormController extends BaseController
             $integrarImagens = null;
             if ($request->query->has('integrarImagens')) {
                 $integrarImagens = $request->query->get('integrarImagens');
+            } else {
+                $integrarImagens = true;
             }
             $integraWebStormBusiness->integraProduto($produto, $integrarImagens);
             $tt = (int)(microtime(true) - $start);
@@ -57,7 +59,6 @@ class IntegraWebStormController extends BaseController
         } catch (ViewException $e) {
             $this->addFlash('error', 'Erro ao integrar produto (' . $e->getMessage() . ')');
         }
-
         return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'ecommerce']);
     }
 

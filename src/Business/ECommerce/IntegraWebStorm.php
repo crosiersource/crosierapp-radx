@@ -747,10 +747,11 @@ class IntegraWebStorm extends BaseBusiness
 
     /**
      * @param Produto $produto
+     * @param bool $integrarImagens
      * @return void
      * @throws ViewException
      */
-    public function integraProduto(Produto $produto, bool $integrarImagens = true): void
+    public function integraProduto(Produto $produto, ?bool $integrarImagens = true): void
     {
         /** @var AppConfig $appConfig */
         $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
@@ -778,7 +779,13 @@ class IntegraWebStorm extends BaseBusiness
         $largura = $dimensoes[1] ?? '';
         $comprimento = $dimensoes[2] ?? '';
 
-        $produtoEcommerceId = $produto->jsonData['ecommerce_id'] ?? null;
+        $produtoEcommerceId = null;
+        $produtoItemVendaId = null;
+        if (isset($produto->jsonData['ecommerce_id']) && $produto->jsonData['ecommerce_id'] > 0) {
+            $produtoEcommerceId = $produto->jsonData['ecommerce_id'];
+            $produtoItemVendaId = $produto->jsonData['ecommerce_item_venda_id'] ?? null;
+        }
+
 
         if (!$integrarImagens && !$produtoEcommerceId) {
             throw new ViewException('Produto ainda não integrado. É necessário integrar as imagens!');
@@ -867,10 +874,10 @@ class IntegraWebStorm extends BaseBusiness
 
         $xml .=
             '<itensVenda>
-				<idItemVenda></idItemVenda>
+				<idItemVenda>' . $produtoItemVendaId . '</idItemVenda>
 				<codigo>' . $produto->getId() . '</codigo>
 				<preco>' . ($produto->jsonData['preco_site'] ?? $produto->jsonData['preco_tabela'] ?? 0.0) . '</preco>
-				<estoque>999999</estoque>
+				<estoque>' . ($produto->jsonData['qtde_estoque_total'] ?? 999999) . '</estoque>
 				<estoqueMin>0</estoqueMin>
 				<situacao>1</situacao>
 				<peso>' . ($produto->jsonData['peso'] ?? '') . '</peso>
@@ -881,9 +888,8 @@ class IntegraWebStorm extends BaseBusiness
             </itensVenda></produto>' .
             '</ws_integracao>]]>';
 
-        echo "<textarea>";
-        echo $xml;
-        echo "</textarea>";
+        $this->getLogger()->debug('>>>>>>>>>> XML REQUEST:');
+        $this->getLogger()->debug($xml);
 
         $client = $this->getNusoapClientImportacaoInstance();
 
@@ -903,20 +909,29 @@ class IntegraWebStorm extends BaseBusiness
 
         $arResultado = utf8_encode($arResultado);
         $arResultado = str_replace('&nbsp;', ' ', $arResultado);
+
+        $this->getLogger()->debug('>>>>>>>>>> XML RESPONSE:');
+        $this->getLogger()->debug($arResultado);
+
         $xmlResult = simplexml_load_string($arResultado);
 
         if ($xmlResult->erros->erro ?? false) {
             throw new \RuntimeException($xmlResult->erros->erro->__toString());
         }
 
-        if (!$produtoEcommerceId) {
+        // está fazendo UPDATE
+        if ($produtoEcommerceId) {
+            $produto->jsonData['ecommerce_id'] = (int)$xmlResult->produtos->produto->idProduto->__toString();
+            $produto->jsonData['ecommerce_item_venda_id'] = (int)$xmlResult->produtos->produto->itensVenda->itemVenda->idItemVenda->__toString();
+        } else {
             $produto->jsonData['ecommerce_id'] = (int)$xmlResult->produto->produto->idProduto->__toString();
+            $produto->jsonData['ecommerce_item_venda_id'] = (int)$xmlResult->produto->produto->itensVenda->itemVenda->idItemVenda->__toString();
         }
+
 
         $produto->jsonData['ecommerce_dt_integr'] = (new \DateTime())->format('d/m/Y H:i:s');
         $produto->jsonData['ecommerce_integr_por'] = $this->security->getUser()->getNome();
         $this->produtoEntityHandler->save($produto);
-
     }
 
     /**
@@ -932,6 +947,9 @@ class IntegraWebStorm extends BaseBusiness
         // Deve-se, portanto, consultar primeiro com 1 e depois com 3
         $this->obterVendasPorStatus($dtVenda, 1);
         $pedidos = $this->obterVendasPorStatus($dtVenda, 3);
+        if (!($pedidos->pedido ?? null)) {
+            return 0;
+        }
         foreach ($pedidos->pedido as $pedido) {
             $this->integrarVenda($pedido);
         }
@@ -945,11 +963,8 @@ class IntegraWebStorm extends BaseBusiness
      */
     private function obterVendasPorStatus(\DateTime $dtVenda, int $status)
     {
-
-
         $dtIni = (clone $dtVenda)->setTime(0, 0);
         $dtFim = (clone $dtVenda)->setTime(23, 59, 59, 999999);
-        $dtFim->setDate(2020, 05, 24);
         $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>    
                     <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                     <chave>' . $this->chave . '</chave>
@@ -960,7 +975,7 @@ class IntegraWebStorm extends BaseBusiness
                         <idCliente></idCliente>
                         <cpf_cnpj></cpf_cnpj>
                         <dataInicial>' . $dtIni->format('Y-m-d H:i:s') . '</dataInicial>
-                        <dataFinal>2020-05-24 23:59:59</dataFinal>
+                        <dataFinal>' . $dtFim->format('Y-m-d H:i:s') . '</dataFinal>
                         <status></status>
                         <statusNoWebservice>' . $status . '</statusNoWebservice>
                     </filtro>
@@ -1062,6 +1077,8 @@ class IntegraWebStorm extends BaseBusiness
 
 
         $venda->jsonData['canal'] = 'ECOMMERCE';
+        $venda->jsonData['webstorm_idPedido'] = $pedido->idPedido->__toString();
+        $venda->jsonData['webstorm_status'] = $pedido->status->__toString();
         $obs = [];
         $obs[] = 'IP: ' . ($pedido->ip ?? null);
         $obs[] = 'Entrega: ' . ($pedido->entrega->logradouro ?? null) . ', ' . ($pedido->entrega->numero ?? null) . ' (' . ($pedido->entrega->complemento ?? null) . ') ' .
@@ -1113,6 +1130,7 @@ class IntegraWebStorm extends BaseBusiness
             $this->vendaItemEntityHandler->save($vendaItem);
 
         }
+        $this->vendaEntityHandler->save($venda);
 
         $conn->commit();
         // 1 - Não Finalizado

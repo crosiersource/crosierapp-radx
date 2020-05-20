@@ -10,15 +10,17 @@ use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
-use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\VendaItem;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaItemRepository;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -162,6 +164,7 @@ class VendaController extends FormListController
         return [
             new FilterData(['dtVenda'], 'EQ', 'dtVenda', $params, 'date'),
             new FilterData(['canal'], 'EQ', 'canal', $params, null, true),
+            new FilterData(['vendedor_nome'], 'EQ', 'vendedor', $params, null, true),
         ];
     }
 
@@ -169,7 +172,6 @@ class VendaController extends FormListController
      *
      * @Route("/ven/venda/listPorDia", name="ven_venda_listPorDia")
      * @param Request $request
-     * @param \DateTime $dia
      * @return Response
      *
      * @throws ViewException
@@ -190,17 +192,18 @@ class VendaController extends FormListController
         $jsonMetadata = json_decode($repoAppConfig->findByChave('ven_venda_json_metadata'), true);
         $sugestoes = $jsonMetadata['campos']['canal']['sugestoes'];
         $sugestoes = array_combine($sugestoes, $sugestoes);
-        $params['canais'] = json_encode(array_merge(['TODAS' => null], $sugestoes));
+        $params['canais'] = json_encode(Select2JsUtils::arrayToSelect2Data($sugestoes));
 
         $filter = $request->get('filter');
 
         if (!isset($filter['dtVenda'])) {
             $dtVenda = new \DateTime();
-            $params['fixedFilters']['filter']['dtVenda'] = $dtVenda->format('Y-m-d');
+            $params['fixedFilters']['filter']['dtVenda'] = $dtVenda->format('d/m/Y');
         } else {
             $dtVenda = DateTimeUtils::parseDateStr($filter['dtVenda']);
         }
-        // $params['filter']['dtVenda'] = $dtVenda;
+        $vendedoresNoPeriodo = $this->getRepository()->findVendedoresComVendasNoPeriodo_select2js($dtVenda, $dtVenda);
+        $params['vendedores'] = json_encode($vendedoresNoPeriodo);
         return $this->doListSimpl($request, $params);
     }
 
