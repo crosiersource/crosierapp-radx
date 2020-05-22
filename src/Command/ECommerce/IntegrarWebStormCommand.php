@@ -2,7 +2,7 @@
 
 namespace App\Command\ECommerce;
 
-use App\Business\ECommerce\IntegraWebStorm;
+use App\Business\ECommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Symfony\Component\Console\Command\Command;
@@ -17,13 +17,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class IntegrarWebStormCommand extends Command
 {
 
-    private IntegraWebStorm $integraWebStorm;
+    private IntegradorWebStorm $integraWebStorm;
 
     /**
      * @required
-     * @param IntegraWebStorm $integraWebStorm
+     * @param IntegradorWebStorm $integraWebStorm
      */
-    public function setIntegraWebStorm(IntegraWebStorm $integraWebStorm): void
+    public function setIntegraWebStorm(IntegradorWebStorm $integraWebStorm): void
     {
         $this->integraWebStorm = $integraWebStorm;
     }

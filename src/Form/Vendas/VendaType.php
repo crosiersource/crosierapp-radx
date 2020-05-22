@@ -203,6 +203,7 @@ class VendaType extends AbstractType
         );
 
 
+        // Necessário para os casos onde o formulário não tem todos os campos do json_data (para que eles não desapareçam por conta disto)
         $builder->addEventListener(
             FormEvents::SUBMIT,
             function (FormEvent $event) use ($jsonMetadata) {

@@ -23,14 +23,14 @@
 
         <div class="card-body">
 
-            <form name="form_listReposicao_filter" id="form_listReposicao_filter">
+            <form name="form_vendasPorDia_list" id="form_vendasPorDia_list">
                 <div class="row">
 
                     <div class="col-md-2 col-sm-12">
                         <div class="form-group">
                             <label for="filter_dtVenda" class="required">Dt Venda</label>
                             <input type="text" id="filter_dtVenda" name="filter[dtVenda]"
-                                   class="crsr-date form-control bootstrap-datepicker" maxlength="10"
+                                   class="crsr-date form-control" maxlength="10"
                                    value="{{ filter['dtVenda'] }}">
                         </div>
                     </div>
@@ -54,22 +54,25 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-1 col-sm-12 text-right">
-                        <div class="form-group">
-                            <label for="btnFiltrar" class="required">&nbsp;</label>
-                            <button type="submit" class="btn btn-block btn-primary" id="btnFiltrar">
-                                <i class="fas fa-search"></i>
+                    <div class="col-md-2 col-sm-12 text-right">
+
+                        <button type="submit" class="btn btn-primary" id="btnFiltrar">
+                            <i class="fas fa-search"></i>
+                        </button>
+
+                        <a role="button" class="btn btn-secondary" id="btnRecarregar"
+                           href="{{ url('ven_venda_listPorDia', {'r':1}) }}">
+                            <i class="fas fa-redo-alt"></i>
+                        </a>
+
+                        {% if ecomm_info_integra %}
+                            <button type="button" class="btn btn-warning" id="btnObterVendasECommerce"
+                                    data-url="{{ url('ven_venda_obterVendasECommerce') ~ '/' ~ filter['dtVenda']|parseDateStr|date('Y-m-d') }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-cloud-upload-alt"></i>
                             </button>
-                        </div>
-                    </div>
-                    <div class="col-md-1 col-sm-12 text-right">
-                        <div class="form-group">
-                            <label for="btnRecarregar" class="required">&nbsp;</label>
-                            <a role="button" class="btn btn-block btn-secondary" id="btnRecarregar"
-                               href="{{ url('ven_venda_listPorDia', {'r':1}) }}">
-                                <i class="fas fa-redo-alt"></i>
-                            </a>
-                        </div>
+                        {% endif %}
+
                     </div>
 
                 </div>

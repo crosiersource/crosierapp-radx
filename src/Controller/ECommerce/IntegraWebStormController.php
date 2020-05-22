@@ -2,7 +2,7 @@
 
 namespace App\Controller\ECommerce;
 
-use App\Business\ECommerce\IntegraWebStorm;
+use App\Business\ECommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
@@ -23,12 +23,12 @@ class IntegraWebStormController extends BaseController
     /**
      *
      * @Route("/est/integraWebStorm/integrarDeptosGruposSubgrupos", name="est_integraWebStorm_integrarDeptosGruposSubgrupos")
-     * @param IntegraWebStorm $integraWebStormBusiness
+     * @param IntegradorWebStorm $integraWebStormBusiness
      * @return Response
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function integrarDeptosGruposSubgrupos(IntegraWebStorm $integraWebStormBusiness)
+    public function integrarDeptosGruposSubgrupos(IntegradorWebStorm $integraWebStormBusiness)
     {
         $integraWebStormBusiness->integrarDeptosGruposSubgrupos();
         return new Response('OK');
@@ -38,12 +38,12 @@ class IntegraWebStormController extends BaseController
      *
      * @Route("/est/integraWebStorm/integrarProduto/{produto}", name="est_integraWebStorm_integrarProduto")
      * @param Request $request
-     * @param IntegraWebStorm $integraWebStormBusiness
+     * @param IntegradorWebStorm $integraWebStormBusiness
      * @param Produto $produto
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      * @return RedirectResponse
      */
-    public function integrarProduto(Request $request, IntegraWebStorm $integraWebStormBusiness, Produto $produto): RedirectResponse
+    public function integrarProduto(Request $request, IntegradorWebStorm $integraWebStormBusiness, Produto $produto): RedirectResponse
     {
         try {
             $start = microtime(true);
@@ -68,13 +68,13 @@ class IntegraWebStormController extends BaseController
      * @Route("/est/integraWebStorm/obterVendas/{dtVenda}", name="est_integraWebStorm_obterVendas", defaults={"dtVenda": null})
      * @ParamConverter("dtVenda", options={"format": "Y-m-d"})
      *
-     * @param IntegraWebStorm $integraWebStormBusiness
+     * @param IntegradorWebStorm $integraWebStormBusiness
      * @param \DateTime $dtVenda
      * @return Response
      * @throws \Exception
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function obterVendas(IntegraWebStorm $integraWebStormBusiness, ?\DateTime $dtVenda = null)
+    public function obterVendas(IntegradorWebStorm $integraWebStormBusiness, ?\DateTime $dtVenda = null)
     {
         if (!$dtVenda) {
             $dtVenda = new \DateTime();

@@ -2,6 +2,8 @@
 
 namespace App\Controller\Vendas;
 
+use App\Business\ECommerce\IntegradorBusiness;
+use App\Business\ECommerce\IntegradorBusinessFactory;
 use App\Form\Vendas\VendaType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
@@ -22,6 +24,7 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaItemRepository;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -172,7 +175,7 @@ class VendaController extends FormListController
      * @throws ViewException
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function vendasPorDia(Request $request): Response
+    public function listVendasPorDia(Request $request): Response
     {
         $params = [
             'formRoute' => 'ven_venda_form',
@@ -199,6 +202,10 @@ class VendaController extends FormListController
         }
         $vendedoresNoPeriodo = $this->getRepository()->findVendedoresComVendasNoPeriodo_select2js($dtVenda, $dtVenda);
         $params['vendedores'] = json_encode($vendedoresNoPeriodo);
+
+        $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+        $params['ecomm_info_integra'] = $repoAppConfig->findByChave('ecomm_info_integra');
+
         return $this->doListSimpl($request, $params);
     }
 
@@ -227,6 +234,36 @@ class VendaController extends FormListController
         }
 
         return $this->redirectToRoute('ven_venda_form', ['id' => $item->venda->getId()]);
+    }
+
+    /**
+     *
+     * @Route("/ven/venda/obterVendasECommerce/{dtVenda}", name="ven_venda_obterVendasECommerce", defaults={"dtVenda": null})
+     * @ParamConverter("dtVenda", options={"format": "Y-m-d"})
+     *
+     * @param Request $request
+     * @param IntegradorBusinessFactory $integradorBusinessFactory
+     * @param \DateTime $dtVenda
+     * @return Response
+     * @throws \Exception
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function obterVendasECommerce(Request $request, IntegradorBusinessFactory $integradorBusinessFactory, ?\DateTime $dtVenda = null)
+    {
+        if (!$dtVenda) {
+            $dtVenda = new \DateTime();
+        }
+
+        $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+        $ecommInfoIntegra = $repoAppConfig->findByChave('ecomm_info_integra');
+
+        /** @var IntegradorBusiness $integrador */
+        $integrador = $integradorBusinessFactory->getIntegrador($ecommInfoIntegra);
+
+        $resalvar = $request->get('resalvar') === 'S';
+
+        $integrador->obterVendas($dtVenda, $resalvar);
+        return $this->redirect($request->server->get('HTTP_REFERER'));
     }
 
 
