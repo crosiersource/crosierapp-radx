@@ -1102,7 +1102,7 @@ class IntegradorWebStorm extends BaseBusiness implements IntegradorBusiness
         $obs[] = 'Entrega: ' . ($pedido->entrega->logradouro ?? null) . ', ' . ($pedido->entrega->numero ?? null) . ' (' . ($pedido->entrega->complemento ?? null) . ') ' .
             ($pedido->entrega->bairro ?? null) . ' - ' . ($pedido->entrega->cidade ?? null) . '-' . ($pedido->entrega->estado ?? null) . ' - CEP: ' . ($pedido->entrega->cep ?? null) .
             ' . Telefone: ' . ($pedido->entrega->telefone ?? null);
-        $obs[] = 'Frete: ' . ($pedido->entrega->frete ?? null);
+        $obs[] = 'Frete: ' . (number_format($pedido->entrega->frete->__toString(), 2, ',', '.'));
         $obs[] = '';
         $obs[] = 'Pagamento: ' . ($pedido->pagamentos->pagamento->tipoFormaPagamento ?? null) . ' - ' .
             ($pedido->pagamentos->pagamento->nomeFormaPagamento ?? null);
@@ -1128,9 +1128,12 @@ class IntegradorWebStorm extends BaseBusiness implements IntegradorBusiness
             try {
                 // verifica se já existe uma ven_venda com o json_data.webstorm_idPedido
                 $sProduto = $conn->fetchAssoc('SELECT id FROM est_produto WHERE json_data->>"$.ecommerce_id" = :idProduto', ['idProduto' => $produtoWebStorm->idProduto->__toString()]);
+                if (!isset($sProduto['id'])) {
+                    throw new \RuntimeException();
+                }
                 $produto = $repoProduto->find($sProduto['id']);
-            } catch (DBALException $e) {
-                throw new ViewException('Erro ao integrar venda. Erro ao pesquisar produto (idProduto = ' . $produtoWebStorm->idProduto . ')');
+            } catch (\Throwable $e) {
+                throw new ViewException('Erro ao integrar venda. Erro ao pesquisar produto (idProduto = ' . $produtoWebStorm->idProduto->__toString() . ')');
             }
             $vendaItem = new VendaItem();
             $venda->addItem($vendaItem);;
