@@ -15,6 +15,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\VendaItem;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
@@ -152,37 +153,23 @@ class VendaController extends FormListController
         }
     }
 
-
-    /**
-     * @param array $params
-     * @return array
-     */
-    public function getFilterDatas(array $params): array
-    {
-        return [
-            new FilterData(['dtVenda'], 'EQ', 'dtVenda', $params, 'date'),
-            new FilterData(['canal'], 'EQ', 'canal', $params, null, true),
-            new FilterData(['vendedor_nome'], 'EQ', 'vendedor', $params, null, true),
-        ];
-    }
-
     /**
      *
-     * @Route("/ven/venda/listPorDia", name="ven_venda_listPorDia")
+     * @Route("/ven/venda/listVendasPorDiaComECommerce", name="ven_venda_listVendasPorDiaComEcommerce")
      * @param Request $request
      * @return Response
      *
      * @throws ViewException
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function listVendasPorDia(Request $request): Response
+    public function listVendasPorDiaComEcommerce(Request $request): Response
     {
         $params = [
             'formRoute' => 'ven_venda_form',
-            'listView' => 'Vendas/vendasPorDia_list.html.twig',
-            'listRoute' => 'ven_venda_listPorDia',
+            'listView' => 'Vendas/ven_venda_listVendasPorDiaComEcommerce.html.twig',
+            'listRoute' => 'ven_venda_listVendasPorDiaComEcommerce',
             'listPageTitle' => 'Vendas',
-            'listId' => 'ven_venda_listPorDia'
+            'listId' => 'ven_venda_listVendasPorDiaComEcommerce'
         ];
 
         /** @var AppConfigRepository $repoAppConfig */
@@ -192,21 +179,56 @@ class VendaController extends FormListController
         $sugestoes = array_combine($sugestoes, $sugestoes);
         $params['canais'] = json_encode(Select2JsUtils::arrayToSelect2Data($sugestoes));
 
+        $status = $jsonMetadata['status']['opcoes'] ?? [];
+        $params['statuss'] = json_encode(array_combine($status, $status));
+        $statusECommerce = $jsonMetadata['statusECommerce']['opcoes'] ?? [];
+        $params['statusECommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusECommerce));
+
+
         $filter = $request->get('filter');
 
-        if (!isset($filter['dtVenda'])) {
-            $dtVenda = new \DateTime();
-            $params['fixedFilters']['filter']['dtVenda'] = $dtVenda->format('d/m/Y');
+        if (!isset($filter['dtsVenda'])) {
+            $hj = new \DateTime();
+            $dtsVenda = ['i' => $hj, 'f' => $hj];
+            $params['fixedFilters']['filter']['dtsVenda'] = $dtsVenda['i']->format('d/m/Y') . ' - ' . $dtsVenda['i']->format('d/m/Y');
         } else {
-            $dtVenda = DateTimeUtils::parseDateStr($filter['dtVenda']);
+            $dtsVenda = DateTimeUtils::parseConcatDates($filter['dtsVenda']);
         }
-        $vendedoresNoPeriodo = $this->getRepository()->findVendedoresComVendasNoPeriodo_select2js($dtVenda, $dtVenda);
+        $vendedoresNoPeriodo = $this->getRepository()->findVendedoresComVendasNoPeriodo_select2js($dtsVenda['i'], $dtsVenda['f']);
         $params['vendedores'] = json_encode($vendedoresNoPeriodo);
 
-        $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
         $params['ecomm_info_integra'] = $repoAppConfig->findByChave('ecomm_info_integra');
 
-        return $this->doListSimpl($request, $params);
+        $params['orders'] = ['dtVenda' => 'ASC'];
+
+        $fnGetFilterDatas = function (array $params) {
+            return [
+                new FilterData(['dtVenda'], 'BETWEEN_DATE_CONCAT', 'dtsVenda', $params),
+                new FilterData(['canal'], 'EQ', 'canal', $params, null, true),
+                new FilterData(['statusECommerce'], 'EQ', 'status', $params, null, true),
+                new FilterData(['vendedor_codigo'], 'EQ', 'vendedor', $params, null, true),
+            ];
+        };
+
+        $fnHandleDadosList = function (&$dados) {
+            $dia = null;
+            $dias = [];
+            $i = -1;
+            /** @var Venda $venda */
+            foreach ($dados as $venda) {
+                if ($venda->dtVenda->format('d/m/Y') !== $dia) {
+                    $i++;
+                    $dias[$i]['totalDia'] = 0.0;
+                    $dia = $venda->dtVenda->format('d/m/Y');
+                    $dias[$i]['dtVenda'] = $venda->dtVenda;
+                }
+                $dias[$i]['vendas'][] = $venda;
+                $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->getValorTotal(), 2);
+            }
+            $dados = $dias;
+        };
+
+        return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);
     }
 
     /**

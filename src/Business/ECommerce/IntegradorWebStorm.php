@@ -1018,7 +1018,7 @@ class IntegradorWebStorm extends BaseBusiness implements IntegradorBusiness
         $venda = null;
         try {
             // verifica se já existe uma ven_venda com o json_data.webstorm_idPedido
-            $venda = $conn->fetchAssoc('SELECT * FROM ven_venda WHERE json_data->>"$.webstorm_idPedido" = :webstorm_idPedido', ['webstorm_idPedido' => $pedido->idPedido]);
+            $venda = $conn->fetchAssoc('SELECT * FROM ven_venda WHERE json_data->>"$.webstorm_idPedido" = :webstorm_idPedido', ['ecommerce_idPedido' => $pedido->idPedido]);
         } catch (DBALException $e) {
             $this->logger->error($e->getMessage());
         }
@@ -1026,9 +1026,9 @@ class IntegradorWebStorm extends BaseBusiness implements IntegradorBusiness
         if ($venda) {
             // se já existe, só confere o status
             $vendaJsonData = json_decode($venda['json_data'], true);
-            if ($vendaJsonData['webstorm_status'] != $pedido->status->__toString()) {
-                $vendaJsonData['webstorm_statusId'] = $pedido->status->__toString();
-                $vendaJsonData['webstorm_statusDesc'] = $pedido->desStatus->__toString();
+            if ($vendaJsonData['ecommerce_status'] != $pedido->status->__toString()) {
+                $vendaJsonData['ecommerce_status_id'] = $pedido->status->__toString();
+                $vendaJsonData['ecommerce_status'] = $pedido->desStatus->__toString();
                 $venda['json_data'] = json_encode($vendaJsonData);
                 try {
                     $conn->update('ven_venda', $venda, ['id' => $venda['id']]);
@@ -1095,8 +1095,8 @@ class IntegradorWebStorm extends BaseBusiness implements IntegradorBusiness
 
 
         $venda->jsonData['canal'] = 'ECOMMERCE';
-        $venda->jsonData['webstorm_idPedido'] = $pedido->idPedido->__toString();
-        $venda->jsonData['webstorm_status'] = $pedido->status->__toString();
+        $venda->jsonData['ecommerce_idPedido'] = $pedido->idPedido->__toString();
+        $venda->jsonData['ecommerce_status'] = $pedido->status->__toString();
         $obs = [];
         $obs[] = 'IP: ' . ($pedido->ip ?? null);
         $obs[] = 'Entrega: ' . ($pedido->entrega->logradouro ?? null) . ', ' . ($pedido->entrega->numero ?? null) . ' (' . ($pedido->entrega->complemento ?? null) . ') ' .
@@ -1112,8 +1112,8 @@ class IntegradorWebStorm extends BaseBusiness implements IntegradorBusiness
 
         $venda->jsonData['obs'] = implode(PHP_EOL, $obs);
 
-        $venda->jsonData['webstorm_statusId'] = $pedido->status->__toString();
-        $venda->jsonData['webstorm_statusDesc'] = $pedido->desStatus->__toString();
+        $venda->jsonData['ecommerce_status_id'] = $pedido->status->__toString();
+        $venda->jsonData['ecommerce_status'] = $pedido->desStatus->__toString();
 
         $conn->beginTransaction();
         $this->vendaEntityHandler->save($venda);
@@ -1144,8 +1144,8 @@ class IntegradorWebStorm extends BaseBusiness implements IntegradorBusiness
             $vendaItem->subtotal = bcmul($vendaItem->precoVenda, $vendaItem->qtde, 2);
             $vendaItem->produto = $produto;
 
-            $vendaItem->jsonData['webstorm_idItemVenda'] = $produtoWebStorm->idItemVenda->__toString();
-            $vendaItem->jsonData['webstorm_codigo'] = $produtoWebStorm->codigo->__toString();
+            $vendaItem->jsonData['ecommerce_idItemVenda'] = $produtoWebStorm->idItemVenda->__toString();
+            $vendaItem->jsonData['ecommerce_codigo'] = $produtoWebStorm->codigo->__toString();
 
             $this->vendaItemEntityHandler->save($vendaItem);
 

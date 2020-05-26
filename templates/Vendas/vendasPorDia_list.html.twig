@@ -34,7 +34,7 @@
                                    value="{{ filter['dtVenda'] }}">
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-3 col-sm-12">
                         <div class="form-group">
                             <label for="filter_canal" class="required">Canal</label>
                             <select id="filter_canal" name="filter[canal]"
@@ -44,13 +44,23 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-2 col-sm-12">
                         <div class="form-group">
                             <label for="filter_vendedor" class="required">Vendedor</label>
                             <select id="filter_vendedor" name="filter[vendedor]"
                                     data-options="{{ vendedores }}"
                                     class="form-control autoSelect2"
                                     data-val="{{ filter['vendedor']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_status" class="required">Status</label>
+                            <select id="filter_status" name="filter[status]"
+                                    data-options="{{ statuss }}"
+                                    class="form-control autoSelect2"
+                                    data-val="{{ filter['status']|default('') }}">
                             </select>
                         </div>
                     </div>
@@ -89,6 +99,7 @@
                         <th scope="col">Id</th>
                         <th scope="col">Cliente</th>
                         <th scope="col">Vendedor<br/>Plano Pagto</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Valor Total</th>
                         <th scope="col"></th>
                     </tr>
@@ -115,6 +126,9 @@
                                     {{ venda.jsonData.vendedor_nome|default('') }}<br>
                                     {{ venda.planoPagto.codigo }} - {{ venda.planoPagto.descricao }}
                                 </div>
+                            </td>
+                            <td class="text-center">
+                                {{ venda.status|default('') }}
                             </td>
                             <td class="text-right">
                                 R$ {{ venda.valorTotal|number_format(2,',','.') }}

@@ -87,7 +87,7 @@ Encore
     .addEntry('CRM/cliente_list', './assets/js/CRM/cliente_list.js')
 
 
-    .addEntry('Vendas/vendasPorDia_list', './assets/js/Vendas/vendasPorDia_list.js')
+    .addEntry('Vendas/ven_venda_listVendasPorDiaComEcommerce', './assets/js/Vendas/ven_venda_listVendasPorDiaComEcommerce.js')
     .addEntry('Vendas/venda_form', './assets/js/Vendas/venda_form.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
