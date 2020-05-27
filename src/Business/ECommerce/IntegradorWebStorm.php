@@ -106,10 +106,9 @@ class IntegradorWebStorm extends BaseBusiness implements IntegradorBusiness
             $this->repoAppConfig = $this->appConfigEntityHandler->getDoctrine()->getRepository(AppConfig::class);
             /** @var AppConfig $appConfigChave */
             $appConfigChave = $this->repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'ecomm_info_integra_WEBSTORM_chave'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
-            if (!$appConfigChave) {
-                throw new \LogicException('ecomm_info_integra_WEBSTORM_chave N/D');
+            if ($appConfigChave) {
+                $this->chave = $appConfigChave->getValor();
             }
-            $this->chave = $appConfigChave->getValor();
         } catch (\Exception $e) {
             throw new \RuntimeException('Erro ao instanciar IntegradorWebStorm (chave ecomm_info_integra_WEBSTORM_chave ?)');
         }

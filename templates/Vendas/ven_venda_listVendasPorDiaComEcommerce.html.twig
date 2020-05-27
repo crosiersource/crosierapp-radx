@@ -36,7 +36,7 @@
                                    value="{{ filter['dtsVenda'] }}">
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-12">
+                    <div class="col-md-2 col-sm-12">
                         <div class="form-group">
                             <label for="filter_canal" class="required">Canal</label>
                             <select id="filter_canal" name="filter[canal]"
@@ -46,13 +46,23 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_status" class="required">Status</label>
+                            <select id="filter_status" name="filter[status]"
+                                    data-options="{{ statuss }}"
+                                    class="form-control autoSelect2"
+                                    data-val="{{ filter['status']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-md-3 col-sm-12">
                         <div class="form-group">
-                            <label for="filter_canal" class="required">Canal</label>
-                            <select id="filter_canal" name="filter[canal]"
-                                    data-options="{{ canais }}"
+                            <label for="filter_statusECommerce" class="required">Status E-commerce</label>
+                            <select id="filter_statusECommerce" name="filter[statusECommerce]"
+                                    data-options="{{ statusECommerce }}"
                                     class="form-control autoSelect2"
-                                    data-val="{{ filter['canal']|default('') }}">
+                                    data-val="{{ filter['statusECommerce']|default('') }}">
                             </select>
                         </div>
                     </div>
@@ -66,8 +76,8 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-2 col-sm-12 text-right">
-
+                    <div class="col-md-1 col-sm-12 text-right">
+                        <div class="mt-4">
                         <button type="submit" class="btn btn-primary" id="btnFiltrar">
                             <i class="fas fa-search"></i>
                         </button>
@@ -76,6 +86,7 @@
                            href="{{ url(listRoute, {'r':1}) }}">
                             <i class="fas fa-redo-alt"></i>
                         </a>
+                        </div>
 
                     </div>
 
@@ -92,7 +103,7 @@
                         <th scope="col">Id</th>
                         <th scope="col">Cliente</th>
                         <th scope="col">Vendedor<br/>Plano Pagto</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Status<br/>Status E-commerce</th>
                         <th scope="col">Valor Total</th>
                         <th scope="col"></th>
                     </tr>
@@ -127,7 +138,8 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    {{ venda.status|default('') }}
+                                    {{ venda.status|default('') }}<br/>
+                                    {{ venda.jsonData['status_ecommerce']|default('') }}
                                 </td>
                                 <td class="text-right">
                                     R$ {{ venda.valorTotal|number_format(2,',','.') }}

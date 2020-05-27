@@ -205,7 +205,8 @@ class VendaController extends FormListController
             return [
                 new FilterData(['dtVenda'], 'BETWEEN_DATE_CONCAT', 'dtsVenda', $params),
                 new FilterData(['canal'], 'EQ', 'canal', $params, null, true),
-                new FilterData(['statusECommerce'], 'EQ', 'status', $params, null, true),
+                new FilterData(['status'], 'EQ', 'status', $params, null, true),
+                new FilterData(['statusECommerce'], 'EQ', 'statusECommerce', $params, null, true),
                 new FilterData(['vendedor_codigo'], 'EQ', 'vendedor', $params, null, true),
             ];
         };
