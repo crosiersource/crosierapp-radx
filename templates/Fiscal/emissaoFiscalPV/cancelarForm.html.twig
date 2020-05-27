@@ -22,7 +22,7 @@
                     <label class="col-form-label col-sm-2 form-control-label">PV</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" disabled="true"
-                               value="{{ "%06d"|format(venda.pv) }} de {{ venda.dtVenda|date("d/m/Y") }}. Vendedor: {{ item.jsonData['vendedor_nome']|default('') }}">
+                               value="{{ "%06d"|format(venda.jsonData['pv']) }} de {{ venda.dtVenda|date("d/m/Y") }}. Vendedor: {{ item.jsonData['vendedor_nome']|default('') }}">
                     </div>
                 </div>
 

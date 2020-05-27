@@ -92,7 +92,7 @@
                         <label class="col-form-label col-sm-2" for="venda_pvs">PV(s)</label>
                         <div class="col-sm-10">
                             <input type="text" id="venda_pvs" readonly
-                                   class="form-control" value="{{ venda.pv|default('') }}">
+                                   class="form-control" value="{{ venda.jsonData['pv']|default('') }}">
                         </div>
                     </div>
 

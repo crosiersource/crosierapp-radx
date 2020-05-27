@@ -112,6 +112,9 @@ CREATE TABLE `ven_venda_item`
     `produto_id`         bigint(20),
     `descricao`          varchar(255)   NOT NULL,
     `preco_venda`        decimal(15, 2) NOT NULL,
+    `subtotal`           decimal(15, 2) NOT NULL,
+    `desconto`           decimal(15, 2) NOT NULL,
+    `total`              decimal(15, 2) NOT NULL,
     `json_data`          json,
 
     KEY `K_ven_venda_item_produto` (`produto_id`),
