@@ -360,7 +360,7 @@ class MovimentacaoImportController extends BaseController
 
         // Dá um merge nos atributos manyToOne pra não dar erro no createForm
         if ($movimentacao) {
-            $this->business->refindAll($movimentacao);
+            $this->entityHandler->refindAll($movimentacao);
         }
 
         $formData = null;
