@@ -3,7 +3,6 @@
 
 namespace App\Business\ECommerce;
 
-use CrosierSource\CrosierLibBaseBundle\Business\BaseBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -48,7 +47,7 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
  * @package App\Business\ECommerce
  * @author Carlos Eduardo Pauluk
  */
-class IntegradorWebStorm extends BaseBusiness implements IntegradorBusiness
+class IntegradorWebStorm implements IntegradorBusiness
 {
 
     private string $chave;
