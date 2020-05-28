@@ -413,7 +413,7 @@ class EmissaoNFeController extends FormListController
     /**
      *
      * @Route("/fis/emissaonfe/formItem/{notaFiscal}/{item}", name="fis_emissaonfe_formItem", defaults={"item"=null}, requirements={"notaFiscal"="\d+","item"="\d+"})
-     * @ParamConverter("item", class="App\Entity\Fiscal\NotaFiscalItem", options={"mapping": {"item": "id"}})
+     * @ParamConverter("item", class="CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalItem", options={"mapping": {"item": "id"}})
      *
      * @param Request $request
      * @param NotaFiscal $notaFiscal
