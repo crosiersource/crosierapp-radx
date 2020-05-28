@@ -2,6 +2,10 @@
 
 import $ from 'jquery';
 
+import 'jquery-mask-plugin';
+import 'jquery-maskmoney/dist/jquery.maskMoney.js';
+
+
 $(document).ready(function () {
 
     let $qtde = $('#nota_fiscal_item_qtde');
