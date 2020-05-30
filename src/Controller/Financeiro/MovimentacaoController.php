@@ -443,9 +443,7 @@ class MovimentacaoController extends FormListController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
 
-                if ($request->get('btnLimparParcelas')) {
-                } else {
-
+                if (!$request->get('btnLimparParcelas')) {
                     $qtdeParcelas = $request->get('qtdeParcelas');
                     $dtPrimeiroVencto = DateTimeUtils::parseDateStr($request->get('dtPrimeiroVencto'));
                     $valor = DecimalUtils::parseStr($request->get('valor'));
@@ -591,10 +589,10 @@ class MovimentacaoController extends FormListController
         if (!$movimentacao && ($sviParams = $this->storedViewInfoBusiness->retrieve('movimentacao_form_grupo'))) {
             if (isset($sviParams['ultimaMovimentacaoSalva'])) {
                 /** @var Movimentacao $movimentacao */
-                $movimentacao = EntityIdUtils::unserialize($sviParams['ultimaMovimentacaoSalva'], Movimentacao::class);
+                $movimentacao = $this->entityIdUtils->unserialize($sviParams['ultimaMovimentacaoSalva'], Movimentacao::class);
 
                 if ($movimentacao) {
-                    $this->business->refindAll($movimentacao);
+                    $this->entityHandler->refindAll($movimentacao);
                     $movimentacao->setId(null);
                     $movimentacao->setCadeia(null);
                     $movimentacao->setValor(null);

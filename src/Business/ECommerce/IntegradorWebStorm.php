@@ -36,6 +36,7 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Security;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -51,6 +52,8 @@ class IntegradorWebStorm implements IntegradorBusiness
 {
 
     private string $chave;
+
+    private LoggerInterface $logger;
 
     private \nusoap_client $nusoapClientExportacao;
 
@@ -86,18 +89,21 @@ class IntegradorWebStorm implements IntegradorBusiness
 
     private ParameterBagInterface $params;
 
-    public function __construct(AppConfigEntityHandler $appConfigEntityHandler,
-                                Security $security,
-                                DeptoEntityHandler $deptoEntityHandler,
-                                GrupoEntityHandler $grupoEntityHandler,
-                                SubgrupoEntityHandler $subgrupoEntityHandler,
-                                ProdutoEntityHandler $produtoEntityHandler,
-                                UploaderHelper $uploaderHelper,
-                                ParameterBagInterface $params,
-                                ClienteEntityHandler $clienteEntityHandler,
-                                VendaEntityHandler $vendaEntityHandler,
-                                VendaItemEntityHandler $vendaItemEntityHandler)
+    public function __construct(
+        LoggerInterface $logger,
+        AppConfigEntityHandler $appConfigEntityHandler,
+        Security $security,
+        DeptoEntityHandler $deptoEntityHandler,
+        GrupoEntityHandler $grupoEntityHandler,
+        SubgrupoEntityHandler $subgrupoEntityHandler,
+        ProdutoEntityHandler $produtoEntityHandler,
+        UploaderHelper $uploaderHelper,
+        ParameterBagInterface $params,
+        ClienteEntityHandler $clienteEntityHandler,
+        VendaEntityHandler $vendaEntityHandler,
+        VendaItemEntityHandler $vendaItemEntityHandler)
     {
+        $this->logger = $logger;
         $this->appConfigEntityHandler = $appConfigEntityHandler;
         $this->security = $security;
         try {
@@ -462,7 +468,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     public function integrarDeptosGruposSubgrupos()
     {
         /** @var DeptoRepository $repoDepto */
-        $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
+        $repoDepto = $this->deptoEntityHandler->getDoctrine()->getRepository(Depto::class);
         $deptos = $repoDepto->findAll(['id' => 'ASC']);
         /** @var Depto $depto */
         foreach ($deptos as $depto) {
@@ -614,7 +620,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     public function integraGrupo(Grupo $grupo): int
     {
         /** @var GrupoRepository $repoGrupo */
-        $repoGrupo = $this->getDoctrine()->getRepository(Grupo::class);
+        $repoGrupo = $this->grupoEntityHandler->getDoctrine()->getRepository(Grupo::class);
         $grupo = $repoGrupo->find($grupo->getId());
         $idDeptoWebStorm = $grupo->depto->jsonData['ecommerce_id'];
 
@@ -655,7 +661,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     public function integraSubgrupo(Subgrupo $subgrupo): int
     {
         /** @var SubgrupoRepository $repoSubgrupo */
-        $repoSubgrupo = $this->getDoctrine()->getRepository(Subgrupo::class);
+        $repoSubgrupo = $this->subgrupoEntityHandler->getDoctrine()->getRepository(Subgrupo::class);
         $subgrupo = $repoSubgrupo->find($subgrupo->getId());
 
         $idGrupoWebStorm = $subgrupo->grupo->jsonData['ecommerce_id'];
@@ -887,8 +893,8 @@ class IntegradorWebStorm implements IntegradorBusiness
             </itensVenda></produto>' .
             '</ws_integracao>]]>';
 
-        $this->getLogger()->debug('>>>>>>>>>> XML REQUEST:');
-        $this->getLogger()->debug($xml);
+        $this->logger->debug('>>>>>>>>>> XML REQUEST:');
+        $this->logger->debug($xml);
 
         $client = $this->getNusoapClientImportacaoInstance();
 
@@ -909,8 +915,8 @@ class IntegradorWebStorm implements IntegradorBusiness
         $arResultado = utf8_encode($arResultado);
         $arResultado = str_replace('&nbsp;', ' ', $arResultado);
 
-        $this->getLogger()->debug('>>>>>>>>>> XML RESPONSE:');
-        $this->getLogger()->debug($arResultado);
+        $this->logger->debug('>>>>>>>>>> XML RESPONSE:');
+        $this->logger->debug($arResultado);
 
         $xmlResult = simplexml_load_string($arResultado);
 
@@ -1007,11 +1013,12 @@ class IntegradorWebStorm implements IntegradorBusiness
     /**
      * @param \SimpleXMLElement $pedido
      * @throws ViewException
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     private function integrarVenda(\SimpleXMLElement $pedido, ?bool $resalvar = false)
     {
         /** @var Connection $conn */
-        $conn = $this->getDoctrine()->getConnection();
+        $conn = $this->vendaEntityHandler->getDoctrine()->getConnection();
 
         $venda = null;
         try {
@@ -1048,7 +1055,7 @@ class IntegradorWebStorm implements IntegradorBusiness
                 throw new \RuntimeException($erro);
             }
             /** @var VendaRepository $repoVenda */
-            $repoVenda = $this->getDoctrine()->getRepository(Venda::class);
+            $repoVenda = $this->vendaEntityHandler->getDoctrine()->getRepository(Venda::class);
             $venda = $repoVenda->find($venda['id']);
 
         } else {
@@ -1058,12 +1065,12 @@ class IntegradorWebStorm implements IntegradorBusiness
         $venda->dtVenda = DateTimeUtils::parseDateStr($pedido->dataPedido->__toString());
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
-        $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
+        $repoPlanoPagto = $this->vendaEntityHandler->getDoctrine()->getRepository(PlanoPagto::class);
         $planoPagtoNaoInformado = $repoPlanoPagto->findOneBy(['codigo' => 999]);
         $venda->planoPagto = $planoPagtoNaoInformado;
 
         /** @var ColaboradorRepository $repoColaborador */
-        $repoColaborador = $this->getDoctrine()->getRepository(Colaborador::class);
+        $repoColaborador = $this->vendaEntityHandler->getDoctrine()->getRepository(Colaborador::class);
         $vendedorNaoIdentificado = $repoColaborador->findOneBy(['cpf' => '99999999999']);
         $venda->vendedor = $vendedorNaoIdentificado;
         $venda->status = 'PV';
@@ -1086,7 +1093,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             $cliente = $this->clienteEntityHandler->save($cliente);
         } else {
             /** @var ClienteRepository $repoCliente */
-            $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+            $repoCliente = $this->clienteEntityHandler->getDoctrine()->getRepository(Cliente::class);
             $cliente = $repoCliente->find($cliente['id']);
         }
         $venda->cliente = $cliente;
@@ -1096,14 +1103,20 @@ class IntegradorWebStorm implements IntegradorBusiness
         $venda->jsonData['ecommerce_idPedido'] = $pedido->idPedido->__toString();
         $venda->jsonData['ecommerce_status'] = $pedido->status->__toString();
         $obs = [];
+
         $obs[] = 'IP: ' . ($pedido->ip ?? null);
-        $obs[] = 'Entrega: ' . ($pedido->entrega->logradouro ?? null) . ', ' . ($pedido->entrega->numero ?? null) . ' (' . ($pedido->entrega->complemento ?? null) . ') ' .
-            ($pedido->entrega->bairro ?? null) . ' - ' . ($pedido->entrega->cidade ?? null) . '-' . ($pedido->entrega->estado ?? null) . ' - CEP: ' . ($pedido->entrega->cep ?? null) .
-            ' . Telefone: ' . ($pedido->entrega->telefone ?? null);
-        $obs[] = 'Frete: ' . (number_format($pedido->entrega->frete->__toString(), 2, ',', '.'));
-        $obs[] = '';
-        $obs[] = 'Pagamento: ' . ($pedido->pagamentos->pagamento->tipoFormaPagamento ?? null) . ' - ' .
-            ($pedido->pagamentos->pagamento->nomeFormaPagamento ?? null);
+
+        $venda->jsonData['ecommerce_entrega_logradouro'] = ($pedido->entrega->logradouro ?? null);
+        $venda->jsonData['ecommerce_entrega_numero'] = ($pedido->entrega->numero ?? null);
+        $venda->jsonData['ecommerce_entrega_complemento'] = ($pedido->entrega->complemento ?? null);
+        $venda->jsonData['ecommerce_entrega_bairro'] = ($pedido->entrega->bairro ?? null);
+        $venda->jsonData['ecommerce_entrega_cidade'] = ($pedido->entrega->cidade ?? null);
+        $venda->jsonData['ecommerce_entrega_estado'] = ($pedido->entrega->estado ?? null);
+        $venda->jsonData['ecommerce_entrega_cep'] = ($pedido->entrega->cep ?? null);
+        $venda->jsonData['ecommerce_entrega_telefone'] = ($pedido->entrega->telefone ?? null);
+        $venda->jsonData['ecommerce_entrega_valor_frete'] = ($pedido->entrega->frete ?? null);
+
+        $obs[] = 'Pagamento: ' . ($pedido->pagamentos->pagamento->tipoFormaPagamento ?? null) . ' - ' . ($pedido->pagamentos->pagamento->nomeFormaPagamento ?? null);
         $obs[] = 'Desconto: ' . number_format($pedido->pagamentos->pagamento->desconto->__toString(), 2, ',', '.');
         $obs[] = 'Parcelas: ' . ($pedido->pagamentos->pagamento->parcelas ?? null);
         $obs[] = 'Valor Parcela: R$ ' . number_format($pedido->pagamentos->pagamento->valorParcela->__toString(), 2, ',', '.');
@@ -1117,7 +1130,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $this->vendaEntityHandler->save($venda);
 
         /** @var ProdutoRepository $repoProduto */
-        $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+        $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
 
         $ordem = 1;
         foreach ($pedido->produtos->produto as $produtoWebStorm) {
@@ -1178,7 +1191,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     {
         if (!isset($this->nusoapClientExportacao)) {
 
-            $endpoint = $this->getDoctrine()->getRepository(AppConfig::class)
+            $endpoint = $this->appConfigEntityHandler->getDoctrine()->getRepository(AppConfig::class)
                 ->findValorByChaveAndAppUUID('ecomm_info_integra_WEBSTORM_endpoint_export', $_SERVER['CROSIERAPP_UUID']);
             if (!$endpoint) {
                 throw new \RuntimeException('endpoint não informado');
@@ -1207,7 +1220,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     {
         if (!isset($this->nusoapClientImportacao)) {
 
-            $endpoint = $this->getDoctrine()->getRepository(AppConfig::class)
+            $endpoint = $this->appConfigEntityHandler->getDoctrine()->getRepository(AppConfig::class)
                 ->findValorByChaveAndAppUUID('ecomm_info_integra_WEBSTORM_endpoint_import', $_SERVER['CROSIERAPP_UUID']);
             if (!$endpoint) {
                 throw new \RuntimeException('endpoint não informado');

@@ -78,14 +78,14 @@
                     </div>
                     <div class="col-md-1 col-sm-12 text-right">
                         <div class="mt-4">
-                        <button type="submit" class="btn btn-primary" id="btnFiltrar">
-                            <i class="fas fa-search"></i>
-                        </button>
+                            <button type="submit" class="btn btn-primary" id="btnFiltrar">
+                                <i class="fas fa-search"></i>
+                            </button>
 
-                        <a role="button" class="btn btn-secondary" id="btnRecarregar"
-                           href="{{ url(listRoute, {'r':1}) }}">
-                            <i class="fas fa-redo-alt"></i>
-                        </a>
+                            <a role="button" class="btn btn-secondary" id="btnRecarregar"
+                               href="{{ url(listRoute, {'r':1}) }}">
+                                <i class="fas fa-redo-alt"></i>
+                            </a>
                         </div>
 
                     </div>
@@ -103,7 +103,7 @@
                         <th scope="col">Id</th>
                         <th scope="col">Cliente</th>
                         <th scope="col">Vendedor<br/>Plano Pagto</th>
-                        <th scope="col">Status<br/>Status E-commerce</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Valor Total</th>
                         <th scope="col"></th>
                     </tr>
@@ -127,8 +127,15 @@
                                         - {{ venda.cliente.nome }}
                                     </div>
                                     <div class="text-right">
-                                    <span class="badge badge-pill badge-info"><i
-                                                class="fas fa-bezier-curve"></i> {{ venda.jsonData.canal|default('') }}</span>
+                                        {% if venda.jsonData.canal|default('') == 'LOJA FÍSICA' %}
+                                            <span class="badge badge-pill badge-info">
+                                            <i class="fas fa-store"></i> {{ venda.jsonData.canal|default('') }}
+                                        </span>
+                                        {% else %}
+                                            <span class="badge badge-pill badge-success">
+                                            <i class="fas fa-bezier-curve"></i> {{ venda.jsonData.canal|default('') }}
+                                        </span>
+                                        {% endif %}
                                     </div>
                                 </td>
                                 <td>
@@ -138,19 +145,26 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    {{ venda.status|default('') }}<br/>
-                                    {{ venda.jsonData['status_ecommerce']|default('') }}
+                                    {{ venda.jsonData.canal == 'LOJA FÍSICA' ? venda.status|default('') ~ '<br/>' : '' }}
+                                    {{ venda.jsonData.ecommerce_status|default('') }}
                                 </td>
                                 <td class="text-right">
                                     R$ {{ venda.valorTotal|number_format(2,',','.') }}
                                 </td>
                                 <td class="text-right">
-
-                                    <a class="btn btn-sm btn-primary"
-                                       href="{{ url('ven_venda_form', {'id':venda.id}) }}"
-                                       role="button" title="Visualizar venda">
-                                        <i class="far fa-file-alt"></i>
-                                    </a>
+                                    {% if venda.jsonData.canal == 'LOJA FÍSICA' %}
+                                        <a class="btn btn-sm btn-primary"
+                                           href="{{ url('ven_venda_form', {'id':venda.id}) }}"
+                                           role="button" title="Visualizar venda">
+                                            <i class="far fa-file-alt"></i>
+                                        </a>
+                                    {% else %}
+                                        <a class="btn btn-sm btn-success"
+                                           href="{{ url('ven_venda_ecommerceForm', {'id':venda.id}) }}"
+                                           role="button" title="Visualizar venda">
+                                            <i class="far fa-file-alt"></i>
+                                        </a>
+                                    {% endif %}
                                 </td>
                             </tr>
 
@@ -163,10 +177,11 @@
                             <td class="text-right">{{ dia.totalDia|number_format(2,',','.') }}</td>
                             <td class="text-right">
                                 {% if ecomm_info_integra %}
-                                    <button type="button" class="btn btn-warning" id="btnObterVendasECommerce"
+                                    <button type="button" class="btn btn-sm btn-warning" id="btnObterVendasECommerce"
                                             data-url="{{ url('ven_venda_obterVendasECommerce') ~ '/' ~ dia.dtVenda|date('Y-m-d') }}"
-                                            data-target="#confirmationModal" data-toggle="modal">
-                                        <i class="fas fa-cloud-upload-alt"></i>
+                                            data-target="#confirmationModal" data-toggle="modal"
+                                            title="Obter vendas do e-commerce">
+                                        <i class="fas fa-cloud-download-alt"></i>
                                     </button>
                                 {% endif %}
                             </td>

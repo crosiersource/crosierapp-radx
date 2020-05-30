@@ -32,6 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MovimentacaoCaixaController extends FormListController
 {
 
+    /** @var MovimentacaoEntityHandler */
     protected $entityHandler;
 
     private MovimentacaoBusiness $business;
@@ -290,7 +291,7 @@ class MovimentacaoCaixaController extends FormListController
                 try {
                     /** @var Movimentacao $movimentacaoSalva */
                     $movimentacaoSalva = $this->entityIdUtils->unserialize($sviParams['ultimaMovimentacaoSalva'], Movimentacao::class);
-                    $this->business->refindAll($movimentacaoSalva);
+                    $this->entityHandler->refindAll($movimentacaoSalva);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                     $this->logger->error($e->getMessage());

@@ -108,6 +108,34 @@ class VendaController extends FormListController
         return $this->doForm($request, $venda, $params);
     }
 
+
+    /**
+     *
+     * @Route("/ven/venda/ecommerceForm/{id}", name="ven_venda_ecommerceForm", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @param Request $request
+     * @param Venda|null $venda
+     * @return RedirectResponse|Response
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function ecommerceForm(Request $request, Venda $venda = null)
+    {
+        $params = [
+            'listRoute' => 'ven_venda_listVendasPorDiaComEcommerce',
+            'typeClass' => VendaType::class,
+            'formView' => 'Vendas/venda_ecommerceForm.html.twig',
+            'formRoute' => 'ven_venda_ecommerceForm',
+            'formPageTitle' => 'Venda'
+        ];
+
+        if (!$venda) {
+            // Este formulário não serve para inserir novas vendas
+            return $this->redirectToRoute('ven_venda_listVendasPorDiaComEcommerce');
+        }
+
+        return $this->doForm($request, $venda, $params);
+    }
+
     /**
      * @param Request $request
      * @param $venda
@@ -166,7 +194,7 @@ class VendaController extends FormListController
     {
         $params = [
             'formRoute' => 'ven_venda_form',
-            'listView' => 'Vendas/ven_venda_listVendasPorDiaComEcommerce.html.twig',
+            'listView' => 'Vendas/venda_listVendasPorDiaComEcommerce.html.twig',
             'listRoute' => 'ven_venda_listVendasPorDiaComEcommerce',
             'listPageTitle' => 'Vendas',
             'listId' => 'ven_venda_listVendasPorDiaComEcommerce'
@@ -177,10 +205,10 @@ class VendaController extends FormListController
         $jsonMetadata = json_decode($repoAppConfig->findByChave('ven_venda_json_metadata'), true);
         $sugestoes = $jsonMetadata['campos']['canal']['sugestoes'];
         $sugestoes = array_combine($sugestoes, $sugestoes);
-        $params['canais'] = json_encode(Select2JsUtils::arrayToSelect2Data($sugestoes));
+        $params['canais'] = json_encode(Select2JsUtils::arrayToSelect2Data($sugestoes, null, '...'));
 
         $status = $jsonMetadata['status']['opcoes'] ?? [];
-        $params['statuss'] = json_encode(array_combine($status, $status));
+        $params['statuss'] = json_encode(Select2JsUtils::arrayToSelect2Data(array_combine($status, $status)));
         $statusECommerce = $jsonMetadata['statusECommerce']['opcoes'] ?? [];
         $params['statusECommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusECommerce));
 
@@ -205,7 +233,7 @@ class VendaController extends FormListController
             return [
                 new FilterData(['dtVenda'], 'BETWEEN_DATE_CONCAT', 'dtsVenda', $params),
                 new FilterData(['canal'], 'EQ', 'canal', $params, null, true),
-                new FilterData(['status'], 'EQ', 'status', $params, null, true),
+                new FilterData(['status'], 'EQ', 'status', $params),
                 new FilterData(['statusECommerce'], 'EQ', 'statusECommerce', $params, null, true),
                 new FilterData(['vendedor_codigo'], 'EQ', 'vendedor', $params, null, true),
             ];
@@ -285,7 +313,15 @@ class VendaController extends FormListController
 
         $resalvar = $request->get('resalvar') === 'S';
 
-        $integrador->obterVendas($dtVenda, $resalvar);
+        $vendasObtidas = $integrador->obterVendas($dtVenda, $resalvar);
+
+        if ($vendasObtidas) {
+            $this->addFlash('success', $vendasObtidas . ' venda(s) obtida(s)');
+        } else {
+            $this->addFlash('warn', ' Nenhuma venda obtida');
+        }
+
+
         return $this->redirect($request->server->get('HTTP_REFERER'));
     }
 
