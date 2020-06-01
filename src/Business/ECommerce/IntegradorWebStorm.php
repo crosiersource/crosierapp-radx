@@ -934,7 +934,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
 
-        $produto->jsonData['ecommerce_dt_integr'] = (new \DateTime())->format('d/m/Y H:i:s');
+        $produto->jsonData['ecommerce_dt_integr'] = (new \DateTime())->format('Y-m-d H:i:s');
         $produto->jsonData['ecommerce_integr_por'] = $this->security->getUser()->getNome();
         $this->produtoEntityHandler->save($produto);
     }
