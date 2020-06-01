@@ -106,17 +106,6 @@ class IntegradorWebStorm implements IntegradorBusiness
         $this->logger = $logger;
         $this->appConfigEntityHandler = $appConfigEntityHandler;
         $this->security = $security;
-        try {
-            /** @var AppConfigRepository $repoAppConfig */
-            $this->repoAppConfig = $this->appConfigEntityHandler->getDoctrine()->getRepository(AppConfig::class);
-            /** @var AppConfig $appConfigChave */
-            $appConfigChave = $this->repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'ecomm_info_integra_WEBSTORM_chave'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
-            if ($appConfigChave) {
-                $this->chave = $appConfigChave->getValor();
-            }
-        } catch (\Exception $e) {
-            throw new \RuntimeException('Erro ao instanciar IntegradorWebStorm (chave ecomm_info_integra_WEBSTORM_chave ?)');
-        }
         $this->deptoEntityHandler = $deptoEntityHandler;
         $this->grupoEntityHandler = $grupoEntityHandler;
         $this->subgrupoEntityHandler = $subgrupoEntityHandler;
@@ -126,6 +115,27 @@ class IntegradorWebStorm implements IntegradorBusiness
         $this->clienteEntityHandler = $clienteEntityHandler;
         $this->vendaEntityHandler = $vendaEntityHandler;
         $this->vendaItemEntityHandler = $vendaItemEntityHandler;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChave(): string
+    {
+        if (!$this->chave) {
+            try {
+                /** @var AppConfigRepository $repoAppConfig */
+                $this->repoAppConfig = $this->appConfigEntityHandler->getDoctrine()->getRepository(AppConfig::class);
+                /** @var AppConfig $appConfigChave */
+                $appConfigChave = $this->repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'ecomm_info_integra_WEBSTORM_chave'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
+                if ($appConfigChave) {
+                    $this->chave = $appConfigChave->getValor();
+                }
+            } catch (\Exception $e) {
+                throw new \RuntimeException('Erro ao instanciar IntegradorWebStorm (chave ecomm_info_integra_WEBSTORM_chave ?)');
+            }
+        }
+        return $this->chave;
     }
 
 
@@ -140,7 +150,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <chave>' . $this->chave . '</chave>
+                    <chave>' . $this->getChave() . '</chave>
                     <acao>select</acao>
                     <modulo>registros</modulo>    
                     <filtro>
@@ -207,7 +217,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-               <chave>' . $this->chave . '</chave>
+               <chave>' . $this->getChave() . '</chave>
                <acao>insert</acao>
                <modulo>marca</modulo>
                <marca pk="idMarca">
@@ -247,7 +257,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <chave>' . $this->chave . '</chave>
+                    <chave>' . $this->getChave() . '</chave>
                     <acao>select</acao>
                     <modulo>registros</modulo>    
                     <filtro>
@@ -288,7 +298,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <chave>' . $this->chave . '</chave>
+                    <chave>' . $this->getChave() . '</chave>
                     <acao>select</acao>
                     <modulo>registros</modulo>    
                     <filtro>
@@ -360,7 +370,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-               <chave>' . $this->chave . '</chave>
+               <chave>' . $this->getChave() . '</chave>
                <acao>insert</acao>
                <modulo>tipoCaracteristica</modulo>
                <tipoCaracteristica pk="idTipoCaracteristica">
@@ -429,7 +439,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-               <chave>' . $this->chave . '</chave>
+               <chave>' . $this->getChave() . '</chave>
                <acao>insert</acao>
                <modulo>caracteristica</modulo>
                <caracteristicas>
@@ -719,7 +729,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-               <chave>' . $this->chave . '</chave>
+               <chave>' . $this->getChave() . '</chave>
                <acao>' . ($ecommerce_id ? 'update' : 'insert') . '</acao>
                <modulo>departamento</modulo>
                <marca pk="idDepartamento">
@@ -798,7 +808,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-               <chave>' . $this->chave . '</chave>
+               <chave>' . $this->getChave() . '</chave>
                <acao>' . ($produtoEcommerceId ? 'update' : 'insert') . '</acao>
                <modulo>produto</modulo>
                <produto pk="idProduto">' .
@@ -973,7 +983,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $dtFim = (clone $dtVenda)->setTime(23, 59, 59, 999999);
         $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>    
                     <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <chave>' . $this->chave . '</chave>
+                    <chave>' . $this->getChave() . '</chave>
                     <acao>select</acao>
                     <modulo>pedido</modulo>    
                     <filtro>
