@@ -1033,7 +1033,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $venda = null;
         try {
             // verifica se já existe uma ven_venda com o json_data.webstorm_idPedido
-            $venda = $conn->fetchAssoc('SELECT * FROM ven_venda WHERE json_data->>"$.webstorm_idPedido" = :webstorm_idPedido', ['ecommerce_idPedido' => $pedido->idPedido]);
+            $venda = $conn->fetchAssoc('SELECT * FROM ven_venda WHERE json_data->>"$.webstorm_idPedido" = :webstorm_idPedido', ['webstorm_idPedido' => $pedido->idPedido]);
         } catch (DBALException $e) {
             $this->logger->error($e->getMessage());
         }
