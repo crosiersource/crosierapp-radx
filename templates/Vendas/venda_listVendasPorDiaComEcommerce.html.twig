@@ -120,7 +120,9 @@
                         {% for venda in dia.vendas %}
 
                             <tr>
-                                <td>{{ venda.id|strpad(9) }}</td>
+                                <td>
+                                    {{ venda.id|strpad(9) }}
+                                </td>
                                 <td>
                                     <div style="float: left">
                                         {{ venda.cliente.documento|default('')|mascararCnpjCpf }}
@@ -133,8 +135,9 @@
                                         </span>
                                         {% else %}
                                             <span class="badge badge-pill badge-success">
-                                            <i class="fas fa-bezier-curve"></i> {{ venda.jsonData.canal|default('') }}
-                                        </span>
+                                                <i class="fas fa-bezier-curve"></i> {{ venda.jsonData.canal|default('') }}
+                                            </span>
+                                            <br><span style="font-size: small">E-commerce Id: <b>{{ venda.jsonData.ecommerce_idPedido|strpad(9) }}</b></span>
                                         {% endif %}
                                     </div>
                                 </td>
