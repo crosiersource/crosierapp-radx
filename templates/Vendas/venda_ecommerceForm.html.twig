@@ -24,26 +24,80 @@
                 {{ form_start(form) }}
                 {{ form_widget(form._token) }}
 
+                <span class="d-none">
+                    {{ form_row(form.cliente) }}
+                    {{ form_row(form.vendedor) }}
+                </span>
 
                 <div class="row">
-                    <div class="col-md-2 col-sm-12">
+                    <div class="col-md-3 col-sm-12">
                         {{ form_row(form.id) }}
                     </div>
-                    <div class="col-md-2 col-sm-12">
+                    <div class="col-md-4 col-sm-12">
                         {{ form_row(form.dtVenda) }}
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.status) }}
+                    <div class="col-md-5 col-sm-12">
+                        {{ form_row(form.jsonData.ecommerce_status) }}
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-5 col-sm-12">
-                        {{ form_row(form.cliente) }}
+                    <div class="col-md-7 col-sm-12">
+
+                        <div class="form-group">
+                            <label class="" for="venda_cliente">Cliente</label>
+                            <input type="text" class="form-control" disabled value="{{ e.cliente.documento|mascararCnpjCpf }} - {{ e.cliente.nome }}">
+                        </div>
                     </div>
-                    <div class="col-md-3 col-sm-12">
+                    <div class="col-md-5 col-sm-12">
                         {{ form_row(form.planoPagto) }}
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <fieldset class="form-group">
+                        <legend>Entrega</legend>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                {{ form_row(form.jsonData['ecommerce_entrega_logradouro']) }}
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                {{ form_row(form.jsonData['ecommerce_entrega_numero']) }}
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                {{ form_row(form.jsonData['ecommerce_entrega_complemento']) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2 col-sm-6">
+                                {{ form_row(form.jsonData['ecommerce_entrega_bairro']) }}
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                {{ form_row(form.jsonData['ecommerce_entrega_cep']) }}
+                            </div>
+                            <div class="col-md-5 col-sm-4">
+                                {{ form_row(form.jsonData['ecommerce_entrega_cidade']) }}
+                            </div>
+                            <div class="col-md-3 col-sm-4">
+                                {{ form_row(form.jsonData['ecommerce_entrega_uf']) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                {{ form_row(form.jsonData['ecommerce_entrega_frete_calculado']) }}
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                {{ form_row(form.jsonData['ecommerce_entrega_frete_real']) }}
+                            </div>
+                        </div>
+
+                    </fieldset>
                 </div>
 
 

@@ -209,7 +209,7 @@ class VendaController extends FormListController
 
         $status = $jsonMetadata['status']['opcoes'] ?? [];
         $params['statuss'] = json_encode(Select2JsUtils::arrayToSelect2Data(array_combine($status, $status)));
-        $statusECommerce = $jsonMetadata['statusECommerce']['opcoes'] ?? [];
+        $statusECommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
         $params['statusECommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusECommerce));
 
 

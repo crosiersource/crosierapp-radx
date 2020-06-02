@@ -6,6 +6,7 @@ use App\Business\ECommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -68,18 +69,37 @@ class IntegraWebStormController extends BaseController
      * @Route("/est/integraWebStorm/obterVendas/{dtVenda}", name="est_integraWebStorm_obterVendas", defaults={"dtVenda": null})
      * @ParamConverter("dtVenda", options={"format": "Y-m-d"})
      *
+     * @param Request $request
      * @param IntegradorWebStorm $integraWebStormBusiness
      * @param \DateTime $dtVenda
      * @return Response
-     * @throws \Exception
+     * @throws ViewException
+     * @throws \Doctrine\DBAL\ConnectionException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function obterVendas(IntegradorWebStorm $integraWebStormBusiness, ?\DateTime $dtVenda = null)
+    public function obterVendas(Request $request, IntegradorWebStorm $integraWebStormBusiness, ?\DateTime $dtVenda = null)
     {
         if (!$dtVenda) {
             $dtVenda = new \DateTime();
         }
-        $integraWebStormBusiness->obterVendas($dtVenda);
+        $resalvar = $request->get('resalvar') ?? null;
+        $integraWebStormBusiness->obterVendas($dtVenda, $resalvar === 'S');
+        return new Response('OK');
+    }
+
+    /**
+     *
+     * @Route("/est/integraWebStorm/integrarVendaParaECommerce/{venda}", name="est_integraWebStorm_integrarVendaParaECommerce")
+     *
+     * @param Request $request
+     * @param IntegradorWebStorm $integraWebStormBusiness
+     * @param Venda|null $venda
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function integrarVendaParaECommerce(Request $request, IntegradorWebStorm $integraWebStormBusiness, Venda $venda)
+    {
+        $integraWebStormBusiness->integrarVendaParaECommerce($venda);
         return new Response('OK');
     }
 

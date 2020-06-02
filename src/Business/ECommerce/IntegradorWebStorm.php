@@ -954,6 +954,7 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param bool|null $resalvar
      * @return int
      * @throws ViewException
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function obterVendas(\DateTime $dtVenda, ?bool $resalvar = false): int
     {
@@ -967,7 +968,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             return 0;
         }
         foreach ($pedidos->pedido as $pedido) {
-            $this->integrarVenda($pedido, $resalvar);
+            $this->integrarVendaFromEcommerce($pedido, $resalvar);
         }
         return count($pedidos);
     }
@@ -1022,10 +1023,11 @@ class IntegradorWebStorm implements IntegradorBusiness
 
     /**
      * @param \SimpleXMLElement $pedido
+     * @param bool|null $resalvar
      * @throws ViewException
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    private function integrarVenda(\SimpleXMLElement $pedido, ?bool $resalvar = false)
+    private function integrarVendaFromEcommerce(\SimpleXMLElement $pedido, ?bool $resalvar = false)
     {
         /** @var Connection $conn */
         $conn = $this->vendaEntityHandler->getDoctrine()->getConnection();
@@ -1042,8 +1044,9 @@ class IntegradorWebStorm implements IntegradorBusiness
             // se já existe, só confere o status
             $vendaJsonData = json_decode($venda['json_data'], true);
             if ($vendaJsonData['ecommerce_status'] != $pedido->status->__toString()) {
-                $vendaJsonData['ecommerce_status_id'] = $pedido->status->__toString();
-                $vendaJsonData['ecommerce_status'] = $pedido->desStatus->__toString();
+
+                $vendaJsonData['ecommerce_status'] = $pedido->status->__toString();
+                $vendaJsonData['ecommerce_status_descricao'] = $pedido->desStatus->__toString();
                 $venda_['json_data'] = json_encode($vendaJsonData);
                 try {
                     $conn->update('ven_venda', $venda_, ['id' => $venda['id']]);
@@ -1116,25 +1119,26 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $obs[] = 'IP: ' . ($pedido->ip ?? null);
 
-        $venda->jsonData['ecommerce_entrega_logradouro'] = ($pedido->entrega->logradouro ?? null);
-        $venda->jsonData['ecommerce_entrega_numero'] = ($pedido->entrega->numero ?? null);
-        $venda->jsonData['ecommerce_entrega_complemento'] = ($pedido->entrega->complemento ?? null);
-        $venda->jsonData['ecommerce_entrega_bairro'] = ($pedido->entrega->bairro ?? null);
-        $venda->jsonData['ecommerce_entrega_cidade'] = ($pedido->entrega->cidade ?? null);
-        $venda->jsonData['ecommerce_entrega_estado'] = ($pedido->entrega->estado ?? null);
-        $venda->jsonData['ecommerce_entrega_cep'] = ($pedido->entrega->cep ?? null);
-        $venda->jsonData['ecommerce_entrega_telefone'] = ($pedido->entrega->telefone ?? null);
-        $venda->jsonData['ecommerce_entrega_valor_frete'] = ($pedido->entrega->frete ?? null);
+        $venda->jsonData['ecommerce_entrega_logradouro'] = ($pedido->entrega->logradouro->__toString() ?? null);
+        $venda->jsonData['ecommerce_entrega_numero'] = ($pedido->entrega->numero->__toString() ?? null);
+        $venda->jsonData['ecommerce_entrega_complemento'] = ($pedido->entrega->complemento->__toString() ?? null);
+        $venda->jsonData['ecommerce_entrega_bairro'] = ($pedido->entrega->bairro->__toString() ?? null);
+        $venda->jsonData['ecommerce_entrega_cidade'] = ($pedido->entrega->cidade->__toString() ?? null);
+        $venda->jsonData['ecommerce_entrega_uf'] = ($pedido->entrega->estado->__toString() ?? null);
+        $venda->jsonData['ecommerce_entrega_cep'] = ($pedido->entrega->cep->__toString() ?? null);
+        $venda->jsonData['ecommerce_entrega_telefone'] = ($pedido->entrega->telefone->__toString() ?? null);
+        $venda->jsonData['ecommerce_entrega_frete_calculado'] = ($pedido->entrega->frete->__toString() ?? null);
+        $venda->jsonData['ecommerce_entrega_frete_real'] = 0.00;
 
-        $obs[] = 'Pagamento: ' . ($pedido->pagamentos->pagamento->tipoFormaPagamento ?? null) . ' - ' . ($pedido->pagamentos->pagamento->nomeFormaPagamento ?? null);
+        $obs[] = 'Pagamento: ' . ($pedido->pagamentos->pagamento->tipoFormaPagamento->__toString() ?? null) . ' - ' . ($pedido->pagamentos->pagamento->nomeFormaPagamento->__toString() ?? null);
         $obs[] = 'Desconto: ' . number_format($pedido->pagamentos->pagamento->desconto->__toString(), 2, ',', '.');
-        $obs[] = 'Parcelas: ' . ($pedido->pagamentos->pagamento->parcelas ?? null);
+        $obs[] = 'Parcelas: ' . ($pedido->pagamentos->pagamento->parcelas->__toString() ?? null);
         $obs[] = 'Valor Parcela: R$ ' . number_format($pedido->pagamentos->pagamento->valorParcela->__toString(), 2, ',', '.');
 
         $venda->jsonData['obs'] = implode(PHP_EOL, $obs);
 
-        $venda->jsonData['ecommerce_status_id'] = $pedido->status->__toString();
-        $venda->jsonData['ecommerce_status'] = $pedido->desStatus->__toString();
+        $venda->jsonData['ecommerce_status'] = $pedido->status->__toString();
+        $venda->jsonData['ecommerce_status_descricao'] = $pedido->desStatus->__toString();
 
         $conn->beginTransaction();
         $this->vendaEntityHandler->save($venda);
@@ -1174,25 +1178,49 @@ class IntegradorWebStorm implements IntegradorBusiness
         $this->vendaEntityHandler->save($venda);
 
         $conn->commit();
-        // 1 - Não Finalizado
-        // 2 - Aguardando Pagamento
-        // 3 - Pedido Pendente
-        // 4 - Pedido Atendido
-        // 5 - Pedido Cancelado
-        // 6 - Pedido Aprovado
-        // 7 - Aguardando Entrega
-        // 8 - Pedido Separado
+    }
 
 
-        // verifica se já existe um crm_cliente com documento = cpf_cnpj
+    /**
+     * @param Venda $venda
+     * @return \SimpleXMLElement|null
+     */
+    public function integrarVendaParaECommerce(Venda $venda)
+    {
+        $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+		<ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<chave>' . $this->getChave() . '</chave>
+			<acao>update</acao>
+			<modulo>alterarStatusPedido</modulo>    
+			<statusPedido>
+				<idPedido>' . $venda->jsonData['ecommerce_idPedido'] . '</idPedido>
+				<status>' . $venda->jsonData['ecommerce_status'] . '</status>
+			</statusPedido>
+		</ws_integracao>]]>';
 
-        // pesquisa os produtos pelo json_data.ecommerce_id
+        $client = $this->getNusoapClientImportacaoInstance();
 
-        // Adiciona no ven_venda json_data.obs os demais dados (entrega e pagamento)
+        $arResultado = $client->call('alterarStatusPedido', [
+            'xml' => utf8_decode($xml)
+        ]);
+
+        if ($client->faultcode) {
+            throw new \RuntimeException($client->faultcode);
+        }
+        if ($client->getError()) {
+            throw new \RuntimeException($client->getError());
+        }
+
+        $xmlResult = simplexml_load_string($arResultado);
+
+        if ($xmlResult->erros ?? false) {
+            throw new \RuntimeException($xmlResult->erros->erro->__toString());
+        }
+
+        return $xmlResult->resultado->filtro ?? null;
 
 
     }
-
 
     /**
      * @return \nusoap_client

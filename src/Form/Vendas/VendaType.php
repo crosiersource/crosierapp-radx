@@ -52,7 +52,7 @@ class VendaType extends AbstractType
 
             $builder->add('id', IntegerType::class, [
                 'label' => 'Id',
-                'required' => false,
+                'required' => true,
                 'attr' => ['readonly' => 'readonly']
             ]);
 
@@ -99,11 +99,10 @@ class VendaType extends AbstractType
                 'class' => Colaborador::class,
                 'placeholder' => '...',
                 'choices' => $vendedorChoices,
-                'empty_data' => 0,
                 'choice_label' => function (?Colaborador $colaborador) {
                     return $colaborador ? $colaborador->nome : null;
                 },
-                'required' => true,
+                'required' => false,
                 'attr' => ['class' => 'autoSelect2 ' . (!$venda->getId() ? 'focusOnReady' : '')]
             ]);
 
