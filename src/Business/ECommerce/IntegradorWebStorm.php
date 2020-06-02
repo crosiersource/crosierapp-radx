@@ -1044,9 +1044,9 @@ class IntegradorWebStorm implements IntegradorBusiness
             if ($vendaJsonData['ecommerce_status'] != $pedido->status->__toString()) {
                 $vendaJsonData['ecommerce_status_id'] = $pedido->status->__toString();
                 $vendaJsonData['ecommerce_status'] = $pedido->desStatus->__toString();
-                $venda['json_data'] = json_encode($vendaJsonData);
+                $venda_['json_data'] = json_encode($vendaJsonData);
                 try {
-                    $conn->update('ven_venda', $venda, ['id' => $venda['id']]);
+                    $conn->update('ven_venda', $venda_, ['id' => $venda['id']]);
                 } catch (DBALException $e) {
                     throw new ViewException('Erro ao alterar status da venda. (ecommerce_idPedido = ' . $pedido->idPedido->__toString() . ')');
                 }
