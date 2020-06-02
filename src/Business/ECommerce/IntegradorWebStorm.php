@@ -51,7 +51,7 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 class IntegradorWebStorm implements IntegradorBusiness
 {
 
-    private string $chave = null;
+    private ?string $chave = null;
 
     private LoggerInterface $logger;
 
