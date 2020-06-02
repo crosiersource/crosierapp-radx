@@ -1032,8 +1032,8 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $venda = null;
         try {
-            // verifica se já existe uma ven_venda com o json_data.webstorm_idPedido
-            $venda = $conn->fetchAssoc('SELECT * FROM ven_venda WHERE json_data->>"$.webstorm_idPedido" = :webstorm_idPedido', ['webstorm_idPedido' => $pedido->idPedido]);
+            // verifica se já existe uma ven_venda com o json_data.ecommerce_idPedido
+            $venda = $conn->fetchAssoc('SELECT * FROM ven_venda WHERE json_data->>"$.ecommerce_idPedido" = :ecommerce_idPedido', ['ecommerce_idPedido' => $pedido->idPedido]);
         } catch (DBALException $e) {
             $this->logger->error($e->getMessage());
         }
@@ -1048,7 +1048,7 @@ class IntegradorWebStorm implements IntegradorBusiness
                 try {
                     $conn->update('ven_venda', $venda, ['id' => $venda['id']]);
                 } catch (DBALException $e) {
-                    throw new ViewException('Erro ao alterar status da venda. (webstorm_idPedido = ' . $pedido->idPedido->__toString() . ')');
+                    throw new ViewException('Erro ao alterar status da venda. (ecommerce_idPedido = ' . $pedido->idPedido->__toString() . ')');
                 }
             }
 
@@ -1087,7 +1087,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $cliente = null;
         try {
-            // verifica se já existe uma ven_venda com o json_data.webstorm_idPedido
+            // verifica se já existe uma ven_venda com o json_data.ecommerce_idPedido
             $cliente = $conn->fetchAssoc('SELECT id FROM crm_cliente WHERE documento = :documento', ['documento' => $pedido->cliente->cpf_cnpj->__toString()]);
         } catch (DBALException $e) {
             $this->logger->error($e->getMessage());
@@ -1147,7 +1147,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             /** @var Produto $produto */
             $produto = null;
             try {
-                // verifica se já existe uma ven_venda com o json_data.webstorm_idPedido
+                // verifica se já existe uma ven_venda com o json_data.ecommerce_idPedido
                 $sProduto = $conn->fetchAssoc('SELECT id FROM est_produto WHERE json_data->>"$.ecommerce_id" = :idProduto', ['idProduto' => $produtoWebStorm->idProduto->__toString()]);
                 if (!isset($sProduto['id'])) {
                     throw new \RuntimeException();
