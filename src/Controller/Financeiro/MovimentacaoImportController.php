@@ -4,7 +4,6 @@ namespace App\Controller\Financeiro;
 
 use App\Form\Financeiro\MovimentacaoAlterarEmLoteType;
 use App\Form\Financeiro\MovimentacaoType;
-use CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
@@ -40,8 +39,6 @@ class MovimentacaoImportController extends BaseController
 
     private SessionInterface $session;
 
-    private StoredViewInfoBusiness $storedViewInfoBusiness;
-
     private array $vParams = array();
 
     /**
@@ -51,15 +48,6 @@ class MovimentacaoImportController extends BaseController
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
-    }
-
-    /**
-     * @required
-     * @param StoredViewInfoBusiness $storedViewInfoBusiness
-     */
-    public function setStoredViewInfoBusiness(StoredViewInfoBusiness $storedViewInfoBusiness): void
-    {
-        $this->storedViewInfoBusiness = $storedViewInfoBusiness;
     }
 
     /**

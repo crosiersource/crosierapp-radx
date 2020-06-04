@@ -3,8 +3,10 @@
 namespace App\Controller\Estoque;
 
 
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\PedidoCompra;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\PedidoCompraItem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\PedidoCompraEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\PedidoCompraItemEntityHandler;
 use App\Form\Estoque\PedidoCompraItemType;
@@ -139,6 +141,92 @@ class PedidoCompraController extends FormListController
         ];
         return $this->doForm($request, $pedidoCompra, $params);
     }
+
+
+    /**
+     * @Route("/est/pedidoCompra/adicionar/{produto}/{filial}/{qtdeSugerida}", name="est_pedidoCompra_adicionar")
+     * @param Request $request
+     * @param Produto $produto
+     * @param string $filial
+     * @param float $qtdeSugerida
+     * @return RedirectResponse
+     *
+     * @IsGranted("ROLE_RELVENDAS", statusCode=403)
+     */
+    public function adicionar(Request $request, Produto $produto, string $filial, float $qtdeSugerida): RedirectResponse
+    {
+        try {
+            if ($this->session->has('pedidoCompra')) {
+                $pedidoCompra = $this->session->get('pedidoCompra');
+                if ($pedidoCompra->status !== 'INICIADO' || ($pedidoCompra->fornecedor->getId() !== $produto->fornecedor->getId())) {
+                    $pedidoCompra = $this->getNovoPedidoCompra($produto->fornecedor, $filial);
+                    $pedidoCompra = $this->getEntityHandler()->save($pedidoCompra);
+                } else {
+                    $pedidoCompra = $this->getEntityHandler()->getDoctrine()->getRepository(PedidoCompra::class)->find($pedidoCompra->getId());
+                }
+            } else {
+                $pedidoCompra = $this->getNovoPedidoCompra($produto->fornecedor, $filial);
+                $pedidoCompra = $this->getEntityHandler()->save($pedidoCompra);
+            }
+
+            $temOProduto = false;
+            /** @var PedidoCompra $pedidoCompra */
+            /** @var PedidoCompraItem $item */
+            foreach ($pedidoCompra->itens as $item) {
+                if (($item->jsonData['produto_id'] ?? null) === $produto->getId()) {
+                    $temOProduto = true;
+                    break;
+                }
+            }
+            if (!$temOProduto) {
+
+                $item = new PedidoCompraItem();
+                $item->pedidoCompra = $pedidoCompra;
+                $item->jsonData['produto_id'] = $produto->getId();
+                $item->descricao = $produto->nome;
+                $item->qtde = abs($qtdeSugerida);
+                $item->precoCusto = $produto->jsonData['preco_custo'] ?? 0.0;
+                $item->total = bcmul($item->qtde, $item->precoCusto, 2);
+                $pedidoCompra->itens->add($item);
+
+                $this->pedidoCompraItemEntityHandler->save($item);
+
+                $this->addFlash('success', $produto->getId() . ' - ' . $produto->nome . ' adicionado com sucesso');
+            } else {
+                $this->addFlash('warn', $produto->getId() . ' - ' . $produto->nome . ' já adicionado ao Pedido de Compra');
+
+            }
+            $pedidoCompra = $this->getEntityHandler()->save($pedidoCompra);
+            $this->session->set('pedidoCompra', $pedidoCompra);
+
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao adicionar produto no pedidoCompra');
+        }
+        // return to referer
+        if ($request->get('rtr')) {
+            return $this->redirect($request->server->get('HTTP_REFERER'));
+        }
+        return $this->redirectToRoute('est_pedidoCompra_form', ['id' => $pedidoCompra->getId()]);
+    }
+
+    /**
+     * @param Fornecedor $fornecedor
+     * @param string $filial
+     * @return PedidoCompra
+     * @throws \Exception
+     */
+    private function getNovoPedidoCompra(Fornecedor $fornecedor, string $filial): PedidoCompra
+    {
+        $pedidoCompra = new PedidoCompra();
+        $pedidoCompra->fornecedor = $fornecedor;
+        $pedidoCompra->jsonData['filial'] = $filial;
+        $pedidoCompra->responsavel = $this->getUser()->getNome();
+        $pedidoCompra->dtEmissao = new \DateTime();
+        $pedidoCompra->status = 'INICIADO';
+        return $pedidoCompra;
+    }
+
 
     /**
      *
