@@ -32,8 +32,9 @@
                     <div class="col-2">
                         <div class="form-group">
                             <label class="col-form-label form-control-label">PV</label>
+                            {% set codVenda = venda.jsonData['pv']|default('') != '' ? venda.jsonData['pv'] : venda.id  %}
                             <input type="text" class="form-control" readonly="readonly"
-                                   value="{{ "%06d"|format(venda.jsonData['pv']) }}">
+                                   value="{{ "%06d"|format(codVenda) }}">
                         </div>
                     </div>
                     <div class="col-3">
