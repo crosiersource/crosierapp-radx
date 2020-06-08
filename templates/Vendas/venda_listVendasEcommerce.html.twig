@@ -97,7 +97,7 @@
                         {% for venda in dia.vendas %}
 
                             <tr>
-                                <td>{{ venda.jsonData.ecommerce_idPedido|strpad(9) }}</td>
+                                <td>{{ venda.jsonData.ecommerce_idPedido|default('0')|strpad(9) }}</td>
                                 <td>{{ venda.id|strpad(9) }}</td>
                                 <td>{{ venda.cliente.documento|default('')|mascararCnpjCpf }}
                                     - {{ venda.cliente.nome }}</td>
@@ -105,7 +105,7 @@
                                 <td class="text-center">{{ venda.jsonData.ecommerce_status_descricao|default('') }}</td>
                                 <td class="text-center">{{ venda.dtVenda|date('d/m/Y H:i:s') }}</td>
                                 <td class="text-right">
-                                    {% set valorFrete = venda.jsonData.ecommerce_entrega_frete_real ? venda.jsonData.ecommerce_entrega_frete_real : venda.jsonData.ecommerce_entrega_frete_calculado %}
+                                    {% set valorFrete = venda.jsonData.ecommerce_entrega_frete_real|default(false) ? venda.jsonData.ecommerce_entrega_frete_real : venda.jsonData.ecommerce_entrega_frete_calculado|default('0') %}
                                     R$ {{ valorFrete|number_format(2,',','.') }}
                                 </td>
                                 <td class="text-right">
