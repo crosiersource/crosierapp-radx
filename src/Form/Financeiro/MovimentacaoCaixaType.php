@@ -89,7 +89,6 @@ class MovimentacaoCaixaType extends AbstractType
                 'choice_label' => 'descricaoMontada',
                 'required' => true,
                 'attr' => [
-                    'class' => 'autoSelect2',
                     'data-val' => $movimentacao->getTipoLancto() ? $movimentacao->getTipoLancto()->getId() : null
                 ],
                 'disabled' => $movimentacao->getId() ? true : false
@@ -149,7 +148,6 @@ class MovimentacaoCaixaType extends AbstractType
                 'choices' => null,
                 'attr' => [
                     'data-val' => (null !== $movimentacao and null !== $movimentacao->getCarteiraDestino()) ? $movimentacao->getCarteiraDestino()->getId() : '',
-                    'class' => 'autoSelect2'
                 ],
                 'required' => false,
                 'disabled' => $disabled
@@ -176,7 +174,6 @@ class MovimentacaoCaixaType extends AbstractType
                     return $modo ? $modo->getDescricaoMontada() : null;
                 },
                 'required' => false,
-                'attr' => ['class' => 'autoSelect2'],
                 'disabled' => $disabled
             ]);
 

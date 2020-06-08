@@ -11,6 +11,7 @@ import 'select2/dist/css/select2.css';
 import 'select2';
 import 'select2/dist/js/i18n/pt-BR.js';
 import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
+
 $.fn.select2.defaults.set("theme", "bootstrap");
 $.fn.select2.defaults.set("language", "pt-BR");
 
@@ -257,8 +258,15 @@ $(document).ready(function () {
     }
 
 
+    $tipoLancto = $tipoLancto.select2({
+        allowClear: true,
+        width: '100%',
+        dropdownAutoWidth: true,
+    });
+
+
     $tipoLancto.on('select2:select', function () {
-        handleFormRules()
+        handleFormRules();
     });
 
     $dtMoviment.on('focus', function () {
@@ -269,6 +277,12 @@ $(document).ready(function () {
 
     $carteira.on('select2:select', function () {
         handleFormRules();
+    });
+
+    $modo = $modo.select2({
+        allowClear: true,
+        width: '100%',
+        dropdownAutoWidth: true,
     });
 
     $modo.on('select2:select', function () {
@@ -287,7 +301,6 @@ $(document).ready(function () {
     // -----------------
 
     function initializeForm() {
-
         buildCategoria();
         handleFormRules();
 
@@ -296,8 +309,6 @@ $(document).ready(function () {
 
 
     initializeForm();
-
-
 
 
 })
