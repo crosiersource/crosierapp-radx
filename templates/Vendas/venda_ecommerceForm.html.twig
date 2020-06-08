@@ -106,7 +106,19 @@
                         <button type="submit" class="btn btn-primary" value="Salvar">
                             <i class="fas fa-save" aria-hidden="true"></i> Salvar
                         </button>
+
+
+                        {% if permiteFaturamento %}
+                            <button type="button" value="Faturar" class="btn btn-warning"
+                                    data-url="{{  }}" data-target="#confirmationModal"
+                                    data-toggle="modal">
+                                <i class="fas fa-file-invoice" aria-hidden="true"></i> Faturar
+                            </button>
+                        {% endif %}
+
                     </div>
+
+
                 </div>
 
 

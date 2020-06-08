@@ -13,9 +13,12 @@ use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\VendaItem;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
@@ -43,6 +46,7 @@ class VendaController extends FormListController
 
     private VendaItemEntityHandler $vendaItemEntityHandler;
 
+    private NotaFiscalBusiness $notaFiscalBusiness;
 
     /**
      * @required
@@ -69,6 +73,15 @@ class VendaController extends FormListController
     public function setVendaItemEntityHandler(VendaItemEntityHandler $vendaItemEntityHandler): void
     {
         $this->vendaItemEntityHandler = $vendaItemEntityHandler;
+    }
+
+    /**
+     * @required
+     * @param NotaFiscalBusiness $notaFiscalBusiness
+     */
+    public function setNotaFiscalBusiness(NotaFiscalBusiness $notaFiscalBusiness): void
+    {
+        $this->notaFiscalBusiness = $notaFiscalBusiness;
     }
 
 
@@ -134,6 +147,33 @@ class VendaController extends FormListController
         }
 
         return $this->doForm($request, $venda, $params);
+    }
+
+
+    /**
+     *
+     * @Route("/ven/venda/faturar/{venda}", name="ven_venda_faturar", requirements={"venda"="\d+"})
+     * @param Request $request
+     * @param Venda $venda
+     * @return RedirectResponse
+     */
+    public function faturar(Request $request, Venda $venda): RedirectResponse
+    {
+        try {
+            /** @var NotaFiscal $notaFiscal */
+            $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+            if (!$notaFiscal) {
+                $notaFiscal = new NotaFiscal();
+                $notaFiscal->setTipoNotaFiscal('NFE');
+                $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+            }
+            $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
+            $this->notaFiscalBusiness->faturarNFe($notaFiscal);
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+        $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
+        return $this->redirectToRoute($route, ['id' => $notaFiscal->getId()]);
     }
 
     /**
@@ -324,9 +364,6 @@ class VendaController extends FormListController
 
         return $this->redirect($request->server->get('HTTP_REFERER'));
     }
-
-
-
 
 
     /**

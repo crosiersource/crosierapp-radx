@@ -104,7 +104,7 @@ class MovimentacaoCaixaType extends AbstractType
                 'empty_data' => $movimentacao->getCategoria(),
                 'attr' => [
                     'data-val' => (null !== $movimentacao and null !== $movimentacao->getCategoria() and null !== $movimentacao->getCategoria()->getId()) ? $movimentacao->getCategoria()->getId() : '',
-                    'class' => 'autoSelect2'
+                    'class' => ''
                 ],
                 'required' => false,
                 'disabled' => $disabled
@@ -123,7 +123,7 @@ class MovimentacaoCaixaType extends AbstractType
             ]);
 
             // Para que o campo select seja montado já com o valor selecionado (no $('#movimentacao_carteira').val())
-            $attr = ['class' => 'autoSelect2'];
+            $attr = [];
             if (null !== $movimentacao and null !== $movimentacao->getCarteira() and null !== $movimentacao->getCarteira()->getId()) {
                 $attr['data-val'] = $movimentacao->getCarteira()->getId();
                 $attr['data-caixa'] = $movimentacao->getCarteira()->getCaixa() ? 'true' : 'false';

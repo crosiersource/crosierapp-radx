@@ -1,6 +1,9 @@
 {% extends '@CrosierLibBase/index.html.twig' %}
 
 
+{% block up_scripts %}
+    {{ encore_entry_link_tags('Financeiro/movimentacaoExtratoList') }}
+{% endblock %}
 
 
 {% block page_content %}

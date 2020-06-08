@@ -2,6 +2,17 @@
 
 namespace App\Controller\Fiscal;
 
+use App\Form\Fiscal\NotaFiscalCartaCorrecaoType;
+use App\Form\Fiscal\NotaFiscalItemType;
+use App\Form\Fiscal\NotaFiscalType;
+use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\ValidaCPFCNPJ;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
@@ -11,17 +22,6 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalCartaCorre
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalRepository;
-use App\Form\Fiscal\NotaFiscalCartaCorrecaoType;
-use App\Form\Fiscal\NotaFiscalItemType;
-use App\Form\Fiscal\NotaFiscalType;
-use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
-use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
-use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
-use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\ValidaCPFCNPJ;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use NFePHP\DA\NFe\Danfe;
@@ -185,17 +185,19 @@ class EmissaoNFeController extends FormListController
     /**
      *
      * @Route("/fis/emissaonfe/faturar/{notaFiscal}", name="fis_emissaonfe_faturar", requirements={"notaFiscal"="\d+"})
+     * @param Request $request
      * @param NotaFiscal|null $notaFiscal
      * @return RedirectResponse
      */
-    public function faturar(NotaFiscal $notaFiscal): RedirectResponse
+    public function faturar(Request $request, NotaFiscal $notaFiscal): RedirectResponse
     {
         try {
             $this->notaFiscalBusiness->faturarNFe($notaFiscal);
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
         }
-        return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
+        $route = $request->get('rtr') ?? 'fis_emissaonfe_form';
+        return $this->redirectToRoute($route, ['id' => $notaFiscal->getId()]);
     }
 
     /**
