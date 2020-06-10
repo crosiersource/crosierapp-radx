@@ -4,6 +4,9 @@
 namespace App\Business\ECommerce;
 
 
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use Doctrine\ORM\EntityManagerInterface;
+
 /**
  * Class IntegradorBusinessFactory
  * @package App\Business\ECommerce
@@ -13,21 +16,28 @@ class IntegradorBusinessFactory
 
     private IntegradorWebStorm $integradorWebStorm;
 
-    /**
-     * @required
-     * @param IntegradorWebStorm $integradorWebStorm
-     */
-    public function setIntegraWebStorm(IntegradorWebStorm $integradorWebStorm): void
-    {
-        $this->integradorWebStorm = $integradorWebStorm;
-    }
+    private EntityManagerInterface $doctrine;
 
     /**
-     * @param string $integrador
-     * @return IntegradorWebStorm
+     * IntegradorBusinessFactory constructor.
+     * @param IntegradorWebStorm $integradorWebStorm
+     * @param EntityManagerInterface $doctrine
      */
-    public function getIntegrador(string $integrador)
+    public function __construct(IntegradorWebStorm $integradorWebStorm, EntityManagerInterface $doctrine)
     {
+        $this->integradorWebStorm = $integradorWebStorm;
+        $this->doctrine = $doctrine;
+    }
+
+
+    /**
+     * @return IntegradorBusiness
+     */
+    public function getIntegrador()
+    {
+        $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
+        $integrador = $repoAppConfig->findByChave('ecomm_info_integra');
+
         switch ($integrador) {
             case 'WEBSTORM':
                 return $this->integradorWebStorm;

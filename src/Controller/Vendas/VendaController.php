@@ -344,12 +344,7 @@ class VendaController extends FormListController
         if (!$dtVenda) {
             $dtVenda = new \DateTime();
         }
-
-        $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
-        $ecommInfoIntegra = $repoAppConfig->findByChave('ecomm_info_integra');
-
-        /** @var IntegradorBusiness $integrador */
-        $integrador = $integradorBusinessFactory->getIntegrador($ecommInfoIntegra);
+        $integrador = $integradorBusinessFactory->getIntegrador();
 
         $resalvar = $request->get('resalvar') === 'S';
 

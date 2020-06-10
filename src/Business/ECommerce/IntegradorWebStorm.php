@@ -3,6 +3,8 @@
 
 namespace App\Business\ECommerce;
 
+use App\Messenger\Message\IntegrarProdutoEcommerceMessage;
+use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -35,9 +37,10 @@ use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\DBALException;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Security;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
@@ -52,8 +55,6 @@ class IntegradorWebStorm implements IntegradorBusiness
 {
 
     private ?string $chave = null;
-
-    private LoggerInterface $logger;
 
     private \nusoap_client $nusoapClientExportacao;
 
@@ -89,8 +90,11 @@ class IntegradorWebStorm implements IntegradorBusiness
 
     private ParameterBagInterface $params;
 
+    private MessageBusInterface $bus;
+
+    private SyslogBusiness $syslog;
+
     public function __construct(
-        LoggerInterface $logger,
         AppConfigEntityHandler $appConfigEntityHandler,
         Security $security,
         DeptoEntityHandler $deptoEntityHandler,
@@ -101,9 +105,11 @@ class IntegradorWebStorm implements IntegradorBusiness
         ParameterBagInterface $params,
         ClienteEntityHandler $clienteEntityHandler,
         VendaEntityHandler $vendaEntityHandler,
-        VendaItemEntityHandler $vendaItemEntityHandler)
+        VendaItemEntityHandler $vendaItemEntityHandler,
+        MessageBusInterface $bus,
+        SyslogBusiness $syslog,
+        AppConfigRepository $repoAppConfig)
     {
-        $this->logger = $logger;
         $this->appConfigEntityHandler = $appConfigEntityHandler;
         $this->security = $security;
         $this->deptoEntityHandler = $deptoEntityHandler;
@@ -115,6 +121,9 @@ class IntegradorWebStorm implements IntegradorBusiness
         $this->clienteEntityHandler = $clienteEntityHandler;
         $this->vendaEntityHandler = $vendaEntityHandler;
         $this->vendaItemEntityHandler = $vendaItemEntityHandler;
+        $this->bus = $bus;
+        $this->syslog = $syslog->setApp('radx')->setComponent(self::class);
+        $this->repoAppConfig = $repoAppConfig;
     }
 
     /**
@@ -200,6 +209,7 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     private function integraMarca(string $marca): int
     {
+        $this->syslog->info('integraMarca: ini', 'marca = ' . $marca);
         $marcasNaWebStorm = $this->selectMarcasNaWebStorm();
 
         $idMarcaNaWebStorm = null;
@@ -212,6 +222,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
         if (!$idMarcaNaWebStorm) {
+            $this->syslog->info('integraMarca: não existe, enviando...', 'marca = ' . $marca);
 
             $client = $this->getNusoapClientImportacaoInstance();
 
@@ -231,16 +242,20 @@ class IntegradorWebStorm implements IntegradorBusiness
             ]);
 
             if ($client->faultcode) {
+                $this->syslog->err('integraMarca: faultcode ' . (string)$client->faultcode, 'marca = ' . $marca);
                 throw new \RuntimeException($client->faultcode);
             }
             // else
             if ($client->getError()) {
+                $this->syslog->err('integraMarca: error ' . $client->getError(), 'marca = ' . $marca);
                 throw new \RuntimeException($client->getError());
             }
 
             $xmlResult = simplexml_load_string($arResultado);
 
             $idMarcaNaWebStorm = (int)$xmlResult->idMarca->__toString();
+
+            $this->syslog->info('integraMarca: OK ', 'marca = ' . $marca);
         }
 
         return $idMarcaNaWebStorm;
@@ -249,6 +264,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     /**
      * Obtém os tipos de características cadastrados na WebStorm
      * @return array
+     * @throws ViewException
      */
     public function selectTiposCaracteristicasNaWebStorm(): array
     {
@@ -275,17 +291,17 @@ class IntegradorWebStorm implements IntegradorBusiness
             ]);
 
             if ($client->faultcode) {
-                throw new \RuntimeException($client->faultcode);
+                throw new ViewException('selectTiposCaracteristicasNaWebStorm (registrosSelect >> tipoCaracteristica): faultcode ' . (string)$client->faultcode);
             }
             // else
             if ($client->getError()) {
-                throw new \RuntimeException($client->getError());
+                throw new ViewException('selectTiposCaracteristicasNaWebStorm (registrosSelect >> tipoCaracteristica): error ' . $client->getError());
             }
 
             $xmlResult = simplexml_load_string($arResultado);
 
             if ($xmlResult->erros ?? false) {
-                throw new \RuntimeException($xmlResult->erros->erro->__toString());
+                throw new ViewException('selectTiposCaracteristicasNaWebStorm (registrosSelect >> tipoCaracteristica): erros ' . $xmlResult->erros->erro->__toString());
             }
 
             $this->tiposCaracteristicasNaWebStorm = [];
@@ -294,7 +310,6 @@ class IntegradorWebStorm implements IntegradorBusiness
                     'nome' => $tipoCaracteristica->nome->__toString(),
                 ];
             }
-
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -316,17 +331,17 @@ class IntegradorWebStorm implements IntegradorBusiness
             ]);
 
             if ($client->faultcode) {
-                throw new \RuntimeException($client->faultcode);
+                throw new ViewException('selectTiposCaracteristicasNaWebStorm (registrosSelect >> caracteristica): faultcode ' . (string)$client->faultcode);
             }
             // else
             if ($client->getError()) {
-                throw new \RuntimeException($client->getError());
+                throw new ViewException('selectTiposCaracteristicasNaWebStorm (registrosSelect >> caracteristica): error ' . $client->getError());
             }
 
             $xmlResult = simplexml_load_string(utf8_encode($arResultado));
 
             if ($xmlResult->erros ?? false) {
-                throw new \RuntimeException($xmlResult->erros->erro->__toString());
+                throw new ViewException('selectTiposCaracteristicasNaWebStorm (registrosSelect >> caracteristica): erros ' . $xmlResult->erros->erro->__toString());
             }
 
             foreach ($xmlResult->registros->caracteristicas->caracteristica as $caracteristica) {
@@ -337,8 +352,6 @@ class IntegradorWebStorm implements IntegradorBusiness
                     ];
                 }
             }
-
-
         }
 
         return $this->tiposCaracteristicasNaWebStorm;
@@ -353,6 +366,8 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     private function integraTipoCaracteristica(string $campo, string $tipoCaracteristica): int
     {
+        $syslog_obs = 'campo = ' . $campo . '; tipoCaracteristica = ' . $tipoCaracteristica;
+        $this->syslog->info('integraTipoCaracteristica: ini', $syslog_obs);
         $tiposCaracteristicasNaWebStorm = $this->selectTiposCaracteristicasNaWebStorm();
 
         $idTipoCaracteristicaNaWebStorm = null;
@@ -365,6 +380,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
         if (!$idTipoCaracteristicaNaWebStorm) {
+            $this->syslog->info('integraTipoCaracteristica: não existe, enviando...', $syslog_obs);
 
             $client = $this->getNusoapClientImportacaoInstance();
 
@@ -384,30 +400,40 @@ class IntegradorWebStorm implements IntegradorBusiness
             ]);
 
             if ($client->faultcode) {
+                $this->syslog->err('integraTipoCaracteristica: faultcode ' . (string)$client->faultcode, $syslog_obs);
                 throw new \RuntimeException($client->faultcode);
             }
             // else
             if ($client->getError()) {
+                $this->syslog->err('integraTipoCaracteristica: error ' . $client->getError(), $syslog_obs);
                 throw new \RuntimeException($client->getError());
             }
 
             $xmlResult = simplexml_load_string($arResultado);
 
             if ($xmlResult->erros ?? false) {
-                throw new \RuntimeException($xmlResult->erros->erro->__toString());
+                $this->syslog->err('integraTipoCaracteristica: erros: ' . $xmlResult->erros->__toString(), $syslog_obs);
             }
 
             $idTipoCaracteristicaNaWebStorm = (int)$xmlResult->idTipoCaracteristica->__toString();
 
+            $this->syslog->info('integraTipoCaracteristica: enviado (idTipoCaracteristicaNaWebStorm: ' . $idTipoCaracteristicaNaWebStorm . ')', $syslog_obs);
+
             $this->tiposCaracteristicasNaWebStorm = null; // para forçar a rebusca
         }
 
-        /** @var AppConfig $appConfig */
-        $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
-        $jsonMetadata = json_decode($appConfig->getValor(), true);
-        $jsonMetadata['campos'][$campo]['info_integr_ecommerce']['ecommerce_id'] = $idTipoCaracteristicaNaWebStorm;
-        $appConfig->setValor(json_encode($jsonMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        $this->appConfigEntityHandler->save($appConfig);
+        try {
+            $this->syslog->info('integraTipoCaracteristica: salvando na cfg_app_config [\'campos\'][' . $campo . '][\'info_integr_ecommerce\'][\'ecommerce_id\']', $syslog_obs);
+            /** @var AppConfig $appConfig */
+            $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
+            $jsonMetadata = json_decode($appConfig->getValor(), true);
+            $jsonMetadata['campos'][$campo]['info_integr_ecommerce']['ecommerce_id'] = $idTipoCaracteristicaNaWebStorm;
+            $appConfig->setValor(json_encode($jsonMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $this->appConfigEntityHandler->save($appConfig);
+            $this->syslog->info('integraTipoCaracteristica: OK', $syslog_obs);
+        } catch (ViewException $e) {
+            $this->syslog->err('integraTipoCaracteristica: salvando na cfg_app_config - ERRO: ' . $e->getMessage(), $syslog_obs);
+        }
 
 
         return $idTipoCaracteristicaNaWebStorm;
@@ -417,9 +443,12 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param int $ecommerceId_tipoCaracteristica
      * @param string $caracteristica
      * @return int
+     * @throws ViewException
      */
     private function integraCaracteristica(int $ecommerceId_tipoCaracteristica, string $caracteristica): int
     {
+        $syslog_obs = 'ecommerceId_tipoCaracteristica = ' . $ecommerceId_tipoCaracteristica . '; caracteristica = ' . $caracteristica;
+        $this->syslog->info('integraCaracteristica: ini', $syslog_obs);
         $tiposCaracteristicasNaWebStorm = $this->selectTiposCaracteristicasNaWebStorm();
 
         $idCaracteristicaNaWebStorm = null;
@@ -434,6 +463,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
         if (!$idCaracteristicaNaWebStorm) {
+            $this->syslog->info('integraCaracteristica: não existe, enviando...', $syslog_obs);
 
             $client = $this->getNusoapClientImportacaoInstance();
 
@@ -455,17 +485,26 @@ class IntegradorWebStorm implements IntegradorBusiness
                 'xml' => utf8_decode($xml)
             ]);
 
+
             if ($client->faultcode) {
+                $this->syslog->err('integraCaracteristica: faultcode ' . (string)$client->faultcode, $syslog_obs);
                 throw new \RuntimeException($client->faultcode);
             }
             // else
             if ($client->getError()) {
+                $this->syslog->err('integraCaracteristica: error ' . $client->getError(), $syslog_obs);
                 throw new \RuntimeException($client->getError());
             }
 
             $xmlResult = simplexml_load_string($arResultado);
 
+            if ($xmlResult->erros ?? false) {
+                $this->syslog->err('integraCaracteristica: erros: ' . $xmlResult->erros->__toString(), $syslog_obs);
+            }
+
             $idCaracteristicaNaWebStorm = (int)$xmlResult->caracteristicas->caracteristica->idCaracteristica->__toString();
+
+            $this->syslog->info('integraCaracteristica: enviado (idCaracteristicaNaWebStorm: ' . $idCaracteristicaNaWebStorm . ')', $syslog_obs);
         }
 
         return $idCaracteristicaNaWebStorm;
@@ -599,6 +638,8 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     public function integraDepto(Depto $depto): int
     {
+        $syslog_obs = 'depto = ' . $depto->nome . ' (' . $depto->getId() . ')';
+        $this->syslog->info('integraDepto - ini', $syslog_obs);
         $deptosNaWebStorm = $this->selectDepartamentosNaWebStorm();
         $idDeptoWebStorm = null;
         foreach ($deptosNaWebStorm as $id => $deptoNaWebStorm) {
@@ -608,15 +649,19 @@ class IntegradorWebStorm implements IntegradorBusiness
             }
         }
         if (!$idDeptoWebStorm) {
+            $this->syslog->info('integraDepto - não existe, enviando...', $syslog_obs);
             $idDeptoWebStorm = $this->integraDeptoGrupoSubgrupo($depto->nome, 1);
+            $this->syslog->info('integraDepto - integrado', $syslog_obs);
         }
         if (!isset($depto->jsonData['ecommerce_id']) || $depto->jsonData['ecommerce_id'] !== $idDeptoWebStorm) {
+            $this->syslog->info('integraDepto - salvando json_data', $syslog_obs);
             $depto->jsonData = [
                 'ecommerce_id' => $idDeptoWebStorm,
                 'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
                 'integrado_por' => $this->security->getUser()->getUsername()
             ];
             $this->deptoEntityHandler->save($depto);
+            $this->syslog->info('integraDepto - salvando json_data: OK', $syslog_obs);
         }
 
         return $idDeptoWebStorm;
@@ -717,6 +762,13 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     private function integraDeptoGrupoSubgrupo(string $descricao, int $nivel, ?int $idNivelPai1 = null, ?int $idNivelPai2 = null, ?int $ecommerce_id = null)
     {
+        $syslog_obs =
+            'descricao = ' . $descricao . ', ' .
+            'nivel = ' . $nivel . ', ' .
+            'idNivelPai1 = ' . $idNivelPai1 . ', ' .
+            'idNivelPai2 = ' . $idNivelPai2 . ', ' .
+            'ecommerce_id = ' . $ecommerce_id;
+        $this->syslog->info('integraDeptoGrupoSubgrupo - ini', $syslog_obs);
         $client = $this->getNusoapClientImportacaoInstance();
 
         $pais = '';
@@ -744,19 +796,24 @@ class IntegradorWebStorm implements IntegradorBusiness
         ]);
 
         if ($client->faultcode) {
-            throw new \RuntimeException($client->faultcode);
+            $err = 'integraDeptoGrupoSubgrupo - faultcode: ' . (string)$client->faultcode;
+            $this->syslog->err($err, $syslog_obs);
+            throw new \RuntimeException($err);
         }
         // else
         if ($client->getError()) {
-            throw new \RuntimeException($client->getError());
+            $err = 'integraDeptoGrupoSubgrupo - error: ' . $client->getError();
+            $this->syslog->err($err, $syslog_obs);
+            throw new \RuntimeException($err);
         }
         $arResultado = utf8_encode($arResultado);
         $xmlResult = simplexml_load_string($arResultado);
 
         $this->deptosNaWebStorm = null; // para forçar rechecagem
 
-
-        return (int)$xmlResult->idDepartamento->__toString();
+        $idDepartamento = (int)$xmlResult->idDepartamento->__toString();
+        $this->syslog->info('integraDeptoGrupoSubgrupo - OK (idDepartamento = ' . $idDepartamento . ')', $syslog_obs);
+        return $idDepartamento;
     }
 
 
@@ -768,10 +825,14 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     public function integraProduto(Produto $produto, ?bool $integrarImagens = true): void
     {
+        $syslog_obs = 'produto = ' . $produto->getId() . '; integrarImagens = ' . $integrarImagens;
+        $this->syslog->info('integraProduto - ini', $syslog_obs);
         /** @var AppConfig $appConfig */
         $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
         if (!$appConfig) {
-            throw new \LogicException('est_produto_json_metadata N / D');
+            $err = 'est_produto_json_metadata N/D';
+            $this->syslog->err($err, $syslog_obs);
+            throw new \RuntimeException($err);
         }
 
         $jsonCampos = json_decode($appConfig->getValor(), true)['campos'];
@@ -803,7 +864,9 @@ class IntegradorWebStorm implements IntegradorBusiness
 
 
         if (!$integrarImagens && !$produtoEcommerceId) {
-            throw new ViewException('Produto ainda não integrado. É necessário integrar as imagens!');
+            $err = 'Produto ainda não integrado. É necessário integrar as imagens!';
+            $this->syslog->err($err, $syslog_obs);
+            throw new ViewException($err);
         }
 
         $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
@@ -858,25 +921,31 @@ class IntegradorWebStorm implements IntegradorBusiness
                 $pathinfo = pathinfo($url);
                 $parsedUrl = parse_url($url);
                 $url1080 = $pathinfo['dirname'] . '/' . $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
-                if (!WebUtils::urlNot404($url1080)) {
-                    $imgDims = getimagesize($url);
-                    if ($imgDims[0] > 1500 || $imgDims[1] > 1500) {
-                        $imgUtils = new ImageUtils();
-                        $imgUtils->load($url);
-                        if ($imgDims[0] >= $imgDims[1]) {
-                            // largura maior que altura
-                            $imgUtils->resizeToWidth(1080);
+                try {
+                    if (!WebUtils::urlNot404($url1080)) {
+                        $imgDims = getimagesize($url);
+                        if ($imgDims[0] > 1500 || $imgDims[1] > 1500) {
+                            $imgUtils = new ImageUtils();
+                            $imgUtils->load($url);
+                            if ($imgDims[0] >= $imgDims[1]) {
+                                // largura maior que altura
+                                $imgUtils->resizeToWidth(1080);
+                            } else {
+                                $imgUtils->resizeToHeight(1080);
+                            }
+                            // '%kernel.project_dir%/public/images/produtos'
+                            $file1080 = $this->params->get('kernel.project_dir') . '/public' .
+                                str_replace($pathinfo['basename'], '', $parsedUrl['path']) .
+                                $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
+                            $imgUtils->save($file1080);
                         } else {
-                            $imgUtils->resizeToHeight(1080);
+                            $url1080 = $url;
                         }
-                        // '%kernel.project_dir%/public/images/produtos'
-                        $file1080 = $this->params->get('kernel.project_dir') . '/public' .
-                            str_replace($pathinfo['basename'], '', $parsedUrl['path']) .
-                            $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
-                        $imgUtils->save($file1080);
-                    } else {
-                        $url1080 = $url;
                     }
+                } catch (\Exception $e) {
+                    $err = 'Erro ao processar imagens: ' . $e->getMessage();
+                    $this->syslog->err($err);
+                    throw new \RuntimeException($err);
                 }
 
                 $xml .= '<imagens>
@@ -903,8 +972,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             </itensVenda></produto>' .
             '</ws_integracao>]]>';
 
-        $this->logger->debug('>>>>>>>>>> XML REQUEST:');
-        $this->logger->debug($xml);
+        $this->syslog->debug($xml, $syslog_obs);
 
         $client = $this->getNusoapClientImportacaoInstance();
 
@@ -915,22 +983,24 @@ class IntegradorWebStorm implements IntegradorBusiness
         ]);
 
         if ($client->faultcode) {
+            $this->syslog->err('integraProduto - faultcode: ' . (string)$client->faultcode, $syslog_obs);
             throw new \RuntimeException($client->faultcode);
         }
         // else
         if ($client->getError()) {
+            $this->syslog->err('integraProduto - faultcode: ' . $client->getError(), $syslog_obs);
             throw new \RuntimeException($client->getError());
         }
 
         $arResultado = utf8_encode($arResultado);
         $arResultado = str_replace('&nbsp;', ' ', $arResultado);
 
-        $this->logger->debug('>>>>>>>>>> XML RESPONSE:');
-        $this->logger->debug($arResultado);
+        $this->syslog->debug($arResultado, $syslog_obs);
 
         $xmlResult = simplexml_load_string($arResultado);
 
         if ($xmlResult->erros->erro ?? false) {
+            $this->syslog->err('integraProduto - erros: ' . $xmlResult->erros->erro->__toString(), $syslog_obs);
             throw new \RuntimeException($xmlResult->erros->erro->__toString());
         }
 
@@ -945,8 +1015,12 @@ class IntegradorWebStorm implements IntegradorBusiness
 
 
         $produto->jsonData['ecommerce_dt_integr'] = (new \DateTime())->format('Y-m-d H:i:s');
+        $produto->jsonData['ecommerce_dt_marcado_integr'] = null;
         $produto->jsonData['ecommerce_integr_por'] = $this->security->getUser()->getNome();
+
+        $this->syslog->info('integraProduto - save', $syslog_obs);
         $this->produtoEntityHandler->save($produto);
+        $this->syslog->info('integraProduto - OK', $syslog_obs);
     }
 
     /**
@@ -1032,13 +1106,8 @@ class IntegradorWebStorm implements IntegradorBusiness
         /** @var Connection $conn */
         $conn = $this->vendaEntityHandler->getDoctrine()->getConnection();
 
-        $venda = null;
-        try {
-            // verifica se já existe uma ven_venda com o json_data.ecommerce_idPedido
-            $venda = $conn->fetchAssoc('SELECT * FROM ven_venda WHERE json_data->>"$.ecommerce_idPedido" = :ecommerce_idPedido', ['ecommerce_idPedido' => $pedido->idPedido]);
-        } catch (DBALException $e) {
-            $this->logger->error($e->getMessage());
-        }
+        $venda = $conn->fetchAll('SELECT * FROM ven_venda WHERE json_data->>"$.ecommerce_idPedido" = :ecommerce_idPedido', ['ecommerce_idPedido' => $pedido->idPedido]);
+        $venda = $venda[0] ?? null;
 
         if ($venda) {
             // se já existe, só confere o status
@@ -1064,7 +1133,7 @@ class IntegradorWebStorm implements IntegradorBusiness
                 $conn->delete('ven_venda_item', ['venda_id' => $venda['id']]);
             } catch (\Throwable $e) {
                 $erro = 'Erro ao deletar itens da venda (id = "' . $venda['id'] . ')';
-                $this->logger->error($erro);
+                $this->syslog->info($erro);
                 throw new \RuntimeException($erro);
             }
             /** @var VendaRepository $repoVenda */
@@ -1088,13 +1157,8 @@ class IntegradorWebStorm implements IntegradorBusiness
         $venda->vendedor = $vendedorNaoIdentificado;
         $venda->status = 'PV';
 
-        $cliente = null;
-        try {
-            // verifica se já existe uma ven_venda com o json_data.ecommerce_idPedido
-            $cliente = $conn->fetchAssoc('SELECT id FROM crm_cliente WHERE documento = :documento', ['documento' => $pedido->cliente->cpf_cnpj->__toString()]);
-        } catch (DBALException $e) {
-            $this->logger->error($e->getMessage());
-        }
+        $cliente = $conn->fetchAll('SELECT id FROM crm_cliente WHERE documento = :documento', ['documento' => $pedido->cliente->cpf_cnpj->__toString()]);
+        $cliente = $cliente[0] ?? null;
         if (!$cliente) {
             $cliente = new Cliente();
             $cliente->documento = $pedido->cliente->cpf_cnpj->__toString();
@@ -1278,6 +1342,42 @@ class IntegradorWebStorm implements IntegradorBusiness
             $this->nusoapClientImportacao = $client;
         }
         return $this->nusoapClientImportacao;
+    }
+
+    /**
+     * Manda para a integração todos os produtos com porcent_preench=100%, com alteração posterior a última dt integração (e dt marcada integração null)
+     */
+    public function enviarProdutosParaIntegracao(): int
+    {
+        $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
+        $sql = 'SELECT id FROM est_produto WHERE json_data->>"$.porcent_preench" = 1 AND ' .
+            '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_integr\') OR json_data->>"$.ecommerce_dt_integr" <= updated) AND ' .
+            '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_marcado_integr\')) LIMIT 5';
+        $produtosParaIntegrar = $conn->fetchAll($sql);
+
+        foreach ($produtosParaIntegrar as $rProduto) {
+            $this->syslog->info('Enviar produto para integração', 'id = ' . $rProduto['id']);
+            try {
+                $conn->beginTransaction();
+                $conn->executeUpdate('UPDATE est_produto SET json_data = json_set(json_data, \'$.ecommerce_dt_marcado_integr\', :dt) where id = :id',
+                    [
+                        'dt' => (new \DateTime())->format('d/m/Y H:i:s'),
+                        'id' => $rProduto['id']
+                    ]);
+                $this->bus->dispatch(new IntegrarProdutoEcommerceMessage($rProduto['id']));
+                $conn->commit();
+            } catch (\Throwable $e) {
+                try {
+                    $conn->rollBack();
+                } catch (ConnectionException $e) {
+                    $this->syslog->info('Erro no rollback');
+                }
+            }
+
+        }
+
+        return count($produtosParaIntegrar);
+
     }
 
 
