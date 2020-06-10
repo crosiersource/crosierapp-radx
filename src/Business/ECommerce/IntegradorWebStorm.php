@@ -151,10 +151,12 @@ class IntegradorWebStorm implements IntegradorBusiness
     /**
      * Obtém as marcas cadastradas na WebStorm
      * @return array
+     * @throws ViewException
      */
     public function selectMarcasNaWebStorm(): array
     {
         if (!$this->marcasNaWebStorm) {
+            $this->syslog->info('selectMarcasNaWebStorm');
             $client = $this->getNusoapClientExportacaoInstance();
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
@@ -177,17 +179,23 @@ class IntegradorWebStorm implements IntegradorBusiness
             ]);
 
             if ($client->faultcode) {
-                throw new \RuntimeException($client->faultcode);
+                $err = 'selectMarcasNaWebStorm - faultcode: ' . (string)$client->faultcode;
+                $this->syslog->err($err);
+                throw new ViewException($err);
             }
             // else
             if ($client->getError()) {
-                throw new \RuntimeException($client->getError());
+                $err = 'selectMarcasNaWebStorm - error: ' . $client->getError();
+                $this->syslog->err($err);
+                throw new ViewException($err);
             }
 
             $xmlResult = simplexml_load_string($arResultado);
 
             if ($xmlResult->erros ?? false) {
-                throw new \RuntimeException($xmlResult->erros->erro->__toString());
+                $err = $xmlResult->erros->erro->__toString();
+                $this->syslog->err('selectMarcasNaWebStorm - erros: ' . $xmlResult->erros->erro->__toString());
+                throw new \RuntimeException($err);
             }
 
             $this->marcasNaWebStorm = [];
@@ -196,6 +204,7 @@ class IntegradorWebStorm implements IntegradorBusiness
                     'nome' => $marca->nome->__toString(),
                 ];
             }
+            $this->syslog->info('selectMarcasNaWebStorm - OK: ' . count($this->marcasNaWebStorm) . ' marca(s)');
         }
 
         return $this->marcasNaWebStorm;
@@ -658,7 +667,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             $depto->jsonData = [
                 'ecommerce_id' => $idDeptoWebStorm,
                 'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                'integrado_por' => $this->security->getUser()->getUsername()
+                'integrado_por' => $this->security->getUser() ? $this->security->getUser()->getUsername() : 'n/d'
             ];
             $this->deptoEntityHandler->save($depto);
             $this->syslog->info('integraDepto - salvando json_data: OK', $syslog_obs);
@@ -674,6 +683,9 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     public function integraGrupo(Grupo $grupo): int
     {
+        $syslog_obs = 'grupo = ' . $grupo->nome . ' (' . $grupo->getId() . ')';
+        $this->syslog->info('integraGrupo - ini', $syslog_obs);
+
         /** @var GrupoRepository $repoGrupo */
         $repoGrupo = $this->grupoEntityHandler->getDoctrine()->getRepository(Grupo::class);
         $grupo = $repoGrupo->find($grupo->getId());
@@ -693,17 +705,21 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
         if (!$idGrupoWebStorm) {
+            $this->syslog->info('integraGrupo - não existe, enviando...', $syslog_obs);
             $idGrupoWebStorm = $this->integraDeptoGrupoSubgrupo($grupo->nome, 2, $idDeptoWebStorm);
+            $this->syslog->info('integraGrupo - integrado', $syslog_obs);
         }
 
         if (!isset($grupo->jsonData['ecommerce_id']) || $grupo->jsonData['ecommerce_id'] !== $idGrupoWebStorm) {
+            $this->syslog->info('integraGrupo - salvando json_data', $syslog_obs);
             $grupo->jsonData = [
                 'ecommerce_id' => $idGrupoWebStorm,
                 'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                'integrado_por' => $this->security->getUser()->getUsername()
+                'integrado_por' => $this->security->getUser() ? $this->security->getUser()->getUsername() : 'n/d'
             ];
 
             $this->grupoEntityHandler->save($grupo);
+            $this->syslog->info('integraGrupo - salvando json_data: OK', $syslog_obs);
         }
         return $idGrupoWebStorm;
     }
@@ -715,6 +731,9 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     public function integraSubgrupo(Subgrupo $subgrupo): int
     {
+        $syslog_obs = 'subgrupo = ' . $subgrupo->nome . ' (' . $subgrupo->getId() . ')';
+        $this->syslog->info('integraSubgrupo - ini', $syslog_obs);
+
         /** @var SubgrupoRepository $repoSubgrupo */
         $repoSubgrupo = $this->subgrupoEntityHandler->getDoctrine()->getRepository(Subgrupo::class);
         $subgrupo = $repoSubgrupo->find($subgrupo->getId());
@@ -736,16 +755,20 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
         if (!$idSubgrupoWebStorm) {
+            $this->syslog->info('integraSubgrupo - não existe, enviando...', $syslog_obs);
             $idSubgrupoWebStorm = $this->integraDeptoGrupoSubgrupo($subgrupo->nome, 3, $idDeptoWebStorm, $idGrupoWebStorm);
+            $this->syslog->info('integraSubgrupo - integrado', $syslog_obs);
         }
 
         if (!isset($subgrupo->jsonData['ecommerce_id']) || $subgrupo->jsonData['ecommerce_id'] !== $idSubgrupoWebStorm) {
+            $this->syslog->info('integraSubgrupo - salvando json_data', $syslog_obs);
             $subgrupo->jsonData = [
                 'ecommerce_id' => $idSubgrupoWebStorm,
                 'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                'integrado_por' => $this->security->getUser()->getUsername()
+                'integrado_por' => $this->security->getUser() ? $this->security->getUser()->getUsername() : 'n/d'
             ];
             $this->subgrupoEntityHandler->save($subgrupo);
+            $this->syslog->info('integraSubgrupo - salvando json_data: OK', $syslog_obs);
         }
         return $idSubgrupoWebStorm;
     }
@@ -825,6 +848,7 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     public function integraProduto(Produto $produto, ?bool $integrarImagens = true): void
     {
+        $start = microtime(true);
         $syslog_obs = 'produto = ' . $produto->getId() . '; integrarImagens = ' . $integrarImagens;
         $this->syslog->info('integraProduto - ini', $syslog_obs);
         /** @var AppConfig $appConfig */
@@ -972,7 +996,8 @@ class IntegradorWebStorm implements IntegradorBusiness
             </itensVenda></produto>' .
             '</ws_integracao>]]>';
 
-        $this->syslog->debug($xml, $syslog_obs);
+
+        $this->syslog->debug('integraProduto - XML REQUEST - ' . $syslog_obs, $xml);
 
         $client = $this->getNusoapClientImportacaoInstance();
 
@@ -995,7 +1020,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $arResultado = utf8_encode($arResultado);
         $arResultado = str_replace('&nbsp;', ' ', $arResultado);
 
-        $this->syslog->debug($arResultado, $syslog_obs);
+        $this->syslog->debug('integraProduto - XML RESPONSE - ' . $syslog_obs, $xml);
 
         $xmlResult = simplexml_load_string($arResultado);
 
@@ -1014,13 +1039,14 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
 
-        $produto->jsonData['ecommerce_dt_integr'] = (new \DateTime())->format('Y-m-d H:i:s');
+        $produto->jsonData['ecommerce_dt_integr'] = (new \DateTime())->modify('+1 minutes')->format('Y-m-d H:i:s');
         $produto->jsonData['ecommerce_dt_marcado_integr'] = null;
-        $produto->jsonData['ecommerce_integr_por'] = $this->security->getUser()->getNome();
+        $produto->jsonData['ecommerce_integr_por'] = $this->security->getUser() ? $this->security->getUser()->getNome() : 'n/d';
 
         $this->syslog->info('integraProduto - save', $syslog_obs);
         $this->produtoEntityHandler->save($produto);
-        $this->syslog->info('integraProduto - OK', $syslog_obs);
+        $tt = (int)(microtime(true) - $start);
+        $this->syslog->info('integraProduto - OK (em ' . $tt . ' segundos)', $syslog_obs);
     }
 
     /**
@@ -1346,13 +1372,18 @@ class IntegradorWebStorm implements IntegradorBusiness
 
     /**
      * Manda para a integração todos os produtos com porcent_preench=100%, com alteração posterior a última dt integração (e dt marcada integração null)
+     * @param int|null $limit
+     * @return int
      */
-    public function enviarProdutosParaIntegracao(): int
+    public function enviarProdutosParaIntegracao(?int $limit = null): int
     {
         $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
         $sql = 'SELECT id FROM est_produto WHERE json_data->>"$.porcent_preench" = 1 AND ' .
             '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_integr\') OR json_data->>"$.ecommerce_dt_integr" <= updated) AND ' .
-            '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_marcado_integr\')) LIMIT 5';
+            '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_marcado_integr\'))';
+        if ($limit) {
+            $sql .= ' LIMIT ' . $limit;
+        }
         $produtosParaIntegrar = $conn->fetchAll($sql);
 
         foreach ($produtosParaIntegrar as $rProduto) {

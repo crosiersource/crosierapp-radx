@@ -63,6 +63,33 @@ class IntegraWebStormController extends BaseController
         return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'ecommerce']);
     }
 
+    /**
+     *
+     * @Route("/est/integraWebStorm/enviarProdutosParaIntegracao", name="est_integraWebStorm_enviarProdutosParaIntegracao")
+     * @param Request $request
+     * @param IntegradorWebStorm $integraWebStormBusiness
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function enviarProdutosParaIntegracao(Request $request, IntegradorWebStorm $integraWebStormBusiness): Response
+    {
+        try {
+            $integrarImagens = null;
+
+            if ($request->query->has('qtde')) {
+                $qtde = $request->query->get('qtde');
+            } else {
+                $qtde = null;
+            }
+
+            $rQtde = $integraWebStormBusiness->enviarProdutosParaIntegracao($qtde);
+            $this->addFlash('success', $rQtde . ' produtos enviados para integração com sucesso');
+        } catch (ViewException $e) {
+            $this->addFlash('error', 'Erro ao enviar produtos para integração (' . $e->getMessage() . ')');
+        }
+        return new Response('OK');
+    }
+
 
     /**
      *
