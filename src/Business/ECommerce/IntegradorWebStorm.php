@@ -464,7 +464,8 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         if ($tiposCaracteristicasNaWebStorm[$ecommerceId_tipoCaracteristica]['caracteristicas'] ?? null) {
             foreach ($tiposCaracteristicasNaWebStorm[$ecommerceId_tipoCaracteristica]['caracteristicas'] as $id => $caracteristicaNaWebStorm) {
-                if ($caracteristicaNaWebStorm['nome'] === $caracteristica) {
+                // Compara ignorando maiúsculas e minúsculas
+                if (mb_strtolower($caracteristicaNaWebStorm['nome']) === mb_strtolower($caracteristica)) {
                     $idCaracteristicaNaWebStorm = $id;
                     break;
                 }
@@ -514,6 +515,8 @@ class IntegradorWebStorm implements IntegradorBusiness
             $idCaracteristicaNaWebStorm = (int)$xmlResult->caracteristicas->caracteristica->idCaracteristica->__toString();
 
             $this->syslog->info('integraCaracteristica: enviado (idCaracteristicaNaWebStorm: ' . $idCaracteristicaNaWebStorm . ')', $syslog_obs);
+
+            $this->tiposCaracteristicasNaWebStorm = null; // para forçar a rebusca
         }
 
         return $idCaracteristicaNaWebStorm;
@@ -909,6 +912,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             '<prazoXD>0</prazoXD>' .
             '<conjunto />' .
             '<nome>' . $produto->jsonData['titulo'] . '</nome>' .
+            '<descricao>' . $produto->jsonData['descricao_produto'] . '</descricao>' .
             '<referencia>' . ($produto->jsonData['referencia'] ?? '') . '</referencia>' .
             '<descricao-caracteristicas>' . htmlspecialchars($produto->jsonData['caracteristicas'] ?? '') . '</descricao-caracteristicas>' .
             '<descricao-itens-inclusos>' . htmlspecialchars($produto->jsonData['itens_inclusos'] ?? '') . '</descricao-itens-inclusos>' .
@@ -1308,8 +1312,6 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
         return $xmlResult->resultado->filtro ?? null;
-
-
     }
 
     /**
@@ -1371,7 +1373,11 @@ class IntegradorWebStorm implements IntegradorBusiness
     }
 
     /**
-     * Manda para a integração todos os produtos com porcent_preench=100%, com alteração posterior a última dt integração (e dt marcada integração null)
+     * Manda para a fila de integração todos os produtos com:
+     *  - porcent_preench=100%,
+     *  - com alteração posterior a última dt integração
+     *  - e dt marcada integração null
+     *
      * @param int|null $limit
      * @return int
      */
