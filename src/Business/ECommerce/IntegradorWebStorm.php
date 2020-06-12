@@ -224,7 +224,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $idMarcaNaWebStorm = null;
 
         foreach ($marcasNaWebStorm as $id => $marcaNaWebStorm) {
-            if ($marcaNaWebStorm['nome'] === $marca) {
+            if (mb_strtolower($marcaNaWebStorm['nome']) === mb_strtolower($marca)) {
                 $idMarcaNaWebStorm = $id;
                 break;
             }
@@ -382,7 +382,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $idTipoCaracteristicaNaWebStorm = null;
 
         foreach ($tiposCaracteristicasNaWebStorm as $id => $tipoCaracteristicaNaWebStorm) {
-            if ($tipoCaracteristicaNaWebStorm['nome'] === $tipoCaracteristica) {
+            if (mb_strtolower($tipoCaracteristicaNaWebStorm['nome']) === mb_strtolower($tipoCaracteristica)) {
                 $idTipoCaracteristicaNaWebStorm = $id;
                 break;
             }
