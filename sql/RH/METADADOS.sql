@@ -7,7 +7,7 @@ CREATE TABLE `rh_colaborador`
     `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
     `nome`               VARCHAR(255) NOT NULL,
     `cpf`                varchar(20)  NOT NULL,
-    `atual`              bit(1)       NOT NULL,
+    `atual`              tinyint(1)   NOT NULL,
     `image_name`         varchar(255),
     `json_data`          json,
 

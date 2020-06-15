@@ -9,7 +9,7 @@ CREATE TABLE `ven_plano_pagto`
     `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
     `codigo`             varchar(20)  NOT NULL,
     `descricao`          varchar(200) NOT NULL,
-    `ativo`              bit(1)       NOT NULL,
+    `ativo`              tinyint(1)       NOT NULL,
     `json_data`          json,
 
     UNIQUE KEY `UK_ven_plano_pagto` (`codigo`),

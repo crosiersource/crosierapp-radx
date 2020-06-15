@@ -171,9 +171,6 @@ CREATE TABLE `est_produto`
 
     KEY `K_est_produto_uuid` (`uuid`),
     KEY `K_est_produto_nome` (`nome`),
-    KEY `K_est_produto_titulo` (`titulo`),
-    KEY `K_est_produto_ean` (`ean`),
-    UNIQUE KEY `K_est_produto_codigo_from` (`codigo_from`),
 
     KEY `K_est_produto_subgrupo` (`subgrupo_id`),
     CONSTRAINT `FK_est_produto_subgrupo` FOREIGN KEY (`subgrupo_id`) REFERENCES `est_subgrupo` (`id`),

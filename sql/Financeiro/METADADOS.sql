@@ -46,7 +46,7 @@ CREATE TABLE `fin_banco`
 
     `codigo_banco`       int(11)      NOT NULL,
     `nome`               varchar(200) NOT NULL,
-    `utilizado`          bit(1)       NOT NULL,
+    `utilizado`          tinyint(1)       NOT NULL,
 
     `inserted`           datetime     NOT NULL,
     `updated`            datetime     NOT NULL,
@@ -112,8 +112,8 @@ DROP TABLE IF EXISTS `fin_cadeia`;
 CREATE TABLE `fin_cadeia`
 (
     `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
-    `fechada`            bit(1)     NOT NULL,
-    `vinculante`         bit(1)     NOT NULL,
+    `fechada`            tinyint(1)     NOT NULL,
+    `vinculante`         tinyint(1)     NOT NULL,
 
     `inserted`           datetime   NOT NULL,
     `updated`            datetime   NOT NULL,
@@ -149,15 +149,15 @@ CREATE TABLE `fin_carteira`
     `agencia`             varchar(30),
     `conta`               varchar(30),
 
-    `abertas`             bit(1)      NOT NULL,
-    `caixa`               bit(1)      NOT NULL,
-    `cheque`              bit(1)      NOT NULL,
-    `concreta`            bit(1)      NOT NULL,
+    `abertas`             tinyint(1)      NOT NULL,
+    `caixa`               tinyint(1)      NOT NULL,
+    `cheque`              tinyint(1)      NOT NULL,
+    `concreta`            tinyint(1)      NOT NULL,
     `dt_consolidado`      date        NOT NULL,
     `limite`              decimal(15, 2),
     `operadora_cartao_id` bigint(20),
 
-    `atual`               bit(1)      NOT NULL,
+    `atual`               tinyint(1)      NOT NULL,
 
 
     `inserted`            datetime    NOT NULL,
@@ -198,10 +198,10 @@ CREATE TABLE `fin_categoria`
     `descricao`                 varchar(200) NOT NULL,
     `pai_id`                    bigint(20),
 
-    `centro_custo_dif`          bit(1)       NOT NULL,
+    `centro_custo_dif`          tinyint(1)       NOT NULL,
     `codigo_super`              bigint(20)   NOT NULL,
     `descricao_padrao_moviment` varchar(200),
-    `totalizavel`               bit(1)       NOT NULL,
+    `totalizavel`               tinyint(1)       NOT NULL,
     `descricao_alternativa`     varchar(200),
     `roles_acess`               varchar(2000),
     `codigo_ord`                bigint(20),
@@ -273,7 +273,7 @@ CREATE TABLE `fin_grupo`
 (
     `id`                  bigint(20)  NOT NULL AUTO_INCREMENT,
     `descricao`           varchar(40) NOT NULL,
-    `ativo`               bit(1)      NOT NULL,
+    `ativo`               tinyint(1)      NOT NULL,
     `dia_inicio`          int(11)     NOT NULL,
     `dia_vencto`          int(11)     NOT NULL,
     `carteira_pagante_id` bigint(20)  NOT NULL,
@@ -314,7 +314,7 @@ CREATE TABLE `fin_grupo_item`
     `id`                      bigint(20)  NOT NULL AUTO_INCREMENT,
     `descricao`               varchar(40) NOT NULL,
     `dt_vencto`               date        NOT NULL,
-    `fechado`                 bit(1)      NOT NULL,
+    `fechado`                 tinyint(1)      NOT NULL,
     `valor_informado`         double,
     `anterior_id`             bigint(20),
     `carteira_pagante_id`     bigint(20)  NOT NULL,
@@ -394,12 +394,12 @@ CREATE TABLE `fin_modo`
     `id`                 bigint(20)  NOT NULL AUTO_INCREMENT,
     `codigo`             int(11)     NOT NULL,
     `descricao`          varchar(40) NOT NULL,
-    `com_banco_origem`   bit(1)      NOT NULL,
-    `moviment_agrup`     bit(1)      NOT NULL,
-    `transf_caixa`       bit(1)      NOT NULL,
-    `transf_propria`     bit(1)      NOT NULL,
-    `modo_cartao`        bit(1)      NOT NULL,
-    `modo_cheque`        bit(1)      NOT NULL,
+    `com_banco_origem`   tinyint(1)      NOT NULL,
+    `moviment_agrup`     tinyint(1)      NOT NULL,
+    `transf_caixa`       tinyint(1)      NOT NULL,
+    `transf_propria`     tinyint(1)      NOT NULL,
+    `modo_cartao`        tinyint(1)      NOT NULL,
+    `modo_cheque`        tinyint(1)      NOT NULL,
 
     `inserted`           datetime    NOT NULL,
     `updated`            datetime    NOT NULL,
@@ -433,7 +433,7 @@ CREATE TABLE `fin_fatura`
     `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
 
     `dt_fatura`          datetime   NOT NULL,
-    `fechada`            bit(1)     NOT NULL,
+    `fechada`            tinyint(1)     NOT NULL,
     `json_data`          json,
 
     `inserted`           datetime   NOT NULL,
@@ -477,7 +477,7 @@ CREATE TABLE `fin_movimentacao`
 
     `fis_nf_id`           bigint(20),
 
-    `quitado`             bit(1)                       NOT NULL,
+    `quitado`             tinyint(1)                       NOT NULL,
 
     `tipo_lancto_id`      bigint(20)                   NOT NULL,
     `carteira_id`         bigint(20)                   NOT NULL,
@@ -504,7 +504,7 @@ CREATE TABLE `fin_movimentacao`
     `bandeira_cartao_id`  bigint(20),
     `plano_pagto_cartao`  varchar(50),
 
-    `recorrente`          bit(1)                       NOT NULL,
+    `recorrente`          tinyint(1)                       NOT NULL,
     `recorr_dia`          int(11),
     `recorr_frequencia`   varchar(50),
     `recorr_tipo_repet`   varchar(50),
@@ -516,7 +516,7 @@ CREATE TABLE `fin_movimentacao`
     `valor_total`         decimal(15, 2)               NOT NULL,
 
     `cadeia_id`           bigint(20),
-    `parcelamento`        bit(1)                       NOT NULL DEFAULT FALSE,
+    `parcelamento`        tinyint(1)                       NOT NULL DEFAULT FALSE,
     `cadeia_ordem`        int(11),
     `cadeia_qtde`         int(11),
 
