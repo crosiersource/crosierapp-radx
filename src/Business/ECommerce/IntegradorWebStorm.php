@@ -1384,7 +1384,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     public function enviarProdutosParaIntegracao(?int $limit = null): int
     {
         $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
-        $sql = 'SELECT id FROM est_produto WHERE json_data->>"$.porcent_preench" = 1 AND ' .
+        $sql = 'SELECT id FROM est_produto WHERE json_data->>"$.porcent_preench" > 0 AND ' .
             '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_integr\') OR json_data->>"$.ecommerce_dt_integr" <= updated) AND ' .
             '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_marcado_integr\'))';
         if ($limit) {
