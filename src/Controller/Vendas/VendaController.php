@@ -2,7 +2,6 @@
 
 namespace App\Controller\Vendas;
 
-use App\Business\ECommerce\IntegradorBusiness;
 use App\Business\ECommerce\IntegradorBusinessFactory;
 use App\Form\Vendas\VendaType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
@@ -16,7 +15,6 @@ use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
@@ -29,6 +27,7 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaItemRepository;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -434,6 +433,49 @@ class VendaController extends FormListController
         };
 
         return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);
+    }
+
+
+    /**
+     *
+     * @Route("/ven/venda/findProdutosByIdOuNomeJson/", name="ven_venda_findProdutosByIdOuNomeJson")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findProdutosByIdOuNomeJson(Request $request): JsonResponse
+    {
+        try {
+            $str = $request->get('term');
+
+            $sql = 'SELECT prod.id, prod.nome, prod.json_data, preco.preco_prazo FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
+                'WHERE preco.atual AND (' .
+                'prod.id LIKE :str OR ' .
+                'prod.nome LIKE :str OR ' .
+                'json_data->>"$.codigo" LIKE :str) ORDER BY prod.nome LIMIT 20';
+
+            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql, ['str' => '%' . $str . '%']);
+            $results = [];
+            foreach ($rs as $r) {
+                $jsonData = json_decode($r['json_data'], true);
+                $precoVenda = $r['preco_prazo'] ?? $jsonData['preco_tabela'] ?? 0.0;
+                $codigo = str_pad($jsonData['codigo'] ?? $r['id'], 6, '0', STR_PAD_LEFT);
+                $results[] = [
+                    'id' => $r['id'],
+                    'nome' => $codigo . ' - ' . $r['nome'],
+                    'preco_venda' => $precoVenda,
+                    'unidade' => $jsonData['unidade'] ?? 'UN'
+                ];
+            }
+
+            return new JsonResponse(
+                ['results' => $results]
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['results' => []]
+            );
+        }
     }
 
 

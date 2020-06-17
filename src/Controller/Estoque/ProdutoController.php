@@ -589,4 +589,29 @@ class ProdutoController extends FormListController
     }
 
 
+    /**
+     *
+     * @Route("/est/produto/corrigirPrecosAtuais/", name="est_produto_corrigirPrecosAtuais")
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function corrigirPrecosAtuais(): Response
+    {
+        try {
+            $produtosIds = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT id FROM est_produto');
+            foreach ($produtosIds as $produtoId) {
+                $precoAtual = $precos = $this->entityHandler->getDoctrine()->getConnection()
+                    ->fetchAll('SELECT id FROM est_produto_preco WHERE produto_id = :produtoId ORDER BY preco_prazo DESC LIMIT 1', ['produtoId' => $produtoId['id']]);
+                if ($precoAtual) {
+                    $this->entityHandler->getDoctrine()->getConnection()
+                        ->executeQuery('UPDATE est_produto_preco SET atual = true WHERE id = :id', ['id' => $precoAtual[0]['id']]);
+                }
+            }
+            return new Response('OK');
+        } catch (\Exception $e) {
+            return new Response('ERRO');
+        }
+    }
+
+
 }

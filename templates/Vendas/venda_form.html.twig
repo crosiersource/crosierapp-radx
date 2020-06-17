@@ -75,17 +75,20 @@
                     <div class="card-body">
 
                         <div class="row">
-                            <div class="col-md-4 col-sm-12">
+                            <div class="col-12">
 
                                 <div class="form-group">
                                     <label for="item_produto">Produto</label>
                                     <input type="hidden" id="item_id" name="item[id]">
-                                    <select id="item_produto" name="item[produto]" class="form-control {{ e.id ? 'focusOnReady' : '' }}">
+                                    <select id="item_produto" name="item[produto]"
+                                            class="form-control {{ e.id ? 'focusOnReady' : '' }}">
                                     </select>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
 
-                            <div class="col-md-2 col-sm-12">
+                            <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label for="item_qtde">Qtde</label>
                                     <div class="input-group">
@@ -98,7 +101,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-2 col-sm-12">
+                            <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label for="item_precoVenda">Vlr Un</label>
                                     <div class="input-group">
@@ -111,7 +114,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-2 col-sm-12">
+                            <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label for="item_desconto">Desc</label>
                                     <div class="input-group">
@@ -124,7 +127,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-2 col-sm-12">
+                            <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label for="item_valorTotal">Vlr Total</label>
                                     <div class="input-group">
@@ -223,7 +226,8 @@
                             </div>
                             <div class="col-md-4 col-sm-12">
                                 <div class="form-group row">
-                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Valor Total</label>
+                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Valor
+                                        Total</label>
                                     <div class="col-sm-8">
                                         {{ form_widget(form.valorTotal) }}
                                     </div>

@@ -49,6 +49,7 @@ CREATE TABLE `est_depto`
     `uuid`               char(36)     NOT NULL,
     `codigo`             varchar(50)  NOT NULL,
     `nome`               varchar(255) NOT NULL,
+    `json_data`          json,
 
     UNIQUE KEY `UK_est_depto_uuid` (`uuid`),
     UNIQUE KEY `UK_est_depto_codigo` (`codigo`),
@@ -83,6 +84,7 @@ CREATE TABLE `est_grupo`
     `depto_nome`         varchar(255) NOT NULL,
     `codigo`             varchar(50)  NOT NULL,
     `nome`               varchar(255) NOT NULL,
+    `json_data`          json,
 
     KEY `K_est_grupo_depto` (`depto_id`),
     CONSTRAINT `FK_est_grupo_depto` FOREIGN KEY (`depto_id`) REFERENCES `est_depto` (`id`),
@@ -126,6 +128,8 @@ CREATE TABLE `est_subgrupo`
     `grupo_codigo`       varchar(50)  NOT NULL,
     `grupo_nome`         varchar(255) NOT NULL,
 
+    `json_data`          json,
+
 
     KEY `K_est_subgrupo_depto` (`depto_id`),
     CONSTRAINT `FK_est_subgrupo_depto` FOREIGN KEY (`depto_id`) REFERENCES `est_depto` (`id`),
@@ -162,16 +166,23 @@ CREATE TABLE `est_produto`
     `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
 
     `uuid`               char(36)     NOT NULL,
+    `depto_id`           bigint(20)   NOT NULL,
+    `grupo_id`           bigint(20)   NOT NULL,
     `subgrupo_id`        bigint(20)   NOT NULL,
     `fornecedor_id`      bigint(20)   NOT NULL,
     `nome`               varchar(255) NOT NULL,
     `status`             enum ('ATIVO','INATIVO'),
     `obs`                varchar(5000),
+    `composicao`         char(1),
     `json_data`          json,
 
     KEY `K_est_produto_uuid` (`uuid`),
     KEY `K_est_produto_nome` (`nome`),
 
+    KEY `K_est_produto_depto` (`depto_id`),
+    CONSTRAINT `FK_est_produto_depto` FOREIGN KEY (`depto_id`) REFERENCES `est_depto` (`id`),
+    KEY `K_est_produto_grupo` (`grupo_id`),
+    CONSTRAINT `FK_est_produto_grupo` FOREIGN KEY (`grupo_id`) REFERENCES `est_grupo` (`id`),
     KEY `K_est_produto_subgrupo` (`subgrupo_id`),
     CONSTRAINT `FK_est_produto_subgrupo` FOREIGN KEY (`subgrupo_id`) REFERENCES `est_subgrupo` (`id`),
     KEY `K_est_produto_fornecedor` (`fornecedor_id`),
@@ -285,6 +296,7 @@ CREATE TABLE `est_produto_preco`
     `preco_promo`        decimal(15, 2),
     `preco_vista`        decimal(15, 2) NOT NULL,
     `custo_financeiro`   decimal(15, 2) NOT NULL,
+    `atual`              tinyint(1)     NOT NULL,
 
 
     UNIQUE KEY `UK_est_produto_preco` (`produto_id`, `lista_id`),

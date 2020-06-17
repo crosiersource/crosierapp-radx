@@ -67,15 +67,15 @@ $(document).ready(function () {
         allowClear: true,
         ajax: {
             delay: 750,
-            url: Routing.generate('est_produto_findProdutosByIdOuNomeJson'),
+            url: Routing.generate('ven_venda_findProdutosByIdOuNomeJson'),
             dataType: 'json',
             processResults: function (data) {
                 let mapped = $.map(data.results, function (obj) {
                     return {
                         'id': obj.id,
                         'text': obj.nome,
-                        'precoVenda': obj.jsonData.preco_tabela,
-                        'unidade': obj.jsonData.unidade
+                        'precoVenda': obj.preco_venda,
+                        'unidade': obj.unidade
                     };
                 });
                 return {
