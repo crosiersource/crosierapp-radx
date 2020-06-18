@@ -11,6 +11,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -176,7 +177,9 @@ class MovimentacaoRecorrentesController extends FormListController
     {
         if (!$movimentacao) {
             $movimentacao = new Movimentacao();
-            $movimentacao->setTipoLancto($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 90]));
+            /** @var TipoLancto $tipoLancto90 */
+            $tipoLancto90 = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 90]);
+            $movimentacao->setTipoLancto($tipoLancto90);
             $movimentacao->setRecorrente(true);
         }
 
