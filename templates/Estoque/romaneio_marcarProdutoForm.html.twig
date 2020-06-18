@@ -1,0 +1,289 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('Estoque/romaneio_marcarProdutoForm') }}
+{% endblock %}
+
+
+{% block page_content %}
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Item do Romaneio</h3>
+                        <h7>Romaneio {{ e.romaneio.id|strpad(6) }} - {{ e.romaneio.fornecedor.nome }}
+                            ({{ e.romaneio.dtEmissao|date('d/m/Y H:i') }})
+                        </h7>
+                    </div>
+                    <div class="col-4 text-right">
+                        <button type="button" class="btn btn-secondary"
+                                onclick="window.location.href='{{ url('est_romaneio_form', {id: e.romaneio.id} ) }}'">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+                <fieldset>
+
+                    <form action="{{ url('est_romaneio_marcarProdutoForm', {'romaneioItem': e.id}) }}" method="POST">
+
+                        <div class="row">
+
+
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="item_ordem">Ordem</label>
+                                    <div class="input-group">
+                                        <input type="text" id="item_ordem" name="item[ordem]"
+                                               class="form-control" value="{{ e.ordem }}" disabled>
+
+                                        <div class="input-group-append">
+                                            <a role="button" class="btn btn-sm btn-outline-secondary"
+                                               title="Anterior" {{ anterior ? '' : 'disabled="disabled"' }}
+                                               href="{{ anterior ? url('est_romaneio_marcarProdutoForm', {'romaneioItem': anterior}) : '' }}">
+                                                <i class="fas fa-angle-left"></i>
+                                            </a>
+                                            <a role="button" class="btn btn-sm btn-outline-secondary"
+                                               title="Próximo" {{ proximo ? '' : 'disabled="disabled"' }}
+                                               href="{{ proximo ? url('est_romaneio_marcarProdutoForm', {'romaneioItem': proximo}) : '' }}">
+                                                <i class="fas fa-angle-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-7 col-12">
+                                <div class="form-group">
+                                    <label for="item_produto">Descrição</label>
+                                    <input type="text" id="item_descricao" name="item[descricao]"
+                                           class="form-control" value="{{ e.descricao }}" disabled>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-2 col-12">
+                                <div class="form-group">
+                                    <label for="item_unidade" class="required">Unidade</label>
+                                    <input type="text" id="item_unidade" name="item[descricao]"
+                                           class="form-control" value="{{ e.jsonData.unidade }}" disabled>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+
+
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label for="item_qtde">Qtde</label>
+                                    <div class="input-group">
+                                        <input type="text" id="item_qtde" name="item[qtde]"
+                                               class="crsr-dec3 form-control" value="{{ e.qtde }}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label for="item_qtde">Qtde Conf</label>
+                                    <div class="input-group">
+                                        <input type="text" id="item_qtdeConferida" name="item[qtdeConferida]"
+                                               class="crsr-dec3 form-control" value="{{ e.qtdeConferida }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label for="item_precoVenda">Preço Custo</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$</span>
+                                        </div>
+                                        <input type="text" id="item_precoVenda" name="item[precoVenda]"
+                                               readonly="readonly" class="crsr-money form-control disabled"
+                                               value="{{ e.precoCusto }}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label for="item_total">Total</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$</span>
+                                        </div>
+                                        <input type="text" id="item_total" name="item[total]"
+                                               readonly="readonly" class="crsr-money form-control disabled"
+                                               value="{{ e.total }}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label for="btnSalvarQtdeConferida">&nbsp;</label>
+                                    <div class="input-group">
+                                        <button type="submit" class="btn btn-primary btn-block" value="Salvar"
+                                                id="btnSalvarQtdeConferida" name="btnSalvarQtdeConferida">
+                                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <hr>
+                    </form>
+
+                </fieldset>
+
+                {% if e.qtdeConferida != null %}
+
+                    {% if e.produto == null %}
+
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#vincularProduto" id="vincularProduto-tab" data-toggle="tab" role="tab"
+                                   aria-controls="vincularProduto" aria-selected="true"><i class="fas fa-link"
+                                                                                           aria-hidden="true"></i>
+                                    Vincular Produto</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#novoProduto" id="novoProduto-tab" data-toggle="tab" role="tab"
+                                   aria-controls="novoProduto" aria-selected="false"><i class="far fa-file"></i> Novo
+                                    Produto</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="myTabContent">
+
+                            <!-- VINCULAR PRODUTO -->
+                            <div class="tab-pane fade show active" id="vincularProduto" role="tabpanel"
+                                 aria-labelledby="vincularProduto-tab">
+
+                                <div class="container">
+
+                                    <div class="row">
+                                        <div class="col-md-10 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="produto">Produto</label>
+                                                <select id="produto" name="produto" class="form-control"
+                                                        data-val="{{ e.jsonData.produto|default('') }}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="btnVincularProduto">&nbsp;</label>
+                                                <div class="input-group">
+                                                    <button type="submit" class="btn btn-primary btn-block"
+                                                            value="Vincular"
+                                                            id="btnVincularProduto" name="btnVincularProduto">
+                                                        <i class="fas fa-link" aria-hidden="true"></i> Vincular
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!-- NOVO PRODUTO -->
+                            <div class="tab-pane fade" id="novoProduto" role="tabpanel"
+                                 aria-labelledby="novoProduto-tab">
+
+                                <div class="container">
+
+                                    {{ form_start(formProduto) }}
+
+                                    {{ form_row(formProduto._token) }}
+
+                                    {{ form_end(form, {'render_rest': false}) }}
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+
+                    {% else %}
+
+                    {% endif %}
+                {% endif %}
+
+                {% if e.produto != null %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Precificação</h5>
+
+                            <input type="hidden" id="preco_id" name="preco[id]" value="">
+                            <div class="row">
+                                <div class="col-md-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="item_precoVenda">Dt Custo</label>
+                                        <input type="text" id="preco_dtCusto" name="preco[dtCusto]"
+                                               class="crsr-date form-control" maxlength="10">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="item_precoVenda">Dt Preço Venda</label>
+                                        <input type="text" id="preco_dtPrecoVenda" name="preco[dtPrecoVenda]"
+                                               class="crsr-date form-control" maxlength="10">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="preco_margem">Margem</label>
+                                        <div class="input-group">
+                                            <input type="text" id="preco_margem" name="preco[margem]"
+                                                   class="crsr-dec2 form-control disabled"
+                                                   value="">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Estoque/romaneio_marcarProdutoForm') }}
+{% endblock %}

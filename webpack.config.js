@@ -42,6 +42,8 @@ Encore
     .addEntry('Estoque/pedidoCompraItem_form', './assets/js/Estoque/pedidoCompraItem_form.js')
     .addEntry('Estoque/pedidoCompra_list', './assets/js/Estoque/pedidoCompra_list.js')
     .addEntry('Estoque/fornecedor_list', './assets/js/Estoque/fornecedor_list.js')
+    .addEntry('Estoque/romaneio_form', './assets/js/Estoque/romaneio_form.js')
+    .addEntry('Estoque/romaneio_marcarProdutoForm', './assets/js/Estoque/romaneio_marcarProdutoForm.js')
 
     .addEntry('Fiscal/emissaoNFe/form', './assets/js/Fiscal/emissaoNFe/form.js')
     .addEntry('Fiscal/emissaoNFe/formItem', './assets/js/Fiscal/emissaoNFe/formItem.js')

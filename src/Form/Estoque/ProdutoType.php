@@ -159,7 +159,7 @@ class ProdutoType extends AbstractType
 
             ]);
 
-            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => $produto->jsonData]);
+            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => ($produto->jsonData ?? null)]);
 
         });
 

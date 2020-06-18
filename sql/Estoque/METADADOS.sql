@@ -510,3 +510,88 @@ CREATE TABLE `est_pedidocompra_item`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
 
+
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `est_romaneio`;
+
+CREATE TABLE `est_romaneio`
+(
+    `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
+    `fornecedor_id`      bigint(20),
+    `notafiscal_id`      bigint(20),
+    `status`             varchar(100) NOT NULL,
+    `dt_emissao`         datetime     NOT NULL,
+    `dt_prev_entrega`    datetime,
+    `dt_entrega`         datetime,
+    `prazos_pagto`       varchar(100),
+    `valor_total`        decimal(15, 2),
+    `json_data`          json,
+
+    KEY `K_est_romaneio_fornecedor` (`fornecedor_id`),
+    CONSTRAINT `FK_est_romaneio_fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `est_fornecedor` (`id`),
+
+    KEY `K_est_romaneio_notafiscal` (`notafiscal_id`),
+    CONSTRAINT `FK_est_romaneio_notafiscal` FOREIGN KEY (`notafiscal_id`) REFERENCES `fis_nf` (`id`),
+
+    -- campo de controle
+    PRIMARY KEY (`id`),
+    `inserted`           datetime     NOT NULL,
+    `updated`            datetime     NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)   NOT NULL,
+    `user_inserted_id`   bigint(20)   NOT NULL,
+    `user_updated_id`    bigint(20)   NOT NULL,
+    KEY `K_est_romaneio_estabelecimento` (`estabelecimento_id`),
+    KEY `K_est_romaneio_user_inserted` (`user_inserted_id`),
+    KEY `K_est_romaneio_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_est_romaneio_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_est_romaneio_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_est_romaneio_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_swedish_ci;
+
+
+
+DROP TABLE IF EXISTS `est_romaneio_item`;
+
+CREATE TABLE `est_romaneio_item`
+(
+    `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
+    `romaneio_id`        bigint(20)     NOT NULL,
+    `produto_id`         bigint(20),
+    `ordem`              int(11)        NOT NULL,
+    `qtde`               decimal(15, 2) NOT NULL,
+    `qtde_conferida`     decimal(15, 2),
+    `descricao`          varchar(3000)  NOT NULL,
+    `preco_custo`        decimal(15, 2),
+    `total`              decimal(15, 2),
+    `json_data`          json,
+
+    KEY `K_est_romaneio_item_romaneio` (`romaneio_id`),
+    CONSTRAINT `FK_est_romaneio_item_romaneio` FOREIGN KEY (`romaneio_id`) REFERENCES `est_romaneio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+
+    KEY `K_est_romaneio_item_produto` (`produto_id`),
+    CONSTRAINT `FK_est_romaneio_item_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`),
+
+    -- campo de controle
+    PRIMARY KEY (`id`),
+    `inserted`           datetime       NOT NULL,
+    `updated`            datetime       NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)     NOT NULL,
+    `user_inserted_id`   bigint(20)     NOT NULL,
+    `user_updated_id`    bigint(20)     NOT NULL,
+    KEY `K_est_romaneio_item_estabelecimento` (`estabelecimento_id`),
+    KEY `K_est_romaneio_item_user_inserted` (`user_inserted_id`),
+    KEY `K_est_romaneio_item_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_est_romaneio_item_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_est_romaneio_item_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_est_romaneio_item_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_swedish_ci;
+
