@@ -3,6 +3,8 @@
 namespace App\Controller\Estoque;
 
 use App\Business\ECommerce\IntegradorWebStorm;
+use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
@@ -12,8 +14,6 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\SubgrupoEntityHandl
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\SubgrupoRepository;
-use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -287,6 +287,46 @@ class DeptoController extends BaseController
         $integraWebStorm->integraSubgrupo($subgrupo);
         $this->addFlash('success', 'Subgrupo integrado com sucesso');
         return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['subgrupoId' => $subgrupo->getId()]);
+    }
+
+    /**
+     * Corrige os json_data de est_subgrupo e est_grupo
+     *
+     * @Route("/est/deptoGrupoSubgrupo/corrigir", name="est_deptoGrupoSubgrupo_corrigir")
+     * @return Response
+     * @throws \Doctrine\DBAL\DBALException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function corrigirDeptosGruposSubgrupos(): Response
+    {
+        // corrige os subgrupos
+        $conn = $this->deptoEntityHandler->getDoctrine()->getConnection();
+
+        $subgrupos = $conn->fetchAll('SELECT s.id as subgrupo_id, s.codigo as subgrupo_codigo, s.nome as subgrupo_nome, g.id as grupo_id, g.codigo as grupo_codigo, g.nome as grupo_nome, d.id as depto_id, d.codigo as depto_codigo, d.nome as depto_nome FROM est_subgrupo s, est_grupo g, est_depto d WHERE s.grupo_id = g.id AND g.depto_id = d.id');
+
+        foreach ($subgrupos as $s) {
+            $conn->update('est_subgrupo',
+                [
+                    'json_data' => json_encode([
+                        'depto_id' => $s['depto_id'],
+                        'depto_codigo' => $s['depto_codigo'],
+                        'depto_nome' => $s['depto_nome'],
+                        'grupo_id' => $s['grupo_id'],
+                        'grupo_codigo' => $s['grupo_codigo'],
+                        'grupo_nome' => $s['grupo_nome'],
+                    ])
+                ], ['id' => $s['subgrupo_id']]);
+            $conn->update('est_grupo',
+                [
+                    'json_data' => json_encode([
+                        'depto_id' => $s['depto_id'],
+                        'depto_codigo' => $s['depto_codigo'],
+                        'depto_nome' => $s['depto_nome'],
+                    ])
+                ], ['id' => $s['grupo_id']]);
+        }
+        return new Response('OK');
+
     }
 
 
