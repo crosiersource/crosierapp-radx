@@ -35,7 +35,8 @@ doctrine:
                 date_format: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\DateFormat
                 date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date
             string_functions:
+                JSON_UNQUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
                 JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
                 JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
                 CAST: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Cast
-
+                
