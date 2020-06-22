@@ -199,7 +199,6 @@ class EmissaoFiscalPVController extends BaseController
                 $this->notaFiscalBusiness->cancelar($notaFiscal);
                 return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
             }
-
             $form->getErrors(true, true);
         }
 

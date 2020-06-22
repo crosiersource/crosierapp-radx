@@ -46,7 +46,8 @@
 
                         <div class="form-group">
                             <label class="" for="venda_cliente">Cliente</label>
-                            <input type="text" class="form-control" disabled value="{{ e.cliente.documento|mascararCnpjCpf }} - {{ e.cliente.nome }}">
+                            <input type="text" class="form-control" disabled
+                                   value="{{ e.cliente.documento|mascararCnpjCpf }} - {{ e.cliente.nome }}">
                         </div>
                     </div>
                     <div class="col-md-5 col-sm-12">
@@ -107,12 +108,12 @@
                             <i class="fas fa-save" aria-hidden="true"></i> Salvar
                         </button>
 
-
                         {% if permiteFaturamento %}
-                            <button type="button" value="Faturar" class="btn btn-warning"
-                                    data-url="{{  }}" data-target="#confirmationModal"
+                            <button type="button" value="Gerar Nota Fiscal" class="btn btn-warning"
+                                    data-url="{{ url('ven_venda_gerarNotaFiscal', {'venda': e.id}) }}"
+                                    data-target="#confirmationModal"
                                     data-toggle="modal">
-                                <i class="fas fa-file-invoice" aria-hidden="true"></i> Faturar
+                                <i class="fas fa-file-invoice" aria-hidden="true"></i> Gerar Nota Fiscal
                             </button>
                         {% endif %}
 
@@ -153,7 +154,11 @@
                                 {% for item in e.itens %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
-                                        <td>{{ item.id|strpad(9) }}{{ item.descricao }}</td>
+                                        <td>
+                                            <a href="{{ url('est_produto_form', {'id' : item.produto.id}) }}" target="_blank">
+                                                {{ item.id|strpad(9) }} - {{ item.descricao }}
+                                            </a>
+                                        </td>
                                         <td class="text-right">{{ item.qtde|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.precoVenda|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.desconto|number_format(2,',','.') }}</td>
@@ -198,7 +203,8 @@
                             </div>
                             <div class="col-md-4 col-sm-12">
                                 <div class="form-group row">
-                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Valor Total</label>
+                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Valor
+                                        Total</label>
                                     <div class="col-sm-8">
                                         {{ form_widget(form.valorTotal) }}
                                     </div>

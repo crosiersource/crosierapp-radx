@@ -1237,7 +1237,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $venda->subtotal = 0.0; // a ser recalculado posteriormente
         $venda->desconto = 0.0; // a ser recalculado posteriormente
         $venda->setValorTotal(0.0); // a ser recalculado posteriormente
-        
+
         $conn->beginTransaction();
         $this->vendaEntityHandler->save($venda);
 
@@ -1258,6 +1258,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             } catch (\Throwable $e) {
                 throw new ViewException('Erro ao integrar venda. Erro ao pesquisar produto (idProduto = ' . $produtoWebStorm->idProduto->__toString() . ')');
             }
+
             $vendaItem = new VendaItem();
             $venda->addItem($vendaItem);;
             $vendaItem->descricao = $produto->nome;

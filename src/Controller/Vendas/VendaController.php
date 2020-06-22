@@ -19,6 +19,7 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\VendaItem;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
@@ -46,6 +47,8 @@ class VendaController extends FormListController
     private VendaItemEntityHandler $vendaItemEntityHandler;
 
     private NotaFiscalBusiness $notaFiscalBusiness;
+
+    private NotaFiscalEntityHandler $notaFiscalEntityHandler;
 
     /**
      * @required
@@ -81,6 +84,15 @@ class VendaController extends FormListController
     public function setNotaFiscalBusiness(NotaFiscalBusiness $notaFiscalBusiness): void
     {
         $this->notaFiscalBusiness = $notaFiscalBusiness;
+    }
+
+    /**
+     * @required
+     * @param NotaFiscalEntityHandler $notaFiscalEntityHandler
+     */
+    public function setNotaFiscalEntityHandler(NotaFiscalEntityHandler $notaFiscalEntityHandler): void
+    {
+        $this->notaFiscalEntityHandler = $notaFiscalEntityHandler;
     }
 
 
@@ -140,6 +152,8 @@ class VendaController extends FormListController
             'formPageTitle' => 'Venda'
         ];
 
+        $params['permiteFaturamento'] = ($venda->jsonData['ecommerce_status_descricao'] ?? '') === 'Pedido em Separação';
+
         if (!$venda) {
             // Este formulário não serve para inserir novas vendas
             return $this->redirectToRoute('ven_venda_listVendasPorDiaComEcommerce');
@@ -151,12 +165,12 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/ven/venda/faturar/{venda}", name="ven_venda_faturar", requirements={"venda"="\d+"})
+     * @Route("/ven/venda/gerarNotaFiscal/{venda}", name="ven_venda_gerarNotaFiscal", requirements={"venda"="\d+"})
      * @param Request $request
      * @param Venda $venda
      * @return RedirectResponse
      */
-    public function faturar(Request $request, Venda $venda): RedirectResponse
+    public function gerarNotaFiscal(Request $request, Venda $venda): RedirectResponse
     {
         try {
             /** @var NotaFiscal $notaFiscal */
@@ -167,12 +181,38 @@ class VendaController extends FormListController
                 $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
             }
             $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
-            $this->notaFiscalBusiness->faturarNFe($notaFiscal);
+            $notaFiscal->setDocumentoDestinatario($venda->cliente->documento);
+            $notaFiscal->setXNomeDestinatario($venda->cliente->nome);
+            $notaFiscal->setLogradouroDestinatario($venda->jsonData['ecommerce_entrega_logradouro']);
+            $notaFiscal->setNumeroDestinatario($venda->jsonData['ecommerce_entrega_numero']);
+            $notaFiscal->setBairroDestinatario($venda->jsonData['ecommerce_entrega_bairro']);
+            $notaFiscal->setCepDestinatario($venda->jsonData['ecommerce_entrega_cep']);
+            $notaFiscal->setCidadeDestinatario($venda->jsonData['ecommerce_entrega_cidade']);
+            $notaFiscal->setEstadoDestinatario($venda->jsonData['ecommerce_entrega_uf']);
+            $notaFiscal->setFoneDestinatario($venda->jsonData['ecommerce_entrega_telefone']);
+            $this->notaFiscalEntityHandler->save($notaFiscal);
+            return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
+            $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
+            return $this->redirectToRoute($route, ['id' => $venda->getId()]);
         }
-        $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
-        return $this->redirectToRoute($route, ['id' => $notaFiscal->getId()]);
+    }
+
+    /**
+     *
+     * @Route("/ven/venda/consultarStatus/{notaFiscal}/{venda}", name="ven_venda_consultarStatus")
+     * @param Request $request
+     * @param NotaFiscal $notaFiscal
+     * @param Venda $venda
+     * @return RedirectResponse
+     * @throws ViewException
+     */
+    public function consultarStatus(Request $request, NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
+    {
+        $this->notaFiscalBusiness->consultarStatus($notaFiscal);
+        $route = $request->get('rtr') ?? 'ven_venda_form';
+        return $this->redirectToRoute($route, ['venda' => $venda->getId()]);
     }
 
     /**
