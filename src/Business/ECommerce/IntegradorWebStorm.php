@@ -1142,7 +1142,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         if ($venda) {
             // se já existe, só confere o status
             $vendaJsonData = json_decode($venda['json_data'], true);
-            if ($vendaJsonData['ecommerce_status'] != $pedido->status->__toString()) {
+            if (($vendaJsonData['ecommerce_status'] ?? null) != $pedido->status->__toString()) {
 
                 $vendaJsonData['ecommerce_status'] = $pedido->status->__toString();
                 $vendaJsonData['ecommerce_status_descricao'] = $pedido->desStatus->__toString();

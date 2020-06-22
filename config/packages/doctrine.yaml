@@ -39,4 +39,3 @@ doctrine:
                 JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
                 JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
                 CAST: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Cast
-                
