@@ -1234,6 +1234,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $venda->jsonData['ecommerce_status'] = $pedido->status->__toString();
         $venda->jsonData['ecommerce_status_descricao'] = $pedido->desStatus->__toString();
 
+        $venda->subtotal = 0.0; // a ser recalculado posteriormente
         $conn->beginTransaction();
         $this->vendaEntityHandler->save($venda);
 
@@ -1269,6 +1270,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             $this->vendaItemEntityHandler->save($vendaItem);
 
         }
+        $venda->recalcularTotais();
         $this->vendaEntityHandler->save($venda);
 
         $conn->commit();
