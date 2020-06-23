@@ -130,4 +130,19 @@ class IntegraWebStormController extends BaseController
         return new Response('OK');
     }
 
+    /**
+     *
+     * @Route("/est/integraWebStorm/atualizaEstoqueEPrecos", name="est_integraWebStorm_atualizaEstoqueEPrecos")
+     *
+     * @param IntegradorWebStorm $integraWebStormBusiness
+     * @return Response
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function atualizaEstoqueEPrecos(IntegradorWebStorm $integraWebStormBusiness)
+    {
+        $integraWebStormBusiness->atualizaEstoqueEPrecos();
+        return new Response('OK');
+    }
+
 }

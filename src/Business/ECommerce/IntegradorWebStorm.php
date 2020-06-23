@@ -1054,6 +1054,115 @@ class IntegradorWebStorm implements IntegradorBusiness
     }
 
     /**
+     * @return void
+     * @throws ViewException
+     */
+    public function atualizaEstoqueEPrecos(): void
+    {
+        $start = microtime(true);
+        $this->syslog->info('atualizaEstoqueEPrecos - ini');
+
+        $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
+        $sql = 'SELECT id FROM est_produto WHERE ' .
+            'not JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_id\') AND ' .
+            'not JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_item_venda_id\') AND json_data->>"$.porcent_preench" > 0 AND ' .
+            '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_integr\') OR json_data->>"$.ecommerce_dt_integr" <= updated) AND ' .
+            '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_marcado_integr\'))';
+        $rProdutos = $conn->fetchAll($sql);
+
+        $this->syslog->info('atualizaEstoqueEPrecos - ' . count($rProdutos) . ' produtos a integrar');
+
+
+        $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
+            <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+               <chave>' . $this->getChave() . '</chave>
+               <acao>update</acao>
+               <modulo>produto</modulo>';
+
+        foreach ($rProdutos as $produto) {
+
+            $this->syslog->info('adicionando produto (id: ' . $produto['id'] . ' na integração');
+
+            $produtoEcommerceId = $produto->jsonData['ecommerce_id'] ?? null;
+            $produtoItemVendaId = $produto->jsonData['ecommerce_item_venda_id'] ?? null;
+            if (!$produtoEcommerceId) {
+                $err = 'Produto sem jsonData[\'ecommerce_id\']';
+                $this->syslog->err($err);
+                throw new ViewException($err);
+            }
+            if (!$produtoItemVendaId) {
+                $err = 'Produto sem jsonData[\'ecommerce_item_venda_id\']';
+                $this->syslog->err($err);
+                throw new ViewException($err);
+            }
+
+            $xml .= '<produto pk="idProduto">' .
+                ($produtoEcommerceId ? '<idProduto>' . $produtoEcommerceId . '</idProduto>' : '');
+            $xml .=
+                '<itensVenda>
+				<idItemVenda>' . $produtoItemVendaId . '</idItemVenda>
+				<preco>' . ($produto->jsonData['preco_site'] ?? $produto->jsonData['preco_tabela'] ?? 0.0) . '</preco>
+				<estoque>' . ($produto->jsonData['qtde_estoque_total'] ?? 999999) . '</estoque>
+            </itensVenda></produto>';
+
+        }
+        $xml .= '</ws_integracao>]]>';
+
+        $this->syslog->info('atualizaEstoqueEPrecos - enviando o XML', $xml);
+
+        $client = $this->getNusoapClientImportacaoInstance();
+
+        $arResultado = $client->call('produtoUpdate', [
+            'xml' => utf8_decode($xml)
+        ]);
+
+        if ($client->faultcode) {
+            $this->syslog->err('atualizaEstoqueEPrecos - faultcode: ' . (string)$client->faultcode);
+            throw new \RuntimeException($client->faultcode);
+        }
+        // else
+        if ($client->getError()) {
+            $this->syslog->err('atualizaEstoqueEPrecos - faultcode: ' . $client->getError());
+            throw new \RuntimeException($client->getError());
+        }
+
+        $arResultado = utf8_encode($arResultado);
+        $arResultado = str_replace('&nbsp;', ' ', $arResultado);
+
+        $this->syslog->debug('atualizaEstoqueEPrecos - XML RESPONSE - ', $xml);
+
+        $xmlResult = simplexml_load_string($arResultado);
+
+        if ($xmlResult->erros->erro ?? false) {
+            $this->syslog->err('atualizaEstoqueEPrecos - erros: ' . $xmlResult->erros->erro->__toString());
+            throw new \RuntimeException($xmlResult->erros->erro->__toString());
+        }
+
+        // atualiza os campos para os produtos integrados
+        foreach ($rProdutos as $produto) {
+            $this->syslog->info('atualizaEstoqueEPrecos - salvando produto (id: ' . $produto['id'] . ')');
+
+            try {
+                $conn->executeQuery(
+                    'UPDATE est_produto SET json_data = json_set(json_data, \'$.ecommerce_dt_integr\', :ecommerce_dt_integr, \'$.ecommerce_integr_por\', :ecommerce_integr_por) WHERE id = :produtoId',
+                    [
+                        'ecommerce_dt_integr' => (new \DateTime())->modify('+1 minutes')->format('Y-m-d H:i:s'),
+                        'ecommerce_integr_por' => $this->security->getUser() ? $this->security->getUser()->getNome() : 'n/d',
+                        'produtoId' => $produto['id']
+                    ]);
+            } catch (DBALException $e) {
+                $err = 'Erro no UPDATE est_produto';
+                $this->syslog->err($err);
+                throw new ViewException($err);
+            }
+
+        }
+
+        $tt = (int)(microtime(true) - $start);
+        $this->syslog->info('atualizaEstoqueEPrecos - OK (em ' . $tt . ' segundos)');
+    }
+
+    /**
      * @param \DateTime $dtVenda
      * @param bool|null $resalvar
      * @return int
