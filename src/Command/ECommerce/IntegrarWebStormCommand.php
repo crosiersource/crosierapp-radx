@@ -31,7 +31,7 @@ class IntegrarWebStormCommand extends Command
     protected function configure()
     {
         $this->setName('crosierappradx:integrarWebStorm');
-        $this->addArgument('tipoIntegracao', InputArgument::REQUIRED, 'Tipo de Integração: "vendas", "produtos"');
+        $this->addArgument('tipoIntegracao', InputArgument::REQUIRED, 'Tipo de Integração: "vendas", "produtos", "estoqueEprecos"');
         $this->addArgument('dtBase', InputArgument::OPTIONAL, 'Data Base');
     }
 
@@ -68,6 +68,17 @@ class IntegrarWebStormCommand extends Command
                     $output->writeln('OK: ' . $qtde . ' produtos marcados para integração');
                 } catch (ViewException $e) {
                     $output->writeln('Erro ao enviarProdutosParaIntegracao');
+                    $output->writeln($e->getMessage());
+                    $output->writeln($e->getTraceAsString());
+                }
+                break;
+            case 'estoqueEprecos':
+                try {
+                    $output->writeln('Atualizando estoques e preços');
+                    $qtde = $this->integraWebStorm->atualizaEstoqueEPrecos();
+                    $output->writeln('OK: ' . $qtde . ' produtos atualizados');
+                } catch (ViewException $e) {
+                    $output->writeln('Erro ao atualizaEstoqueEPrecos');
                     $output->writeln($e->getMessage());
                     $output->writeln($e->getTraceAsString());
                 }

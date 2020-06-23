@@ -1054,16 +1054,16 @@ class IntegradorWebStorm implements IntegradorBusiness
     }
 
     /**
-     * @return void
+     * @return int
      * @throws ViewException
      */
-    public function atualizaEstoqueEPrecos(): void
+    public function atualizaEstoqueEPrecos(): int
     {
         $start = microtime(true);
         $this->syslog->info('atualizaEstoqueEPrecos - ini');
 
         $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
-        $sql = 'SELECT id FROM est_produto WHERE ' .
+        $sql = 'SELECT * FROM est_produto WHERE ' .
             'not JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_id\') AND ' .
             'not JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_item_venda_id\') AND json_data->>"$.porcent_preench" > 0 AND ' .
             '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_integr\') OR json_data->>"$.ecommerce_dt_integr" <= updated) AND ' .
@@ -1083,8 +1083,9 @@ class IntegradorWebStorm implements IntegradorBusiness
 
             $this->syslog->info('adicionando produto (id: ' . $produto['id'] . ' na integração');
 
-            $produtoEcommerceId = $produto->jsonData['ecommerce_id'] ?? null;
-            $produtoItemVendaId = $produto->jsonData['ecommerce_item_venda_id'] ?? null;
+            $jsonData = json_decode($produto['json_data'], true);
+            $produtoEcommerceId = $jsonData['ecommerce_id'] ?? null;
+            $produtoItemVendaId = $jsonData['ecommerce_item_venda_id'] ?? null;
             if (!$produtoEcommerceId) {
                 $err = 'Produto sem jsonData[\'ecommerce_id\']';
                 $this->syslog->err($err);
@@ -1101,8 +1102,8 @@ class IntegradorWebStorm implements IntegradorBusiness
             $xml .=
                 '<itensVenda>
 				<idItemVenda>' . $produtoItemVendaId . '</idItemVenda>
-				<preco>' . ($produto->jsonData['preco_site'] ?? $produto->jsonData['preco_tabela'] ?? 0.0) . '</preco>
-				<estoque>' . ($produto->jsonData['qtde_estoque_total'] ?? 999999) . '</estoque>
+				<preco>' . ($jsonData['preco_site'] ?? $jsonData['preco_tabela'] ?? 0.0) . '</preco>
+				<estoque>' . ($jsonData['qtde_estoque_total'] ?? 999999) . '</estoque>
             </itensVenda></produto>';
 
         }
@@ -1160,6 +1161,8 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $tt = (int)(microtime(true) - $start);
         $this->syslog->info('atualizaEstoqueEPrecos - OK (em ' . $tt . ' segundos)');
+
+        return count($rProdutos);
     }
 
     /**
