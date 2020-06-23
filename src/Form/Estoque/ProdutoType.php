@@ -10,7 +10,6 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
-use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\FornecedorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
@@ -200,7 +199,7 @@ class ProdutoType extends AbstractType
                 /** @var Produto $produto */
                 $produto = $event->getData();
                 if ($produto->getId()) {
-                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM ven_venda WHERE id = :id', ['id' => $produto->getId()])['json_data'] ?? '{}', true);
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM est_produto WHERE id = :id', ['id' => $produto->getId()])['json_data'] ?? '{}', true);
                     $produto->jsonData = array_merge($jsonDataOrig, $produto->jsonData);
                     $event->setData($produto);
                 }
