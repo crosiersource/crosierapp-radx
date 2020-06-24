@@ -1058,8 +1058,8 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
         $sql = 'SELECT * FROM est_produto WHERE ' .
-            'not JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_id\') AND ' .
-            'not JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_item_venda_id\') AND json_data->>"$.porcent_preench" > 0 AND ' .
+            'not JSON_IS_NULL_OR_EMPTY_OR_ZERO(json_data, \'ecommerce_id\') AND ' .
+            'not JSON_IS_NULL_OR_EMPTY_OR_ZERO(json_data, \'ecommerce_item_venda_id\') AND json_data->>"$.porcent_preench" > 0 AND ' .
             '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_integr\') OR json_data->>"$.ecommerce_dt_integr" <= updated) AND ' .
             '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_marcado_integr\'))';
         $rProdutos = $conn->fetchAll($sql);
