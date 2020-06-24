@@ -1524,9 +1524,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             }
 
         }
-
         return count($produtosParaIntegrar);
-
     }
 
 

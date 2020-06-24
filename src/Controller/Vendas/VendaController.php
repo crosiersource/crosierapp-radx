@@ -4,6 +4,7 @@ namespace App\Controller\Vendas;
 
 use App\Business\ECommerce\IntegradorBusinessFactory;
 use App\Form\Vendas\VendaType;
+use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -50,6 +51,8 @@ class VendaController extends FormListController
 
     private NotaFiscalEntityHandler $notaFiscalEntityHandler;
 
+    private SyslogBusiness $syslog;
+
     /**
      * @required
      * @param Pdf $knpSnappyPdf
@@ -95,6 +98,14 @@ class VendaController extends FormListController
         $this->notaFiscalEntityHandler = $notaFiscalEntityHandler;
     }
 
+    /**
+     * @required
+     * @param SyslogBusiness $syslog
+     */
+    public function setSyslog(SyslogBusiness $syslog): void
+    {
+        $this->syslog = $syslog;
+    }
 
     /**
      *
@@ -162,6 +173,31 @@ class VendaController extends FormListController
         return $this->doForm($request, $venda, $params);
     }
 
+    /**
+     *
+     * @Route("/est/venda/integrarVendaParaECommerce/{venda}", name="est_venda_integrarVendaParaECommerce")
+     *
+     * @param Request $request
+     * @param Venda|null $venda
+     * @param IntegradorBusinessFactory $integradorBusinessFactory
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function integrarVendaParaECommerce(Request $request, Venda $venda, IntegradorBusinessFactory $integradorBusinessFactory)
+    {
+        try {
+            $integrador = $integradorBusinessFactory->getIntegrador();
+            $integrador->integrarVendaParaECommerce($venda);
+            $this->addFlash('success', 'Venda integrada com sucesso');
+            $this->syslog->info('Venda integrada com sucesso (id: ' . $venda->getId() . ')');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao integrar venda');
+            $this->syslog->info('Erro ao integrar venda (id: ' . $venda->getId() . ')', $e->getTraceAsString());
+        }
+        $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
+        return $this->redirectToRoute($route, ['id' => $venda->getId()]);
+    }
+
 
     /**
      *
@@ -179,18 +215,18 @@ class VendaController extends FormListController
                 $notaFiscal = new NotaFiscal();
                 $notaFiscal->setTipoNotaFiscal('NFE');
                 $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+                $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
+                $notaFiscal->setDocumentoDestinatario($venda->cliente->documento);
+                $notaFiscal->setXNomeDestinatario($venda->cliente->nome);
+                $notaFiscal->setLogradouroDestinatario($venda->jsonData['ecommerce_entrega_logradouro']);
+                $notaFiscal->setNumeroDestinatario($venda->jsonData['ecommerce_entrega_numero']);
+                $notaFiscal->setBairroDestinatario($venda->jsonData['ecommerce_entrega_bairro']);
+                $notaFiscal->setCepDestinatario($venda->jsonData['ecommerce_entrega_cep']);
+                $notaFiscal->setCidadeDestinatario($venda->jsonData['ecommerce_entrega_cidade']);
+                $notaFiscal->setEstadoDestinatario($venda->jsonData['ecommerce_entrega_uf']);
+                $notaFiscal->setFoneDestinatario($venda->jsonData['ecommerce_entrega_telefone']);
+                $this->notaFiscalEntityHandler->save($notaFiscal);
             }
-            $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
-            $notaFiscal->setDocumentoDestinatario($venda->cliente->documento);
-            $notaFiscal->setXNomeDestinatario($venda->cliente->nome);
-            $notaFiscal->setLogradouroDestinatario($venda->jsonData['ecommerce_entrega_logradouro']);
-            $notaFiscal->setNumeroDestinatario($venda->jsonData['ecommerce_entrega_numero']);
-            $notaFiscal->setBairroDestinatario($venda->jsonData['ecommerce_entrega_bairro']);
-            $notaFiscal->setCepDestinatario($venda->jsonData['ecommerce_entrega_cep']);
-            $notaFiscal->setCidadeDestinatario($venda->jsonData['ecommerce_entrega_cidade']);
-            $notaFiscal->setEstadoDestinatario($venda->jsonData['ecommerce_entrega_uf']);
-            $notaFiscal->setFoneDestinatario($venda->jsonData['ecommerce_entrega_telefone']);
-            $this->notaFiscalEntityHandler->save($notaFiscal);
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
