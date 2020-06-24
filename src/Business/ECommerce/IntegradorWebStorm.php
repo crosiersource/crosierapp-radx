@@ -667,11 +667,9 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
         if (!isset($depto->jsonData['ecommerce_id']) || $depto->jsonData['ecommerce_id'] !== $idDeptoWebStorm) {
             $this->syslog->info('integraDepto - salvando json_data', $syslog_obs);
-            $depto->jsonData = [
-                'ecommerce_id' => $idDeptoWebStorm,
-                'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                'integrado_por' => $this->security->getUser() ? $this->security->getUser()->getUsername() : 'n/d'
-            ];
+            $depto->jsonData['ecommerce_id'] = $idDeptoWebStorm;
+            $depto->jsonData['integrado_em'] = (new \DateTime())->format('Y-m-d H:i:s');
+            $depto->jsonData['integrado_por'] = $this->security->getUser() ? $this->security->getUser()->getUsername() : 'n/d';
             $this->deptoEntityHandler->save($depto);
             $this->syslog->info('integraDepto - salvando json_data: OK', $syslog_obs);
         }
@@ -715,11 +713,9 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         if (!isset($grupo->jsonData['ecommerce_id']) || $grupo->jsonData['ecommerce_id'] !== $idGrupoWebStorm) {
             $this->syslog->info('integraGrupo - salvando json_data', $syslog_obs);
-            $grupo->jsonData = [
-                'ecommerce_id' => $idGrupoWebStorm,
-                'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                'integrado_por' => $this->security->getUser() ? $this->security->getUser()->getUsername() : 'n/d'
-            ];
+            $grupo->jsonData['ecommerce_id'] = $idGrupoWebStorm;
+            $grupo->jsonData['integrado_em'] = (new \DateTime())->format('Y-m-d H:i:s');
+            $grupo->jsonData['integrado_por'] = $this->security->getUser() ? $this->security->getUser()->getUsername() : 'n/d';
 
             $this->grupoEntityHandler->save($grupo);
             $this->syslog->info('integraGrupo - salvando json_data: OK', $syslog_obs);
@@ -765,11 +761,9 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         if (!isset($subgrupo->jsonData['ecommerce_id']) || $subgrupo->jsonData['ecommerce_id'] !== $idSubgrupoWebStorm) {
             $this->syslog->info('integraSubgrupo - salvando json_data', $syslog_obs);
-            $subgrupo->jsonData = [
-                'ecommerce_id' => $idSubgrupoWebStorm,
-                'integrado_em' => (new \DateTime())->format('Y-m-d H:i:s'),
-                'integrado_por' => $this->security->getUser() ? $this->security->getUser()->getUsername() : 'n/d'
-            ];
+            $subgrupo->jsonData['ecommerce_id'] = $idSubgrupoWebStorm;
+            $subgrupo->jsonData['integrado_em'] = (new \DateTime())->format('Y-m-d H:i:s');
+            $subgrupo->jsonData['integrado_por'] = $this->security->getUser() ? $this->security->getUser()->getUsername() : 'n/d';
             $this->subgrupoEntityHandler->save($subgrupo);
             $this->syslog->info('integraSubgrupo - salvando json_data: OK', $syslog_obs);
         }
