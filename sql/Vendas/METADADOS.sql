@@ -55,6 +55,14 @@ INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, 
                             codigo, descricao, ativo)
 VALUES (null, now(), now(), 0, 1, 1, 1, '012', 'CARTÃO DE CRÉDITO (2X)', true);
 
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '099', 'MÚLTIPLAS FORMAS', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '013', 'FATURADO', true);
+
 
 DROP TABLE IF EXISTS `ven_venda`;
 

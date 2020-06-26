@@ -168,6 +168,7 @@ CREATE TABLE `fin_carteira`
     `user_updated_id`     bigint(20)  NOT NULL,
 
     PRIMARY KEY (`id`),
+    UNIQUE KEY `UK_fin_carteira_codigo` (`codigo`),
     UNIQUE KEY `UK_fin_carteira_descricao` (`descricao`),
     UNIQUE KEY `UK_fin_carteira_operadora_cartao` (`operadora_cartao_id`),
     KEY `K_fin_carteira_banco` (`banco_id`),

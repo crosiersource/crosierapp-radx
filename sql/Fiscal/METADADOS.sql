@@ -146,17 +146,17 @@ CREATE TABLE `fis_nf`
     `transp_pessoa_id`         bigint(20),
     `dt_manifest_dest`         datetime,
     `entrada_saida`            enum ('E','S') NOT NULL,
+
     PRIMARY KEY (`id`),
-    UNIQUE KEY `UF_fis_nf` (`numero`, `serie`, `tipo`, `ambiente`),
     UNIQUE KEY `UF_fis_nf_chave_acesso` (`chave_acesso`),
+    KEY `K_fis_nf_documento_emitente` (`documento_emitente`),
+    KEY `K_fis_nf_numero` (`numero`),
+
     KEY `K_fis_nf_estabelecimento` (`estabelecimento_id`),
     KEY `K_fis_nf_user_inserted` (`user_inserted_id`),
     KEY `K_fis_nf_user_updated` (`user_updated_id`),
-    KEY `K_fis_nf_transp_fornecedor` (`transp_fornecedor_id`),
-    KEY `FK_fis_nf_transp_pessoa` (`transp_pessoa_id`),
+
     CONSTRAINT `FK_fis_nf_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_fis_nf_transp_fornecedor` FOREIGN KEY (`transp_fornecedor_id`) REFERENCES `est_fornecedor` (`id`),
-    CONSTRAINT `FK_fis_nf_transp_pessoa` FOREIGN KEY (`transp_pessoa_id`) REFERENCES `bse_pessoa` (`id`),
     CONSTRAINT `FK_fis_nf_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
     CONSTRAINT `FK_fis_nf_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 ) ENGINE = InnoDB
