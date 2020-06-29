@@ -1,0 +1,252 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+
+
+    <div class="container">
+        <div class="animated fadeIn">
+
+            <div class="row mt-3">
+                <div class="col-sm-12">
+
+                    <div class="card">
+                        <div class="card-header">
+
+                            <div class="row">
+                                <div class="col-8">
+                                    <h3>Relatório de Custo Operacional</h3>
+                                    <h6>{{ dts }}</h6>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Custos Fixos</h5>
+                                    <div class="card-text">
+
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <td>Categoria</td>
+                                                <td class="text-right">Total</td>
+                                                <td class="text-right"></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for r in rTotalCustosFixos %}
+                                                <tr>
+                                                    <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
+                                                    <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
+                                                    <td class="text-right">
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <td>Total:</td>
+                                                <td class="text-right">{{ rTotalCustosFixos_global.valor_total|number_format(2,',','.') }}</td>
+                                                <td class="text-right">
+
+                                                </td>
+                                            </tr>
+                                            </tfoot>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Depto Pessoal</h5>
+                                    <div class="card-text">
+
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <td>Categoria</td>
+                                                <td class="text-right">Total</td>
+                                                <td class="text-right"></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for r in rTotalCustosFixos_deptoPessoal %}
+                                                <tr>
+                                                    <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
+                                                    <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
+                                                    <td class="text-right">
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <td>Total:</td>
+                                                <td class="text-right">{{ rTotalCustosFixos_deptoPessoal_global.valor_total|number_format(2,',','.') }}</td>
+                                                <td class="text-right">
+
+                                                </td>
+                                            </tr>
+                                            </tfoot>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Impostos</h5>
+                                    <div class="card-text">
+
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <td>Categoria</td>
+                                                <td class="text-right">Total</td>
+                                                <td class="text-right"></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for r in rTotalImpostos %}
+                                                <tr>
+                                                    <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
+                                                    <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
+                                                    <td class="text-right">
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pagtos Juros/Taxas</h5>
+                                    <div class="card-text">
+
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <td>Categoria</td>
+                                                <td class="text-right">Total</td>
+                                                <td class="text-right"></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for r in rTotalPagtoJurosTaxas %}
+                                                <tr>
+                                                    <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
+                                                    <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
+                                                    <td class="text-right">
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Custos Financeiros Cartões</h5>
+                                    <div class="card-text">
+
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <td>Categoria</td>
+                                                <td class="text-right">Total</td>
+                                                <td class="text-right"></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for r in rTotalCustoCartoes %}
+                                                <tr>
+                                                    <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
+                                                    <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
+                                                    <td class="text-right">
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Vendas</h5>
+                                    <div class="card-text">
+
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <td>Período</td>
+                                                <td class="text-right">Total Preço Venda</td>
+                                                <td class="text-right">Total Preço Custo</td>
+                                                <td class="text-right"></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>{{ dts_vendas }}</td>
+                                                <td class="text-right">{{ rTotalVendas.valor_total|number_format(2,',','.') }}</td>
+                                                <td class="text-right">{{ rTotalCustos.valor_total|number_format(2,',','.') }}</td>
+                                                <td class="text-right">
+                                                </td>
+                                            </tr>
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
+
+{% block down_scripts %}
+
+{% endblock %}

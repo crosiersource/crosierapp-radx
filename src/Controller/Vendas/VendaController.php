@@ -26,6 +26,8 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaItemEntityHandl
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaItemRepository;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -555,18 +557,7 @@ class VendaController extends FormListController
     }
 
 
-    /**
-     *
-     * @Route("/ven/venda/vincularItensAProdutos/", name="ven_venda_vincularItensAProdutos")
-     * @param Request $request
-     * @return JsonResponse
-     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
-     */
-    public function vincularItensAProdutos(Request $request): JsonResponse
-    {
-        $conn = $this->getDoctrine()->getConnection();
 
-    }
 
 
 }

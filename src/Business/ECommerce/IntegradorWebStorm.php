@@ -1177,6 +1177,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $pedidos2 = $this->obterVendasPorStatus($dtVenda, 2);
         if (!($pedidos2->pedido ?? null)) {
             foreach ($pedidos2->pedido as $pedido) {
+                // Caso o pedido tenha sido editado no admin, então deverá ser resalvado
                 $this->integrarVendaFromEcommerce($pedido, true);
             }
         }
