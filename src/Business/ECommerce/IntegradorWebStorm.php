@@ -1175,14 +1175,14 @@ class IntegradorWebStorm implements IntegradorBusiness
         $this->obterVendasPorStatus($dtVenda, 1);
 
         $pedidos2 = $this->obterVendasPorStatus($dtVenda, 2);
-        if (!($pedidos2->pedido ?? null)) {
+        if ($pedidos2->pedido ?? false) {
             foreach ($pedidos2->pedido as $pedido) {
                 $this->integrarVendaFromEcommerce($pedido, true);
             }
         }
 
         $pedidos3 = $this->obterVendasPorStatus($dtVenda, 3);
-        if (!($pedidos3->pedido ?? null)) {
+        if ($pedidos3->pedido ?? false) {
             foreach ($pedidos3->pedido as $pedido) {
                 $this->integrarVendaFromEcommerce($pedido, $resalvar);
             }
