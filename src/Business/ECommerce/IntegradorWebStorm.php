@@ -1177,7 +1177,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $pedidos2 = $this->obterVendasPorStatus($dtVenda, 2);
         if (!($pedidos2->pedido ?? null)) {
             foreach ($pedidos2->pedido as $pedido) {
-                $this->integrarVendaFromEcommerce($pedido, $resalvar);
+                $this->integrarVendaFromEcommerce($pedido, true);
             }
         }
 
@@ -1247,6 +1247,10 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     private function integrarVendaFromEcommerce(\SimpleXMLElement $pedido, ?bool $resalvar = false)
     {
+        $dtPedido = DateTimeUtils::parseDateStr($pedido->dataPedido->__toString());
+        $this->syslog->info('Integrando pedido ' . $pedido->idPedido->__toString() . ' de ' .
+            $dtPedido->format('d/m/Y H:i:s') . ' Cliente: ' . $pedido->cliente->nome->__toString());
+
         /** @var Connection $conn */
         $conn = $this->vendaEntityHandler->getDoctrine()->getConnection();
 
@@ -1288,7 +1292,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             $venda = new Venda();
         }
 
-        $venda->dtVenda = DateTimeUtils::parseDateStr($pedido->dataPedido->__toString());
+        $venda->dtVenda = $dtPedido;
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
         $repoPlanoPagto = $this->vendaEntityHandler->getDoctrine()->getRepository(PlanoPagto::class);

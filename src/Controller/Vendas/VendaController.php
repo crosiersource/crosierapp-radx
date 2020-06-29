@@ -555,7 +555,18 @@ class VendaController extends FormListController
     }
 
 
+    /**
+     *
+     * @Route("/ven/venda/vincularItensAProdutos/", name="ven_venda_vincularItensAProdutos")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function vincularItensAProdutos(Request $request): JsonResponse
+    {
+        $conn = $this->getDoctrine()->getConnection();
 
+    }
 
 
 }
