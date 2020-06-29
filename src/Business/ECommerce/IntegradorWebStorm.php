@@ -1164,7 +1164,7 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param bool|null $resalvar
      * @return int
      * @throws ViewException
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws ConnectionException
      */
     public function obterVendas(\DateTime $dtVenda, ?bool $resalvar = false): int
     {
@@ -1173,14 +1173,22 @@ class IntegradorWebStorm implements IntegradorBusiness
         // Após o retorno pelo serviço, o status vai para 3
         // Deve-se, portanto, consultar primeiro com 1 e depois com 3
         $this->obterVendasPorStatus($dtVenda, 1);
-        $pedidos = $this->obterVendasPorStatus($dtVenda, 3);
-        if (!($pedidos->pedido ?? null)) {
-            return 0;
+
+        $pedidos2 = $this->obterVendasPorStatus($dtVenda, 2);
+        if (!($pedidos2->pedido ?? null)) {
+            foreach ($pedidos2->pedido as $pedido) {
+                $this->integrarVendaFromEcommerce($pedido, $resalvar);
+            }
         }
-        foreach ($pedidos->pedido as $pedido) {
-            $this->integrarVendaFromEcommerce($pedido, $resalvar);
+
+        $pedidos3 = $this->obterVendasPorStatus($dtVenda, 3);
+        if (!($pedidos3->pedido ?? null)) {
+            foreach ($pedidos3->pedido as $pedido) {
+                $this->integrarVendaFromEcommerce($pedido, $resalvar);
+            }
         }
-        return count($pedidos);
+
+        return count($pedidos3) + count($pedidos2);
     }
 
     /**
@@ -1235,7 +1243,7 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param \SimpleXMLElement $pedido
      * @param bool|null $resalvar
      * @throws ViewException
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws ConnectionException
      */
     private function integrarVendaFromEcommerce(\SimpleXMLElement $pedido, ?bool $resalvar = false)
     {
