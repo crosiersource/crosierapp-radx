@@ -65,8 +65,8 @@ Encore
     .addEntry('Financeiro/registroConferenciaList', './assets/js/Financeiro/registroConferenciaList.js')
     .addEntry('Financeiro/regraImportacaoLinhaList', './assets/js/Financeiro/regraImportacaoLinhaList.js')
     .addEntry('Financeiro/categoriaTreeList', './assets/js/Financeiro/categoriaTreeList.js')
-
     .addEntry('Financeiro/movimentacaoList', './assets/js/Financeiro/movimentacaoList.js')
+    .addEntry('Financeiro/movimentacao_pesquisa_list', './assets/js/Financeiro/movimentacao_pesquisa_list.js')
     .addEntry('Financeiro/movimentacaoExtratoList', './assets/js/Financeiro/movimentacaoExtratoList.js')
     .addEntry('Financeiro/movimentacaoAPagarReceberList', './assets/js/Financeiro/movimentacaoAPagarReceberList.js')
     .addEntry('Financeiro/movimentacaoRecorrentesList', './assets/js/Financeiro/movimentacaoRecorrentesList.js')
@@ -83,6 +83,7 @@ Encore
     .addEntry('Financeiro/movimentacaoForm_grupo', './assets/js/Financeiro/movimentacaoForm_grupo.js')
     .addEntry('Financeiro/movimentacaoForm_recorrente', './assets/js/Financeiro/movimentacaoForm_recorrente.js')
     .addEntry('Financeiro/movimentacaoImportForm', './assets/js/Financeiro/movimentacaoImportForm.js')
+    .addEntry('Financeiro/custoOperacional_relatorioMensal', './assets/js/Financeiro/custoOperacional_relatorioMensal.js')
 
     .addEntry('RH/colaborador_form', './assets/js/RH/colaborador_form.js')
 
