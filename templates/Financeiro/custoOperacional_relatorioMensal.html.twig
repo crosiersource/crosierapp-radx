@@ -46,7 +46,10 @@
                                                     <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
                                                     <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
                                                     <td class="text-right">
-
+                                                        <a title="Listar movimentações" role="button" class="btn btn-sm btn-info"
+                                                           href="{{ url('movimentacao_list', {'filter': {'dtUtil': {'i': dtIni, 'f': dtFim}, 'categoria': {'0': r.id}}}) }}">
+                                                            <i class="far fa-list-alt"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
@@ -86,7 +89,10 @@
                                                     <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
                                                     <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
                                                     <td class="text-right">
-
+                                                        <a title="Listar movimentações" role="button" class="btn btn-sm btn-info"
+                                                           href="{{ url('movimentacao_list', {'filter': {'dtUtil': {'i': dtIni, 'f': dtFim}, 'categoria': {'0': r.id}}}) }}">
+                                                            <i class="far fa-list-alt"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
@@ -126,7 +132,10 @@
                                                     <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
                                                     <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
                                                     <td class="text-right">
-
+                                                        <a title="Listar movimentações" role="button" class="btn btn-sm btn-info"
+                                                           href="{{ url('movimentacao_list', {'filter': {'dtUtil': {'i': dtIni, 'f': dtFim}, 'categoria': {'0': r.id}}}) }}">
+                                                            <i class="far fa-list-alt"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
@@ -157,7 +166,10 @@
                                                     <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
                                                     <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
                                                     <td class="text-right">
-
+                                                        <a title="Listar movimentações" role="button" class="btn btn-sm btn-info"
+                                                           href="{{ url('movimentacao_list', {'filter': {'dtUtil': {'i': dtIni, 'f': dtFim}, 'categoria': {'0': r.id}}}) }}">
+                                                            <i class="far fa-list-alt"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
@@ -188,7 +200,10 @@
                                                     <td>{{ r.codigo|mascarar(mascara) }} - {{ r.descricao }}</td>
                                                     <td class="text-right">{{ r.valor_total|number_format(2,',','.') }}</td>
                                                     <td class="text-right">
-
+                                                        <a title="Listar movimentações" role="button" class="btn btn-sm btn-info"
+                                                           href="{{ url('movimentacao_list', {'filter': {'dtUtil': {'i': dtIni, 'f': dtFim}, 'categoria': {'0': r.id}}}) }}">
+                                                            <i class="far fa-list-alt"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
