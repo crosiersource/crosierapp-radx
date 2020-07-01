@@ -77,7 +77,8 @@ $(document).ready(function () {
                 'Últimos 7 dias': [Moment().subtract(6, 'days'), Moment()],
                 'Últimos 30 dias': [Moment().subtract(29, 'days'), Moment()],
                 'Este mês': [Moment().startOf('month'), Moment().endOf('month')],
-                'Mês passado': [Moment().subtract(1, 'month').startOf('month'), Moment().subtract(1, 'month').endOf('month')]
+                'Mês passado': [Moment().subtract(1, 'month').startOf('month'), Moment().subtract(1, 'month').endOf('month')],
+                'Últimos 12 meses': [Moment().subtract(12, 'month').startOf('month'), Moment().subtract(1, 'month').endOf('month')]
             },
             "alwaysShowCalendars": true
         }
