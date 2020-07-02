@@ -1168,27 +1168,13 @@ class IntegradorWebStorm implements IntegradorBusiness
      */
     public function obterVendas(\DateTime $dtVenda, ?bool $resalvar = false): int
     {
-        // 1 = Novo; 2 = Editado; 3 = Integrado
-        // Para pedidos que ainda não foram consultados, o status é 1
-        // Após o retorno pelo serviço, o status vai para 3
-        // Deve-se, portanto, consultar primeiro com 1 e depois com 3
-        $this->obterVendasPorStatus($dtVenda, 1);
-
-        $pedidos2 = $this->obterVendasPorStatus($dtVenda, 2);
-        if ($pedidos2->pedido ?? false) {
-            foreach ($pedidos2->pedido as $pedido) {
+        $pedidos = $this->obterVendasPorData($dtVenda);
+        if ($pedidos->pedido ?? false) {
+            foreach ($pedidos->pedido as $pedido) {
                 $this->integrarVendaFromEcommerce($pedido, true);
             }
         }
-
-        $pedidos3 = $this->obterVendasPorStatus($dtVenda, 3);
-        if ($pedidos3->pedido ?? false) {
-            foreach ($pedidos3->pedido as $pedido) {
-                $this->integrarVendaFromEcommerce($pedido, $resalvar);
-            }
-        }
-
-        return count($pedidos3) + count($pedidos2);
+        return count($pedidos);
     }
 
     /**
@@ -1196,7 +1182,7 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param int $status
      * @return \SimpleXMLElement|void|null
      */
-    private function obterVendasPorStatus(\DateTime $dtVenda, int $status)
+    private function obterVendasPorData(\DateTime $dtVenda)
     {
         $dtIni = (clone $dtVenda)->setTime(0, 0);
         $dtFim = (clone $dtVenda)->setTime(23, 59, 59, 999999);
@@ -1212,7 +1198,7 @@ class IntegradorWebStorm implements IntegradorBusiness
                         <dataInicial>' . $dtIni->format('Y-m-d H:i:s') . '</dataInicial>
                         <dataFinal>' . $dtFim->format('Y-m-d H:i:s') . '</dataFinal>
                         <status></status>
-                        <statusNoWebservice>' . $status . '</statusNoWebservice>
+                        <statusNoWebservice></statusNoWebservice>
                     </filtro>
                     </ws_integracao>]]>';
 
