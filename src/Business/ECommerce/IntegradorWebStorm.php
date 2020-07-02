@@ -1198,7 +1198,6 @@ class IntegradorWebStorm implements IntegradorBusiness
                         <dataInicial>' . $dtIni->format('Y-m-d H:i:s') . '</dataInicial>
                         <dataFinal>' . $dtFim->format('Y-m-d H:i:s') . '</dataFinal>
                         <status></status>
-                        <statusNoWebservice></statusNoWebservice>
                     </filtro>
                     </ws_integracao>]]>';
 
