@@ -1,0 +1,360 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+
+
+            <div class="d-flex flex-wrap align-items-center">
+
+                <div class="d-sm-flex text-nowrap mr-1">
+                    <h3 class="text-dark">Movimentações</h3>
+                </div>
+
+                <div class="d-sm-flex ml-auto">
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="card-body">
+
+            <form name="form_movimentacao_pesquisa_list" id="form_movimentacao_pesquisa_list">
+
+                <div class="row">
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_id">Id</label>
+                            <input type="number" id="filter_id" name="filter[id]"
+                                   class="form-control"
+                                   value="{{ filter['id']|default('') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_descricao">Descrição</label>
+                            <input type="text" id="filter_descricao" name="filter[descricao]"
+                                   class="form-control"
+                                   value="{{ filter['descricao']|default('') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_modo">Modo</label>
+
+                            <select id="filter_modo" name="filter[modo][]" class="form-control autoSelect2"
+                                    multiple="multiple" data-options="{{ modos }}"
+                                    aria-hidden="true"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_centroCusto">Centro de Custo</label>
+
+                            <select id="filter_centroCusto" name="filter[centroCusto][]"
+                                    class="form-control autoSelect2"
+                                    multiple="multiple" data-options="{{ centrosCusto }}"
+                                    aria-hidden="true"></select>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+
+
+                    <div class="col-md-7 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_categoria">Categoria</label>
+
+                            <select id="filter_categoria" name="filter[categoria][]" class="form-control autoSelect2"
+                                    multiple="multiple" data-options="{{ categorias }}"
+                                    aria-hidden="true"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_carteira">Carteira</label>
+
+                            <select id="filter_carteira" name="filter[carteira][]" class="form-control autoSelect2"
+                                    multiple="multiple" data-options="{{ carteiras }}"
+                                    aria-hidden="true"></select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_id">Núm Cheque</label>
+                            <input type="number" id="filter_chequeNumCheque" name="filter[chequeNumCheque]"
+                                   class="form-control"
+                                   value="{{ filter['chequeNumCheque']|default('') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_operadoraCartao">Operadora Cartão</label>
+                            <select id="filter_operadoraCartao" name="filter[operadoraCartao][]"
+                                    class="form-control autoSelect2"
+                                    multiple="multiple" data-options="{{ operadorasCartao }}"
+                                    aria-hidden="true"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_bandeiraCartao">Bandeira Cartão</label>
+                            <select id="filter_bandeiraCartao" name="filter[bandeiraCartao][]"
+                                    class="form-control autoSelect2"
+                                    multiple="multiple" data-options="{{ bandeirasCartao }}"
+                                    aria-hidden="true"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_recorrente">Recorrente</label>
+
+                            <select id="filter_recorrente" name="filter[recorrente]"
+                                    class="form-control autoSelect2">
+                                <option value="null" {{ filter.recorrente is not defined }}>...</option>
+                                <option value="true" {{ filter.recorrente|default(null) == 'true' ? 'selected' : '' }}>
+                                    Sim
+                                </option>
+                                <option value="false" {{ filter.recorrente|default(null) == 'false' ? 'selected' : '' }}>
+                                    Não
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_status">Status</label>
+
+                            <select id="filter_status" name="filter[status]" class="form-control autoSelect2"
+                                    data-options="{{ status }}"
+                                    aria-hidden="true"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-12">
+                        <label for="filter_status">Período</label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" id="filter_dts"
+                                   name="filter[dts]" data-mask="00/00/0000 - 00/00/0000"
+                                   style="text-align: center"
+                                   value="{{ filter.dts|default('') }}">
+                            {% if filter.dts|default('') %}
+                                <div class="input-group-append">
+                                    <button class="btn btn-sm btn-outline-success"
+                                            type="button" id="btnAnterior"
+                                            data-ante-periodoi="{{ antePeriodoI }}"
+                                            data-ante-periodof="{{ antePeriodoF }}">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success"
+                                            type="button" id="btnProximo"
+                                            data-prox-periodoi="{{ proxPeriodoI }}"
+                                            data-prox-periodof="{{ proxPeriodoF }}">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" size="15" class="form-control crsr-money" name="filter[valor][i]"
+                                           value="{{ filter.valor.i|default('') }}">
+                                </div>
+                                <div class="col">
+                                    <input type="text" size="15" class="form-control crsr-money" name="filter[valor][f]"
+                                           value="{{ filter.valor.f|default('') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-sm-6">
+                        <div class="form-group">
+                            <label for="btnFiltrar">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-block" id="btnFiltrar" title="Pesquisar">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-6">
+                        <div class="form-group">
+                            <label for="btnRecarregar">&nbsp;</label>
+                            <a role="button" class="btn btn-secondary btn-block" id="btnRecarregar"
+                               title="Limpar filtros e recarregar" href="{{ url(listRoute, {'r':1}) }}">
+                                <i class="fas fa-redo-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </form>
+
+
+            <div class="row">
+                <div class="col">
+                    {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                </div>
+            </div>
+
+
+            <div class="table-responsive-sm">
+
+                <table class="table table-sm table-striped table-hover crsr-datatable" id="movimentacao_pesquisa_list">
+
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Categoria<br/>Modo</th>
+                        <th scope="col">Descrição<br/>Cedente</th>
+                        <th scope="col">Dt Vencto<br/>Dt Pagto</th>
+                        <th scope="col">Valor Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for item in dados %}
+
+                        <tr>
+                            <td>
+                                {{ item.id }}
+                                <br/>
+                                <span class="badge badge-pill badge-light">{{ loop.index }}</span>
+                            </td>
+                            <td>
+                                <b>{{ item.carteira.descricaoMontada }}</b><br/>
+                                {{ item.categoria.descricaoMontada }}<br/>
+                                {{ item.modo.descricaoMontada }}
+                            </td>
+                            <td>
+                                <div style="float: left">
+                                    <b>{{ item.descricaoMontada|raw }}</b>
+                                    {% if item.cedenteInfo %}
+                                        <br/>{{ item.cedenteInfo }}
+                                    {% endif %}
+                                </div>
+
+                                <div class="text-right">
+
+                                    {% if (item.chequeNumCheque) %}
+                                        <span class="badge badge-pill badge-danger">Cheque</span><br/>
+                                    {% endif %}
+
+
+                                    {% if (item.recorrente) %}
+
+                                        <span class="badge badge-pill badge-info">Recorrente</span><br/>
+
+                                    {% elseif (item.parcelamento) %}
+
+                                        <span class="badge badge-pill badge-info">Parcelamento</span>
+                                        <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
+                                           class="btn btn-sm btn-outline-secondary"
+                                           role="button" target="_blank" aria-pressed="true"><i
+                                                    class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+
+                                    {% elseif (item.cadeia) %}
+                                        <span class="badge badge-pill badge-info">Em cadeia</span>
+                                        <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
+                                           class="btn btn-sm btn-outline-secondary"
+                                           role="button" target="_blank" aria-pressed="true"><i
+                                                    class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+
+                                    {% endif %}
+
+                                    {% if (item.transferenciaEntreCarteiras and item.movimentacaoOposta and item.movimentacaoOposta.categoria) %}
+                                        <span class="badge badge-pill badge-light">
+                                            {{ (item.movimentacaoOposta.categoria.codigo == 199 ? '<i class="fas fa-sign-out-alt"></i> Para: ' : '<i class="fas fa-sign-in-alt"></i> De: ') }}
+                                            {{ item.movimentacaoOposta.carteira.descricaoMontada }} </span>
+                                    {% endif %}
+                                </div>
+
+                            </td>
+                            <td>
+                                        <span title="Dt Vencto: {{ item.dtVencto|date('d/m/Y') }}">
+                                            {{ item.dtVenctoEfetiva|date('d/m/Y') }}
+                                        </span>
+                            </td>
+                            <td class="text-right"
+                                style="color: white; background-color: {{ item.categoria.codigoSuper == 1 ? 'dodgerblue' : 'indianred' }}">
+                                {{ item.valorTotal|number_format(2,',','.') }}
+                            </td>
+                            <td class="text-right">
+
+                                {% if item.status == 'ABERTA' %}
+                                    <a class="btn btn-sm btn-outline-danger"
+                                       href="{{ url('movimentacao_form_pagto', {'id':item.id}) }}"
+                                       role="button" title="Registro de Pagamento">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </a>
+                                {% endif %}
+
+
+                                <button type="button" class="btn btn-sm btn-primary"
+                                        onclick="window.location.href='{{ url('movimentacao_edit', {id: item.id}) }}'">
+                                    <i class="fas fa-wrench" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                        data-url="{{ url('movimentacao_delete', {id: item.id}) }}"
+                                        data-token="{{ csrf_token('delete') }}"
+                                        data-target="#confirmationModal" data-toggle="modal">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                                <br/>
+                                <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+
+                    </tbody>
+
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Financeiro/movimentacao_pesquisa_list') }}
+{% endblock %}

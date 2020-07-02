@@ -51,8 +51,6 @@ class VendaController extends FormListController
 
     private NotaFiscalEntityHandler $notaFiscalEntityHandler;
 
-    private SyslogBusiness $syslog;
-
     /**
      * @required
      * @param Pdf $knpSnappyPdf
@@ -99,12 +97,11 @@ class VendaController extends FormListController
     }
 
     /**
-     * @required
-     * @param SyslogBusiness $syslog
+     * @return SyslogBusiness
      */
-    public function setSyslog(SyslogBusiness $syslog): void
+    public function getSyslog(): SyslogBusiness
     {
-        $this->syslog = $syslog;
+        return $this->syslog->setApp('radx')->setComponent(self::class);
     }
 
     /**
@@ -189,10 +186,10 @@ class VendaController extends FormListController
             $integrador = $integradorBusinessFactory->getIntegrador();
             $integrador->integrarVendaParaECommerce($venda);
             $this->addFlash('success', 'Venda integrada com sucesso');
-            $this->syslog->info('Venda integrada com sucesso (id: ' . $venda->getId() . ')');
+            $this->getSyslog()->info('Venda integrada com sucesso (id: ' . $venda->getId() . ')');
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erro ao integrar venda');
-            $this->syslog->info('Erro ao integrar venda (id: ' . $venda->getId() . ')', $e->getTraceAsString());
+            $this->getSyslog()->info('Erro ao integrar venda (id: ' . $venda->getId() . ')', $e->getTraceAsString());
         }
         $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
         return $this->redirectToRoute($route, ['id' => $venda->getId()]);
@@ -552,20 +549,6 @@ class VendaController extends FormListController
                 ['results' => []]
             );
         }
-    }
-
-
-    /**
-     *
-     * @Route("/ven/venda/vincularItensAProdutos/", name="ven_venda_vincularItensAProdutos")
-     * @param Request $request
-     * @return JsonResponse
-     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
-     */
-    public function vincularItensAProdutos(Request $request): JsonResponse
-    {
-        $conn = $this->getDoctrine()->getConnection();
-
     }
 
 
