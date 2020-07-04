@@ -1171,7 +1171,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $pedidos = $this->obterVendasPorData($dtVenda);
         if ($pedidos->pedido ?? false) {
             foreach ($pedidos->pedido as $pedido) {
-                $this->integrarVendaFromEcommerce($pedido, true);
+                $this->integrarVendaFromEcommerce($pedido, (int)$pedido->status === 2);
             }
         }
         return count($pedidos);
@@ -1179,7 +1179,6 @@ class IntegradorWebStorm implements IntegradorBusiness
 
     /**
      * @param \DateTime $dtVenda
-     * @param int $status
      * @return \SimpleXMLElement|void|null
      */
     private function obterVendasPorData(\DateTime $dtVenda)
@@ -1221,6 +1220,46 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
         return $xmlResult->resultado->filtro ?? null;
+
+    }
+
+    /**
+     * @param int $idClienteECommerce
+     * @return \SimpleXMLElement|null
+     */
+    public function obterCliente(int $idClienteECommerce)
+    {
+        $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>    
+                    <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <chave>TYzIFWVpnWzZVbKZjVtBnWXRkRWRVM=A3SWVUNPJVbxM1UxoVWWJDN4ZlRB1</chave>
+                    <acao>select</acao>
+                    <modulo>cliente</modulo>    
+                    <filtro>
+                            <idCliente>' . $idClienteECommerce . '</idCliente>   	 
+                    </filtro>
+                </ws_integracao>]]>';
+
+        $client = $this->getNusoapClientExportacaoInstance();
+
+        $arResultado = $client->call('clienteSelect', [
+            'xml' => utf8_decode($xml)
+        ]);
+
+        if ($client->faultcode) {
+            throw new \RuntimeException($client->faultcode);
+        }
+        if ($client->getError()) {
+            throw new \RuntimeException($client->getError());
+        }
+
+        $xmlResult = simplexml_load_string($arResultado);
+
+        if ($xmlResult->erros ?? false) {
+            throw new \RuntimeException($xmlResult->erros->erro->__toString());
+        }
+
+        return $xmlResult->resultado->filtro->cliente ?? null;
+
 
     }
 
@@ -1281,8 +1320,15 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
         $repoPlanoPagto = $this->vendaEntityHandler->getDoctrine()->getRepository(PlanoPagto::class);
-        $planoPagtoNaoInformado = $repoPlanoPagto->findOneBy(['codigo' => 999]);
-        $venda->planoPagto = $planoPagtoNaoInformado;
+        $rPlanoPagtoId = $conn->fetchAll('SELECT id FROM ven_plano_pagto WHERE json_data->>"$.ecommerce_id" = :idFormaPagamento', ['idFormaPagamento' => $pedido->pagamentos->pagamento->idFormaPagamento->__toString()]);
+
+        if (!$rPlanoPagtoId) {
+            $planoPagto = $repoPlanoPagto->findOneBy(['codigo' => 999]);
+        } else {
+            $planoPagto = $repoPlanoPagto->find($rPlanoPagtoId[0]['id']);
+        }
+
+        $venda->planoPagto = $planoPagto;
 
         /** @var ColaboradorRepository $repoColaborador */
         $repoColaborador = $this->vendaEntityHandler->getDoctrine()->getRepository(Colaborador::class);
@@ -1291,21 +1337,61 @@ class IntegradorWebStorm implements IntegradorBusiness
         $venda->status = 'PV';
 
         $cliente = $conn->fetchAll('SELECT id FROM crm_cliente WHERE documento = :documento', ['documento' => $pedido->cliente->cpf_cnpj->__toString()]);
-        $cliente = $cliente[0] ?? null;
-        if (!$cliente) {
-            $cliente = new Cliente();
-            $cliente->documento = $pedido->cliente->cpf_cnpj->__toString();
-            $cliente->nome = $pedido->cliente->nome->__toString();
-            $cliente->jsonData['canal'] = 'ECOMMERCE';
-            $cliente->jsonData['dtNascimento'] = $pedido->cliente->dataNascimento_dataCriacao->__toString();
-            $cliente->jsonData['email'] = $pedido->cliente->email->__toString();
-            $cliente->jsonData['sexo'] = $pedido->cliente->sexo->__toString();
-            $cliente = $this->clienteEntityHandler->save($cliente);
+
+        /** @var ClienteRepository $repoCliente */
+        $repoCliente = $this->vendaEntityHandler->getDoctrine()->getRepository(Cliente::class);
+
+        if ($cliente[0]['id'] ?? false) {
+            $cliente = $repoCliente->find($cliente[0]['id']);
         } else {
-            /** @var ClienteRepository $repoCliente */
-            $repoCliente = $this->clienteEntityHandler->getDoctrine()->getRepository(Cliente::class);
-            $cliente = $repoCliente->find($cliente['id']);
+            $cliente = null;
         }
+
+        if (!$cliente || $resalvar) {
+
+            $clienteECommerce = $this->obterCliente((int)$pedido->cliente->idCliente);
+
+            $cliente = $cliente ?? new Cliente();
+            if ($clienteECommerce->cpf->__toString()) {
+                $cliente->documento = $clienteECommerce->cpf->__toString();
+                $cliente->nome = $clienteECommerce->nome->__toString();
+                $cliente->jsonData['tipo_pessoa'] = 'PF';
+                $cliente->jsonData['rg'] = $clienteECommerce->rg->__toString();
+                $cliente->jsonData['dtNascimento'] = $clienteECommerce->dataNascimento_dataCriacao->__toString();
+                $cliente->jsonData['sexo'] = $clienteECommerce->sexo->__toString();
+            } else {
+                $cliente->documento = $clienteECommerce->cnpj->__toString();
+                $cliente->nome = $clienteECommerce->razaoSocial->__toString();
+                $cliente->jsonData['tipo_pessoa'] = 'PJ';
+                $cliente->jsonData['nome_fantasia'] = $clienteECommerce->nomeFantasia->__toString();
+                $cliente->jsonData['inscricao_estadual'] = $clienteECommerce->inscricaoEstadual->__toString();
+            }
+
+            $cliente->jsonData['fone1'] = $clienteECommerce->telefone1->__toString();
+            $cliente->jsonData['fone2'] = $clienteECommerce->telefone2->__toString();
+
+            $cliente->jsonData['enderecos'][] = [
+                'tipo' => 'ENTREGA',
+                'logradouro' => $clienteECommerce->endereco->__toString(),
+                'numero' => $clienteECommerce->numero->__toString(),
+                'complemento' => $clienteECommerce->complemento->__toString(),
+                'bairro' => $clienteECommerce->bairro->__toString(),
+                'cidade' => $clienteECommerce->cidade->__toString(),
+                'estado' => $clienteECommerce->estado->__toString(),
+            ];
+
+            $cliente->jsonData['email'] = $clienteECommerce->email->__toString();
+            $cliente->jsonData['canal'] = 'ECOMMERCE';
+            $cliente->jsonData['ecommerce_id'] = $clienteECommerce->idCliente->__toString();
+
+            $cliente->jsonData['montadora'] = $clienteECommerce->montadora->__toString();
+            $cliente->jsonData['modelo'] = $clienteECommerce->modelo->__toString();
+            $cliente->jsonData['ano'] = $clienteECommerce->ano->__toString();
+
+            $cliente = $this->clienteEntityHandler->save($cliente);
+        }
+
+
         $venda->cliente = $cliente;
 
 

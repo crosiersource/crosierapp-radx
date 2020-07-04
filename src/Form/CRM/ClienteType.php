@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -76,6 +77,20 @@ class ClienteType extends AbstractType
                 $builder->remove('jsonData');
                 $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => $data['jsonData'] ?? null]);
 
+            }
+        );
+
+        // Necessário para os casos onde o formulário não tem todos os campos do json_data (para que eles não desapareçam por conta disto)
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($jsonMetadata) {
+                /** @var Cliente $cliente */
+                $cliente = $event->getData();
+                if ($cliente->getId()) {
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM crm_cliente WHERE id = :id', ['id' => $cliente->getId()])['json_data'] ?? '{}', true);
+                    $cliente->jsonData = array_merge($jsonDataOrig, $cliente->jsonData);
+                    $event->setData($cliente);
+                }
             }
         );
 
