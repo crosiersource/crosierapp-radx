@@ -6,6 +6,7 @@ use App\Form\Estoque\ProdutoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
@@ -611,6 +612,61 @@ class ProdutoController extends FormListController
         } catch (\Exception $e) {
             return new Response('ERRO');
         }
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/corrigeThumbnails", name="est_produto_corrigeThumbnails")
+     * @param Request $request
+     * @param ParameterBagInterface $params
+     * @return Response
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function corrigeThumbnails(Request $request, ParameterBagInterface $params): Response
+    {
+        $limit = $request->get('limit') ?? 1;
+        $conn = $this->entityHandler->getDoctrine()->getConnection();
+
+        $sql = 'select id, depto_id, grupo_id, subgrupo_id, json_data FROM est_produto WHERE NOT JSON_IS_NULL_OR_EMPTY(json_data, \'imagem1\') AND json_data->>"$.imagem1" NOT LIKE \'%thumbnail%\' LIMIT ' . (int)$limit;
+        $rProdutosComImagem1 = $conn->fetchAll($sql);
+
+
+        foreach ($rProdutosComImagem1 as $produtoComImagem1) {
+            echo 'Corrigindo ' . $produtoComImagem1['id'] . '<br>';
+            $jsonData = json_decode($produtoComImagem1['json_data'], true);
+
+            $url = $_SERVER['CROSIERAPP_URL'] . '/images/produtos/' . $produtoComImagem1['depto_id'] . '/' . $produtoComImagem1['grupo_id'] . '/' . $produtoComImagem1['subgrupo_id'] . '/' . $jsonData['imagem1'];
+            $url = 'https://radx.crosier.rodoponta.com.br/images/produtos/' . $produtoComImagem1['depto_id'] . '/' . $produtoComImagem1['grupo_id'] . '/' . $produtoComImagem1['subgrupo_id'] . '/' . $jsonData['imagem1'];
+
+            $imgUtils = new ImageUtils();
+            $imgUtils->load($url);
+
+            if ($imgUtils->getWidth() !== 50 && $imgUtils->getHeight() !== 50) {
+
+                $pathinfo = pathinfo($url);
+                $parsedUrl = parse_url($url);
+
+                $imgUtils->resizeToWidth(50);
+
+                // '%kernel.project_dir%/public/images/produtos'
+                $thumbnail = $params->get('kernel.project_dir') . '/public' .
+                    str_replace($pathinfo['basename'], '', $parsedUrl['path']) .
+                    $pathinfo['filename'] . '_thumbnail.' . $pathinfo['extension'];
+                $imgUtils->save($thumbnail);
+
+
+                $jsonData['imagem1'] = $pathinfo['filename'] . '_thumbnail.' . $pathinfo['extension'];
+                $conn->update('est_produto', ['json_data' => json_encode($jsonData)], ['id' => $produtoComImagem1['id']]);
+
+            }
+
+
+        }
+        return new Response('<hr>OK');
+
     }
 
 
