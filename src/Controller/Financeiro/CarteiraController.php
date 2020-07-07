@@ -38,7 +38,7 @@ class CarteiraController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['descricao'], 'LIKE', 'descricao', $params)
+            new FilterData(['descricao'], 'LIKE', 'str', $params)
         ];
     }
 
