@@ -223,4 +223,30 @@ class NFesFornecedoresController extends FormListController
     }
 
 
+    /**
+     *
+     * @Route("/fis/nfesFornecedores/gerarFatura/{notaFiscal}", name="fis_nfesFornecedores_gerarFatura", requirements={"notaFiscal"="\d+"})
+     * @param Request $request
+     * @param NotaFiscal|null $notaFiscal
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     */
+    public function gerarFatura(Request $request, NotaFiscal $notaFiscal)
+    {
+        try {
+            if (!$this->isCsrfTokenValid('fis_nfesFornecedores_gerarFatura', $request->get('token'))) {
+                throw new ViewException('Token inválido');
+            }
+            $this->notaFiscalBusiness->gerarFatura($notaFiscal);
+            $this->addFlash('success', 'Fatura gerada com sucesso');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao gerar fatura');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+        return $this->redirectToRoute('nfesFornecedores_form', ['id' => $notaFiscal->getId()]);
+    }
+
+
 }

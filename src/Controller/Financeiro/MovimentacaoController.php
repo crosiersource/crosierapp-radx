@@ -819,6 +819,7 @@ class MovimentacaoController extends FormListController
         $fnGetFilterDatas = function (array $params): array {
             return [
                 new FilterData(['id'], 'LIKE', 'id', $params),
+                new FilterData(['notafiscal_id'], 'EQ', 'notafiscal_id', $params, null, true),
                 new FilterData(['descricao'], 'LIKE', 'descricao', $params),
                 new FilterData(['carteira'], 'IN', 'carteira', $params),
                 new FilterData(['categoria'], 'IN', 'categoria', $params),
