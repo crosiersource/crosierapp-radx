@@ -2,16 +2,16 @@
 
 namespace App\Controller\Fiscal;
 
-use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
-use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use App\Form\Fiscal\NotaFiscalType;
-use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -86,11 +86,10 @@ class NFesFornecedoresController extends FormListController
             return $this->redirectToRoute('nfesFornecedores_formResumo', ['id' => $notaFiscal->getId()]);
         }
         $form = $this->createForm(NotaFiscalType::class, $notaFiscal);
-        $response = $this->doRender('/Fiscal/nfeFornecedores/form.html.twig', [
+        return $this->doRender('/Fiscal/nfeFornecedores/form.html.twig', [
             'form' => $form->createView(),
             'notaFiscal' => $notaFiscal
         ]);
-        return $response;
     }
 
     /**
@@ -175,11 +174,14 @@ class NFesFornecedoresController extends FormListController
      */
     public function downloadXML(NotaFiscal $nf): Response
     {
-        // Provide a name for your file with extension
         $filename = $nf->getChaveAcesso() . '.xml';
 
-        // The dinamically created content of the file
-        $fileContent = gzdecode(base64_decode($nf->getXmlNota()));
+
+        try {
+            $fileContent = gzdecode(base64_decode($nf->getXmlNota()));
+        } catch (\Exception $e) {
+            $fileContent = $nf->getXmlNota();
+        }
 
         // Return a response with a specific content
         $response = new Response($fileContent);

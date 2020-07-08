@@ -3,44 +3,63 @@
     <div class="container" style="margin-bottom: 50px">
 
 
-        <div class="form-group row">
-            <label class="col-form-label col-sm-2 form-control-label">Número/Série/UUID</label>
-            <div class="col-sm-2">
-                {{ form_widget(form.numero) }}
+        <div class="row">
+            <div class="col-md-7 col-sm-12">
+                <div class="form-group">
+                    <label for="nota_fiscal_emitente">Emitente</label>
+                    <input type="text" id="nota_fiscal_emitente" name="nota_fiscal[emitente]" disabled="disabled"
+                           class="form-control"
+                           value="{{ notaFiscal.documentoEmitente|mascararCnpjCpf }} - {{ notaFiscal.xNomeEmitente }}">
+                </div>
             </div>
-            <div class="col-sm-2">
-                {{ form_widget(form.serie) }}
-            </div>
-            <div class="col-sm-6">
-                {{ form_widget(form.uuid) }}
-            </div>
-        </div>
 
-        <div class="form-group row">
-            <label class="col-form-label col-sm-2 form-control-label">Chave / Prot Autoriz</label>
-            <div class="col-sm-6">
-                {{ form_widget(form.chaveAcesso) }}
+            <div class="col-md-3 col-sm-12">
+                {{ form_row(form.numero) }}
             </div>
-            <div class="col-sm-4">
-                {{ form_widget(form.protocoloAutorizacao) }}
+            <div class="col-md-2 col-sm-12">
+                {{ form_row(form.serie) }}
             </div>
         </div>
 
-        {{ form_row(form.dtEmissao) }}
-        {{ form_row(form.dtSaiEnt) }}
-
-        {{ form_row(form.naturezaOperacao) }}
-
-        {{ form_row(form.finalidadeNf) }}
-        {{ form_row(form.entradaSaida) }}
-
-
-        {{ form_row(form.documentoEmitente) }}
-        {{ form_row(form.xNomeEmitente) }}
+        <div class="row">
+            <div class="col-md-8 col-sm-12">
+                {{ form_row(form.chaveAcesso) }}
+            </div>
+            <div class="col-md-4 col-sm-12">
+                {{ form_row(form.protocoloAutorizacao) }}
+            </div>
+        </div>
 
 
+        <div class="row">
+            <div class="col-md-12">
+                {{ form_row(form.naturezaOperacao) }}
+            </div>
+        </div>
 
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Destinatário/Remetente</h5>
 
+                <div class="row">
+                    <div class="col-md-9 col-sm-12">
+                        <div class="form-group">
+                            <label for="nota_fiscal_emitente">Destinatário</label>
+                            <input type="text" id="nota_fiscal_emitente" name="nota_fiscal[emitente]"
+                                   disabled="disabled"
+                                   class="form-control"
+                                   value="{{ notaFiscal.documentoDestinatario|mascararCnpjCpf }} - {{ notaFiscal.xNomeDestinatario }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.dtEmissao) }}
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
 
     </div>
 
