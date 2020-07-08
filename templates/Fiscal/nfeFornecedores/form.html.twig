@@ -14,10 +14,18 @@
                         <h3>NFe - Entrada</h3>
                     </div>
                     <div class="col-4 text-right">
+
+                        <button type="button" value="Reprocessar XML" class="btn btn-outline-danger"
+                                data-url="{{ url('nfeUtils_reparseDownloadedXML', {'notaFiscal': notaFiscal.id}) }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-cogs"></i> Reprocessar XML
+                        </button>
+
                         <button type="button" class="btn btn-secondary"
                                 onclick="window.location.href='{{ url('nfesFornecedores_list') }}'">
                             <i class="fas fa-sync" aria-hidden="true"></i> Listar
                         </button>
+
                     </div>
                 </div>
 
