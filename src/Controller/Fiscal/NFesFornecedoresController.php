@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
@@ -33,6 +34,8 @@ class NFesFornecedoresController extends FormListController
     private NotaFiscalBusiness $notaFiscalBusiness;
 
     private SpedNFeBusiness $spedNFeBusiness;
+
+    private DistDFeBusiness $distDFeBusiness;
 
     /**
      * @required
@@ -69,6 +72,16 @@ class NFesFornecedoresController extends FormListController
     {
         $this->spedNFeBusiness = $spedNFeBusiness;
     }
+
+    /**
+     * @required
+     * @param DistDFeBusiness $distDFeBusiness
+     */
+    public function setDistDFeBusiness(DistDFeBusiness $distDFeBusiness): void
+    {
+        $this->distDFeBusiness = $distDFeBusiness;
+    }
+
 
     /**
      *
@@ -241,6 +254,27 @@ class NFesFornecedoresController extends FormListController
             $this->addFlash('success', 'Fatura gerada com sucesso');
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erro ao gerar fatura');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+        return $this->redirectToRoute('nfesFornecedores_form', ['id' => $notaFiscal->getId()]);
+    }
+
+    /**
+     *
+     * @Route("/fis/nfesFornecedores/reparseDownloadedXML/{notaFiscal}", name="fis_nfesFornecedores_reparseDownloadedXML")
+     *
+     * @param NotaFiscal $notaFiscal
+     * @return Response
+     */
+    public function reparseDownloadedXML(NotaFiscal $notaFiscal): ?Response
+    {
+        try {
+            $this->distDFeBusiness->nfeProc2NotaFiscal($notaFiscal->getXMLDecoded(), $notaFiscal);
+            $this->addFlash('success', 'XML reprocessado com sucesso');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao reprocessar XML');
             if ($e instanceof ViewException) {
                 $this->addFlash('error', $e->getMessage());
             }

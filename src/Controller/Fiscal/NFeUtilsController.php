@@ -3,14 +3,14 @@
 namespace App\Controller\Fiscal;
 
 
-use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
-use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use App\Form\Fiscal\ConfigToolsType;
-use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Psr\Log\LoggerInterface;
@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -117,23 +116,6 @@ class NFeUtilsController extends BaseController
     {
         try {
             $this->distDFeBusiness->nfeProc2NotaFiscal($notaFiscal->getXMLDecoded(), $notaFiscal);
-            return new Response('OK');
-        } catch (\Exception $e) {
-            return new Response($e->getMessage());
-        }
-    }
-
-
-    /**
-     *
-     * @Route("/fis/nfeUtils/arrumarCNPJs", name="nfeUtils_arrumarCNPJs")
-     *
-     * @return Response
-     */
-    public function arrumarCNPJs(): ?Response
-    {
-        try {
-            $this->spedNFeBusiness->arrumarCNPJs();
             return new Response('OK');
         } catch (\Exception $e) {
             return new Response($e->getMessage());
