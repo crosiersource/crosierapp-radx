@@ -258,7 +258,7 @@ class NFesFornecedoresController extends FormListController
                 $this->addFlash('error', $e->getMessage());
             }
         }
-        return $this->redirectToRoute('nfesFornecedores_form', ['id' => $notaFiscal->getId()]);
+        return $this->redirectToRoute('nfesFornecedores_form', ['id' => $notaFiscal->getId(), '_fragment' => 'duplicatas']);
     }
 
     /**
