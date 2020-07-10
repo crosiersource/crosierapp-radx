@@ -91,7 +91,17 @@ function getDatatablesColumns() {
 
                 let pdfUrl = Routing.generate('fis_emissaonfe_imprimir', {'notaFiscal': data.id});
 
-                if (!data.manifestDest) {
+                let faturaUrl = Routing.generate('fin_movimentacao_pesquisaList', {'filter': {'notafiscal_id': data.id}});
+
+                let fatura_id = data.jsonData?.fatura?.fatura_id ?? null;
+
+                if (fatura_id) {
+                    colHtml += '<a role="button" title="Visualizar Fatura" class="btn btn-sm btn-outline-warning mr-1"' +
+                        ' href="' + faturaUrl + '">' +
+                        ' <i class="fas fa-money-check-alt"></i></a>';
+                }
+
+                if (data.resumo && !data.manifestDest) {
                     colHtml += '<button type="button" title="Manifestar Ciência da Operação"' +
                         'class="btn btn-outline-primary btn-sm" ' +
                         'data-url="' + manifestarCienciaUrl + '" ' +
@@ -103,7 +113,7 @@ function getDatatablesColumns() {
                     'class="btn btn-primary btn-sm" onclick="window.open(\'' + downloadXMLurl + '\', \'_blank\')">' +
                     '<i class="fas fa-file-code"></i></button> ';
 
-                colHtml += '<a role="button" value="Imprimir" title="Ver PDF" class="btn btn-sm btn-outline-secondary mr-1" ' +
+                colHtml += '<a role="button" value="Imprimir" title="Ver PDF" class="btn btn-sm btn-outline-success mr-1" ' +
                     'href="' + pdfUrl + '" target="_blank"> ' +
                     '<i class="fas fa-file-pdf" aria-hidden="true"></i> ' +
                     '</a>';

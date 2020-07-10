@@ -66,7 +66,7 @@ class ClienteController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
-     * @IsGranted("ROLE_CRM_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_CRM", statusCode=403)
      */
     public function form(Request $request, Cliente $cliente = null)
     {
@@ -159,7 +159,7 @@ class ClienteController extends FormListController
      * @Route("/crm/cliente/datatablesJsList/", name="crm_cliente_datatablesJsList")
      * @param Request $request
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      *
      * @IsGranted("ROLE_CRM_ADMIN", statusCode=403)
      */

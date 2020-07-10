@@ -46,6 +46,14 @@ class FornecedorType extends AbstractType
                 'attr' => ['readonly' => 'readonly']
             ]);
 
+            $builder->add('documento', TextType::class, [
+                'label' => 'CPF/CNPJ',
+                'required' => false,
+                'attr' => [
+                    'class' => 'cpfCnpj'
+                ],
+            ]);
+
             $builder->add('nome', TextType::class, [
                 'label' => 'Nome',
                 'attr' => ['class' => 'focusOnReady'],

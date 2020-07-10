@@ -150,7 +150,7 @@ class NFesFornecedoresController extends FormListController
                 'listView' => 'Fiscal/nfeFornecedores/nfesFornecedoresList.html.twig',
                 'listRoute' => 'nfesFornecedores_list',
                 'listRouteAjax' => 'nfesFornecedores_datatablesJsList',
-                'listPageTitle' => 'NFe - Fornecedores',
+                'listPageTitle' => 'NFe Entrada',
                 'listId' => 'nfesFornecedoresList',
                 'page_subTitle' => $empresa
             ];
