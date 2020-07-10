@@ -36,7 +36,10 @@
                 {{ form_start(form) }}
 
                 {{ form_row(form._token) }}
-                {{ form_row(form.status) }}
+
+                <div class="d-none">
+                    {{ form_row(form.id) }}
+                </div>
 
                 <div class="row">
                     <div class="col-md-4 col-sm-12">
@@ -45,6 +48,16 @@
 
                     <div class="col-md-8 col-sm-12">
                         {{ form_row(form.carteira) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                        {{ form_row(form.categoria) }}
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.centroCusto) }}
                     </div>
                 </div>
 
@@ -69,15 +82,7 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-8 col-sm-12">
-                        {{ form_row(form.categoria) }}
-                    </div>
 
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.centroCusto) }}
-                    </div>
-                </div>
 
                 <div class="row">
                     <div class="col-sm-12">

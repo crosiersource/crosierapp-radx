@@ -59,13 +59,28 @@
                 </div>
 
 
-                <div class="card" id="divCamposCheque" style="display: none;">
-                    <h5 class="card-header">Cheque</h5>
-                    <div class="card-body">
-                        {{ form_row(form.chequeBanco) }}
-                        {{ form_row(form.chequeAgencia) }}
-                        {{ form_row(form.chequeConta) }}
-                        {{ form_row(form.chequeNumCheque) }}
+                <div class="row">
+                    <div class="card" id="divCamposCheque" style="display: none;">
+                        <h5 class="card-header">Cheque</h5>
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-md-4 col-sm-12">
+                                    {{ form_row(form.chequeBanco) }}
+                                </div>
+
+                                <div class="col-md-2 col-sm-12">
+                                    {{ form_row(form.chequeAgencia) }}
+                                </div>
+                                <div class="col-md-3 col-sm-12">
+                                    {{ form_row(form.chequeConta) }}
+                                </div>
+                                <div class="col-md-3 col-sm-12">
+                                    {{ form_row(form.chequeNumCheque) }}
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
@@ -91,6 +106,15 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                        {{ form_row(form.documentoBanco) }}
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.documentoNum) }}
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -99,13 +123,6 @@
                 </div>
 
 
-                <div style="margin-top: 20px" id="divCamposDocumento" class="card">
-                    <h5 class="card-header">Documento</h5>
-                    <div class="card-body">
-                        {{ form_row(form.documentoBanco) }}
-                        {{ form_row(form.documentoNum) }}
-                    </div>
-                </div>
 
 
                 <div class="row">
