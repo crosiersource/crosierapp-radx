@@ -38,18 +38,25 @@
 
             <div class="card-body">
 
-                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
                 {{ form_start(form) }}
 
                 {{ form_row(form._token) }}
 
-                {{ form_row(form.id) }}
+                <div class="d-none">
+                    {{ form_row(form.id) }}
+                </div>
 
+                <div class="row">
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.modo) }}
+                    </div>
 
-                {{ form_row(form.modo) }}
-
-                {{ form_row(form.carteira) }}
+                    <div class="col-md-8 col-sm-12">
+                        {{ form_row(form.carteira) }}
+                    </div>
+                </div>
 
 
                 <div class="card" id="divCamposCheque" style="display: none;">
@@ -63,23 +70,33 @@
                 </div>
 
 
-                {{ form_row(form.categoria) }}
-                {{ form_row(form.centroCusto) }}
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                        {{ form_row(form.categoria) }}
+                    </div>
 
-                <div style="margin-top: 20px" class="card">
-                    <h5 class="card-header">Datas</h5>
-                    <div class="card-body">
-                        {{ form_row(form.dtMoviment) }}
-                        {{ form_row(form.dtVencto) }}
-                        {{ form_row(form.dtVenctoEfetiva) }}
-                        {{ form_row(form.dtPagto) }}
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.centroCusto) }}
                     </div>
                 </div>
 
-                {{ form_row(form.sacado) }}
-                {{ form_row(form.cedente) }}
 
-                {{ form_row(form.descricao) }}
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.sacado) }}
+                    </div>
+
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.cedente) }}
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{ form_row(form.descricao) }}
+                    </div>
+                </div>
 
 
                 <div style="margin-top: 20px" id="divCamposDocumento" class="card">
@@ -91,13 +108,79 @@
                 </div>
 
 
-                <div style="margin-top: 20px" id="divCamposValores" class="card">
-                    <h5 class="card-header">Valores</h5>
-                    <div class="card-body">
-                        {{ form_row(form.valor) }}
-                        {{ form_row(form.descontos) }}
-                        {{ form_row(form.acrescimos) }}
-                        {{ form_row(form.valorTotal) }}
+                <div class="row">
+
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-12">
+
+                                <div id="divCamposValores" class="card">
+
+                                    <h5 class="card-header">Datas</h5>
+                                    <div class="card-body">
+
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-sm-4" for="movimentacao_dtMoviment">Dt
+                                                Moviment</label>
+                                            <div class="col-sm-8"> {{ form_widget(form.dtMoviment) }} </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-sm-4" for="movimentacao_dtVencto">Dt
+                                                Vencto</label>
+                                            <div class="col-sm-8"> {{ form_widget(form.dtVencto) }} </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-sm-4" for="movimentacao_dtVenctoEfet">Dt
+                                                Vencto Efet</label>
+                                            <div class="col-sm-8"> {{ form_widget(form.dtVenctoEfetiva) }} </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-sm-4" for="movimentacao_dtPagto">Dt
+                                                Pagto</label>
+                                            <div class="col-sm-8"> {{ form_widget(form.dtPagto) }} </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-12">
+
+                                <div id="divCamposValores" class="card">
+
+                                    <h5 class="card-header">Valores</h5>
+                                    <div class="card-body">
+
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-sm-4"
+                                                   for="movimentacao_valor">Valor</label>
+                                            <div class="col-sm-8"> {{ form_widget(form.valor) }} </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-sm-4" for="movimentacao_descontos">Descontos</label>
+                                            <div class="col-sm-8"> {{ form_widget(form.descontos) }} </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-sm-4" for="movimentacao_descontos">Acréscimos</label>
+                                            <div class="col-sm-8"> {{ form_widget(form.acrescimos) }} </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-sm-4"
+                                                   for="movimentacao_valorTotal">Total</label>
+                                            <div class="col-sm-8"> {{ form_widget(form.valorTotal) }} </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -110,13 +193,13 @@
 
 
                 <div style="margin-top: 20px" class="row">
-                    <div class="col text-right">
-                        <button type="submit" class="btn btn-primary" value="Salvar">
+                    <div class="col-sm-3 ml-auto">
+                        <button type="submit" class="btn btn-block btn-primary" value="Salvar">
                             <i class="fas fa-save" aria-hidden="true"></i> Salvar
                         </button>
                     </div>
-                </div>
 
+                </div>
 
 
                 {{ include('Financeiro/movimentacaoForm_pagto_pesquisarLanctos.html.twig') }}

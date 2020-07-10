@@ -131,6 +131,9 @@ class MovimentacaoTypeBuilder
         $form->add('descricao', TextType::class, [
             'label' => 'Descrição',
             'required' => false,
+            'attr' => [
+                'style' => 'background-color: lightgoldenrodyellow'
+            ],
         ]);
 
         $form->add('uuid', TextType::class, [
