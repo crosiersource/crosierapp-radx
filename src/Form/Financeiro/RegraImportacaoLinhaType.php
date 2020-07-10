@@ -28,7 +28,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class RegraImportacaoLinhaType extends AbstractType
 {
 
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
     public function __construct(EntityManagerInterface $doctrine)
     {
@@ -38,9 +38,9 @@ class RegraImportacaoLinhaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $builder->add('regraRegexJava', TextType::class, array(
+        $builder->add('regraRegexJava', TextType::class, [
             'label' => 'Regex Java'
-        ));
+        ]);
 
         $builder->add('tipoLancto', EntityType::class, [
             'label' => 'Tipo Lancto',
@@ -60,10 +60,9 @@ class RegraImportacaoLinhaType extends AbstractType
             'required' => false
         ]);
 
-        $builder->add('carteira', EntityType::class, array(
+        $builder->add('carteira', EntityType::class, [
             'label' => 'Carteira',
-            'class' => Carteira
-            ::class,
+            'class' => Carteira::class,
             'choices' => $this->doctrine->getRepository(Carteira::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => function (?Carteira $carteira) {
                 if ($carteira) {
@@ -71,10 +70,11 @@ class RegraImportacaoLinhaType extends AbstractType
                 }
                 return null;
             },
-            'required' => false
-        ));
+            'required' => false,
+            'attr' => ['class' => 'autoSelect2']
+        ]);
 
-        $builder->add('carteiraDestino', EntityType::class, array(
+        $builder->add('carteiraDestino', EntityType::class, [
             'label' => 'Carteira Destino',
             'class' => Carteira::class,
             'choices' => $this->doctrine->getRepository(Carteira::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
@@ -84,71 +84,77 @@ class RegraImportacaoLinhaType extends AbstractType
                 }
                 return null;
             },
-            'required' => false
-        ));
+            'required' => false,
+            'attr' => ['class' => 'autoSelect2']
+        ]);
 
-        $builder->add('centroCusto', EntityType::class, array(
+        $builder->add('centroCusto', EntityType::class, [
             'class' => CentroCusto::class,
             'choices' => $this->doctrine->getRepository(CentroCusto::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => function (CentroCusto $centroCusto) {
                 return $centroCusto->getDescricao();
-            }
-        ));
+            },
+            'attr' => ['class' => 'autoSelect2']
+        ]);
 
-        $builder->add('modo', EntityType::class, array(
+        $builder->add('modo', EntityType::class, [
             'class' => Modo::class,
             'choices' => $this->doctrine->getRepository(Modo::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => function (Modo $modo) {
                 return $modo->getCodigo() . ' - ' . $modo->getDescricao();
-            }
-        ));
+            },
+            'attr' => ['class' => 'autoSelect2']
+        ]);
 
-        $builder->add('padraoDescricao', TextType::class, array(
+        $builder->add('padraoDescricao', TextType::class, [
             'label' => 'Padrão da Descrição',
             'attr' => ['style' => 'text-transform: none;'],
             'data' => '%s'
-        ));
+        ]);
 
-        $builder->add('categoria', EntityType::class, array(
+        $builder->add('categoria', EntityType::class, [
             'class' => Categoria::class,
             'choice_label' => 'descricaoMontada',
-            'attr' => ['data-route' => 'categoria_select2json',
-                'class' => 'autoSelect2']
-        ));
+            'attr' => [
+                'data-route' => 'categoria_select2json',
+                'class' => 'autoSelect2'
+            ]
+        ]);
 
-        $builder->add('sinalValor', ChoiceType::class, array(
-            'choices' => array(
+        $builder->add('sinalValor', ChoiceType::class, [
+            'choices' => [
                 'Ambos' => 0,
                 'Positivo' => 1,
                 'Negativo' => -1
-            )
-        ));
+            ],
+            'attr' => ['class' => 'autoSelect2']
+        ]);
 
-        $builder->add('chequeBanco', EntityType::class, array(
+        $builder->add('chequeBanco', EntityType::class, [
             'required' => false,
             'label' => 'Cheque - Banco',
             'class' => Banco::class,
-            'choices' => $this->doctrine->getRepository(Banco::class)
-                ->findAll(),
+            'choices' => $this->doctrine->getRepository(Banco::class)->findAll(),
             'choice_label' => function (Banco $banco) {
                 return sprintf('%03d', $banco->getCodigoBanco()) . ' - ' . $banco->getNome();
-            }
-        ));
+            },
+            'attr' => ['class' => 'autoSelect2']
+        ]);
 
-        $builder->add('chequeAgencia', TextType::class, array(
+        $builder->add('chequeAgencia', TextType::class, [
             'label' => 'Cheque - Agência',
             'required' => false
-        ));
+        ]);
 
-        $builder->add('chequeConta', TextType::class, array(
+        $builder->add('chequeConta', TextType::class, [
             'label' => 'Cheque - Conta',
             'required' => false
-        ));
+        ]);
 
-        $builder->add('chequeNumCheque', TextType::class, array(
+        $builder->add('chequeNumCheque', TextType::class, [
             'label' => 'Cheque - Número',
             'required' => false
-        ));
+        ]);
 
 
     }

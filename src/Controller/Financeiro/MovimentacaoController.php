@@ -354,7 +354,7 @@ class MovimentacaoController extends FormListController
     {
         $url = $movimentacao->getTipoLancto()->url;
         $matcher = $urlMatcher->match($url);
-        $params = ['id' => $movimentacao->getId(), 'request' => $request];
+        $params = ['id' => $movimentacao->getId(), 'reftoback' => $request->get('reftoback')];
 //        if (strpos($movimentacao->getTipoLancto()->getDescricao(), 'PARCELAMENTO') !== FALSE) {
 //            $params[] = ['parcelamento' => true];
 //        }

@@ -172,10 +172,10 @@
                                     {% endif %}
 
 
-                                    <button type="button" class="btn btn-sm btn-primary"
-                                            onclick="window.location.href='{{ url('movimentacao_edit', {id: item.id}) }}'">
+                                    <a role="button" class="btn btn-sm btn-primary" title="Editar registro"
+                                            href="{{ url('movimentacao_edit', {id: item.id, 'reftoback': true}) }}">
                                         <i class="fas fa-wrench" aria-hidden="true"></i>
-                                    </button>
+                                    </a>
                                     <button type="button" class="btn btn-sm btn-danger"
                                             data-url="{{ url('movimentacao_delete', {id: item.id}) }}"
                                             data-token="{{ csrf_token('delete') }}"

@@ -24,7 +24,6 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * Listagem e geração de movimentações recorrentes.
  *
- * @package App\Controller\Financeiro
  * @author Carlos Eduardo Pauluk
  */
 class MovimentacaoRecorrentesController extends FormListController
@@ -177,11 +176,12 @@ class MovimentacaoRecorrentesController extends FormListController
     {
         if (!$movimentacao) {
             $movimentacao = new Movimentacao();
-            /** @var TipoLancto $tipoLancto90 */
-            $tipoLancto90 = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 90]);
-            $movimentacao->setTipoLancto($tipoLancto90);
-            $movimentacao->setRecorrente(true);
         }
+
+        /** @var TipoLancto $tipoLancto90 */
+        $tipoLancto90 = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 90]);
+        $movimentacao->setTipoLancto($tipoLancto90);
+        $movimentacao->setRecorrente(true);
 
         $params = [
             'typeClass' => MovimentacaoType::class,
