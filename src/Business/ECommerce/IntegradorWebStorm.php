@@ -906,7 +906,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             '<prazoXD>0</prazoXD>' .
             '<conjunto />' .
             '<nome>' . $produto->jsonData['titulo'] . '</nome>' .
-            '<descricao>' . $produto->jsonData['descricao_produto'] . '</descricao>' .
+            '<descricao>' . ($produto->jsonData['descricao_produto'] ?? '') . '</descricao>' .
             '<referencia>' . ($produto->jsonData['referencia'] ?? '') . '</referencia>' .
             '<descricao-caracteristicas>' . htmlspecialchars($produto->jsonData['caracteristicas'] ?? '') . '</descricao-caracteristicas>' .
             '<descricao-itens-inclusos>' . htmlspecialchars($produto->jsonData['itens_inclusos'] ?? '') . '</descricao-itens-inclusos>' .
