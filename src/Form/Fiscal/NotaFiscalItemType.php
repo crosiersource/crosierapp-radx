@@ -30,7 +30,10 @@ class NotaFiscalItemType extends AbstractType
 
         $builder->add('descricao', TextType::class, [
             'label' => 'Descrição',
-            'required' => true
+            'required' => true,
+            'attr' => [
+                'maxlength' => '120'
+            ]
         ]);
 
         $builder->add('cfop', TextType::class, [
