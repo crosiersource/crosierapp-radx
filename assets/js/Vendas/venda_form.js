@@ -41,7 +41,8 @@ $(document).ready(function () {
 
         let desconto = $desconto.maskMoney('unmasked')[0];
         let valorTotal = (subTotal - desconto).toFixed(2).replace('.', ',');
-        $valorTotal.val(valorTotal).maskMoney('mask');
+        $valorTotal.val(valorTotal);
+        CrosierMasks.maskDecs();
     }
 
     $qtde.blur(function () {

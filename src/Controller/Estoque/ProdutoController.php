@@ -557,6 +557,7 @@ class ProdutoController extends FormListController
         }
     }
 
+
     /**
      *
      * @Route("/est/produto/findProdutosByIdOuNomeJson/", name="est_produto_findProdutosByIdOuNomeJson")
@@ -564,23 +565,33 @@ class ProdutoController extends FormListController
      * @return JsonResponse
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
-    public function findProdutosByIdOuNomeJson(Request $request, EntityIdUtils $entityIdUtils): JsonResponse
+    public function findProdutosByIdOuNomeJson(Request $request): JsonResponse
     {
         try {
             $str = $request->get('term');
-            /** @var ProdutoRepository $repoProduto */
-            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
 
-            if (ctype_digit($str)) {
-                $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str]]);
-            } else {
-                $produtos = $repoProduto->findByFiltersSimpl([[['nome'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
+            $sql = 'SELECT prod.id, prod.nome, prod.json_data, preco.preco_prazo FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
+                'WHERE preco.atual AND (' .
+                'prod.id LIKE :str OR ' .
+                'prod.nome LIKE :str OR ' .
+                'json_data->>"$.codigo" LIKE :str) ORDER BY prod.nome LIMIT 20';
+
+            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql, ['str' => '%' . $str . '%']);
+            $results = [];
+            foreach ($rs as $r) {
+                $jsonData = json_decode($r['json_data'], true);
+                $precoEntrada = $r['preco_prazo'] ?? $jsonData['preco_tabela'] ?? 0.0;
+                $codigo = str_pad($jsonData['codigo'] ?? $r['id'], 6, '0', STR_PAD_LEFT);
+                $results[] = [
+                    'id' => $r['id'],
+                    'nome' => $codigo . ' - ' . $r['nome'],
+                    'preco_entrada' => $precoEntrada,
+                    'unidade' => $jsonData['unidade'] ?? 'UN'
+                ];
             }
 
-            $produtosSerials = $entityIdUtils->serializeAll($produtos);
-
             return new JsonResponse(
-                ['results' => $produtosSerials]
+                ['results' => $results]
             );
         } catch (\Exception $e) {
             return new JsonResponse(
@@ -667,6 +678,20 @@ class ProdutoController extends FormListController
         }
         return new Response('<hr>OK');
 
+    }
+
+    /**
+     *
+     * @Route("/est/produto/findProdutosByNomeOuFinalCodigo", name="est_produto_findProdutosByNomeOuFinalCodigo")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findProdutosByNomeOuFinalCodigo(Request $request): JsonResponse
+    {
+        $str = $request->get('term');
+        $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+        return new JsonResponse(['results' => $repoProduto->findProdutosByNomeOuFinalCodigo_select2js($str)]);
     }
 
 

@@ -1,13 +1,5 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
--- Tabelas que foram renomeadas
-DROP TABLE IF EXISTS `est_categ`;
-DROP TABLE IF EXISTS `est_categ_grupo_categs`;
-DROP TABLE IF EXISTS `est_grupo_categs`;
-DROP TABLE IF EXISTS `est_produto_categs`;
-DROP TABLE IF EXISTS `est_produto_preco_categs`;
-DROP TABLE IF EXISTS `est_produto_saldo_categs`;
-DROP TABLE IF EXISTS `est_subdepto`;
 
 
 DROP TABLE IF EXISTS `est_depreciacao_preco`;
@@ -371,10 +363,15 @@ CREATE TABLE `est_produto_saldo`
 (
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
     `produto_id`         bigint(20)     NOT NULL,
+    `unidade_id`         bigint(20)     NOT NULL,
     `qtde`               decimal(15, 2) NOT NULL,
+    `json_data`          json,
 
     KEY `K_est_produto_saldo_produto` (`produto_id`),
     CONSTRAINT `FK_est_produto_saldo_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+
+    KEY `K_est_produto_saldo_unidade` (`unidade_id`),
+    CONSTRAINT `FK_est_produto_saldo_unidade` FOREIGN KEY (`unidade_id`) REFERENCES `est_unidade` (`id`),
 
     -- campo de controle
     PRIMARY KEY (`id`),
@@ -595,3 +592,112 @@ CREATE TABLE `est_romaneio_item`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
 
+
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `est_entrada`;
+
+CREATE TABLE `est_entrada`
+(
+    `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
+    `dt_lote`            datetime     NOT NULL,
+    `descricao`          varchar(255) NOT NULL,
+    `responsavel`        varchar(255) NOT NULL,
+    `status`             varchar(100) NOT NULL, -- [ABERTO,CANCELADO,INTEGRADO]
+    `dt_integracao`      datetime,
+    `json_data`          json,
+
+
+    -- campo de controle
+    PRIMARY KEY (`id`),
+    `inserted`           datetime     NOT NULL,
+    `updated`            datetime     NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)   NOT NULL,
+    `user_inserted_id`   bigint(20)   NOT NULL,
+    `user_updated_id`    bigint(20)   NOT NULL,
+    KEY `K_est_entrada_estabelecimento` (`estabelecimento_id`),
+    KEY `K_est_entrada_user_inserted` (`user_inserted_id`),
+    KEY `K_est_entrada_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_est_entrada_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_est_entrada_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_est_entrada_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_swedish_ci;
+
+
+
+DROP TABLE IF EXISTS `est_entrada_item`;
+
+CREATE TABLE `est_entrada_item`
+(
+    `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
+    `entrada_id`         bigint(20)     NOT NULL,
+    `produto_id`         bigint(20),
+    `unidade_id`         bigint(20),
+    `qtde`               decimal(15, 2) NOT NULL,
+    `json_data`          json,
+
+    KEY `K_est_entrada_item_entrada` (`entrada_id`),
+    CONSTRAINT `FK_est_entrada_item_entrada` FOREIGN KEY (`entrada_id`) REFERENCES `est_entrada` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+
+    KEY `K_est_entrada_item_produto` (`produto_id`),
+    CONSTRAINT `FK_est_entrada_item_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`),
+
+    KEY `K_est_entrada_item_unidade` (`unidade_id`),
+    CONSTRAINT `FK_est_entrada_item_unidade` FOREIGN KEY (`unidade_id`) REFERENCES `est_unidade` (`id`),
+
+    -- campo de controle
+    PRIMARY KEY (`id`),
+    `inserted`           datetime       NOT NULL,
+    `updated`            datetime       NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)     NOT NULL,
+    `user_inserted_id`   bigint(20)     NOT NULL,
+    `user_updated_id`    bigint(20)     NOT NULL,
+    KEY `K_est_entrada_item_estabelecimento` (`estabelecimento_id`),
+    KEY `K_est_entrada_item_user_inserted` (`user_inserted_id`),
+    KEY `K_est_entrada_item_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_est_entrada_item_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_est_entrada_item_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_est_entrada_item_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_swedish_ci;
+
+
+
+DROP TABLE IF EXISTS `est_unidade`;
+
+CREATE TABLE `est_unidade`
+(
+    `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
+    `descricao`          varchar(255) NOT NULL,
+    `label`              varchar(10)  NOT NULL,
+    `casas_decimais`     int          NOT NULL,
+    `atual`              tinyint(1)   NOT NULL,
+    `json_info`          varchar(3000), -- informações sobre conversões (não são montados campos customizados aqui)
+    `json_data`          json,          -- campo padrão caso sejam necessários campos customizados para algum cliente
+
+    UNIQUE KEY `UK_est_unidade` (`label`),
+
+    -- campo de controle
+    PRIMARY KEY (`id`),
+    `inserted`           datetime     NOT NULL,
+    `updated`            datetime     NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)   NOT NULL,
+    `user_inserted_id`   bigint(20)   NOT NULL,
+    `user_updated_id`    bigint(20)   NOT NULL,
+    KEY `K_est_unidade_estabelecimento` (`estabelecimento_id`),
+    KEY `K_est_unidade_user_inserted` (`user_inserted_id`),
+    KEY `K_est_unidade_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_est_unidade_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_est_unidade_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_est_unidade_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_swedish_ci;

@@ -39,7 +39,8 @@
     "sprintf-js": "^1.1.2",
     "summernote": "^0.8.11",
     "toastr": "^2.1.4",
-    "webpack-notifier": "^1.6.0"
+    "webpack-notifier": "^1.6.0",
+    "jsoneditor": "^8.6.8"
   },
   "license": "UNLICENSED",
   "private": true,

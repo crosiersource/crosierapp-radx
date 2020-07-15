@@ -1,0 +1,73 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex flex-wrap align-items-center">
+
+                <div class="d-sm-flex text-nowrap mr-1">
+                    <h3>Unidades</h3>
+                </div>
+
+                <div class="d-sm-flex flex-nowrap ml-auto">
+                    <a role="button" class="btn btn-primary ml-1" title="Novo" href="{{ url(formRoute) }}">
+                        <i class="fas fa-file" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive-sm">
+
+                <table class="table table-sm table-striped table-hover crsr-datatable" id="unidade_list">
+
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Label</th>
+                        <th scope="col">Casas Decimais</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for e in dados %}
+                        <tr>
+                            <td>{{ e.id|strpad(7) }}</td>
+                            <td>{{ e.descricao }}</td>
+                            <td>{{ e.label }}</td>
+                            <td>{{ e.casasDecimais }}</td>
+                            <td class="text-right">
+                                <a role="button" class="btn btn-sm btn-primary"
+                                   href="{{ url('est_unidade_form', {id: e.id}) }}">
+                                    <i class="fas fa-wrench" aria-hidden="true"></i>
+                                </a>
+                                <br/>
+                                <span class="badge badge-secondary">{{ e.updated|date('d/m/Y H:i:s') }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Estoque/unidade_list') }}
+{% endblock %}

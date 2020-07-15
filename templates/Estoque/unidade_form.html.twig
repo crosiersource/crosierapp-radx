@@ -1,0 +1,100 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('Estoque/unidade_form') }}
+{% endblock %}
+
+
+{% block page_content %}
+
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Unidade</h3>
+                    </div>
+
+                    <div class="d-sm-flex flex-nowrap ml-auto">
+                        <a role="button" class="btn btn-primary ml-1" title="Novo" href="{{ url(formRoute) }}">
+                            <i class="fas fa-file" aria-hidden="true"></i>
+                        </a>
+                        <a role="button" class="btn btn-secondary ml-1" title="Listar" href="{{ url(listRoute) }}">
+                            <i class="fas fa-list" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+                {{ form_start(form) }}
+                {{ form_widget(form._token) }}
+
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-12">
+                        {{ form_row(form.id) }}
+                    </div>
+                    <div class="col-md-10 col-sm-12">
+                        {{ form_row(form.descricao) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.label) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.atual) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.casasDecimais) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="unidade_jsonInfo" class="required">JSON Info</label>
+
+                            <div class="isJson" style="width: 100%; height: 400px;"
+                                 data-hidden-input-id="unidade_jsonInfo" data-value="{{ e.jsonInfo|default('') }}"></div>
+                            <input type="hidden" class="notuppercase"
+                                   id="unidade_jsonInfo"
+                                   name="unidade[jsonInfo]"
+                                   value="{{ e.jsonInfo|default('') }}"/>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col text-right">
+                        <button type="submit" class="btn btn-primary" value="Salvar">
+                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                        </button>
+                    </div>
+                </div>
+
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Estoque/unidade_form') }}
+{% endblock %}

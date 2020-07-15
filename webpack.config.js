@@ -34,8 +34,6 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
-    .addEntry('Estoque/atributo_list', './assets/js/Estoque/atributo_list.js')
-    .addEntry('Estoque/grupoAtributo_list', './assets/js/Estoque/grupoAtributo_list.js')
     .addEntry('Estoque/produto_list', './assets/js/Estoque/produto_list.js')
     .addEntry('Estoque/produto_form', './assets/js/Estoque/produto_form.js')
     .addEntry('Estoque/pedidoCompra_form', './assets/js/Estoque/pedidoCompra_form.js')
@@ -45,6 +43,10 @@ Encore
     .addEntry('Estoque/romaneio_form', './assets/js/Estoque/romaneio_form.js')
     .addEntry('Estoque/romaneio_marcarProdutoForm', './assets/js/Estoque/romaneio_marcarProdutoForm.js')
     .addEntry('Estoque/fornecedor_form', './assets/js/Estoque/fornecedor_form.js')
+    .addEntry('Estoque/unidade_form', './assets/js/Estoque/unidade_form.js')
+    .addEntry('Estoque/unidade_list', './assets/js/Estoque/unidade_list.js')
+    .addEntry('Estoque/entrada_form', './assets/js/Estoque/entrada_form.js')
+    .addEntry('Estoque/entrada_list', './assets/js/Estoque/entrada_list.js')
 
     .addEntry('Fiscal/emissaoNFe/form', './assets/js/Fiscal/emissaoNFe/form.js')
     .addEntry('Fiscal/emissaoNFe/formItem', './assets/js/Fiscal/emissaoNFe/formItem.js')
