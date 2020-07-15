@@ -23,50 +23,51 @@
                 {{ form_start(form) }}
                 {{ form_widget(form._token) }}
 
+                <fieldset {{ e.status != "ABERTO" ? 'disabled' : '' }}>
+                    <div class="row">
+                        <div class="col-md-2 col-sm-12">
+                            {{ form_row(form.id) }}
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            {{ form_row(form.dtLote) }}
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            {{ form_row(form.descricao) }}
+                        </div>
+                    </div>
 
-                <div class="row">
-                    <div class="col-md-2 col-sm-12">
-                        {{ form_row(form.id) }}
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12">
+                            {{ form_row(form.responsavel) }}
+                        </div>
+                        <div class="col-md-5 col-sm-12">
+                            {{ form_row(form.status) }}
+                        </div>
+                        <div class="col-md-3 col-sm-12">
+                            {{ form_row(form.dtIntegracao) }}
+                        </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.dtLote) }}
-                    </div>
-                    <div class="col-md-6 col-sm-12">
-                        {{ form_row(form.descricao) }}
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.responsavel) }}
-                    </div>
-                    <div class="col-md-5 col-sm-12">
-                        {{ form_row(form.status) }}
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        {{ form_row(form.dtIntegracao) }}
-                    </div>
-                </div>
 
 
-                <div class="row mb-3">
-                    <div class="col text-right">
-                        <button type="submit" class="btn btn-primary" value="Salvar">
-                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                        </button>
-
-                        {% if e.id %}
-                            <button type="button" class="btn btn-outline-warning"
-                                    data-url="{{ url('est_entrada_integrar', {id: e.id}) }}"
-                                    data-token="{{ csrf_token('est_entrada_integrar') }}"
-                                    data-target="#confirmationModal" data-toggle="modal">
-                                <i class="fas fa-cogs" aria-hidden="true"></i>
+                    <div class="row mb-3">
+                        <div class="col text-right">
+                            <button type="submit" class="btn btn-primary" value="Salvar">
+                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
                             </button>
-                        {% endif %}
 
+                            {% if e.id %}
+                                <button type="button" class="btn btn-outline-warning"
+                                        data-url="{{ url('est_entrada_integrar', {id: e.id}) }}"
+                                        data-token="{{ csrf_token('est_entrada_integrar') }}"
+                                        data-target="#confirmationModal" data-toggle="modal">
+                                    <i class="fas fa-cogs" aria-hidden="true"></i>
+                                </button>
+                            {% endif %}
+
+                        </div>
                     </div>
-                </div>
 
+                </fieldset>
                 {{ form_end(form, {'render_rest': false}) }}
 
 
@@ -87,71 +88,75 @@
 
                             <div class="card-body">
 
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label for="item_produto">Produto</label>
-                                            <input type="hidden" id="item_id" name="item[id]">
-                                            <select id="item_produto" name="item[produto]"
-                                                    class="form-control {{ e.id ? 'focusOnReady' : '' }}">
-                                            </select>
+                                {% if e.status == "ABERTO" %}
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="item_produto">Produto</label>
+                                                <input type="hidden" id="item_id" name="item[id]">
+                                                <select id="item_produto" name="item[produto]"
+                                                        class="form-control {{ e.id ? 'focusOnReady' : '' }}">
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
+                                    <div class="row">
 
-                                    <div class="col-md-3 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="" for="item_unidade">Unidade</label>
-                                            <select id="item_unidade" autocomplete="off"
-                                                    name="item[unidade]"
-                                                    class="form-control"
-                                                    data-options="{{ unidades|default('{}') }}"
-                                                    aria-hidden="true">
-                                            </select>
+                                        <div class="col-md-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="" for="item_unidade">Unidade</label>
+                                                <select id="item_unidade" autocomplete="off"
+                                                        name="item[unidade]"
+                                                        class="form-control"
+                                                        data-options="{{ unidades|default('{}') }}"
+                                                        aria-hidden="true">
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-md-3 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="item_qtde">Qtde</label>
-                                            <div class="input-group">
-                                                <input type="text" id="item_qtde" name="item[qtde]"
-                                                       class="crsr-dec3 form-control">
-                                                <div class="input-group-append">
+                                        <div class="col-md-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="item_qtde">Qtde</label>
+                                                <div class="input-group">
+                                                    <input type="text" id="item_qtde" name="item[qtde]"
+                                                           class="crsr-dec3 form-control">
+                                                    <div class="input-group-append">
                                                     <span class="input-group-text"
                                                           id="item_unidade_append_label">...</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-md-3 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="item_precoVenda">Preço Venda</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">R$</span>
+                                        <div class="col-md-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="item_precoVenda">Preço Venda</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">R$</span>
+                                                    </div>
+                                                    <input type="text" id="item_precoVenda" name="item[precoVenda]"
+                                                           readonly="readonly" class="crsr-money form-control disabled">
                                                 </div>
-                                                <input type="text" id="item_precoVenda" name="item[precoVenda]"
-                                                       readonly="readonly" class="crsr-money form-control disabled">
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-md-3 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="btnInserirItem">&nbsp;</label>
-                                            <div class="input-group">
-                                                <button type="submit" class="btn btn-outline-primary"
-                                                        id="btnInserirItem" value="Inserir">
-                                                    <i class="fas fa-save" aria-hidden="true"></i> Inserir
-                                                </button>
+                                        <div class="col-md-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="btnInserirItem">&nbsp;</label>
+                                                <div class="input-group">
+                                                    <button type="submit" class="btn btn-outline-primary"
+                                                            id="btnInserirItem" value="Inserir">
+                                                        <i class="fas fa-save" aria-hidden="true"></i> Inserir
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
 
-                                </div>
+                                {% endif %}
 
                                 <div class="table-responsive-sm">
                                     <table class="table table-sm table-striped table-hover">
@@ -169,7 +174,8 @@
                                         {% for item in e.itens %}
                                             <tr>
                                                 <td>{{ loop.index }}</td>
-                                                <td>{{ item.produto.jsonData['codigo']|default(0)|strpad(9) }} - {{ item.produto.nome }}</td>
+                                                <td>{{ item.produto.jsonData['codigo']|default(0)|strpad(9) }}
+                                                    - {{ item.produto.nome }}</td>
                                                 <td class="text-right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
                                                 <td class="text-right">
                                                     {% if e.status != 'INTEGRADO' %}

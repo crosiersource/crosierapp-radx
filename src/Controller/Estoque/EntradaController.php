@@ -116,6 +116,9 @@ class EntradaController extends FormListController
     public function formItem(Request $request, Entrada $entrada = null): RedirectResponse
     {
         try {
+            if ($entrada->status !== 'ABERTO') {
+                throw new ViewException('Status difere de "ABERTO"');
+            }
             $entradaItem = [];
             $entradaItem['entrada_id'] = $entrada->getId();
             $item = $request->get('item');
