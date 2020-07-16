@@ -2,11 +2,17 @@
 
 import Moment from 'moment';
 
+import 'datatables';
+import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
+import 'datatables/media/css/jquery.dataTables.css';
+
 import $ from "jquery";
 
 import 'daterangepicker';
 
 $(document).ready(function () {
+
+    let $datatable = $('#datatable');
 
     let $formPesquisar = $('#formPesquisar');
     let $btnHoje = $('#btnHoje');
@@ -93,6 +99,19 @@ $(document).ready(function () {
         $filterDts.val(dtIni + ' - ' + dtFim);
         $formPesquisar.submit();
     });
+
+    // declaro antes para poder sobreescrever ali com o extent, no caso de querer mudar alguma coisa (ex.: movimentacaoRecorrentesList.js)
+    let defaultParams = {
+        paging: false,
+        serverSide: false,
+        stateSave: true,
+        searching: false,
+        language: {
+            "url": "/build/static/datatables-Portuguese-Brasil.json"
+        }
+    };
+
+    let datatable = $datatable.DataTable(defaultParams);
 
 
 });
