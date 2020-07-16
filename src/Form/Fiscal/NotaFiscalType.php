@@ -71,7 +71,7 @@ class NotaFiscalType extends AbstractType
                 if (!$this->notaFiscalBusiness->permiteSalvar($notaFiscal)) {
                     $disabled = true;
                 }
-                if ($notaFiscal->getDocumentoEmitente() && !in_array($notaFiscal->getDocumentoEmitente(), $emitentes)) {
+                if ($notaFiscal->getDocumentoEmitente() && !($this->notaFiscalBusiness->isCnpjEmitente($notaFiscal->getDocumentoEmitente()))) {
                     $disabled = true;
                 }
             }

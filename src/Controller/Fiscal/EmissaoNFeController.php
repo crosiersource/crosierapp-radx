@@ -11,6 +11,7 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\ValidaCPFCNPJ;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
@@ -56,7 +57,6 @@ class EmissaoNFeController extends FormListController
 
     private NotaFiscalCartaCorrecaoEntityHandler $cartaCorrecaoEntityHandler;
 
-    /** @var NFeUtils */
     private NFeUtils $nfeUtils;
 
     /**
@@ -484,18 +484,18 @@ class EmissaoNFeController extends FormListController
      */
     public function list(Request $request)
     {
+        $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsEmUso();
         $params =
             [
                 'typeClass' => NotaFiscalType::class,
-
                 'formView' => 'Fiscal/emissaoNFe/form.html.twig',
                 'formRoute' => 'fis_emissaonfe_form',
                 'formPageTitle' => 'NFe',
-
                 'listView' => 'Fiscal/emissaoNFe/list.html.twig',
                 'listRoute' => 'fis_emissaonfe_list',
                 'listRouteAjax' => 'fis_emissaonfe_datatablesJsList',
                 'listPageTitle' => 'NFe\'s Emitidas',
+                'page_subTitle' => StringUtils::mascararCnpjCpf($nfeConfigsEmUso['cnpj']) . ' - ' . $nfeConfigsEmUso['razaosocial'],
                 'listId' => 'emissaoNFeList',
             ];
 
@@ -514,7 +514,7 @@ class EmissaoNFeController extends FormListController
         $rParams = $request->request->all();
         parse_str($rParams['formPesquisar'], $formPesquisar);
         // fixos
-        // $defaultFilters['filter']['documentoEmitente'] = preg_replace("/[^0-9]/", '', $this->nfeUtils->getNFeConfigs()['cnpj']);
+        $defaultFilters['filter']['documentoEmitente'] = preg_replace("/[^0-9]/", '', $this->nfeUtils->getNFeConfigsEmUso()['cnpj']);
         $defaultFilters['filter']['tipoNotaFiscal'] = 'NFE';
         return $this->doDatatablesJsList($request, $defaultFilters);
     }
