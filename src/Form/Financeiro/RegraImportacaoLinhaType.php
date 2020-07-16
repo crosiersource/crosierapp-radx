@@ -10,6 +10,7 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\CentroCusto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\RegraImportacaoLinha;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -39,7 +40,10 @@ class RegraImportacaoLinhaType extends AbstractType
     {
 
         $builder->add('regraRegexJava', TextType::class, [
-            'label' => 'Regex Java'
+            'label' => 'Regex',
+            'attr' => [
+                'class' => 'focusOnReady',
+            ]
         ]);
 
         $builder->add('tipoLancto', EntityType::class, [
@@ -49,7 +53,7 @@ class RegraImportacaoLinhaType extends AbstractType
             'choice_label' => 'descricaoMontada',
             'required' => true,
             'attr' => [
-                'class' => 'autoSelect2 focusOnReady',
+                'class' => 'autoSelect2',
             ]
         ]);
 
@@ -112,13 +116,19 @@ class RegraImportacaoLinhaType extends AbstractType
             'data' => '%s'
         ]);
 
+        /** @var CategoriaRepository $repoCategoria */
+        $repoCategoria = $this->doctrine->getRepository(Categoria::class);
+        $categorias = $repoCategoria->findAll(['codigoOrd' => 'ASC']);
+
         $builder->add('categoria', EntityType::class, [
+            'label' => 'Categoria',
             'class' => Categoria::class,
-            'choice_label' => 'descricaoMontada',
+            'choice_label' => 'descricaoMontadaTree',
+            'choices' => $categorias,
             'attr' => [
-                'data-route' => 'categoria_select2json',
                 'class' => 'autoSelect2'
-            ]
+            ],
+            'required' => false
         ]);
 
         $builder->add('sinalValor', ChoiceType::class, [
@@ -150,11 +160,11 @@ class RegraImportacaoLinhaType extends AbstractType
             'label' => 'Cheque - Conta',
             'required' => false
         ]);
-
-        $builder->add('chequeNumCheque', TextType::class, [
-            'label' => 'Cheque - Número',
-            'required' => false
-        ]);
+//
+//        $builder->add('chequeNumCheque', TextType::class, [
+//            'label' => 'Cheque - Número',
+//            'required' => false
+//        ]);
 
 
     }

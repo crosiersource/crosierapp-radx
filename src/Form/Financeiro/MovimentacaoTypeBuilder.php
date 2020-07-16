@@ -39,14 +39,11 @@ use Symfony\Component\Security\Core\Security;
 class MovimentacaoTypeBuilder
 {
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    /** @var Security */
-    private $security;
+    private Security $security;
 
-    /** @var UrlGeneratorInterface */
-    private $router;
+    private UrlGeneratorInterface $router;
 
 
     /**

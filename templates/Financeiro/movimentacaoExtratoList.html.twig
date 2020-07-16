@@ -104,8 +104,7 @@
                                     <span class="badge badge-pill badge-light">{{ loop.index }}</span>
                                 </td>
                                 <td>
-                                    <b>{{ item.carteira.descricaoMontada }}</b><br/>
-                                    {{ item.categoria.descricaoMontada }}<br/>
+                                    <b><span style="{{ (item.categoria.codigo == 195 or item.categoria.codigo == 295) ? 'background-color: yellow' : ''  }}">{{ item.categoria.descricaoMontada }}</span></b><br/>
                                     {{ item.modo.descricaoMontada }}
                                 </td>
                                 <td>

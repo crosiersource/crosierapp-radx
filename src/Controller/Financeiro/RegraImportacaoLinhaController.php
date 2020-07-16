@@ -51,7 +51,7 @@ class RegraImportacaoLinhaController extends FormListController
     {
         $params = [
             'typeClass' => RegraImportacaoLinhaType::class,
-            'formView' => '@CrosierLibBase/form.html.twig',
+            'formView' => 'Financeiro/regraImportacaoLinhaForm.html.twig',
             'formRoute' => 'regraImportacaoLinha_form',
             'formPageTitle' => 'Regra de Importação'
         ];
