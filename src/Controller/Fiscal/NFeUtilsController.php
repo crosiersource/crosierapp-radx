@@ -14,6 +14,7 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,6 +74,7 @@ class NFeUtilsController extends BaseController
     /**
      *
      * @Route("/fis/nfeUtils/consultaChave/{notaFiscal}", name="nfeUtils_consultaChave")
+     * @IsGranted("ROLE_FISCAL", statusCode=403)
      *
      * @param NotaFiscal $notaFiscal
      * @return Response
@@ -90,6 +92,7 @@ class NFeUtilsController extends BaseController
     /**
      *
      * @Route("/fis/nfeUtils/download/{notaFiscal}", name="nfeUtils_download")
+     * @IsGranted("ROLE_FISCAL", statusCode=403)
      *
      * @param NotaFiscal $notaFiscal
      * @return Response
@@ -108,6 +111,7 @@ class NFeUtilsController extends BaseController
     /**
      *
      * @Route("/fis/nfeUtils/reparseDownloadedXML/{notaFiscal}", name="nfeUtils_reparseDownloadedXML")
+     * @IsGranted("ROLE_FISCAL", statusCode=403)
      *
      * @param NotaFiscal $notaFiscal
      * @return Response
@@ -125,6 +129,7 @@ class NFeUtilsController extends BaseController
     /**
      *
      * @Route("/fis/nfeUtils/clearCaches", name="fis_nfeUtils_clearCaches")
+     * @IsGranted("ROLE_FISCAL", statusCode=403)
      *
      * @return Response
      * @throws \Exception
@@ -144,6 +149,7 @@ class NFeUtilsController extends BaseController
     /**
      *
      * @Route("/fis/nfeUtils/configTools", name="nfeUtils_configTools")
+     * @IsGranted("ROLE_FISCAL_ADMIN", statusCode=403)
      *
      * @param Request $request
      * @return Response
@@ -196,6 +202,7 @@ class NFeUtilsController extends BaseController
     /**
      *
      * @Route("/fis/nfeUtils/selecionarContribuinte", name="fis_nfeUtils_selecionarContribuinte")
+     * @IsGranted("ROLE_FISCAL", statusCode=403)
      *
      * @param Request $request
      * @param Connection $conn
