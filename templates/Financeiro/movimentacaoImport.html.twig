@@ -172,8 +172,8 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {{ item.categoria.descricaoMontada }}<br/>
-                                        {{ item.modo.descricaoMontada|default('') }}
+                                        <b><span style="{{ (item.categoria.codigo == 195 or item.categoria.codigo == 295) ? 'background-color: yellow' : ''  }}">{{ item.categoria.descricaoMontada }}</span></b><br/>
+                                        <span style="{{ (item.modo.codigo == 99 ) ? 'background-color: yellow' : ''  }}">{{ item.modo.descricaoMontada|default('') }}</span>
                                     </td>
                                     <td>
                                         {{ item.descricaoMontada|raw }}
