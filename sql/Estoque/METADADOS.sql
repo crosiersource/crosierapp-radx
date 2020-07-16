@@ -146,20 +146,10 @@ CREATE TABLE `est_subgrupo`
     `uuid`               char(36)     NOT NULL,
     `codigo`             varchar(50)  NOT NULL,
     `nome`               varchar(255) NOT NULL,
-
-    `depto_id`           bigint(20)   NOT NULL,
-    `depto_codigo`       varchar(50)  NOT NULL,
-    `depto_nome`         varchar(255) NOT NULL,
-
     `grupo_id`           bigint(20)   NOT NULL,
-    `grupo_codigo`       varchar(50)  NOT NULL,
-    `grupo_nome`         varchar(255) NOT NULL,
-
     `json_data`          json,
 
 
-    KEY `K_est_subgrupo_depto` (`depto_id`),
-    CONSTRAINT `FK_est_subgrupo_depto` FOREIGN KEY (`depto_id`) REFERENCES `est_depto` (`id`),
     KEY `K_est_subgrupo_grupo` (`grupo_id`),
     CONSTRAINT `FK_est_subgrupo_grupo` FOREIGN KEY (`grupo_id`) REFERENCES `est_grupo` (`id`),
 
