@@ -305,7 +305,7 @@ class MovimentacaoTypeBuilder
             'class' => CentroCusto::class,
             'data' => $movimentacao->getCentroCusto(),
             'empty_data' => $movimentacao->getCentroCusto(),
-            'choices' => $this->doctrine->getRepository(CentroCusto::class)->findAll('codigo'),
+            'choices' => $this->doctrine->getRepository(CentroCusto::class)->findAll(['codigo']),
             'choice_label' => 'descricaoMontada',
             'required' => false,
             'attr' => ['class' => 'autoSelect2']
