@@ -131,7 +131,7 @@
 
                             <select id="filter_recorrente" name="filter[recorrente]"
                                     class="form-control autoSelect2">
-                                <option value="null" {{ filter.recorrente is not defined }}>...</option>
+                                <option value="" {{ filter.recorrente is not defined }}>...</option>
                                 <option value="true" {{ filter.recorrente|default(null) == 'true' ? 'selected' : '' }}>
                                     Sim
                                 </option>

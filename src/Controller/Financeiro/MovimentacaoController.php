@@ -829,7 +829,7 @@ class MovimentacaoController extends FormListController
                 new FilterData(['chequeNumCheque'], 'LIKE_END', 'chequeNumCheque', $params),
                 new FilterData(['operadoraCartao'], 'IN', 'operadoraCartao', $params),
                 new FilterData(['bandeiraCartao'], 'IN', 'bandeiraCartao', $params),
-                new FilterData(['recorrente'], 'EQ', 'recorrente', $params),
+                new FilterData(['recorrente'], 'EQ_BOOL', 'recorrente', $params),
                 new FilterData(['valor', 'valorTotal'], 'BETWEEN', 'valor', $params, 'decimal'),
             ];
         };
