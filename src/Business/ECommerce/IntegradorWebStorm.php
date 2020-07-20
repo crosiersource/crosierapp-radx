@@ -1091,6 +1091,10 @@ class IntegradorWebStorm implements IntegradorBusiness
         $rProdutos = $conn->fetchAll($sql);
 
         $this->syslog->info('atualizaEstoqueEPrecos - ' . count($rProdutos) . ' produtos a integrar');
+        if (count($rProdutos) === 0) {
+            return 0;
+        }
+
 
 
         $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
