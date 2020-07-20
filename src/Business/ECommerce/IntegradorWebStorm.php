@@ -1025,8 +1025,6 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $client = $this->getNusoapClientImportacaoInstance();
 
-//        $xml = str_replace('&nbsp;', ' ', $xml);
-
         $arResultado = $client->call('produto' . ($produtoEcommerceId ? 'Update' : 'Add'), [
             'xml' => utf8_decode($xml)
         ]);
