@@ -906,12 +906,38 @@ class IntegradorWebStorm implements IntegradorBusiness
             '<prazoXD>0</prazoXD>' .
             '<conjunto />' .
             '<nome>' . $produto->jsonData['titulo'] . '</nome>' .
-            '<descricao>' . ($produto->jsonData['descricao_produto'] ?? '') . '</descricao>' .
-            '<referencia>' . ($produto->jsonData['referencia'] ?? '') . '</referencia>' .
-            '<descricao-caracteristicas>' . htmlspecialchars($produto->jsonData['caracteristicas'] ?? '') . '</descricao-caracteristicas>' .
-            '<descricao-itens-inclusos>' . htmlspecialchars($produto->jsonData['itens_inclusos'] ?? '') . '</descricao-itens-inclusos>' .
-            '<descricao-compativel-com>' . htmlspecialchars($produto->jsonData['compativel_com'] ?? '') . '</descricao-compativel-com>' .
-            '<descricao-especificacoes-tecnicas>' . htmlspecialchars($produto->jsonData['especif_tec'] ?? '') . '</descricao-especificacoes-tecnicas>';
+            '<referencia>' . ($produto->jsonData['referencia'] ?? '') . '</referencia>';
+
+        $descricao_produto = '';
+        if ($produto->jsonData['descricao_produto'] ?? false) {
+            $descricao_produto = htmlspecialchars($produto->jsonData['descricao_produto']);
+        }
+        $xml .= '<descricao>' . $descricao_produto . '</descricao>';
+
+        $caracteristicas = '';
+        if ($produto->jsonData['caracteristicas'] ?? false) {
+            $caracteristicas = htmlspecialchars($produto->jsonData['caracteristicas']);
+        }
+        $xml .= '<descricao-descricao-caracteristicas>' . $caracteristicas . '</descricao-descricao-caracteristicas>';
+
+        $itens_inclusos = '';
+        if ($produto->jsonData['itens_inclusos'] ?? false) {
+            $itens_inclusos = htmlspecialchars($produto->jsonData['itens_inclusos']);
+        }
+        $xml .= '<descricao-itens-inclusos>' . $itens_inclusos . '</descricao-itens-inclusos>';
+
+        $compativel_com = '';
+        if ($produto->jsonData['compativel_com'] ?? false) {
+            $compativel_com = htmlspecialchars($produto->jsonData['compativel_com']);
+        }
+        $xml .= '<descricao-compativel-com>' . $compativel_com . '</descricao-compativel-com>';
+
+        $especif_tec = '';
+        if ($produto->jsonData['especif_tec'] ?? false) {
+            $especif_tec = htmlspecialchars($produto->jsonData['especif_tec']);
+        }
+        $xml .= '<descricao-especificacoes-tecnicas>' . $especif_tec . '</descricao-especificacoes-tecnicas>';
+
 
 
         foreach ($produto->jsonData as $campo => $valor) {
