@@ -10,6 +10,7 @@ import 'select2/dist/css/select2.css';
 import 'select2';
 import 'select2/dist/js/i18n/pt-BR.js';
 import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
+
 $.fn.select2.defaults.set("theme", "bootstrap");
 $.fn.select2.defaults.set("language", "pt-BR");
 
@@ -33,13 +34,13 @@ $(document).ready(function () {
 
 
     function resValorTotal() {
-        let qtde = $qtde.maskMoney('unmasked')[0];
-        let valorUnit = $valorUnit.maskMoney('unmasked')[0];
+        console.log($qtde.val());
 
+        let qtde = $qtde.val().replace('.','').replace(',','.');
+        let valorUnit = $valorUnit.val().replace('.','').replace(',','.');
         let subTotal = (qtde * valorUnit);
-        // $subTotal.val(subTotal.toFixed(2).replace('.',',')).maskMoney('mask');
 
-        let desconto = $desconto.maskMoney('unmasked')[0];
+        let desconto = $desconto.val().replace('.','').replace(',','.');
         let valorTotal = (subTotal - desconto).toFixed(2).replace('.', ',');
         $valorTotal.val(valorTotal);
         CrosierMasks.maskDecs();
@@ -70,26 +71,21 @@ $(document).ready(function () {
             delay: 750,
             url: Routing.generate('ven_venda_findProdutosByIdOuNomeJson'),
             dataType: 'json',
-            processResults: function (data) {
-                let mapped = $.map(data.results, function (obj) {
-                    return {
-                        'id': obj.id,
-                        'text': obj.nome,
-                        'precoVenda': obj.preco_venda,
-                        'unidade': obj.unidade
-                    };
-                });
-                return {
-                    results: mapped
-                };
-            },
             cache: true
         }
     }).on('select2:select', function () {
         let o = $item_produto.select2('data')[0];
-        $('#item_unidade').html(o.unidade);
-        let precoVenda = parseFloat(o.precoVenda).toFixed(2);
-        $valorUnit.val(precoVenda.replace('.', ',')).maskMoney('mask');
+        console.dir(o);
+        $qtde.removeClass();
+        $qtde.addClass('form-control').addClass('crsr-dec' + o.unidade_casas_decimais);
+        $('#item_unidade').html(o.unidade_label);
+
+        let precoVenda = parseFloat(o.preco_venda).toFixed(2).replace('.', ',');
+        $valorUnit.val(precoVenda);
+
+
+        CrosierMasks.maskDecs();
+
     });
 
 
@@ -106,13 +102,13 @@ $(document).ready(function () {
         $('#item_unidade').html(dados.itemUnidade);
 
         let qtde = parseFloat(dados.itemQtde).toFixed(3);
-        $qtde.val(qtde.replace('.', ',')).maskMoney('mask');
+        $qtde.val(qtde.replace('.', ','));
 
         let precoVenda = parseFloat(dados.itemPrecoVenda).toFixed(2);
-        $valorUnit.val(precoVenda.replace('.', ',')).maskMoney('mask');
+        $valorUnit.val(precoVenda.replace('.', ','));
 
         let desconto = parseFloat(dados.itemDesconto).toFixed(2);
-        $desconto.val(desconto.replace('.', ',')).maskMoney('mask');
+        $desconto.val(desconto.replace('.', ','));
 
         resValorTotal();
 
@@ -129,6 +125,8 @@ $(document).ready(function () {
         $item_produto.val(data.id).trigger('change');
 
         $item_produto.select2('focus');
+
+        CrosierMasks.maskDecs();
 
     });
 

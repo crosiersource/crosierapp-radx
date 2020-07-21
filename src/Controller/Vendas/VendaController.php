@@ -521,23 +521,28 @@ class VendaController extends FormListController
         try {
             $str = $request->get('term');
 
-            $sql = 'SELECT prod.id, prod.nome, prod.json_data, preco.preco_prazo FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
+            $sql = 'SELECT prod.id, prod.nome, prod.json_data, preco.preco_prazo as precoVenda, u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
+                'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
+                'JOIN est_unidade u ON prod.unidade_id = u.id ' .
                 'WHERE preco.atual AND (' .
-                'prod.id LIKE :str OR ' .
-                'prod.nome LIKE :str OR ' .
-                'json_data->>"$.codigo" LIKE :str) ORDER BY prod.nome LIMIT 20';
+                'prod.nome LIKE :nome OR ' .
+                'prod.json_data->>"$.codigo" LIKE :codigo) ORDER BY prod.nome LIMIT 20';
 
-            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql, ['str' => '%' . $str . '%']);
+            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql,
+                [
+                    'nome' => '%' . $str . '%',
+                    'codigo' => '%' . $str
+                ]);
             $results = [];
             foreach ($rs as $r) {
                 $jsonData = json_decode($r['json_data'], true);
-                $precoVenda = $r['preco_prazo'] ?? $jsonData['preco_tabela'] ?? 0.0;
                 $codigo = str_pad($jsonData['codigo'] ?? $r['id'], 6, '0', STR_PAD_LEFT);
                 $results[] = [
                     'id' => $r['id'],
-                    'nome' => $codigo . ' - ' . $r['nome'],
-                    'preco_venda' => $precoVenda,
-                    'unidade' => $jsonData['unidade'] ?? 'UN'
+                    'text' => $codigo . ' - ' . $r['nome'],
+                    'preco_venda' => $r['precoVenda'],
+                    'unidade_label' => $r['unidade_label'],
+                    'unidade_casas_decimais' => $r['unidade_casas_decimais'],
                 ];
             }
 

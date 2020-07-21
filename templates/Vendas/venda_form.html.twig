@@ -43,11 +43,20 @@
                     <div class="col-md-4 col-sm-12">
                         {{ form_row(form.vendedor) }}
                     </div>
-                    <div class="col-md-5 col-sm-12">
-                        {{ form_row(form.cliente) }}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-12">
+                        {{ form_row(form.jsonData.cliente_documento) }}
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.jsonData.cliente_nome) }}
                     </div>
                     <div class="col-md-3 col-sm-12">
-                        {{ form_row(form.planoPagto) }}
+                        {{ form_row(form.jsonData.cliente_fone) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.jsonData.cliente_email) }}
                     </div>
                 </div>
 
@@ -102,7 +111,7 @@
 
                             <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
-                                    <label for="item_precoVenda">Vlr Un</label>
+                                    <label for="item_precoVenda">Preço Venda</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">R$</span>
@@ -115,7 +124,7 @@
 
                             <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
-                                    <label for="item_desconto">Desc</label>
+                                    <label for="item_desconto">Desconto</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">R$</span>
@@ -128,7 +137,7 @@
 
                             <div class="col-md-3 col-sm-12">
                                 <div class="form-group">
-                                    <label for="item_valorTotal">Vlr Total</label>
+                                    <label for="item_valorTotal">Total Item</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">R$</span>
@@ -159,7 +168,7 @@
                                 {% for item in e.itens %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
-                                        <td>{{ item.id|strpad(9) }}{{ item.descricao }}</td>
+                                        <td>{{ item.id|strpad(9) }} - {{ item.descricao }}</td>
                                         <td class="text-right">{{ item.qtde|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.precoVenda|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.desconto|number_format(2,',','.') }}</td>
@@ -169,7 +178,7 @@
 
                                                 <button type="button" class="btn btn-sm btn-primary btnEditProduto"
                                                         data-item-id="{{ item.id }}"
-                                                        data-item-produto-id="{{ item.produto.id }}"
+                                                        data-item-produto-id="{{ item.produto.id|default('') }}"
                                                         data-item-descricao="{{ item.descricao|default('') }}"
                                                         data-item-unidade="{{ item.produto.jsonData.unidade|default('') }}"
                                                         data-item-qtde="{{ item.qtde|default('') }}"
