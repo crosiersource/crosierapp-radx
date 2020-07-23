@@ -74,7 +74,7 @@ class VendaAPIController extends BaseAPIEntityIdController
      */
     public function handleFindById($venda): void
     {
-        $this->vendaBusiness->recalcularTotais($venda);
+        $this->vendaBusiness->recalcularTotais($venda->getId());
     }
 
 
@@ -97,7 +97,7 @@ class VendaAPIController extends BaseAPIEntityIdController
     public function handleFindByFilters(array $results): void
     {
         foreach ($results as $venda) {
-            $this->vendaBusiness->recalcularTotais($venda);
+            $this->vendaBusiness->recalcularTotais($venda->getId());
         }
     }
 

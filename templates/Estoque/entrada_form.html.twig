@@ -95,7 +95,7 @@
                                             <div class="form-group">
                                                 <label for="item_produto">Produto</label>
                                                 <input type="hidden" id="item_id" name="item[id]">
-                                                <select id="item_produto" name="item[produto]"
+                                                <select id="item_produto" name="item[produto]" required
                                                         class="form-control {{ e.id ? 'focusOnReady' : '' }}">
                                                 </select>
                                             </div>
@@ -107,7 +107,7 @@
                                             <div class="form-group">
                                                 <label class="" for="item_unidade">Unidade</label>
                                                 <select id="item_unidade" autocomplete="off"
-                                                        name="item[unidade]"
+                                                        name="item[unidade]" required
                                                         class="form-control"
                                                         data-options="{{ unidades|default('{}') }}"
                                                         aria-hidden="true">
@@ -119,7 +119,7 @@
                                             <div class="form-group">
                                                 <label for="item_qtde">Qtde</label>
                                                 <div class="input-group">
-                                                    <input type="text" id="item_qtde" name="item[qtde]"
+                                                    <input type="text" id="item_qtde" name="item[qtde]" required
                                                            class="crsr-dec3 form-control">
                                                     <div class="input-group-append">
                                                     <span class="input-group-text"

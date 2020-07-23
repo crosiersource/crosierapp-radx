@@ -36,7 +36,6 @@ CREATE TABLE `est_unidade`
 
 
 
-
 DROP TABLE IF EXISTS `est_depreciacao_preco`;
 
 CREATE TABLE `est_depreciacao_preco`
@@ -182,19 +181,21 @@ CREATE TABLE `est_produto`
 (
     `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
 
+    `codigo`             varchar(50),
     `uuid`               char(36)     NOT NULL,
     `depto_id`           bigint(20)   NOT NULL,
     `grupo_id`           bigint(20)   NOT NULL,
     `subgrupo_id`        bigint(20)   NOT NULL,
     `fornecedor_id`      bigint(20)   NOT NULL,
-    `unidade_id`      bigint(20)   NOT NULL,
+    `unidade_id`         bigint(20)   NOT NULL,
     `nome`               varchar(255) NOT NULL,
     `status`             enum ('ATIVO','INATIVO'),
     `obs`                varchar(5000),
     `composicao`         char(1),
     `json_data`          json,
 
-    KEY `K_est_produto_uuid` (`uuid`),
+    UNIQUE KEY `K_est_produto_uuid` (`uuid`),
+    UNIQUE KEY `K_est_produto_codigo` (`codigo`),
     KEY `K_est_produto_nome` (`nome`),
 
     KEY `K_est_produto_depto` (`depto_id`),
@@ -305,6 +306,7 @@ CREATE TABLE `est_produto_preco`
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
     `lista_id`           bigint(20)     NOT NULL,
     `produto_id`         bigint(20)     NOT NULL,
+    `unidade_id`         bigint(20)     NOT NULL,
     `coeficiente`        decimal(15, 2) NOT NULL,
     `custo_operacional`  decimal(15, 2) NOT NULL,
     `dt_custo`           date           NOT NULL,
@@ -319,10 +321,13 @@ CREATE TABLE `est_produto_preco`
     `atual`              tinyint(1)     NOT NULL,
     `json_data`          json,
 
-    UNIQUE KEY `UK_est_produto_preco` (`produto_id`, `lista_id`),
+    UNIQUE KEY `UK_est_produto_preco` (`produto_id`, `lista_id`, `unidade_id`),
 
     KEY `K_est_produto_preco_produto` (`produto_id`),
     CONSTRAINT `FK_est_produto_preco_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+
+    KEY `K_est_produto_preco_unidade` (`unidade_id`),
+    CONSTRAINT `FK_est_produto_preco_unidade` FOREIGN KEY (`unidade_id`) REFERENCES `est_unidade` (`id`),
 
     KEY `K_est_produto_preco_lista` (`lista_id`),
     CONSTRAINT `FK_est_produto_preco_lista` FOREIGN KEY (`lista_id`) REFERENCES `est_lista_preco` (`id`),

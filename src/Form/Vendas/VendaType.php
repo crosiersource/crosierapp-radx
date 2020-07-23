@@ -3,15 +3,11 @@
 namespace App\Form\Vendas;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
-use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\PlanoPagto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
-use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -74,22 +70,6 @@ class VendaType extends AbstractType
                 'attr' => ['readonly' => 'readonly']
             ]);
 
-            $planoChoices = $this->doctrine->getRepository(PlanoPagto::class)
-                ->findByFiltersSimpl([['ativo', 'EQ', true]], ['codigo' => 'ASC']);
-
-            $builder->add('planoPagto', EntityType::class, [
-                'label' => 'Pagto',
-                'class' => PlanoPagto::class,
-                'placeholder' => '...',
-                'choices' => $planoChoices,
-                'empty_data' => 0,
-                'choice_label' => function (?PlanoPagto $planoPagto) {
-                    return $planoPagto ? $planoPagto->codigo . ' - ' . $planoPagto->descricao : null;
-                },
-                'required' => true,
-                'attr' => ['class' => 'autoSelect2']
-            ]);
-
 
             $vendedorChoices = $this->doctrine->getRepository(Colaborador::class)
                 ->findByFiltersSimpl([['atual', 'EQ', true]], ['nome' => 'ASC']);
@@ -100,33 +80,10 @@ class VendaType extends AbstractType
                 'placeholder' => '...',
                 'choices' => $vendedorChoices,
                 'choice_label' => function (?Colaborador $colaborador) {
-                    return $colaborador ? $colaborador->nome : null;
+                    return $colaborador ? str_pad($colaborador->getId(), 3, '0', STR_PAD_LEFT) . ' - ' . $colaborador->nome : null;
                 },
                 'required' => false,
                 'attr' => ['class' => 'autoSelect2 ' . (!$venda->getId() ? 'focusOnReady' : '')]
-            ]);
-
-            $clientes = [null];
-            if ($venda->cliente) {
-                $clientes = [$venda->cliente];
-            }
-            $builder->add('cliente', EntityType::class, [
-                'label' => 'Cliente',
-                'class' => Cliente::class,
-                'choices' => $clientes,
-                'data' => $venda->cliente ?? null,
-                'choice_name' => function (?Cliente $cliente) {
-                    return $cliente ? $cliente->getId() : null;
-                },
-                'choice_label' => function (?Cliente $cliente) {
-                    return $cliente ? $cliente->nome : null;
-                },
-                'attr' => [
-                    'data-route-url' => '/crm/cliente/findClienteByStr/',
-                    'data-val' => $venda->cliente ? $venda->cliente->getId() : '',
-                    'class' => 'autoSelect2'
-                ],
-                'required' => false,
             ]);
 
 
@@ -175,21 +132,6 @@ class VendaType extends AbstractType
 
                 $builder = $event->getForm();
                 $data = $event->getData();
-
-                $cliente = null;
-                $clienteId = $data['cliente'] ?? null;
-                /** @var ClienteRepository $repoCliente */
-                $repoCliente = $this->doctrine->getRepository(Cliente::class);
-                $cliente = $repoCliente->find($clienteId);
-                $builder->remove('cliente');
-                $builder->add('cliente', EntityType::class, [
-                    'class' => Cliente::class,
-                    'data' => $cliente ?? null,
-                    'choice_label' => function (?Cliente $cliente) {
-                        return $cliente ? $cliente->nome : null;
-                    },
-                    'choices' => [$cliente]
-                ]);
 
                 $builder->remove('jsonData');
                 $builder->add('jsonData', JsonType::class,

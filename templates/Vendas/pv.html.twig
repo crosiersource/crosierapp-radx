@@ -1,0 +1,81 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+    <style>
+
+
+        @page {
+            margin: 1mm;
+            size: 8cm 30cm;
+            max-width: 8cm;
+        }
+
+        /** Define now the real margins of every page in the PDF **/
+        body {
+            max-width: 7.9cm;
+            font-size: 9pt;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: bold;
+            font-stretch: condensed;
+        }
+
+
+    </style>
+</head>
+<body>
+
+
+<p style="text-align: center">
+    ----- Documento Não Fiscal -----
+</p>
+
+
+<p style="text-align: center;">
+<table style="font-size: 8pt; width: 100%; padding: 0; border-spacing: 0; border: #eeeeee dashed thin">
+    <tr style="font-weight: bold">
+        <td>Produto</td>
+        <td>Qtde</td>
+        <td>Total</td>
+    </tr>
+
+    {% for item in venda.itens %}
+        <tr>
+            <td>
+                {{ item.produto.codigo }} <br>
+                {{ item.descricao }} {{ item.desconto > 0.0 ? ('Desc.: ' ~ item.desconto|number_format(2,',','.') ~ ')') : '' }}
+            </td>
+            <td style="text-align: right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
+            <td style="text-align: right"></td>
+            <td style="text-align: right">{{ item.total|number_format(2,',','.') }}</td>
+        </tr>
+    {% endfor %}
+
+</table>
+</p>
+<p style="text-align: center;">
+<table style="width: 100%; font-size: 8pt;">
+
+    {% if venda.desconto > 0 %}
+        <tr>
+            <td>Subtotal R$</td>
+            <td style="text-align: right">{{ venda.subtotal|number_format(2,',','.') }}</td>
+        </tr>
+        <tr>
+            <td>Desconto R$</td>
+            <td style="text-align: right">{{ venda.desconto|number_format(2,',','.') }}</td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td>Valor Total R$</td>
+        <td style="text-align: right">{{ venda.valorTotal|number_format(2,',','.') }}</td>
+    </tr>
+
+
+</table>
+</p>
+
+
+</body>
+</html>

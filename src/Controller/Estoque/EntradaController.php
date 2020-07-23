@@ -92,7 +92,6 @@ class EntradaController extends FormListController
 
         /** @var UnidadeRepository $repoUnidade */
         $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
-
         $params['unidades'] = json_encode($repoUnidade->findUnidadesAtuaisSelect2JS());
 
         if (!$entrada) {

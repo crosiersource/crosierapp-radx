@@ -20,6 +20,7 @@
     "jquery-maskmoney": "https://github.com/plentz/jquery-maskmoney",
     "jquery-ui": "^1.12.1",
     "js-yaml": "^3.13.1",
+    "jsoneditor": "^8.6.8",
     "lightbox2": "^2.11.1",
     "lodash.mergewith": "^4.6.2",
     "moment": "^2.23.0",
@@ -40,7 +41,7 @@
     "summernote": "^0.8.11",
     "toastr": "^2.1.4",
     "webpack-notifier": "^1.6.0",
-    "jsoneditor": "^8.6.8"
+    "print-js": "^1.0.63"
   },
   "license": "UNLICENSED",
   "private": true,
