@@ -174,7 +174,7 @@ class VendaController extends FormListController
         } else {
             $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
             $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
-            $params['pagtos_diferenca'] = bcsub($venda->getValorTotal(), $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
+            $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
         }
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
@@ -567,7 +567,7 @@ class VendaController extends FormListController
                     $dias[$i]['dtVenda'] = $venda->dtVenda;
                 }
                 $dias[$i]['vendas'][] = $venda;
-                $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->getValorTotal(), 2);
+                $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
             }
             $dados = $dias;
         };
@@ -730,7 +730,7 @@ class VendaController extends FormListController
                     $dias[$i]['dtVenda'] = $venda->dtVenda;
                 }
                 $dias[$i]['vendas'][] = $venda;
-                $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->getValorTotal(), 2);
+                $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
             }
             $dados = $dias;
         };
