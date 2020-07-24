@@ -312,7 +312,6 @@ $(document).ready(function () {
                 $produtoComposicaoProdutoFilho.val('').trigger('change');
                 $produtoComposicaoQtde.val('');
                 $produtoComposicaoPrecoComposicao.val('');
-                $produtoComposicaoProdutoFilho.select2('focus');
                 initForm();
                 toastrr.success('Item salvo com sucesso');
             } else {
@@ -332,6 +331,7 @@ $(document).ready(function () {
 
             // produtoComposicao_produtoFilho
             let produtoComposicao = $(this).data('json');
+
 
             let text = produtoComposicao.produtoFilho.titulo ?
                 produtoComposicao.produtoFilho.titulo + ' (' + produtoComposicao.produtoFilho.id + ')' :

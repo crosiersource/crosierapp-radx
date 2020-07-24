@@ -96,7 +96,6 @@ $(document).ready(function () {
 
     $('.btnEditProduto').click(function () {
         let dados = $(this).data();
-        console.dir(dados);
 
         $item_id.val(dados.itemId);
 

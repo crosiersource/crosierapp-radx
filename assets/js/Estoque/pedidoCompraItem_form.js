@@ -41,8 +41,6 @@ $(document).ready(function () {
             $('#produto').select2({
                 data: d
             });
-            console.log('stou auq: ' + $produto.data('val'));
-            console.dir(d);
             $produto.val($produto.data('val')).trigger('change');
 
         });

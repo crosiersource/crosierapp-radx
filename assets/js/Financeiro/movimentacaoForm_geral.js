@@ -155,7 +155,6 @@ $(document).ready(function () {
         let camposVisiveis = $.grep(camposTodos, function (e) {
             return camposEscond[$tipoLanctoSelected] ? camposEscond[$tipoLanctoSelected].indexOf(e) === -1 : true;
         });
-        console.dir(camposVisiveis);
 
         // Esconde todos
         camposTodos.forEach(function (campo) {

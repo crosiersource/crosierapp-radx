@@ -81,7 +81,6 @@ $(document).ready(function () {
         }
     }).on('select2:select', function () {
         let o = $item_produto.select2('data')[0];
-        console.dir(o);
         $qtde.removeClass();
         $qtde.addClass('form-control').addClass('crsr-dec' + o.unidade_casas_decimais);
         $('#item_unidade_append_label').html(o.unidade_label);
@@ -105,7 +104,6 @@ $(document).ready(function () {
     $('.btnEditProduto').click(function () {
         let dados = $(this).data();
         $item_id.val(dados.itemId);
-        console.dir(dados);
         $item_produto.prop('disabled', true);
         $unidade.prop('disabled', true);
 
@@ -161,7 +159,7 @@ $(document).ready(function () {
     }).on('select2:select', function () {
         let o = $unidade.select2('data')[0];
         console.log('unidade select');
-        console.dir(o);
+        
         $qtde.removeClass();
         $qtde.addClass('form-control').addClass('crsr-dec' + o.casas_decimais);
         $('#item_unidade_append_label').html(o.text);

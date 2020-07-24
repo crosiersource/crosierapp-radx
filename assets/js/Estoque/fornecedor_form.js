@@ -53,7 +53,7 @@ $(document).ready(function () {
         $endereco_estado.val('').trigger('change');
 
         $endereco_i.val(dados.i);
-        console.dir(dados.tipo.split(','));
+
         $endereco_tipo.val(dados.tipo.split(',')).trigger('change');
         $endereco_logradouro.val(dados.logradouro);
         $endereco_numero.val(dados.numero);
