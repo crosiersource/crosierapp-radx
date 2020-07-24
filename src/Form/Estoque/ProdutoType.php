@@ -10,9 +10,11 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\FornecedorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -113,6 +115,21 @@ class ProdutoType extends AbstractType
                 'class' => Fornecedor::class,
                 'choices' => $fornecedores,
                 'choice_label' => 'nome',
+                'attr' => [
+                    'class' => 'autoSelect2'
+                ],
+                'required' => true
+            ]);
+
+            /** @var UnidadeRepository $repoUnidade */
+            $repoUnidade = $this->doctrine->getRepository(Unidade::class);
+            $unidades = $repoUnidade->findAll(['label' => 'ASC']);
+            $builder->add('unidadePadrao', EntityType::class, [
+                'label' => 'Unidade',
+                'placeholder' => '...',
+                'class' => Unidade::class,
+                'choices' => $unidades,
+                'choice_label' => 'label',
                 'attr' => [
                     'class' => 'autoSelect2'
                 ],
