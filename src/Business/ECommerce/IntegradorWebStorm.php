@@ -307,7 +307,7 @@ class IntegradorWebStorm implements IntegradorBusiness
                 throw new ViewException('selectTiposCaracteristicasNaWebStorm (registrosSelect >> tipoCaracteristica): error ' . $client->getError());
             }
 
-            $xmlResult = simplexml_load_string($arResultado);
+            $xmlResult = simplexml_load_string(utf8_encode($arResultado));
 
             if ($xmlResult->erros ?? false) {
                 throw new ViewException('selectTiposCaracteristicasNaWebStorm (registrosSelect >> tipoCaracteristica): erros ' . $xmlResult->erros->erro->__toString());
@@ -939,7 +939,6 @@ class IntegradorWebStorm implements IntegradorBusiness
         $xml .= '<descricao-especificacoes-tecnicas>' . $especif_tec . '</descricao-especificacoes-tecnicas>';
 
 
-
         foreach ($produto->jsonData as $campo => $valor) {
             if (isset($jsonCampos[$campo]['info_integr_ecommerce']['tipo_campo_ecommerce']) && $jsonCampos[$campo]['info_integr_ecommerce']['tipo_campo_ecommerce'] === 'caracteristica') {
 
@@ -961,6 +960,12 @@ class IntegradorWebStorm implements IntegradorBusiness
                 }
             }
         }
+
+        $ecommerceId_caracteristica_unidade = $produto->unidadePadrao->jsonData['webstorm_info']['caracteristica_id'] ?? null;
+        if (!$ecommerceId_caracteristica_unidade) {
+            throw new ViewException('Erro ao integrar unidade do produto');
+        }
+        $xml .= '<caracteristicaProduto><idCaracteristica>' . $ecommerceId_caracteristica_unidade . '</idCaracteristica></caracteristicaProduto>';
 
         if ($integrarImagens) {
             foreach ($produto->imagens as $imagem) {
@@ -1092,7 +1097,6 @@ class IntegradorWebStorm implements IntegradorBusiness
         if (count($rProdutos) === 0) {
             return 0;
         }
-
 
 
         $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
