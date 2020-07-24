@@ -187,7 +187,7 @@ CREATE TABLE `est_produto`
     `grupo_id`           bigint(20)   NOT NULL,
     `subgrupo_id`        bigint(20)   NOT NULL,
     `fornecedor_id`      bigint(20)   NOT NULL,
-    `unidade_id`         bigint(20)   NOT NULL,
+    `unidade_padrao_id` bigint(20) NOT NULL,
     `nome`               varchar(255) NOT NULL,
     `status`             enum ('ATIVO','INATIVO'),
     `obs`                varchar(5000),
@@ -200,14 +200,18 @@ CREATE TABLE `est_produto`
 
     KEY `K_est_produto_depto` (`depto_id`),
     CONSTRAINT `FK_est_produto_depto` FOREIGN KEY (`depto_id`) REFERENCES `est_depto` (`id`),
+
     KEY `K_est_produto_grupo` (`grupo_id`),
     CONSTRAINT `FK_est_produto_grupo` FOREIGN KEY (`grupo_id`) REFERENCES `est_grupo` (`id`),
+
     KEY `K_est_produto_subgrupo` (`subgrupo_id`),
     CONSTRAINT `FK_est_produto_subgrupo` FOREIGN KEY (`subgrupo_id`) REFERENCES `est_subgrupo` (`id`),
+
     KEY `K_est_produto_fornecedor` (`fornecedor_id`),
     CONSTRAINT `FK_est_produto_fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `est_fornecedor` (`id`),
-    KEY `K_est_produto_unidade` (`unidade_id`),
-    CONSTRAINT `FK_est_produto_unidade` FOREIGN KEY (`unidade_id`) REFERENCES `est_unidade` (`id`),
+
+    KEY `K_est_produto_unidade` (`unidade_padrao_id`),
+    CONSTRAINT `FK_est_produto_unidade` FOREIGN KEY (`unidade_padrao_id`) REFERENCES `est_unidade` (`id`),
 
     -- campo de controle
     PRIMARY KEY (`id`),

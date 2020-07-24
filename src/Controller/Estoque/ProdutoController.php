@@ -411,7 +411,7 @@ class ProdutoController extends FormListController
             if (ctype_digit($str)) {
                 $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str]]);
             } else {
-                $produtos = $repoProduto->findByFiltersSimpl([[['nome', 'jsonData'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
+                $produtos = $repoProduto->findByFiltersSimpl([[['nome', 'titulo'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
             }
             $select2js = Select2JsUtils::toSelect2DataFn($produtos, function ($e) {
                 /** @var Produto $e */
