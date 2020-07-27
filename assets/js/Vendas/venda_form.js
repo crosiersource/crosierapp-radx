@@ -158,8 +158,7 @@ $(document).ready(function () {
         data: $unidade.data('options')
     }).on('select2:select', function () {
         let o = $unidade.select2('data')[0];
-        console.log('unidade select');
-        
+
         $qtde.removeClass();
         $qtde.addClass('form-control').addClass('crsr-dec' + o.casas_decimais);
         $('#item_unidade_append_label').html(o.text);

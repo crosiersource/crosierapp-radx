@@ -25,10 +25,10 @@ Routing.setRoutingData(routes);
 
 $(document).ready(function () {
 
-    let $item_produto = $('#item_produto');
-    let $item_unidade = $('#item_unidade');
-    let $item_id = $('#item_id');
-    let $item_precoVenda = $('#item_precoVenda');
+    let $produto = $('#item_produto');
+    let $unidade = $('#item_unidade');
+    let $id = $('#item_id');
+    let $precoVenda = $('#item_precoVenda');
 
     let $qtde = $('#item_qtde');
 
@@ -36,7 +36,7 @@ $(document).ready(function () {
     $.fn.select2.defaults.set("theme", "bootstrap");
     $.fn.select2.defaults.set("language", "pt-BR");
 
-    $item_produto.select2({
+    $produto.select2({
         minimumInputLength: 3,
         width: '100%',
         dropdownAutoWidth: true,
@@ -44,37 +44,57 @@ $(document).ready(function () {
         allowClear: true,
         ajax: {
             delay: 750,
-            url: Routing.generate('est_produto_findProdutosByNomeOuFinalCodigo'),
+            url: Routing.generate('ven_venda_findProdutosByCodigoOuNomeJson'),
             dataType: 'json',
             cache: true
         }
     }).on('select2:select', function () {
-        let o = $item_produto.select2('data')[0];
-        let precoVenda = parseFloat(o.preco_prazo).toFixed(2);
-        $item_precoVenda.val(precoVenda.replace('.', ','));
+        let o = $produto.select2('data')[0];
+
+
+        $qtde.removeClass();
+        $qtde.addClass('form-control').addClass('crsr-dec' + o.unidade_casas_decimais);
+        $('#item_unidade_append_label').html(o.unidade_label);
+
+        $unidade.empty().trigger("change");
+
+        $unidade.select2({
+            'data': o.unidades
+        });
+
+        $unidade.val(o.unidade_id).trigger('change');
+
+
+        let precoVenda = parseFloat(o.preco_venda).toFixed(2).replace('.', ',');
+        $precoVenda.val(precoVenda);
+
         CrosierMasks.maskDecs();
     });
 
 
-    if ($item_produto.hasClass('focusOnReady')) {
-        $item_produto.select2('focus');
-    }
-
-
-    $item_unidade.select2({
+    $unidade.select2({
         width: '100%',
         dropdownAutoWidth: true,
         placeholder: '...',
         allowClear: true,
         tags: true,
-        data: $item_unidade.data('options')
+        data: $unidade.data('options')
     }).on('select2:select', function () {
-        let o = $item_unidade.select2('data')[0];
+        let o = $unidade.select2('data')[0];
+
         $qtde.removeClass();
         $qtde.addClass('form-control').addClass('crsr-dec' + o.casas_decimais);
         $('#item_unidade_append_label').html(o.text);
+        let precoVenda = parseFloat(o.preco_prazo).toFixed(2).replace('.', ',');
+        $precoVenda.val(precoVenda);
         CrosierMasks.maskDecs();
     });
+
+
+    if ($produto.hasClass('focusOnReady')) {
+        $produto.select2('focus');
+    }
+
 
 });
 
