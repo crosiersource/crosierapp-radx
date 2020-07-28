@@ -1139,7 +1139,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $client = $this->getNusoapClientImportacaoInstance();
 
-        $arResultado = $client->call('produtoUpdate', [
+        $arResultado = $client->call('precoEstoque', [
             'xml' => utf8_decode($xml)
         ]);
 
@@ -1608,12 +1608,10 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param int|null $limit
      * @return int
      */
-    public function enviarProdutosParaIntegracao(?int $limit = null): int
+    public function reenviarProdutosParaIntegracao(?int $limit = null): int
     {
         $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
-        $sql = 'SELECT id FROM est_produto WHERE json_data->>"$.porcent_preench" > 0 AND ' .
-            '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_integr\') OR json_data->>"$.ecommerce_dt_integr" <= updated) AND ' .
-            '(JSON_IS_NULL_OR_EMPTY(json_data, \'ecommerce_dt_marcado_integr\'))';
+        $sql = 'SELECT id FROM est_produto WHERE not JSON_IS_NULL_OR_EMPTY_OR_ZERO(json_data,\'ecommerce_id\')';
         if ($limit) {
             $sql .= ' LIMIT ' . $limit;
         }

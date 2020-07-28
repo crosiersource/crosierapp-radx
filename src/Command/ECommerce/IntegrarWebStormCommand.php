@@ -64,10 +64,10 @@ class IntegrarWebStormCommand extends Command
             case 'produtos':
                 try {
                     $output->writeln('Integrando produtos');
-                    $qtde = $this->integraWebStorm->enviarProdutosParaIntegracao();
+                    $qtde = $this->integraWebStorm->reenviarProdutosParaIntegracao();
                     $output->writeln('OK: ' . $qtde . ' produtos marcados para integração');
                 } catch (ViewException $e) {
-                    $output->writeln('Erro ao enviarProdutosParaIntegracao');
+                    $output->writeln('Erro ao reenviarProdutosParaIntegracao');
                     $output->writeln($e->getMessage());
                     $output->writeln($e->getTraceAsString());
                 }

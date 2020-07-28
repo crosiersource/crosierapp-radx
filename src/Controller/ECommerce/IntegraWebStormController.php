@@ -65,13 +65,13 @@ class IntegraWebStormController extends BaseController
 
     /**
      *
-     * @Route("/est/integraWebStorm/enviarProdutosParaIntegracao", name="est_integraWebStorm_enviarProdutosParaIntegracao")
+     * @Route("/est/integraWebStorm/reenviarProdutosParaIntegracao", name="est_integraWebStorm_reenviarProdutosParaIntegracao")
      * @param Request $request
      * @param IntegradorWebStorm $integraWebStormBusiness
      * @return Response
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function enviarProdutosParaIntegracao(Request $request, IntegradorWebStorm $integraWebStormBusiness): Response
+    public function reenviarProdutosParaIntegracao(Request $request, IntegradorWebStorm $integraWebStormBusiness): Response
     {
         try {
             $integrarImagens = null;
@@ -82,7 +82,7 @@ class IntegraWebStormController extends BaseController
                 $qtde = null;
             }
 
-            $rQtde = $integraWebStormBusiness->enviarProdutosParaIntegracao($qtde);
+            $rQtde = $integraWebStormBusiness->reenviarProdutosParaIntegracao($qtde);
             $this->addFlash('success', $rQtde . ' produtos enviados para integração com sucesso');
         } catch (ViewException $e) {
             $this->addFlash('error', 'Erro ao enviar produtos para integração (' . $e->getMessage() . ')');
