@@ -61,10 +61,10 @@
 
                         <li class="nav-item">
                             <a class="nav-link {{ loop.index0 == 0 ? 'active' : '' }}"
-                               id="{{ aba|lower|transliterate }}-tab" data-toggle="tab"
-                               href="#{{ aba|lower|transliterate }}"
+                               id="{{ aba|lower|transliterate|replace({' ':''}) }}-tab" data-toggle="tab"
+                               href="#{{ aba|lower|transliterate|replace({' ':''}) }}"
                                role="tab"
-                               aria-controls="{{ aba|lower|transliterate }}"
+                               aria-controls="{{ aba|lower|transliterate|replace({' ':''}) }}"
                                aria-selected="false">{{ aba }}</a>
                         </li>
 
@@ -103,8 +103,8 @@
                     {% for aba,camposNaAba in jsonMetadata.abas %}
 
                         {# Abas fixas que possuem arquivo próprio #}
-                        {% if aba in ['Produto','Fotos','EstoquesPrecos'] %}
-                            {% include 'Estoque/produto_form_' ~ aba|lower|transliterate ~ '.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
+                        {% if aba in ['Produto','Fotos','Estoques e Preços'] %}
+                            {% include 'Estoque/produto_form_' ~ aba|lower|transliterate|replace({' ':''}) ~ '.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
                         {% else %}
                             {% include 'Estoque/produto_form_aba.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
                         {% endif %}

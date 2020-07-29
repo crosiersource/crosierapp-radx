@@ -42,6 +42,7 @@ $(document).ready(function () {
     let $btnImagemEdit = $('.btnImagemEdit');
 
     let $produtoId = $('#produto_id');
+    
     let $produtoComposicaoId = $('#produtoComposicao_id');
     let $produtoComposicaoProdutoFilho = $('#produtoComposicao_produtoFilho');
     let $produtoComposicaoQtde = $('#produtoComposicao_qtde');
@@ -326,6 +327,51 @@ $(document).ready(function () {
     });
 
 
+
+
+    function submitPreco() {
+
+        if (!$produtoPrecoProdutoFilho.val() || !$produtoPrecoQtde.val() || !$produtoPrecoPrecoPreco.val()) {
+            toastrr.error('"É necessário informar o "Item", a "Qtde" e o "Preço (Compo)"');
+            return;
+        }
+
+        let preco = {
+            "produtoPreco": {
+                "id": $produtoPrecoId.val(),
+                "produtoFilho": $produtoPrecoProdutoFilho.val(),
+                "qtde": $produtoPrecoQtde.val(),
+                "precoPreco": $produtoPrecoPrecoPreco.val()
+            }
+        };
+
+        $.ajax({
+                dataType: "json",
+                data: preco,
+                url: Routing.generate('est_produto_formPreco') + '/' + $produtoId.val(),
+                type: 'POST'
+            }
+        ).done(function (data) {
+            if (data.result === 'OK') {
+                $('#divTbPreco').html(data.divTbPreco);
+                $produtoPrecoId.val('');
+                $produtoPrecoProdutoFilho.val('').trigger('change');
+                $produtoPrecoQtde.val('');
+                $produtoPrecoPrecoPreco.val('');
+                initForm();
+                toastrr.success('Item salvo com sucesso');
+            } else {
+                toastrr.error(data.msg ? data.msg : 'Erro ao salvar item da composição');
+            }
+
+        });
+    }
+
+    $('#btnSalvarPreco').on('click', function (e) {
+        submitPreco();
+    });
+
+
     function initForm() {
         $('.btnComposicaoEdit').on('click', function (e) {
 
@@ -348,6 +394,7 @@ $(document).ready(function () {
 
         createSortableComposicao();
     }
+    
 
 
     initForm();

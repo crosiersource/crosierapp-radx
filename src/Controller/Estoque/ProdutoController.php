@@ -12,15 +12,22 @@ use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Estoque\ProdutoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ListaPreco;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoComposicao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoImagem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoPreco;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoComposicaoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoImagemEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoPrecoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ListaPrecoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoComposicaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoImagemRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoPrecoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -43,6 +50,8 @@ class ProdutoController extends FormListController
 
     private ProdutoImagemEntityHandler $produtoImagemEntityHandler;
 
+    private ProdutoPrecoEntityHandler $produtoPrecoEntityHandler;
+
     private UploaderHelper $uploaderHelper;
 
     private ProdutoBusiness $produtoBusiness;
@@ -64,6 +73,16 @@ class ProdutoController extends FormListController
     {
         $this->produtoImagemEntityHandler = $produtoImagemEntityHandler;
     }
+
+    /**
+     * @required
+     * @param ProdutoPrecoEntityHandler $produtoPrecoEntityHandler
+     */
+    public function setProdutoPrecoEntityHandler(ProdutoPrecoEntityHandler $produtoPrecoEntityHandler): void
+    {
+        $this->produtoPrecoEntityHandler = $produtoPrecoEntityHandler;
+    }
+
 
     /**
      * @required
@@ -124,6 +143,24 @@ class ProdutoController extends FormListController
 
         if (!$produto) {
             $produto = new Produto();
+        } else {
+            $listasPrecos = [];
+            foreach ($produto->precos as $preco) {
+                $preco->lista->descricao;
+                $listasPrecos[$preco->lista->getId()]['lista'] = $preco->lista;
+                $listasPrecos[$preco->lista->getId()]['precos'][] = $preco;
+            }
+            $params['listasPrecos'] = $listasPrecos;
+
+
+            /** @var UnidadeRepository $repoUnidade */
+            $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
+            $params['unidades'] = json_encode($repoUnidade->findUnidadesAtuaisSelect2JS());
+
+            /** @var ListaPrecoRepository $repoListaPreco */
+            $repoListaPreco = $this->getDoctrine()->getRepository(ListaPreco::class);
+            $params['listasPrecos_options'] = json_encode($repoListaPreco->findAllSelect2JS());
+
         }
 
         /** @var ProdutoRepository $repoProduto */
@@ -669,16 +706,11 @@ class ProdutoController extends FormListController
                     $pathinfo['filename'] . '_thumbnail.' . $pathinfo['extension'];
                 $imgUtils->save($thumbnail);
 
-
                 $jsonData['imagem1'] = $pathinfo['filename'] . '_thumbnail.' . $pathinfo['extension'];
                 $conn->update('est_produto', ['json_data' => json_encode($jsonData)], ['id' => $produtoComImagem1['id']]);
-
             }
-
-
         }
         return new Response('<hr>OK');
-
     }
 
     /**
@@ -727,7 +759,7 @@ class ProdutoController extends FormListController
                 new FilterData(['depto'], 'EQ', 'depto', $params),
                 new FilterData(['grupo'], 'EQ', 'grupo', $params),
                 new FilterData(['subgrupo'], 'EQ', 'subgrupo', $params),
-                new FilterData(['fornecedor_nomeFantasia','fornecedor_nome'], 'LIKE', 'fornecedor', $params, null, true),
+                new FilterData(['fornecedor_nomeFantasia', 'fornecedor_nome'], 'LIKE', 'fornecedor', $params, null, true),
             ];
 
             return $filterDatas;
@@ -753,6 +785,82 @@ class ProdutoController extends FormListController
         };
 
         return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/formPreco/{produto}", name="est_produto_formPreco", requirements={"produto"="\d+"})
+     * @param Request $request
+     * @param Produto|null $produto
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     * @return JsonResponse
+     */
+    public function formPreco(Request $request, Produto $produto): JsonResponse
+    {
+        try {
+            $produtoPrecoArr = $request->get('produtoPreco');
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+            /** @var Produto $produtoFilho */
+            $produtoFilho = $repoProduto->find($produtoPrecoArr['produtoFilho']);
+            if ($produtoPrecoArr['id']) {
+                /** @var ProdutoPrecoRepository $repoProdutoPreco */
+                $repoProdutoPreco = $this->getDoctrine()->getRepository(ProdutoPreco::class);
+                $preco = $repoProdutoPreco->find($produtoPrecoArr['id']);
+            } else {
+                $preco = new ProdutoPreco();
+            }
+            $preco->produtoPai = $produto;
+            $preco->produtoFilho = $produtoFilho;
+            $preco->qtde = DecimalUtils::parseStr($produtoPrecoArr['qtde']);
+            $preco->precoPreco = DecimalUtils::parseStr($produtoPrecoArr['precoPreco']);
+            $this->produtoPrecoEntityHandler->save($preco);
+
+            $r = [
+                'result' => 'OK',
+                'divTbPreco' => $this->renderView('Estoque/produto_form_preco_divTbPreco.html.twig', ['e' => $produto])
+            ];
+        } catch (ViewException | \Exception $e) {
+            $this->logger->error('Erro - formPreco()');
+            $this->logger->error($e->getMessage());
+            $msg = $e instanceof ViewException ? $e->getMessage() : 'Erro ao salvar item da composição';
+            $r = [
+                'result' => 'ERRO',
+                'msg' => $msg
+            ];
+        }
+        return new JsonResponse($r);
+
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/precoDelete/{produtoPreco}/", name="est_produto_precoDelete", requirements={"produtoPreco"="\d+"})
+     *
+     * @param Request $request
+     * @param ProdutoPreco $produtoPreco
+     * @return RedirectResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function produtoPrecoDelete(Request $request, ProdutoPreco $produtoPreco): RedirectResponse
+    {
+        try {
+            if (!$this->isCsrfTokenValid('est_produto_precoDelete', $request->get('token'))) {
+                throw new ViewException('Token inválido');
+            }
+            $this->produtoPrecoEntityHandler->delete($produtoPreco);
+            $this->addFlash('success', 'Registro deletado com sucesso');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao deletar o preço');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->redirectToRoute('est_produto_form', ['id' => $produtoPreco->produto->getId(), '_fragment' => 'estoqueseprecos']);
     }
 
 
