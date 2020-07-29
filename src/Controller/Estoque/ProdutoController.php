@@ -11,6 +11,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Estoque\ProdutoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoComposicao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoImagem;
@@ -692,6 +693,66 @@ class ProdutoController extends FormListController
         $str = $request->get('term');
         $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
         return new JsonResponse(['results' => $repoProduto->findProdutosByNomeOuFinalCodigo_select2js($str)]);
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/listSimpl/", name="est_produto_listSimpl")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function listSimpl(Request $request): Response
+    {
+        $params = [
+            'formUrl' => '/est/produto/form',
+            'listRoute' => 'est_produto_listSimpl',
+            'listView' => 'Estoque/produto_listSimpl.html.twig',
+        ];
+
+        $params['colunas'] = [
+            'id',
+            'nome',
+            'jsonData.fornecedor_nomeFantasia',
+            'jsonData.depto_nome',
+        ];
+
+        $fnGetFilterDatas = function (array $params) use ($request) : array {
+            $filterDatas = [
+                new FilterData(['id'], 'EQ', 'id', $params),
+                new FilterData(['nome'], 'LIKE', 'nome', $params),
+                new FilterData(['depto'], 'EQ', 'depto', $params),
+                new FilterData(['grupo'], 'EQ', 'grupo', $params),
+                new FilterData(['subgrupo'], 'EQ', 'subgrupo', $params),
+                new FilterData(['fornecedor_nomeFantasia','fornecedor_nome'], 'LIKE', 'fornecedor', $params, null, true),
+            ];
+
+            return $filterDatas;
+        };
+
+
+        $params['limit'] = 200;
+
+        $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
+
+        $params['deptos'] = $repoDepto->buildDeptosGruposSubgruposSelect2(
+            (int)($request->get('filter')['depto'] ?? null),
+            (int)($request->get('filter')['grupo'] ?? null),
+            (int)($request->get('filter')['subgrupo'] ?? null));
+        $params['grupos'] = json_encode([['id' => 0, 'text' => 'Selecione...']]);
+        $params['subgrupos'] = json_encode([['id' => 0, 'text' => 'Selecione...']]);
+
+
+        $fnHandleDadosList = function (array &$dados, int $totalRegistros) use ($params) {
+            if (count($dados) >= $params['limit'] && $totalRegistros > $params['limit']) {
+                $this->addFlash('warn', 'Retornando apenas ' . $params['limit'] . ' registros de um total de ' . $totalRegistros . '. Utilize os filtros!');
+            }
+        };
+
+        return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);
     }
 
 

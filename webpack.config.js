@@ -35,6 +35,7 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('Estoque/produto_list', './assets/js/Estoque/produto_list.js')
+    .addEntry('Estoque/produto_listSimpl', './assets/js/Estoque/produto_listSimpl.js')
     .addEntry('Estoque/produto_form', './assets/js/Estoque/produto_form.js')
     .addEntry('Estoque/pedidoCompra_form', './assets/js/Estoque/pedidoCompra_form.js')
     .addEntry('Estoque/pedidoCompraItem_form', './assets/js/Estoque/pedidoCompraItem_form.js')

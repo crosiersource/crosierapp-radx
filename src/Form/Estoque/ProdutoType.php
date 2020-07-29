@@ -125,7 +125,7 @@ class ProdutoType extends AbstractType
             $repoUnidade = $this->doctrine->getRepository(Unidade::class);
             $unidades = $repoUnidade->findAll(['label' => 'ASC']);
             $builder->add('unidadePadrao', EntityType::class, [
-                'label' => 'Unidade',
+                'label' => 'Unidade Padrão',
                 'placeholder' => '...',
                 'class' => Unidade::class,
                 'choices' => $unidades,
