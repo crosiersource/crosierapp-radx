@@ -2,7 +2,7 @@
 
     <thead>
     <tr>
-        <th scope="col">#</th>
+        <th scope="col">Id</th>
         <th scope="col" class="text-nowrap">
             Qtde
         </th>
@@ -20,8 +20,8 @@
 
     <tbody id="tbodySortableComposicao">
     {% for produtoComposicao in e.composicoes %}
-        <tr data-id="{{ produtoComposicao.id }}">
-            <td id="ordem">{{ produtoComposicao.ordem }}</td>
+        <tr data-id="{{ produtoComposicao.id|strpad(9) }}">
+            <td id="ordem">{{ produtoComposicao.produtoFilho.id }}</td>
             <td class="text-right">
                 {{ produtoComposicao.qtde }}
             </td>
@@ -65,7 +65,7 @@
     <tfoot>
     <tr style="background-color: lightgrey; font-weight: bold">
         <td colspan="4" class="text-right">Preço Total da Composição:</td>
-        <td class="text-right">{{ e.composicaoValorTotal|default(0.00)|number_format(2,',','.')  }}</td>
+        <td class="text-right">{{ e.jsonData.preco_tabela|default(0.00)|number_format(2,',','.') }}</td>
         <td></td>
         <td></td>
     </tr>
@@ -73,8 +73,8 @@
         <td colspan="4" class="text-right">Estoque Disponível p/ a Composição:</td>
         <td></td>
         <td class="text-right">
-            {{ e.composicaoEstoqueDisponivel|default(0) }}
-            {% if e.composicaoEstoqueDisponivel|default(0) < 1 %}
+            {{ e.jsonData.qtde_estoque_total|default(0) }}
+            {% if e.jsonData.qtde_estoque_total|default(0) < 1 %}
                 <br/>
                 <span class="badge badge-warning">Em falta</span>
             {% endif %}

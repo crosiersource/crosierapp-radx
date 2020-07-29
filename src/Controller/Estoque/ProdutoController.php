@@ -167,10 +167,6 @@ class ProdutoController extends FormListController
         $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
         $params['jsonMetadata'] = json_decode($repoProduto->getJsonMetadata(), true);
 
-        if ($produto->composicao === 'S') {
-            $this->produtoBusiness->fillQtdeEmEstoqueComposicao($produto);
-        }
-
         // Verifique o método handleRequestOnValid abaixo
         return $this->doForm($request, $produto, $params);
     }
@@ -393,7 +389,8 @@ class ProdutoController extends FormListController
             $composicao->precoComposicao = DecimalUtils::parseStr($produtoComposicaoArr['precoComposicao']);
             $this->produtoComposicaoEntityHandler->save($composicao);
             $produto->composicoes->add($composicao);
-            $this->produtoBusiness->fillQtdeEmEstoqueComposicao($produto);
+            $this->entityHandler->save($produto);
+
             $r = [
                 'result' => 'OK',
                 'divTbComposicao' => $this->renderView('Estoque/produto_form_composicao_divTbComposicao.html.twig', ['e' => $produto])

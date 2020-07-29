@@ -42,10 +42,11 @@
                         <div class="ml-auto text-right">
                             Estoque
                             {% if e.composicao == 'S' %}
-                                Disponível: {{ e.composicaoEstoqueDisponivel|default('') }}
+                                Disponível:
                             {% else %}
-                                Total: {{ e.jsonData['qtde_estoque_total']|default('') }}
+                                Total:
                             {% endif %}
+                            {{ e.jsonData['qtde_estoque_total']|default('') }}
                         </div>
                     </div>
                 </div>

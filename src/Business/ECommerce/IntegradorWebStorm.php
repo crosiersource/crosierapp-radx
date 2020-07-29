@@ -902,7 +902,7 @@ class IntegradorWebStorm implements IntegradorBusiness
             '<departamento pk="idDepartamento"><idDepartamento>' . $idDepto . '</idDepartamento></departamento>' .
             '<departamento pk="idDepartamento"><idDepartamento>' . $idGrupo . '</idDepartamento></departamento>' .
             '<departamento pk="idDepartamento"><idDepartamento>' . $idSubgrupo . '</idDepartamento></departamento>' .
-            '<situacao>1</situacao>' .
+            '<situacao>0</situacao>' .
             '<prazoXD>0</prazoXD>' .
             '<conjunto />' .
             '<nome>' . $produto->jsonData['titulo'] . '</nome>' .
