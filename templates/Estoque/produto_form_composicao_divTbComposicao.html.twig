@@ -73,8 +73,8 @@
         <td colspan="4" class="text-right">Estoque Disponível p/ a Composição:</td>
         <td></td>
         <td class="text-right">
-            {{ e.composicaoEstoqueDisponivel|default(0) }}
-            {% if e.composicaoEstoqueDisponivel|default(0) < 1 %}
+
+            {% if e.jsonData.qtde_estoque_total|default(0) < 1 %}
                 <br/>
                 <span class="badge badge-warning">Em falta</span>
             {% endif %}
