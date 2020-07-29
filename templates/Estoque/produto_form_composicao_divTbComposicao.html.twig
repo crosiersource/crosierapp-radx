@@ -65,7 +65,7 @@
     <tfoot>
     <tr style="background-color: lightgrey; font-weight: bold">
         <td colspan="4" class="text-right">Preço Total da Composição:</td>
-        <td class="text-right">{{ e.composicaoValorTotal|default(0.00)|number_format(2,',','.')  }}</td>
+        <td class="text-right">{{ e.jsonData.preco_tabela|default(0.00)|number_format(2,',','.')  }}</td>
         <td></td>
         <td></td>
     </tr>
