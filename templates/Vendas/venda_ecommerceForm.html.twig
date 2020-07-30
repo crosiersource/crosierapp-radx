@@ -24,10 +24,6 @@
                 {{ form_start(form) }}
                 {{ form_widget(form._token) }}
 
-                <span class="d-none">
-                    {{ form_row(form.cliente) }}
-                    {{ form_row(form.vendedor) }}
-                </span>
 
                 <div class="row">
                     <div class="col-md-2 col-sm-12">
@@ -45,7 +41,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-7 col-sm-12">
+                    <div class="col-md-12 col-sm-12">
 
                         <div class="form-group">
                             <label class="" for="venda_cliente">Cliente</label>
@@ -53,9 +49,7 @@
                                    value="{{ e.cliente.documento|mascararCnpjCpf }} - {{ e.cliente.nome }}">
                         </div>
                     </div>
-                    <div class="col-md-5 col-sm-12">
-                        {{ form_row(form.planoPagto) }}
-                    </div>
+
                 </div>
 
                 <div class="form-group">
