@@ -176,7 +176,7 @@
                                                 <td>{{ loop.index }}</td>
                                                 <td>{{ item.produto.jsonData['codigo']|default(0)|strpad(9) }}
                                                     - {{ item.produto.nome }}</td>
-                                                <td class="text-right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
+                                                <td class="text-right text-nowrap">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
                                                 <td class="text-right">
                                                     {% if e.status != 'INTEGRADO' %}
                                                         <button type="button" class="btn btn-sm btn-danger"
@@ -185,7 +185,9 @@
                                                                 data-target="#confirmationModal" data-toggle="modal">
                                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                                         </button>
+                                                        <br/>
                                                     {% endif %}
+                                                    <span class="badge badge-pill badge-info">{{ e.updated|date('d/m/Y H:i:s') }}</span>
                                                 </td>
                                             </tr>
                                         {% endfor %}

@@ -754,7 +754,7 @@ class VendaController extends FormListController
             // Pesquisa o produto e seu preço já levando em consideração a unidade padrão
             $sql = 'SELECT prod.id, prod.codigo, prod.nome, preco.preco_prazo as precoVenda, u.id as unidade_id, u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
                 'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
-                'JOIN est_unidade u ON prod.unidade_padrao_id = u.id AND preco.unidade_id = u.id ' .
+                'JOIN est_unidade u ON preco.unidade_id = u.id ' .
                 'WHERE preco.atual AND (' .
                 'prod.nome LIKE :nome OR ' .
                 'prod.codigo LIKE :codigo) ORDER BY prod.nome LIMIT 20';
@@ -776,7 +776,7 @@ class VendaController extends FormListController
                 $rUnidades = $stmtUnidades->fetchAll();
                 $results[] = [
                     'id' => $r['id'],
-                    'text' => $codigo . ' - ' . $r['nome'],
+                    'text' => $codigo . ' - ' . $r['nome'] . '(' . $r['unidade_label'] . ')',
                     'preco_venda' => $r['precoVenda'],
                     'unidade_id' => $r['unidade_id'],
                     'unidade_label' => $r['unidade_label'],

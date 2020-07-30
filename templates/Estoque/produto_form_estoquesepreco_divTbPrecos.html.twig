@@ -39,7 +39,7 @@
                                     <i class="fa fa-wrench" aria-hidden="true"></i>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-danger"
-                                        data-url="{{ url('est_produto_precoDelete', {'preco': preco.id}) }}"
+                                        data-url="{{ url('est_produto_precoDelete', {'produtoPreco': preco.id}) }}"
                                         data-token="{{ csrf_token('est_produto_precoDelete') }}"
                                         data-target="#confirmationModal" data-toggle="modal">
                                     <i class="fa fa-trash" aria-hidden="true"></i>

@@ -1,153 +1,222 @@
 <div class="tab-pane fade" id="estoqueseprecos" role="tabpanel" aria-labelledby="estoqueseprecos-tab">
 
-    {% if e.id %}
+    <div class="container" style="margin-bottom: 50px">
+
+        {% if e.id %}
 
 
-        <input type="hidden" name="produtoPreco[id]" id="produtoPreco_id"/>
+            <input type="hidden" name="produtoPreco[id]" id="produtoPreco_id"/>
 
-        <div class="col-md-3 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_lista">Lista</label>
-                <select id="produtoPreco_lista" autocomplete="off"
-                        name="produtoPreco[lista]" required
-                        class="form-control"
-                        data-options="{{ listasPrecos_options|default('{}') }}"
-                        aria-hidden="true">
-                </select>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_unidade">Unidade</label>
-                <select id="produtoPreco_unidade" autocomplete="off"
-                        name="produtoPreco[unidade]" required
-                        class="form-control"
-                        data-options="{{ unidades|default('{}') }}"
-                        aria-hidden="true">
-                </select>
-            </div>
-        </div>
-
-        <div class="col-md-2 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_precoCusto">Preço Custo</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">R$</span>
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <label for="produtoPreco_lista">Lista</label>
+                        <select id="produtoPreco_lista" autocomplete="off"
+                                name="produtoPreco[lista]" required
+                                class="form-control"
+                                data-options="{{ listasPrecos_options|default('{}') }}"
+                                aria-hidden="true">
+                        </select>
                     </div>
-                    <input type="text" id="produtoPreco_precoCusto" name="produtoPreco[precoCusto]"
-                           class="crsr-money form-control">
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_coeficiente">Coeficiente</label>
-                <input id="produtoPreco_coeficiente" name="produtoPreco[coeficiente]"
-                       class="form-control crsr-dec3">
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_margem">Margem</label>
-                <input id="produtoPreco_margem" name="produtoPreco[margem]"
-                       class="form-control crsr-dec3">
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_custoOperacional">Cto Operacional</label>
-                <input id="produtoPreco_custoOperacional" name="produtoPreco[custoOperacional]"
-                       class="form-control crsr-dec3">
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_custoFinanceiro">Cto Financeiro</label>
-                <input id="produtoPreco_custoFinanceiro" name="produtoPreco[custoFinanceiro]"
-                       class="form-control crsr-dec3">
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_prazo">Prazo de Compra</label>
-                <input type="number" min="0" id="produtoPreco_prazo" name="produtoPreco[prazo]"
-                       class="form-control integer">
-            </div>
-        </div>
-
-        <div class="col-md-2 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_precoPrazo">Preço a Prazo</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">R$</span>
+                <div class="col-sm-12 col-md-3">
+                    <div class="form-group">
+                        <label for="produtoPreco_dtCusto">Dt Custo</label>
+                        <input type="text" id="produtoPreco_dtCusto" name="produtoPreco[dtCusto]"
+                               class="crsr-date form-control" value="" maxlength="10">
                     </div>
-                    <input type="text" id="produtoPreco_precoPrazo" name="produtoPreco[precoPrazo]"
-                           class="crsr-money form-control">
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-2 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_precoVista">Preço a Vista</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">R$</span>
+                <div class="col-sm-12 col-md-3">
+                    <div class="form-group">
+                        <label for="produtoPreco_dtPrecoVenda">Dt Preço Venda</label>
+                        <input type="text" id="produtoPreco_dtPrecoVenda" name="produtoPreco[dtPrecoVenda]"
+                               class="crsr-date form-control" value="" maxlength="10">
                     </div>
-                    <input type="text" id="produtoPreco_precoVista" name="produtoPreco[precoVista]"
-                           class="crsr-money form-control">
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-2 col-sm-12">
-            <div class="form-group">
-                <label for="produtoPreco_precoPromo">Preço Promo</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">R$</span>
+
+            <div class="row">
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_unidade">Unidade</label>
+                        <select id="produtoPreco_unidade" autocomplete="off"
+                                name="produtoPreco[unidade]" required
+                                class="form-control"
+                                data-options="{{ unidades|default('{}') }}"
+                                aria-hidden="true">
+                        </select>
                     </div>
-                    <input type="text" id="produtoPreco_precoPromo" name="produtoPreco[precoPromo]"
-                           class="crsr-money form-control">
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-3 col-sm-12">
-            <div class="form-group text-right">
-                <label for="produtoPreco_atual"> </label>
-                <div class="custom-control custom-switch mt-2">
-                    <input type="checkbox" class="custom-control-input"
-                           name="produtoPreco[atual]" id="produtoPreco_atual">
-                    <label class="custom-control-label" for="produtoPreco_atual">Atual</label>
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_precoCusto">Preço Custo</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input type="text" id="produtoPreco_precoCusto" name="produtoPreco[precoCusto]"
+                                   class="crsr-money form-control">
+                        </div>
+                    </div>
                 </div>
+
+                <div class="col-md-2 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_margem">Margem</label>
+                        <div class="input-group">
+                            <input id="produtoPreco_margem" name="produtoPreco[margem]"
+                                   class="form-control crsr-dec3">
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_prazo">Prazo de Compra</label>
+                        <div class="input-group">
+                            <input type="number" min="0" id="produtoPreco_prazo" name="produtoPreco[prazo]"
+                                   class="form-control integer">
+                            <div class="input-group-append">
+                                <span class="input-group-text">dias</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-sm-12">
+                    <div class="form-group text-right">
+                        <label for="produtoPreco_atual"> </label>
+                        <div class="custom-control custom-switch mt-2">
+                            <input type="checkbox" class="custom-control-input"
+                                   name="produtoPreco[atual]" id="produtoPreco_atual">
+                            <label class="custom-control-label" for="produtoPreco_atual">Atual</label>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
+
+            <div class="row">
+
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_coeficiente">Coeficiente</label>
+
+                        <input id="produtoPreco_coeficiente" name="produtoPreco[coeficiente]"
+                               class="form-control crsr-dec3">
+
+                    </div>
+                </div>
 
 
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_custoOperacional">Cto Operacional</label>
+                        <div class="input-group">
+                            <input id="produtoPreco_custoOperacional" name="produtoPreco[custoOperacional]"
+                                   class="form-control crsr-dec3">
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="form-group row">
-            <div class="col-2 ml-auto text-right">
-                <button type="button" id="btnSalvarItemPreco" class="btn btn-primary" value="Salvar">
-                    <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                </button>
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_custoFinanceiro">Cto Financeiro</label>
+                        <div class="input-group">
+                            <input id="produtoPreco_custoFinanceiro" name="produtoPreco[custoFinanceiro]"
+                                   class="form-control crsr-dec3">
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
-        </div>
+
+            <div class="row">
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_precoPrazo">Preço a Prazo</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input type="text" id="produtoPreco_precoPrazo" name="produtoPreco[precoPrazo]"
+                                   class="crsr-money form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_precoVista">Preço a Vista</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input type="text" id="produtoPreco_precoVista" name="produtoPreco[precoVista]"
+                                   class="crsr-money form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label for="produtoPreco_precoPromo">Preço Promo</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input type="text" id="produtoPreco_precoPromo" name="produtoPreco[precoPromo]"
+                                   class="crsr-money form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-sm-12">
+                    <div class="form-group">
+                        <label for="btnSalvarPreco">&nbsp;</label>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-block btn-outline-primary"
+                                    id="btnSalvarPreco" value="Salvar">
+                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1 col-sm-12">
+                    <div class="form-group">
+                        <label for="btnRecarregar">&nbsp;</label>
+                        <div class="input-group">
+                            <a role="button" href="{{ url('est_produto_form', {'id': e.id, '_fragment': 'estoqueseprecos'}) }}"
+                               class="btn btn-block btn-outline-warning"
+                               id="btnRecarregar" value="Recarregar">
+                                <i class="fas fa-sync-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 
 
-        <div id="divTbPrecos">
-            {% include '/Estoque/produto_form_estoquesepreco_divTbPrecos.html.twig' %}
-        </div>
+            <div id="divTbPrecos">
+                {% include '/Estoque/produto_form_estoquesepreco_divTbPrecos.html.twig' %}
+            </div>
 
 
-    {% endif %}
+        {% endif %}
+
+    </div>
 
 </div>

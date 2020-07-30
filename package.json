@@ -30,6 +30,7 @@
     "pace-progress": "HubSpot/pace",
     "perfect-scrollbar": "1",
     "popper.js": "^1.14.6",
+    "print-js": "^1.0.63",
     "push.js": "^1.0.9",
     "regenerator-runtime": "^0.13.2",
     "sass-loader": "^7.1.0",
@@ -40,8 +41,7 @@
     "sprintf-js": "^1.1.2",
     "summernote": "^0.8.11",
     "toastr": "^2.1.4",
-    "webpack-notifier": "^1.6.0",
-    "print-js": "^1.0.63"
+    "webpack-notifier": "^1.6.0"
   },
   "license": "UNLICENSED",
   "private": true,

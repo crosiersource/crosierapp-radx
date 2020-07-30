@@ -5,6 +5,7 @@ namespace App\Controller\Estoque;
 use App\Form\Estoque\ProdutoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
@@ -797,10 +798,7 @@ class ProdutoController extends FormListController
     {
         try {
             $produtoPrecoArr = $request->get('produtoPreco');
-            /** @var ProdutoRepository $repoProduto */
-            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
-            /** @var Produto $produtoFilho */
-            $produtoFilho = $repoProduto->find($produtoPrecoArr['produtoFilho']);
+
             if ($produtoPrecoArr['id']) {
                 /** @var ProdutoPrecoRepository $repoProdutoPreco */
                 $repoProdutoPreco = $this->getDoctrine()->getRepository(ProdutoPreco::class);
@@ -808,15 +806,42 @@ class ProdutoController extends FormListController
             } else {
                 $preco = new ProdutoPreco();
             }
-            $preco->produtoPai = $produto;
-            $preco->produtoFilho = $produtoFilho;
-            $preco->qtde = DecimalUtils::parseStr($produtoPrecoArr['qtde']);
-            $preco->precoPreco = DecimalUtils::parseStr($produtoPrecoArr['precoPreco']);
+            $preco->produto = $produto;
+
+            $repoListaPreco = $this->getDoctrine()->getRepository(ListaPreco::class);
+            $preco->lista = $repoListaPreco->find($produtoPrecoArr['lista']);
+
+            $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
+            $preco->unidade = $repoUnidade->find($produtoPrecoArr['unidade']);
+
+            $preco->precoCusto = DecimalUtils::parseStr($produtoPrecoArr['precoCusto']);
+            $preco->coeficiente = DecimalUtils::parseStr($produtoPrecoArr['coeficiente'] ?: 0);
+            $preco->margem = DecimalUtils::parseStr($produtoPrecoArr['margem'] ?: 0);
+            $preco->custoOperacional = DecimalUtils::parseStr($produtoPrecoArr['custoOperacional'] ?: 0);
+            $preco->custoFinanceiro = DecimalUtils::parseStr($produtoPrecoArr['custoFinanceiro'] ?: 0);
+            $preco->prazo = DecimalUtils::parseStr($produtoPrecoArr['prazo'] ?: 0);
+            $preco->precoPrazo = DecimalUtils::parseStr($produtoPrecoArr['precoPrazo']);
+            $preco->precoVista = DecimalUtils::parseStr($produtoPrecoArr['precoVista'] ?: 0);
+            $preco->precoPromo = DecimalUtils::parseStr($produtoPrecoArr['precoPromo'] ?: 0);
+            $preco->atual = $produtoPrecoArr['atual'] === 'on';
+            $preco->dtCusto = DateTimeUtils::parseDateStr($produtoPrecoArr['dtCusto'] ?: (new \DateTime())->format('d/m/Y'));
+            $preco->dtPrecoVenda = DateTimeUtils::parseDateStr($produtoPrecoArr['dtCusto'] ?: (new \DateTime())->format('d/m/Y'));
+
             $this->produtoPrecoEntityHandler->save($preco);
+
+            /** @var Produto $produto */
+            $produto = $this->getRepository()->findOneBy(['id' => $produto->getId()]);
+
+            $listasPrecos = [];
+            foreach ($produto->precos as $preco) {
+                $preco->lista->descricao;
+                $listasPrecos[$preco->lista->getId()]['lista'] = $preco->lista;
+                $listasPrecos[$preco->lista->getId()]['precos'][] = $preco;
+            }
 
             $r = [
                 'result' => 'OK',
-                'divTbPreco' => $this->renderView('Estoque/produto_form_preco_divTbPreco.html.twig', ['e' => $produto])
+                'divTbPreco' => $this->renderView('Estoque/produto_form_estoquesepreco_divTbPrecos.html.twig', ['listasPrecos' => $listasPrecos])
             ];
         } catch (ViewException | \Exception $e) {
             $this->logger->error('Erro - formPreco()');

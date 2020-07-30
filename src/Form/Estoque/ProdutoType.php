@@ -54,7 +54,7 @@ class ProdutoType extends AbstractType
             $builder = $event->getForm();
 
             $builder->add('id', TextType::class, [
-                'label' => 'Código',
+                'label' => 'Id',
                 'required' => false,
                 'attr' => ['readonly' => 'readonly']
             ]);
@@ -63,6 +63,13 @@ class ProdutoType extends AbstractType
                 'label' => 'Nome',
                 'attr' => ['class' => 'focusOnReady'],
             ]);
+
+
+            $builder->add('codigo', TextType::class, [
+                'label' => 'Código',
+                'required' => false
+            ]);
+
 
             /** @var DeptoRepository $repoDeptos */
             $repoDeptos = $this->doctrine->getRepository(Depto::class);
