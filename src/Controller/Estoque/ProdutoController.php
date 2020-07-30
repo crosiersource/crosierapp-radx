@@ -5,6 +5,7 @@ namespace App\Controller\Estoque;
 use App\Form\Estoque\ProdutoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Twig\SerializeEntityFilter;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
@@ -432,12 +433,12 @@ class ProdutoController extends FormListController
 
     /**
      *
-     * @Route("/est/produto/findProdutoByIdNomeTituloJSON/", name="est_produto_findProdutoByIdNomeTituloJSON")
+     * @Route("/est/produto/findProdutoParaComposicao/", name="est_produto_findProdutoParaComposicao")
      * @param Request $request
      * @return JsonResponse
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
-    public function findProdutoByIdNomeTituloJSON(Request $request): JsonResponse
+    public function findProdutoParaComposicao(Request $request): JsonResponse
     {
         try {
             $str = $request->get('term');
@@ -445,16 +446,31 @@ class ProdutoController extends FormListController
             $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
 
             if (ctype_digit($str)) {
-                $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str]]);
+                $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str], ['composicao', 'EQ', 'N']]);
             } else {
-                $produtos = $repoProduto->findByFiltersSimpl([[['nome', 'titulo'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
+                $filterData_titulo = new FilterData('titulo', 'LIKE');
+                $filterData_titulo->jsonDataField = true;
+                $filterData_titulo->val = $str;
+
+                $filterData_nomeOUtitulo = new FilterData('nome', 'LIKE');
+                $filterData_nomeOUtitulo->val = $str;
+                $filterData_nomeOUtitulo->setOrFilterData($filterData_titulo);
+
+                $produtos = $repoProduto->findByFiltersSimpl([$filterData_nomeOUtitulo, ['composicao', 'EQ', 'N']], ['nome' => 'ASC'], 0, 50);
             }
-            $select2js = Select2JsUtils::toSelect2DataFn($produtos, function ($e) {
-                /** @var Produto $e */
-                return ($e->jsonData['titulo'] ?: $e->nome) . ' (' . $e->getId() . ')';
-            });
+
+            $results = [];
+            /** @var Produto $produto */
+            foreach ($produtos as $produto) {
+                $results[] = [
+                    'id' => $produto->getId(),
+                    'text' => $produto->jsonData['titulo'] ?? $produto->nome,
+                    'preco_tabela' => $produto->jsonData['preco_tabela']
+                ];
+            }
+
             return new JsonResponse(
-                ['results' => $select2js]
+                ['results' => $results]
             );
         } catch (\Exception $e) {
             return new JsonResponse(

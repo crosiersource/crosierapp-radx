@@ -8,36 +8,59 @@
 
                 <input type="hidden" name="produtoComposicao[id]" id="produtoComposicao_id"/>
 
-                <div class="form-group row">
-                    <label class="col-form-label col-sm-2" for="produtoComposicao_produtoFilho">Item</label>
-                    <div class="col-sm-10">
-                        <select id="produtoComposicao_produtoFilho" name="produtoComposicao[produtoFilho]"
-                                data-route-url="{{ url('est_produto_findProdutoByIdNomeTituloJSON') }}"
-                                data-placeholder="Selecione..."
-                                class="form-control autoSelect2"></select>
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                        <div class="form-group">
+                            <label for="produtoComposicao_produtoFilho" class="required">Item</label>
+                            <select id="produtoComposicao_produtoFilho" name="produtoComposicao[produtoFilho]"
+                                    data-placeholder="Selecione..."
+                                    class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="produtoComposicao_qtde" class="required">Qtde</label>
+                            <input type="number" min="0" id="produtoComposicao_qtde" name="produtoComposicao[qtde]"
+                                   class="form-control integer">
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-form-label col-sm-2" for="produtoComposicao_qtde">Qtde</label>
-                    <div class="col-sm-10">
-                        <input type="number" min="0" id="produtoComposicao_qtde" name="produtoComposicao[qtde]"
-                               class="form-control integer">
+                <div class="row">
+                    <div class="col-md-5 col-sm-12">
+                        <div class="form-group">
+                            <label for="produtoComposicao_precoTabela" class="required">Preço Tabela</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">R$ </span>
+                                </div>
+                                <input type="text" min="0" id="produtoComposicao_precoTabela"
+                                       name="produtoComposicao[precoTabela]"
+                                       class="form-control money" disabled>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-form-label col-sm-2" for="produtoComposicao_precoComposicao">Preço na Composição</label>
-                    <div class="col-8">
-                        <input id="produtoComposicao_precoComposicao" name="produtoComposicao[precoComposicao]"
-                               class="form-control money">
+                    <div class="col-md-5 col-sm-12">
+                        <div class="form-group">
+                            <label for="produtoComposicao_precoComposicao" class="required">Preço na Composição</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">R$ </span>
+                                </div>
+                                <input type="text" min="0" id="produtoComposicao_precoComposicao"
+                                       name="produtoComposicao[precoComposicao]"
+                                       class="form-control money">
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-2 ml-auto text-right">
-
-                        <button type="button" id="btnSalvarItemComposicao" class="btn btn-primary" value="Salvar">
-                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                        </button>
-
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="btnSalvarItemComposicao"></label>
+                            <button type="button" id="btnSalvarItemComposicao" class="btn btn-block btn-primary"
+                                    value="Salvar">
+                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                            </button>
+                        </div>
                     </div>
                 </div>
 

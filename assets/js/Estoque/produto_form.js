@@ -49,6 +49,7 @@ $(document).ready(function () {
     let $produtoComposicaoProdutoFilho = $('#produtoComposicao_produtoFilho');
     let $produtoComposicaoQtde = $('#produtoComposicao_qtde');
     let $produtoComposicaoPrecoComposicao = $('#produtoComposicao_precoComposicao');
+    let $produtoComposicaoPrecoTabela = $('#produtoComposicao_precoTabela');
 
 
     let $imageFile = $('#produto_imagem_imageFile');
@@ -250,6 +251,7 @@ $(document).ready(function () {
         createUlFotosSortable();
     }
 
+
     function createSortableComposicao() {
         if ($('#tbodySortableComposicao').length) {
             Sortable.create(tbodySortableComposicao,
@@ -284,6 +286,27 @@ $(document).ready(function () {
                 });
         }
     }
+
+
+    $produtoComposicaoProdutoFilho.select2({
+        minimumInputLength: 4,
+        width: '100%',
+        dropdownAutoWidth: true,
+        placeholder: '...',
+        allowClear: true,
+        ajax: {
+            delay: 750,
+            url: Routing.generate('est_produto_findProdutoParaComposicao'),
+            dataType: 'json',
+            cache: true,
+        },
+    }).on('select2:select', function () {
+        let o = $produtoComposicaoProdutoFilho.select2('data')[0];
+
+        let precoTabela = parseFloat(o.preco_tabela).toFixed(2).replace('.', ',');
+        $produtoComposicaoPrecoTabela.val(precoTabela);
+
+    });
 
 
     function editComposicao() {
@@ -403,8 +426,8 @@ $(document).ready(function () {
             $produtoPreco_precoPromo.val(parseFloat(produtoPreco.precoPromo).toFixed(2).replace('.', ','));
             $produtoPreco_atual.prop('checked', produtoPreco.atual == true);
 
-            $produtoPreco_dtCusto.val(Moment(produtoPreco.dtCusto.substr(0,10)).format('DD/MM/YYYY'));
-            $produtoPreco_dtPrecoVenda.val(Moment(produtoPreco.dtPrecoVenda.substr(0,10)).format('DD/MM/YYYY'));
+            $produtoPreco_dtCusto.val(Moment(produtoPreco.dtCusto.substr(0, 10)).format('DD/MM/YYYY'));
+            $produtoPreco_dtPrecoVenda.val(Moment(produtoPreco.dtPrecoVenda.substr(0, 10)).format('DD/MM/YYYY'));
 
             CrosierMasks.maskDecs();
 
@@ -448,7 +471,6 @@ $(document).ready(function () {
             }
         ).done(function (data) {
             if (data.result === 'OK') {
-                console.dir(data);
                 $('#divTbPrecos').html(data.divTbPrecos);
 
                 $produtoPreco_id.val('');
