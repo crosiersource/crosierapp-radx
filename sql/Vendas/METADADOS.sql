@@ -124,6 +124,7 @@ CREATE TABLE `ven_venda_item`
     `subtotal`           decimal(15, 2) NOT NULL,
     `desconto`           decimal(15, 2) NOT NULL,
     `total`              decimal(15, 2) NOT NULL,
+    `devolucao`          tinyint(1)     NOT NULL,
     `json_data`          json,
 
     KEY `K_ven_venda_item_produto` (`produto_id`),
