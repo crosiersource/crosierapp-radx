@@ -70,7 +70,7 @@ CREATE TABLE `ven_venda`
 (
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
     `dt_venda`           datetime       NOT NULL,
-    `plano_pagto_id`     bigint(20)     NOT NULL,
+    `plano_pagto_id`     bigint(20),
     `vendedor_id`        bigint(20),
     `cliente_id`         bigint(20),
     `subtotal`           decimal(15, 2) NOT NULL,
