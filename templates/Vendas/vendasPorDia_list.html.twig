@@ -98,7 +98,7 @@
                         <th scope="col">#</th>
                         <th scope="col">Id</th>
                         <th scope="col">Cliente</th>
-                        <th scope="col">Vendedor<br/>Plano Pagto</th>
+                        <th scope="col">Vendedor</th>
                         <th scope="col">Status</th>
                         <th scope="col">Valor Total</th>
                         <th scope="col"></th>
@@ -123,8 +123,7 @@
                             </td>
                             <td>
                                 <div class="float-left">
-                                    {{ venda.jsonData.vendedor_nome|default('') }}<br>
-                                    {{ venda.planoPagto.codigo }} - {{ venda.planoPagto.descricao }}
+                                    {{ venda.jsonData.vendedor_nome|default('') }}
                                 </div>
                             </td>
                             <td class="text-center">

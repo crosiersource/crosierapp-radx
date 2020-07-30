@@ -876,7 +876,7 @@ class VendaController extends FormListController
      *
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function imprimirDANFCE(Venda $venda): Response
+    public function imprimirPV(Venda $venda): Response
     {
         $html = $this->renderView('/Vendas/pv.html.twig', ['venda' => $venda]);
 

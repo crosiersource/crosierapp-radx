@@ -77,7 +77,6 @@
                         <th scope="col">Id E-commerce</th>
                         <th scope="col">Id</th>
                         <th scope="col">Cliente</th>
-                        <th scope="col">Forma Pagto</th>
                         <th scope="col">Status</th>
                         <th scope="col">Dt Venda</th>
                         <th scope="col">Valor Frete</th>
@@ -101,7 +100,6 @@
                                 <td>{{ venda.id|strpad(9) }}</td>
                                 <td>{{ venda.cliente.documento|default('')|mascararCnpjCpf }}
                                     - {{ venda.cliente.nome }}</td>
-                                <td>{{ venda.planoPagto.codigo }} - {{ venda.planoPagto.descricao }}</td>
                                 <td class="text-center">{{ venda.jsonData.ecommerce_status_descricao|default('') }}</td>
                                 <td class="text-center">{{ venda.dtVenda|date('d/m/Y H:i:s') }}</td>
                                 <td class="text-right">
@@ -123,7 +121,7 @@
                         {% endfor %}
 
                         <tr class="table-secondary">
-                            <th scope="row" colspan="7" class="text-right">
+                            <th scope="row" colspan="6" class="text-right">
                                 Total dia (R$):
                             </th>
                             <td class="text-right">{{ dia.totalDia|number_format(2,',','.') }}</td>
