@@ -225,15 +225,27 @@ class ClienteController extends FormListController
     public function findClienteByStr(Request $request): JsonResponse
     {
         $str = $request->get('term') ?? '';
-        /** @var ClienteRepository $repoCliente */
-        $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
-        $clientes = $repoCliente->findByFiltersSimpl([[['nome', 'documento'], 'LIKE', $str]], ['nome' => 'ASC']);
-        $select2js = Select2JsUtils::toSelect2DataFn($clientes, function ($e) {
-            /** @var Cliente $e */
-            return StringUtils::mascararCnpjCpf($e->documento) . ' - ' . $e->nome;
-        });
+
+        $rs = $this->entityHandler->getDoctrine()->getConnection()
+            ->fetchAll('SELECT id, documento, nome, json_data FROM crm_cliente WHERE documento = :documento OR nome LIKE :nome LIMIT 30',
+                [
+                    'documento' => preg_replace("/[^0-9]/", "", $str),
+                    'nome' => '%' . $str . '%'
+                ]);
+
+        $clientes = [];
+
+        foreach ($rs as $r) {
+            $clientes[] = [
+                'id' => $r['id'],
+                'text' => StringUtils::mascararCnpjCpf($r['documento']) . ' - ' . $r['nome'],
+                'nome' => $r['nome'],
+                'json_data' => json_decode($r['json_data'], true)
+            ];
+        }
+
         return new JsonResponse(
-            ['results' => $select2js]
+            ['results' => $clientes]
         );
     }
 

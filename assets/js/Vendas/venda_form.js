@@ -18,6 +18,7 @@ $.fn.select2.defaults.set("language", "pt-BR");
 
 import routes from '../../static/fos_js_routes.json';
 import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
+import toastrr from "toastr";
 
 Numeral.locale('pt-br');
 
@@ -35,6 +36,11 @@ $(document).ready(function () {
     let $desconto = $('#item_desconto');
     let $valorTotal = $('#item_valorTotal');
     let $devolucao = $('#item_devolucao');
+
+    let $cliente_documento = $('#venda_jsonData_cliente_documento');
+    let $cliente_nome = $('#venda_jsonData_cliente_nome');
+    let $cliente_telefone = $('#venda_jsonData_cliente_telefone');
+    let $cliente_email = $('#venda_jsonData_cliente_email');
 
     let $planoPagto = $('#pagto_planoPagto');
 
@@ -180,10 +186,32 @@ $(document).ready(function () {
     });
 
 
+    // cache para não buscar toda hora
+    $cliente_documento.data('val', $cliente_documento.val());
+
+    $cliente_documento.on('blur', function() {
+        console.log($cliente_documento.val());
+        console.log($cliente_documento.data('val'));
+        if ($cliente_documento.val() !== $cliente_documento.data('val')) {
+            console.log('indo');
+            $cliente_documento.data('val', $cliente_documento.val());
+            $.ajax({
+                url: Routing.generate('crm_cliente_findClienteByStr') + '?term=' + $cliente_documento.val(),
+                type: 'post',
+                dataType: 'json',
+                success: function (res) {
+                    console.dir(res);
+                    $cliente_nome.val(res.results[0].nome);
+                    $cliente_telefone.val(res.results[0].json_data.fone1);
+                    $cliente_email.val(res.results[0].json_data.email);
+                }
+            });
+        }
+    });
+
     if ($item_produto.hasClass('focusOnReady')) {
         $item_produto.select2('focus');
     }
-
 
 
 });

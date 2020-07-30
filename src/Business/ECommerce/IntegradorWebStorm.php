@@ -1457,7 +1457,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
         $venda->subtotal = 0.0; // a ser recalculado posteriormente
         $venda->desconto = 0.0; // a ser recalculado posteriormente
-        $venda->setValorTotal(0.0); // a ser recalculado posteriormente
+        $venda->valorTotal = 0.0; // a ser recalculado posteriormente
 
         $conn->beginTransaction();
         $this->vendaEntityHandler->save($venda);
