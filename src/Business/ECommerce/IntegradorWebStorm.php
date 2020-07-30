@@ -1485,6 +1485,9 @@ class IntegradorWebStorm implements IntegradorBusiness
             $vendaItem->descricao = $produto->nome;
             $vendaItem->ordem = $ordem++;
             $vendaItem->devolucao = false;
+
+            $vendaItem->unidade = $produto->unidadePadrao;
+
             $vendaItem->precoVenda = $produtoWebStorm->valorUnitario->__toString();
             $vendaItem->qtde = $produtoWebStorm->quantidade->__toString();
             $vendaItem->subtotal = bcmul($vendaItem->precoVenda, $vendaItem->qtde, 2);
