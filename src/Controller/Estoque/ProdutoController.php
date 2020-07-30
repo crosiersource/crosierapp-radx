@@ -829,19 +829,16 @@ class ProdutoController extends FormListController
 
             $this->produtoPrecoEntityHandler->save($preco);
 
-            /** @var Produto $produto */
-            $produto = $this->getRepository()->findOneBy(['id' => $produto->getId()]);
 
             $listasPrecos = [];
             foreach ($produto->precos as $preco) {
-                $preco->lista->descricao;
                 $listasPrecos[$preco->lista->getId()]['lista'] = $preco->lista;
                 $listasPrecos[$preco->lista->getId()]['precos'][] = $preco;
             }
 
             $r = [
                 'result' => 'OK',
-                'divTbPreco' => $this->renderView('Estoque/produto_form_estoquesepreco_divTbPrecos.html.twig', ['listasPrecos' => $listasPrecos])
+                'divTbPrecos' => $this->renderView('Estoque/produto_form_estoquesepreco_divTbPrecos.html.twig', ['listasPrecos' => $listasPrecos])
             ];
         } catch (ViewException | \Exception $e) {
             $this->logger->error('Erro - formPreco()');

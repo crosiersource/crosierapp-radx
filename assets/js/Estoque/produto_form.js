@@ -388,9 +388,6 @@ $(document).ready(function () {
             // produtoPreco_produtoFilho
             let produtoPreco = $(this).data('json');
 
-            console.dir(produtoPreco);
-
-
             $produtoPreco_id.val(produtoPreco.id);
             $produtoPreco_lista.val(produtoPreco.lista.id).trigger('change');
             $produtoPreco_unidade.val(produtoPreco.unidade.id).trigger('change');
@@ -451,7 +448,8 @@ $(document).ready(function () {
             }
         ).done(function (data) {
             if (data.result === 'OK') {
-                $('#divTbPreco').html(data.divTbPreco);
+                console.dir(data);
+                $('#divTbPrecos').html(data.divTbPrecos);
 
                 $produtoPreco_id.val('');
                 $produtoPreco_lista.val('').trigger('change');
