@@ -224,7 +224,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $idMarcaNaWebStorm = null;
 
         foreach ($marcasNaWebStorm as $id => $marcaNaWebStorm) {
-            if (mb_strtolower($marcaNaWebStorm['nome']) === mb_strtolower($marca)) {
+            if (trim(mb_strtolower($marcaNaWebStorm['nome'])) === trim(mb_strtolower($marca))) {
                 $idMarcaNaWebStorm = $id;
                 break;
             }
@@ -382,7 +382,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $idTipoCaracteristicaNaWebStorm = null;
 
         foreach ($tiposCaracteristicasNaWebStorm as $id => $tipoCaracteristicaNaWebStorm) {
-            if (mb_strtolower($tipoCaracteristicaNaWebStorm['nome']) === mb_strtolower($tipoCaracteristica)) {
+            if (trim(mb_strtolower($tipoCaracteristicaNaWebStorm['nome'])) === trim(mb_strtolower($tipoCaracteristica))) {
                 $idTipoCaracteristicaNaWebStorm = $id;
                 break;
             }
@@ -465,7 +465,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         if ($tiposCaracteristicasNaWebStorm[$ecommerceId_tipoCaracteristica]['caracteristicas'] ?? null) {
             foreach ($tiposCaracteristicasNaWebStorm[$ecommerceId_tipoCaracteristica]['caracteristicas'] as $id => $caracteristicaNaWebStorm) {
                 // Compara ignorando maiúsculas e minúsculas
-                if (mb_strtolower($caracteristicaNaWebStorm['nome']) === mb_strtolower($caracteristica)) {
+                if (trim(mb_strtolower($caracteristicaNaWebStorm['nome'])) === trim(mb_strtolower($caracteristica))) {
                     $idCaracteristicaNaWebStorm = $id;
                     break;
                 }
@@ -655,7 +655,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $deptosNaWebStorm = $this->selectDepartamentosNaWebStorm();
         $idDeptoWebStorm = null;
         foreach ($deptosNaWebStorm as $id => $deptoNaWebStorm) {
-            if ($deptoNaWebStorm['nome'] === $depto->nome) {
+            if (trim(mb_strtolower($deptoNaWebStorm['nome'])) === trim(mb_strtolower($depto->nome))) {
                 $idDeptoWebStorm = $id;
                 break;
             }
@@ -699,7 +699,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $gruposNaWebStorm = $deptosNaWebStorm[$idDeptoWebStorm]['grupos'];
         $idGrupoWebStorm = null;
         foreach ($gruposNaWebStorm as $id => $grupoNaWebStorm) {
-            if ($grupoNaWebStorm['nome'] === $grupo->nome) {
+            if (trim(mb_strtolower($grupoNaWebStorm['nome'])) === trim(mb_strtolower($grupo->nome))) {
                 $idGrupoWebStorm = $id;
                 break;
             }
@@ -747,7 +747,7 @@ class IntegradorWebStorm implements IntegradorBusiness
         $subgruposNaWebStorm = $deptosNaWebStorm[$idDeptoWebStorm]['grupos'][$idGrupoWebStorm]['subgrupos'];
         $idSubgrupoWebStorm = null;
         foreach ($subgruposNaWebStorm as $id => $subgrupoNaWebStorm) {
-            if ($subgrupoNaWebStorm['nome'] === $subgrupo->nome) {
+            if (trim(mb_strtolower($subgrupoNaWebStorm['nome'])) === trim(mb_strtolower($subgrupo->nome))) {
                 $idSubgrupoWebStorm = $id;
                 break;
             }
