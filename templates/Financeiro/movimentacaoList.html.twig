@@ -1,6 +1,12 @@
 {% extends '@CrosierLibBase/list.html.twig' %}
 
 
+
+{% block up_scripts %}
+    {{ encore_entry_link_tags('Financeiro/movimentacaoList') }}
+{% endblock %}
+
+
 {% block btns %}
     {{ parent() }}
 
@@ -135,5 +141,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Financeiro/movimentacaoList.js') }}"></script>
+    {{ encore_entry_script_tags('Financeiro/movimentacaoList') }}
 {% endblock %}

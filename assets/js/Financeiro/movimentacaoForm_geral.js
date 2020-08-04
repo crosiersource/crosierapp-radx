@@ -11,6 +11,8 @@ import 'select2/dist/css/select2.css';
 import 'select2';
 import 'select2/dist/js/i18n/pt-BR.js';
 import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
+$.fn.select2.defaults.set("theme", "bootstrap");
+$.fn.select2.defaults.set("language", "pt-BR");
 
 
 Routing.setRoutingData(routes);
@@ -153,7 +155,6 @@ $(document).ready(function () {
         let camposVisiveis = $.grep(camposTodos, function (e) {
             return camposEscond[$tipoLanctoSelected] ? camposEscond[$tipoLanctoSelected].indexOf(e) === -1 : true;
         });
-        console.dir(camposVisiveis);
 
         // Esconde todos
         camposTodos.forEach(function (campo) {

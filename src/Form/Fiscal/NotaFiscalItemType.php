@@ -2,7 +2,7 @@
 
 namespace App\Form\Fiscal;
 
-use App\Entity\Fiscal\NotaFiscalItem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -30,7 +30,10 @@ class NotaFiscalItemType extends AbstractType
 
         $builder->add('descricao', TextType::class, [
             'label' => 'Descrição',
-            'required' => true
+            'required' => true,
+            'attr' => [
+                'maxlength' => '120'
+            ]
         ]);
 
         $builder->add('cfop', TextType::class, [

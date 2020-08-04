@@ -3,11 +3,11 @@
 namespace App\Controller\Financeiro;
 
 
-use App\Entity\Financeiro\Banco;
-use App\EntityHandler\Financeiro\BancoEntityHandler;
 use App\Form\Financeiro\BancoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Banco;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\BancoEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +43,7 @@ class BancoController extends FormListController
      * @Route("/fin/banco/form/{id}", name="banco_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Banco|null $banco
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
@@ -63,7 +63,7 @@ class BancoController extends FormListController
      *
      * @Route("/fin/banco/list/", name="banco_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
@@ -106,7 +106,7 @@ class BancoController extends FormListController
      */
     public function delete(Request $request, Banco $banco): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $banco);
+        return $this->doDelete($request, $banco, []);
     }
 
 

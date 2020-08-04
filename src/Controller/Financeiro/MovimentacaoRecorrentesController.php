@@ -2,18 +2,18 @@
 
 namespace App\Controller\Financeiro;
 
-use App\Business\Financeiro\MovimentacaoBusiness;
-use App\Entity\Financeiro\Movimentacao;
-use App\Entity\Financeiro\TipoLancto;
-use App\EntityHandler\Financeiro\MovimentacaoEntityHandler;
 use App\Form\Financeiro\MovimentacaoType;
-use App\Repository\Financeiro\MovimentacaoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,17 +24,14 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * Listagem e geração de movimentações recorrentes.
  *
- * @package App\Controller\Financeiro
  * @author Carlos Eduardo Pauluk
  */
 class MovimentacaoRecorrentesController extends FormListController
 {
 
-    /** @var MovimentacaoEntityHandler */
     protected $entityHandler;
 
-    /** @var MovimentacaoBusiness */
-    private $business;
+    private MovimentacaoBusiness $business;
 
     /**
      * @required
@@ -179,9 +176,12 @@ class MovimentacaoRecorrentesController extends FormListController
     {
         if (!$movimentacao) {
             $movimentacao = new Movimentacao();
-            $movimentacao->setTipoLancto($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 90]));
-            $movimentacao->setRecorrente(true);
         }
+
+        /** @var TipoLancto $tipoLancto90 */
+        $tipoLancto90 = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 90]);
+        $movimentacao->setTipoLancto($tipoLancto90);
+        $movimentacao->setRecorrente(true);
 
         $params = [
             'typeClass' => MovimentacaoType::class,

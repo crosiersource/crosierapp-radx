@@ -1,5 +1,17 @@
 {% extends '@CrosierLibBase/list.html.twig' %}
 
+{% block btns %}
+    {{ parent() }}
+
+    <button type="button" class="btn btn-warning ml-3"
+            data-url="{{ url('distDFe_obterDistDFes', {'redirectToRoute' : 'nfesFornecedores_list'}) }}"
+            data-target="#confirmationModal" data-toggle="modal">
+        <i class="fas fa-download"></i> Obter Notas
+    </button>
+
+
+{% endblock %}
+
 {% block campos_pesquisar %}
 
     <div class="form-group">
@@ -44,6 +56,6 @@
 {% endblock %}
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Fiscal/nfesFornecedoresList.js') }}"></script>
+    {{ encore_entry_script_tags('Fiscal/nfesFornecedoresList') }}
 {% endblock %}
 

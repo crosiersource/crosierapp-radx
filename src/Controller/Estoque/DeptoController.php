@@ -2,18 +2,18 @@
 
 namespace App\Controller\Estoque;
 
-use App\Business\ECommerce\IntegraWebStorm;
-use App\Entity\Estoque\Depto;
-use App\Entity\Estoque\Grupo;
-use App\Entity\Estoque\Subgrupo;
-use App\EntityHandler\Estoque\DeptoEntityHandler;
-use App\EntityHandler\Estoque\GrupoEntityHandler;
-use App\EntityHandler\Estoque\SubgrupoEntityHandler;
-use App\Repository\Estoque\DeptoRepository;
-use App\Repository\Estoque\GrupoRepository;
-use App\Repository\Estoque\SubgrupoRepository;
+use App\Business\ECommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\DeptoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\GrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\SubgrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\SubgrupoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -244,13 +244,13 @@ class DeptoController extends BaseController
     /**
      *
      * @Route("/est/deptoGrupoSubgrupo/integraDepto/{depto}", name="est_deptoGrupoSubgrupo_integraDepto", requirements={"depto"="\d+"})
-     * @param IntegraWebStorm $integraWebStorm
+     * @param IntegradorWebStorm $integraWebStorm
      * @param Depto $depto
      * @return RedirectResponse
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function integraDepto(IntegraWebStorm $integraWebStorm, Depto $depto)
+    public function integraDepto(IntegradorWebStorm $integraWebStorm, Depto $depto)
     {
         $integraWebStorm->integraDepto($depto);
         $this->addFlash('success', 'Depto integrado com sucesso');
@@ -260,13 +260,13 @@ class DeptoController extends BaseController
     /**
      *
      * @Route("/est/deptoGrupoSubgrupo/integraGrupo/{grupo}", name="est_deptoGrupoSubgrupo_integraGrupo", requirements={"grupo"="\d+"})
-     * @param IntegraWebStorm $integraWebStorm
+     * @param IntegradorWebStorm $integraWebStorm
      * @param Grupo $grupo
      * @return RedirectResponse
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function integraGrupo(IntegraWebStorm $integraWebStorm, Grupo $grupo)
+    public function integraGrupo(IntegradorWebStorm $integraWebStorm, Grupo $grupo)
     {
         $integraWebStorm->integraGrupo($grupo);
         $this->addFlash('success', 'Grupo integrado com sucesso');
@@ -276,17 +276,57 @@ class DeptoController extends BaseController
     /**
      *
      * @Route("/est/deptoGrupoSubgrupo/integraSubgrupo/{subgrupo}", name="est_deptoGrupoSubgrupo_integraSubgrupo", requirements={"subgrupo"="\d+"})
-     * @param IntegraWebStorm $integraWebStorm
+     * @param IntegradorWebStorm $integraWebStorm
      * @param Subgrupo $subgrupo
      * @return RedirectResponse
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function integraSubgrupo(IntegraWebStorm $integraWebStorm, Subgrupo $subgrupo)
+    public function integraSubgrupo(IntegradorWebStorm $integraWebStorm, Subgrupo $subgrupo)
     {
         $integraWebStorm->integraSubgrupo($subgrupo);
         $this->addFlash('success', 'Subgrupo integrado com sucesso');
         return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['subgrupoId' => $subgrupo->getId()]);
+    }
+
+    /**
+     * Corrige os json_data de est_subgrupo e est_grupo
+     *
+     * @Route("/est/deptoGrupoSubgrupo/corrigir", name="est_deptoGrupoSubgrupo_corrigir")
+     * @return Response
+     * @throws \Doctrine\DBAL\DBALException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function corrigirDeptosGruposSubgrupos(): Response
+    {
+        // corrige os subgrupos
+        $conn = $this->deptoEntityHandler->getDoctrine()->getConnection();
+
+        $subgrupos = $conn->fetchAll('SELECT s.id as subgrupo_id, s.codigo as subgrupo_codigo, s.nome as subgrupo_nome, g.id as grupo_id, g.codigo as grupo_codigo, g.nome as grupo_nome, d.id as depto_id, d.codigo as depto_codigo, d.nome as depto_nome FROM est_subgrupo s, est_grupo g, est_depto d WHERE s.grupo_id = g.id AND g.depto_id = d.id');
+
+        foreach ($subgrupos as $s) {
+            $conn->update('est_subgrupo',
+                [
+                    'json_data' => json_encode([
+                        'depto_id' => $s['depto_id'],
+                        'depto_codigo' => $s['depto_codigo'],
+                        'depto_nome' => $s['depto_nome'],
+                        'grupo_id' => $s['grupo_id'],
+                        'grupo_codigo' => $s['grupo_codigo'],
+                        'grupo_nome' => $s['grupo_nome'],
+                    ])
+                ], ['id' => $s['subgrupo_id']]);
+            $conn->update('est_grupo',
+                [
+                    'json_data' => json_encode([
+                        'depto_id' => $s['depto_id'],
+                        'depto_codigo' => $s['depto_codigo'],
+                        'depto_nome' => $s['depto_nome'],
+                    ])
+                ], ['id' => $s['grupo_id']]);
+        }
+        return new Response('OK');
+
     }
 
 

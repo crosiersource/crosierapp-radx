@@ -2,10 +2,10 @@
 
 namespace App\Form\Financeiro;
 
-use App\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\ChoiceTypeUtils;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

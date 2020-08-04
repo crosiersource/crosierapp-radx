@@ -3,14 +3,6 @@
 {% block campos_pesquisar %}
 
     <div class="form-group">
-        <label for="filter[documentoEmitente]">CNPJ Emiente</label>
-        <input type="text" min="1"
-               class="form-control" id="filter[documentoEmitente]"
-               name="filter[documentoEmitente]"
-               value="{{ filter.documentoEmitente|default('') }}">
-    </div>
-
-    <div class="form-group">
         <label for="filter[numero]">Número</label>
         <input type="text" min="1"
                class="form-control" id="filter[numero]"
@@ -60,6 +52,6 @@
 {% endblock %}
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Fiscal/emissaoNFe/list.js') }}"></script>
+    {{ encore_entry_script_tags('Fiscal/emissaoNFe/list') }}
 {% endblock %}
 

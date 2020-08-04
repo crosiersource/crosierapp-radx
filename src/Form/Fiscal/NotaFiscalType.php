@@ -2,9 +2,13 @@
 
 namespace App\Form\Fiscal;
 
-use App\Business\Fiscal\NotaFiscalBusiness;
-use App\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -28,6 +32,14 @@ use Symfony\Component\Validator\Constraints\Length;
 class NotaFiscalType extends AbstractType
 {
 
+    /** @var EntityManagerInterface */
+    private EntityManagerInterface $doctrine;
+
+    public function __construct(EntityManagerInterface $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
     private NotaFiscalBusiness $notaFiscalBusiness;
 
     /**
@@ -42,12 +54,27 @@ class NotaFiscalType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+
+        /** @var AppConfigRepository $repoAppConfig */
+        $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
+        $jsonMetadata = json_decode($repoAppConfig->findByChave('fis_nf_json_metadata'), true);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($jsonMetadata) {
             /** @var NotaFiscal $notaFiscal */
             $notaFiscal = $event->getData();
             $builder = $event->getForm();
 
-            $disabled = !($notaFiscal && $this->notaFiscalBusiness->permiteSalvar($notaFiscal));
+            $emitentes = $this->notaFiscalBusiness->getEmitentes();
+
+            $disabled = false;
+            if ($notaFiscal) {
+                if (!$this->notaFiscalBusiness->permiteSalvar($notaFiscal)) {
+                    $disabled = true;
+                }
+                if ($notaFiscal->getDocumentoEmitente() && !($this->notaFiscalBusiness->isCnpjEmitente($notaFiscal->getDocumentoEmitente()))) {
+                    $disabled = true;
+                }
+            }
             $disabledCancelamento = !($notaFiscal && $this->notaFiscalBusiness->permiteCancelamento($notaFiscal));
             $disabledTransp = $disabled || ($notaFiscal && $notaFiscal->getTranspModalidadeFrete() === 'SEM_FRETE');
 
@@ -130,7 +157,6 @@ class NotaFiscalType extends AbstractType
             ]);
 
 
-            $emitentes = $this->notaFiscalBusiness->getEmitentes();
             $choicesEmitentes = [];
             foreach ($emitentes as $emitente) {
                 $chave = StringUtils::mascararCnpjCpf($emitente['cnpj']) . ' - ' . $emitente['razaosocial'];
@@ -265,7 +291,8 @@ class NotaFiscalType extends AbstractType
             $builder->add('naturezaOperacao', TextType::class, [
                 'label' => 'Natureza da Operação',
                 'required' => true,
-                'disabled' => $disabled
+                'disabled' => $disabled,
+                'attr' => ['maxlength' => 60]
             ]);
 
             $builder->add('entradaSaida', ChoiceType::class, [
@@ -494,7 +521,24 @@ class NotaFiscalType extends AbstractType
                 'disabled' => true
             ]);
 
+            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => ($notaFiscal->jsonData ?? null)]);
+
         });
+
+        // Necessário para os casos onde o formulário não tem todos os campos do json_data (para que eles não desapareçam por conta disto)
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($jsonMetadata) {
+                /** @var NotaFiscal $notaFiscal */
+                $notaFiscal = $event->getData();
+                if ($notaFiscal->getId()) {
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM fis_nf WHERE id = :id', ['id' => $notaFiscal->getId()])['json_data'] ?? '{}', true);
+                    $notaFiscal->jsonData = array_merge($jsonDataOrig, $notaFiscal->jsonData);
+                    $event->setData($notaFiscal);
+                }
+            }
+        );
+
     }
 
 

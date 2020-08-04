@@ -2,23 +2,37 @@
 
 namespace App\Controller\Estoque;
 
-use App\Business\Estoque\ProdutoBusiness;
-use App\Entity\Estoque\Produto;
-use App\Entity\Estoque\ProdutoComposicao;
-use App\Entity\Estoque\ProdutoImagem;
-use App\EntityHandler\Estoque\ProdutoComposicaoEntityHandler;
-use App\EntityHandler\Estoque\ProdutoEntityHandler;
-use App\EntityHandler\Estoque\ProdutoImagemEntityHandler;
 use App\Form\Estoque\ProdutoType;
-use App\Repository\Estoque\ProdutoComposicaoRepository;
-use App\Repository\Estoque\ProdutoImagemRepository;
-use App\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Twig\SerializeEntityFilter;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Estoque\ProdutoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ListaPreco;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoComposicao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoImagem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoPreco;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoComposicaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoImagemEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoPrecoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ListaPrecoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoComposicaoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoImagemRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoPrecoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
+use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -37,6 +51,8 @@ class ProdutoController extends FormListController
     private ProdutoComposicaoEntityHandler $produtoComposicaoEntityHandler;
 
     private ProdutoImagemEntityHandler $produtoImagemEntityHandler;
+
+    private ProdutoPrecoEntityHandler $produtoPrecoEntityHandler;
 
     private UploaderHelper $uploaderHelper;
 
@@ -59,6 +75,16 @@ class ProdutoController extends FormListController
     {
         $this->produtoImagemEntityHandler = $produtoImagemEntityHandler;
     }
+
+    /**
+     * @required
+     * @param ProdutoPrecoEntityHandler $produtoPrecoEntityHandler
+     */
+    public function setProdutoPrecoEntityHandler(ProdutoPrecoEntityHandler $produtoPrecoEntityHandler): void
+    {
+        $this->produtoPrecoEntityHandler = $produtoPrecoEntityHandler;
+    }
+
 
     /**
      * @required
@@ -119,15 +145,29 @@ class ProdutoController extends FormListController
 
         if (!$produto) {
             $produto = new Produto();
+        } else {
+            $listasPrecos = [];
+            foreach ($produto->precos as $preco) {
+                $preco->lista->descricao;
+                $listasPrecos[$preco->lista->getId()]['lista'] = $preco->lista;
+                $listasPrecos[$preco->lista->getId()]['precos'][] = $preco;
+            }
+            $params['listasPrecos'] = $listasPrecos;
+
+
+            /** @var UnidadeRepository $repoUnidade */
+            $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
+            $params['unidades'] = json_encode($repoUnidade->findUnidadesAtuaisSelect2JS());
+
+            /** @var ListaPrecoRepository $repoListaPreco */
+            $repoListaPreco = $this->getDoctrine()->getRepository(ListaPreco::class);
+            $params['listasPrecos_options'] = json_encode($repoListaPreco->findAllSelect2JS());
+
         }
 
         /** @var ProdutoRepository $repoProduto */
         $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
         $params['jsonMetadata'] = json_decode($repoProduto->getJsonMetadata(), true);
-
-        if ($produto->composicao === 'S') {
-            $this->produtoBusiness->fillQtdeEmEstoqueComposicao($produto);
-        }
 
         // Verifique o método handleRequestOnValid abaixo
         return $this->doForm($request, $produto, $params);
@@ -351,7 +391,8 @@ class ProdutoController extends FormListController
             $composicao->precoComposicao = DecimalUtils::parseStr($produtoComposicaoArr['precoComposicao']);
             $this->produtoComposicaoEntityHandler->save($composicao);
             $produto->composicoes->add($composicao);
-            $this->produtoBusiness->fillQtdeEmEstoqueComposicao($produto);
+            $this->entityHandler->save($produto);
+
             $r = [
                 'result' => 'OK',
                 'divTbComposicao' => $this->renderView('Estoque/produto_form_composicao_divTbComposicao.html.twig', ['e' => $produto])
@@ -392,12 +433,12 @@ class ProdutoController extends FormListController
 
     /**
      *
-     * @Route("/est/produto/findProdutoByIdNomeTituloJSON/", name="est_produto_findProdutoByIdNomeTituloJSON")
+     * @Route("/est/produto/findProdutoParaComposicao/", name="est_produto_findProdutoParaComposicao")
      * @param Request $request
      * @return JsonResponse
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
-    public function findProdutoByIdNomeTituloJSON(Request $request): JsonResponse
+    public function findProdutoParaComposicao(Request $request): JsonResponse
     {
         try {
             $str = $request->get('term');
@@ -405,16 +446,31 @@ class ProdutoController extends FormListController
             $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
 
             if (ctype_digit($str)) {
-                $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str]]);
+                $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str], ['composicao', 'EQ', 'N']]);
             } else {
-                $produtos = $repoProduto->findByFiltersSimpl([[['nome', 'jsonData'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
+                $filterData_titulo = new FilterData('titulo', 'LIKE');
+                $filterData_titulo->jsonDataField = true;
+                $filterData_titulo->val = $str;
+
+                $filterData_nomeOUtitulo = new FilterData('nome', 'LIKE');
+                $filterData_nomeOUtitulo->val = $str;
+                $filterData_nomeOUtitulo->setOrFilterData($filterData_titulo);
+
+                $produtos = $repoProduto->findByFiltersSimpl([$filterData_nomeOUtitulo, ['composicao', 'EQ', 'N']], ['nome' => 'ASC'], 0, 50);
             }
-            $select2js = Select2JsUtils::toSelect2DataFn($produtos, function ($e) {
-                /** @var Produto $e */
-                return ($e->jsonData['titulo'] ?: $e->nome) . ' (' . $e->getId() . ')';
-            });
+
+            $results = [];
+            /** @var Produto $produto */
+            foreach ($produtos as $produto) {
+                $results[] = [
+                    'id' => $produto->getId(),
+                    'text' => $produto->jsonData['titulo'] ?? $produto->nome,
+                    'preco_tabela' => $produto->jsonData['preco_tabela']
+                ];
+            }
+
             return new JsonResponse(
-                ['results' => $select2js]
+                ['results' => $results]
             );
         } catch (\Exception $e) {
             return new JsonResponse(
@@ -422,7 +478,6 @@ class ProdutoController extends FormListController
             );
         }
     }
-
 
     /**
      *
@@ -443,5 +498,405 @@ class ProdutoController extends FormListController
             return new JsonResponse(['result' => 'FALHA']);
         }
     }
+
+    /**
+     * Resolvendo problema para quando foram alterados depto/grupo/subgrupo de produto, mas isso não refletiu no path das imagens.
+     *
+     * @Route("/est/produto/moveImages/", name="est_produto_moveImages")
+     * @param Connection $conn
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function moveImages(Connection $conn, ParameterBagInterface $parameterBag)
+    {
+
+        $pasta = $parameterBag->get('kernel.project_dir') . '/public/images/produtos';
+        exec('find ' . $pasta, $output);
+
+        $arquivos = [];
+        foreach ($output as $arq) {
+            $arquivos[basename($arq)] = $arq;
+        }
+
+        $imagens = $conn->fetchAll('select i.id, i.produto_id, depto_id, grupo_id, subgrupo_id, image_name from est_produto p, est_produto_imagem i where p.id = i.produto_id');
+
+        $result = [];
+
+        foreach ($imagens as $imagem) {
+
+            if (!isset($arquivos[$imagem['image_name']])) {
+                $result[] = 'ERRO: ' . $imagem['image_name'] . ' não existe no disco do ' . $imagem['produto_id'];
+                continue;
+            }
+
+            $caminhoQueDeveriaSer = $parameterBag->get('kernel.project_dir') .
+                '/public/images/produtos/' .
+                $imagem['depto_id'] . '/' .
+                $imagem['grupo_id'] . '/' .
+                $imagem['subgrupo_id'] . '/' . $imagem['image_name'];
+
+            if ($arquivos[$imagem['image_name']] !== $caminhoQueDeveriaSer) {
+                @mkdir($parameterBag->get('kernel.project_dir') .
+                    '/public/images/produtos/' .
+                    $imagem['depto_id'] . '/' .
+                    $imagem['grupo_id'] . '/' .
+                    $imagem['subgrupo_id'] . '/', 0777, true);
+
+                rename($arquivos[$imagem['image_name']], $caminhoQueDeveriaSer);
+                $result[] = 'ERRO: ' . $imagem['image_name'] . ' deveria estar em ' . $caminhoQueDeveriaSer . ' (e não em ' . $arquivos[$imagem['image_name']] . ') do ' . $imagem['produto_id'];
+            }
+        }
+
+        return new Response(implode('<br>', $result));
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/findById/{produto}", name="est_produto_findById", requirements={"produto"="\d+"})
+     * @param Produto $produto
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findById(Produto $produto): JsonResponse
+    {
+        try {
+            $produtoJson = EntityIdUtils::serialize($produto);
+            return new JsonResponse(
+                [
+                    'result' => 'OK',
+                    'produto' => $produtoJson
+                ]
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['result' => 'ERRO']
+            );
+        }
+    }
+
+    /**
+     *
+     * @Route("/est/produto/findProdutoByIdOuNome/", name="est_produto_findProdutoByIdOuNome")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findProdutoByIdOuNome(Request $request): JsonResponse
+    {
+        try {
+            $str = $request->get('term');
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+
+            if (ctype_digit($str)) {
+                $produtos = $repoProduto->findByFiltersSimpl([['id', 'EQ', $str]]);
+            } else {
+                $produtos = $repoProduto->findByFiltersSimpl([[['nome'], 'LIKE', $str]], ['nome' => 'ASC'], 0, 50);
+            }
+            $select2js = Select2JsUtils::toSelect2DataFn($produtos, function ($e) {
+                /** @var Produto $e */
+                return str_pad($e->getId(), 9, '0', STR_PAD_LEFT) . ' - ' . $e->nome;
+            });
+            return new JsonResponse(
+                ['results' => $select2js]
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['results' => []]
+            );
+        }
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/findProdutosByIdOuNomeJson/", name="est_produto_findProdutosByIdOuNomeJson")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findProdutosByIdOuNomeJson(Request $request): JsonResponse
+    {
+        try {
+            $str = $request->get('term');
+
+            $sql = 'SELECT prod.id, prod.nome, prod.json_data, preco.preco_prazo FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
+                'WHERE preco.atual AND (' .
+                'prod.id LIKE :str OR ' .
+                'prod.nome LIKE :str OR ' .
+                'json_data->>"$.codigo" LIKE :str) ORDER BY prod.nome LIMIT 20';
+
+            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql, ['str' => '%' . $str . '%']);
+            $results = [];
+            foreach ($rs as $r) {
+                $jsonData = json_decode($r['json_data'], true);
+                $precoEntrada = $r['preco_prazo'] ?? $jsonData['preco_tabela'] ?? 0.0;
+                $codigo = str_pad($jsonData['codigo'] ?? $r['id'], 6, '0', STR_PAD_LEFT);
+                $results[] = [
+                    'id' => $r['id'],
+                    'nome' => $codigo . ' - ' . $r['nome'],
+                    'preco_entrada' => $precoEntrada,
+                    'unidade' => $jsonData['unidade'] ?? 'UN'
+                ];
+            }
+
+            return new JsonResponse(
+                ['results' => $results]
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['results' => []]
+            );
+        }
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/corrigirPrecosAtuais/", name="est_produto_corrigirPrecosAtuais")
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function corrigirPrecosAtuais(): Response
+    {
+        try {
+            $produtosIds = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT id FROM est_produto');
+            foreach ($produtosIds as $produtoId) {
+                $precoAtual = $precos = $this->entityHandler->getDoctrine()->getConnection()
+                    ->fetchAll('SELECT id FROM est_produto_preco WHERE produto_id = :produtoId ORDER BY preco_prazo DESC LIMIT 1', ['produtoId' => $produtoId['id']]);
+                if ($precoAtual) {
+                    $this->entityHandler->getDoctrine()->getConnection()
+                        ->executeQuery('UPDATE est_produto_preco SET atual = true WHERE id = :id', ['id' => $precoAtual[0]['id']]);
+                }
+            }
+            return new Response('OK');
+        } catch (\Exception $e) {
+            return new Response('ERRO');
+        }
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/corrigeThumbnails", name="est_produto_corrigeThumbnails")
+     * @param Request $request
+     * @param ParameterBagInterface $params
+     * @return Response
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function corrigeThumbnails(Request $request, ParameterBagInterface $params): Response
+    {
+        $limit = $request->get('limit') ?? 1;
+        $conn = $this->entityHandler->getDoctrine()->getConnection();
+
+        $sql = 'select id, depto_id, grupo_id, subgrupo_id, json_data FROM est_produto WHERE NOT JSON_IS_NULL_OR_EMPTY(json_data, \'imagem1\') AND json_data->>"$.imagem1" NOT LIKE \'%thumbnail%\' LIMIT ' . (int)$limit;
+        $rProdutosComImagem1 = $conn->fetchAll($sql);
+
+
+        foreach ($rProdutosComImagem1 as $produtoComImagem1) {
+            echo 'Corrigindo ' . $produtoComImagem1['id'] . '<br>';
+            $jsonData = json_decode($produtoComImagem1['json_data'], true);
+
+            $url = $_SERVER['CROSIERAPP_URL'] . '/images/produtos/' . $produtoComImagem1['depto_id'] . '/' . $produtoComImagem1['grupo_id'] . '/' . $produtoComImagem1['subgrupo_id'] . '/' . $jsonData['imagem1'];
+            $url = 'https://radx.crosier.rodoponta.com.br/images/produtos/' . $produtoComImagem1['depto_id'] . '/' . $produtoComImagem1['grupo_id'] . '/' . $produtoComImagem1['subgrupo_id'] . '/' . $jsonData['imagem1'];
+
+            $imgUtils = new ImageUtils();
+            $imgUtils->load($url);
+
+            if ($imgUtils->getWidth() !== 50 && $imgUtils->getHeight() !== 50) {
+
+                $pathinfo = pathinfo($url);
+                $parsedUrl = parse_url($url);
+
+                $imgUtils->resizeToWidth(50);
+
+                // '%kernel.project_dir%/public/images/produtos'
+                $thumbnail = $params->get('kernel.project_dir') . '/public' .
+                    str_replace($pathinfo['basename'], '', $parsedUrl['path']) .
+                    $pathinfo['filename'] . '_thumbnail.' . $pathinfo['extension'];
+                $imgUtils->save($thumbnail);
+
+                $jsonData['imagem1'] = $pathinfo['filename'] . '_thumbnail.' . $pathinfo['extension'];
+                $conn->update('est_produto', ['json_data' => json_encode($jsonData)], ['id' => $produtoComImagem1['id']]);
+            }
+        }
+        return new Response('<hr>OK');
+    }
+
+    /**
+     *
+     * @Route("/est/produto/findProdutosByNomeOuFinalCodigo", name="est_produto_findProdutosByNomeOuFinalCodigo")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findProdutosByNomeOuFinalCodigo(Request $request): JsonResponse
+    {
+        $str = $request->get('term');
+        $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+        return new JsonResponse(['results' => $repoProduto->findProdutosByNomeOuFinalCodigo_select2js($str)]);
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/listSimpl/", name="est_produto_listSimpl")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function listSimpl(Request $request): Response
+    {
+        $params = [
+            'formUrl' => '/est/produto/form',
+            'listRoute' => 'est_produto_listSimpl',
+            'listView' => 'Estoque/produto_listSimpl.html.twig',
+        ];
+
+        $params['colunas'] = [
+            'id',
+            'nome',
+            'jsonData.fornecedor_nomeFantasia',
+            'jsonData.depto_nome',
+        ];
+
+        $fnGetFilterDatas = function (array $params) use ($request) : array {
+            $filterDatas = [
+                new FilterData(['id'], 'EQ', 'id', $params),
+                new FilterData(['nome'], 'LIKE', 'nome', $params),
+                new FilterData(['depto'], 'EQ', 'depto', $params),
+                new FilterData(['grupo'], 'EQ', 'grupo', $params),
+                new FilterData(['subgrupo'], 'EQ', 'subgrupo', $params),
+                new FilterData(['fornecedor_nomeFantasia', 'fornecedor_nome'], 'LIKE', 'fornecedor', $params, null, true),
+            ];
+
+            return $filterDatas;
+        };
+
+
+        $params['limit'] = 200;
+
+        $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
+
+        $params['deptos'] = $repoDepto->buildDeptosGruposSubgruposSelect2(
+            (int)($request->get('filter')['depto'] ?? null),
+            (int)($request->get('filter')['grupo'] ?? null),
+            (int)($request->get('filter')['subgrupo'] ?? null));
+        $params['grupos'] = json_encode([['id' => 0, 'text' => 'Selecione...']]);
+        $params['subgrupos'] = json_encode([['id' => 0, 'text' => 'Selecione...']]);
+
+
+        $fnHandleDadosList = function (array &$dados, int $totalRegistros) use ($params) {
+            if (count($dados) >= $params['limit'] && $totalRegistros > $params['limit']) {
+                $this->addFlash('warn', 'Retornando apenas ' . $params['limit'] . ' registros de um total de ' . $totalRegistros . '. Utilize os filtros!');
+            }
+        };
+
+        return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/formPreco/{produto}", name="est_produto_formPreco", requirements={"produto"="\d+"})
+     * @param Request $request
+     * @param Produto|null $produto
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     * @return JsonResponse
+     */
+    public function formPreco(Request $request, Produto $produto): JsonResponse
+    {
+        try {
+            $produtoPrecoArr = $request->get('produtoPreco');
+
+            if ($produtoPrecoArr['id']) {
+                /** @var ProdutoPrecoRepository $repoProdutoPreco */
+                $repoProdutoPreco = $this->getDoctrine()->getRepository(ProdutoPreco::class);
+                $preco = $repoProdutoPreco->find($produtoPrecoArr['id']);
+            } else {
+                $preco = new ProdutoPreco();
+            }
+            $preco->produto = $produto;
+
+            $repoListaPreco = $this->getDoctrine()->getRepository(ListaPreco::class);
+            $preco->lista = $repoListaPreco->find($produtoPrecoArr['lista']);
+
+            $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
+            $preco->unidade = $repoUnidade->find($produtoPrecoArr['unidade']);
+
+            $preco->precoCusto = DecimalUtils::parseStr($produtoPrecoArr['precoCusto']);
+            $preco->coeficiente = DecimalUtils::parseStr($produtoPrecoArr['coeficiente'] ?: 0);
+            $preco->margem = DecimalUtils::parseStr($produtoPrecoArr['margem'] ?: 0);
+            $preco->custoOperacional = DecimalUtils::parseStr($produtoPrecoArr['custoOperacional'] ?: 0);
+            $preco->custoFinanceiro = DecimalUtils::parseStr($produtoPrecoArr['custoFinanceiro'] ?: 0);
+            $preco->prazo = DecimalUtils::parseStr($produtoPrecoArr['prazo'] ?: 0);
+            $preco->precoPrazo = DecimalUtils::parseStr($produtoPrecoArr['precoPrazo']);
+            $preco->precoVista = DecimalUtils::parseStr($produtoPrecoArr['precoVista'] ?: 0);
+            $preco->precoPromo = DecimalUtils::parseStr($produtoPrecoArr['precoPromo'] ?: 0);
+            $preco->atual = $produtoPrecoArr['atual'] === 'on';
+            $preco->dtCusto = DateTimeUtils::parseDateStr($produtoPrecoArr['dtCusto'] ?: (new \DateTime())->format('d/m/Y'));
+            $preco->dtPrecoVenda = DateTimeUtils::parseDateStr($produtoPrecoArr['dtCusto'] ?: (new \DateTime())->format('d/m/Y'));
+
+            $this->produtoPrecoEntityHandler->save($preco);
+
+
+            $listasPrecos = [];
+            foreach ($produto->precos as $preco) {
+                $listasPrecos[$preco->lista->getId()]['lista'] = $preco->lista;
+                $listasPrecos[$preco->lista->getId()]['precos'][] = $preco;
+            }
+
+            $r = [
+                'result' => 'OK',
+                'divTbPrecos' => $this->renderView('Estoque/produto_form_estoquesepreco_divTbPrecos.html.twig', ['listasPrecos' => $listasPrecos])
+            ];
+        } catch (ViewException | \Exception $e) {
+            $this->logger->error('Erro - formPreco()');
+            $this->logger->error($e->getMessage());
+            $msg = $e instanceof ViewException ? $e->getMessage() : 'Erro ao salvar item da composição';
+            $r = [
+                'result' => 'ERRO',
+                'msg' => $msg
+            ];
+        }
+        return new JsonResponse($r);
+
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/precoDelete/{produtoPreco}/", name="est_produto_precoDelete", requirements={"produtoPreco"="\d+"})
+     *
+     * @param Request $request
+     * @param ProdutoPreco $produtoPreco
+     * @return RedirectResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function produtoPrecoDelete(Request $request, ProdutoPreco $produtoPreco): RedirectResponse
+    {
+        try {
+            if (!$this->isCsrfTokenValid('est_produto_precoDelete', $request->get('token'))) {
+                throw new ViewException('Token inválido');
+            }
+            $this->produtoPrecoEntityHandler->delete($produtoPreco);
+            $this->addFlash('success', 'Registro deletado com sucesso');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao deletar o preço');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->redirectToRoute('est_produto_form', ['id' => $produtoPreco->produto->getId(), '_fragment' => 'estoqueseprecos']);
+    }
+
 
 }

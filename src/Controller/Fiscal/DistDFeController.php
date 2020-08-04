@@ -2,12 +2,15 @@
 
 namespace App\Controller\Fiscal;
 
-use App\Business\Fiscal\DistDFeBusiness;
-use App\Business\Fiscal\SpedNFeBusiness;
-use App\Entity\Fiscal\DistDFe;
-use App\EntityHandler\Fiscal\DistDFeEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\DistDFe;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\DistDFeEntityHandler;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,28 +25,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class DistDFeController extends FormListController
 {
 
-    protected $crudParams =
-        [
-            'listView' => 'distDFeList.html.twig',
-            'listRoute' => 'distDFe_list',
-            'listRouteAjax' => 'distDFe_datatablesJsList',
-            'listPageTitle' => 'DistDFe',
-            'listId' => 'distDFeList',
-
-            'role_access' => 'ROLE_FISCAL_ADMIN',
-        ];
-
     /** @var DistDFeEntityHandler */
     protected $entityHandler;
 
-    /** @var SpedNFeBusiness */
-    private $spedNFeBusiness;
+    private SpedNFeBusiness $spedNFeBusiness;
 
-    /** @var DistDFeBusiness */
-    private $distDFeBusiness;
+    private NFeUtils $nfeUtils;
 
-    /** @var ParameterBagInterface */
-    private $params;
+    private DistDFeBusiness $distDFeBusiness;
+
+    private ParameterBagInterface $params;
 
     /**
      * @required
@@ -52,6 +43,15 @@ class DistDFeController extends FormListController
     public function setSpedNFeBusiness(SpedNFeBusiness $spedNFeBusiness): void
     {
         $this->spedNFeBusiness = $spedNFeBusiness;
+    }
+
+    /**
+     * @required
+     * @param NFeUtils $nfeUtils
+     */
+    public function setNfeUtils(NFeUtils $nfeUtils): void
+    {
+        $this->nfeUtils = $nfeUtils;
     }
 
     /**
@@ -83,17 +83,38 @@ class DistDFeController extends FormListController
         return $this;
     }
 
+    /**
+     * @param array $params
+     * @return array
+     */
+    public function getFilterDatas(array $params): array
+    {
+        return [
+            new FilterData('documento', 'EQ', 'documento', $params),
+        ];
+    }
 
     /**
      *
      * @Route("/fis/distDFe/list/", name="distDFe_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function list(Request $request): Response
     {
-        return $this->doList($request);
+        $params =
+            [
+                'listView' => 'Fiscal/distDFeList.html.twig',
+                'listRoute' => 'distDFe_list',
+                'listRouteAjax' => 'distDFe_datatablesJsList',
+                'listPageTitle' => 'DistDFes',
+                'listId' => 'distDFeList',
+            ];
+        $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsEmUso();
+        $params['page_subTitle'] = StringUtils::mascararCnpjCpf($nfeConfigsEmUso['cnpj']) . ' - ' . $nfeConfigsEmUso['razaosocial'];
+
+        return $this->doList($request, $params);
     }
 
     /**
@@ -101,11 +122,12 @@ class DistDFeController extends FormListController
      * @Route("/fis/distDFe/datatablesJsList/", name="distDFe_datatablesJsList")
      * @param Request $request
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      */
     public function datatablesJsList(Request $request): Response
     {
-        return $this->doDatatablesJsList($request);
+        $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+        return $this->doDatatablesJsList($request, ['filter' => ['documento' => $cnpjEmUso]]);
     }
 
 
@@ -113,39 +135,26 @@ class DistDFeController extends FormListController
      *
      * @Route("/fis/distDFe/obterDistDFes/{primeiroNSU}", name="distDFe_obterDistDFes")
      *
+     * @param Request $request
      * @param int|null $primeiroNSU
      * @return Response
      */
-    public function obterDistDFes(int $primeiroNSU = null): Response
+    public function obterDistDFes(Request $request, int $primeiroNSU = null): Response
     {
         try {
+            $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
             if ($primeiroNSU) {
-                $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU);
+                $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpjEmUso);
             } else {
-                $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU();
+                $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso);
             }
             $this->addFlash('info', $q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
-            $this->distDFeBusiness->extrairChaveETipoDosDistDFes();
+            $this->distDFeBusiness->processarDistDFesObtidos();
         } catch (ViewException $e) {
             $this->addFlash('error', $e->getMessage());
         }
-        return $this->redirectToRoute('distDFe_list');
-    }
-
-    /**
-     *
-     * @Route("/fis/distDFe/extrairChaveETipoDosDistDFes", name="distDFe_extrairChavesDistDFes")
-     *
-     * @return Response
-     */
-    public function extrairChavesDistDFes(): Response
-    {
-        try {
-            $this->distDFeBusiness->extrairChaveETipoDosDistDFes();
-            return new Response('OK');
-        } catch (ViewException $e) {
-            return new Response($e->getMessage());
-        }
+        $route = $request->get('redirectToRoute') ?? 'distDFe_list';
+        return $this->redirectToRoute($route);
     }
 
     /**
@@ -157,7 +166,8 @@ class DistDFeController extends FormListController
     public function obterDistDFesDeNSUsPulados(): Response
     {
         try {
-            $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados();
+            $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+            $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados($cnpjEmUso);
             return new Response($q . ' DFe\'s obtidos');
         } catch (ViewException $e) {
             return new Response($e->getMessage());
@@ -174,8 +184,14 @@ class DistDFeController extends FormListController
     public function obterDFePorNSU(int $nsu): Response
     {
         try {
-            $this->distDFeBusiness->obterDistDFeByNSU($nsu);
-            return new Response(' DFe obtido');
+            $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+            $r = $this->distDFeBusiness->obterDistDFeByNSU($nsu, $cnpjEmUso);
+            if ($r) {
+                $this->addFlash('success', 'DFe obtido');
+            } else {
+                $this->addFlash('warn', 'DFe já existente');
+            }
+            return $this->redirectToRoute('distDFe_list');
         } catch (ViewException $e) {
             return new Response($e->getMessage());
         }
@@ -228,10 +244,10 @@ class DistDFeController extends FormListController
     public function downloadXML(DistDFe $distDFe): Response
     {
         // Provide a name for your file with extension
-        $filename = $distDFe->getChave() . '.xml';
+        $filename = $distDFe->chave . '.xml';
 
         // The dinamically created content of the file
-        $fileContent = gzdecode(base64_decode($distDFe->getXml()));
+        $fileContent = gzdecode(base64_decode($distDFe->xml));
 
         // Return a response with a specific content
         $response = new Response($fileContent);

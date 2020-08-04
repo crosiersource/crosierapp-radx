@@ -2,8 +2,8 @@
 
 namespace App\Controller\RH;
 
-use App\Entity\RH\Cargo;
-use App\EntityHandler\RH\CargoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Entity\RH\Cargo;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\RH\CargoEntityHandler;
 use App\Form\RH\CargoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;

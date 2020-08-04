@@ -65,16 +65,19 @@
 
                 <div class="table-responsive-sm">
 
-                    <table class="table table-sm table-striped table-hover crsr-datatable">
+                    <table class="table table-sm table-striped table-hover crsr-datatable" id="datatable">
 
                         <thead>
                         <tr>
                             <th scope="col">
                                 <input style="width: 20px; height: 20px" type="checkbox" id="selTodasMovs"/>
                             </th>
-                            <th scope="col">Carteira<br/>Categoria<br/>Modo</th>
-                            <th scope="col">Descrição<br/>Recorrência</th>
-                            <th scope="col">Dt Vencto<br/>Dt Pagto</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">Carteira</th>
+                            <th scope="col">Categoria</th>
+                            <th scope="col">Centro de Custo</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Dt Vencto</th>
                             <th scope="col">Valor Total</th>
                             <th scope="col"></th>
                         </tr>
@@ -83,55 +86,31 @@
                         <tbody>
                         {% for item in dados %}
 
-
                             <tr>
                                 <td>
-                                    {{ item.id }}
-                                    <br/>
                                     <input style="width: 17px; height: 17px" class="movSel" type="checkbox"
                                            id="movsSelecionadas[{{ item.id }}]"
-                                           name="movsSelecionadas[{{ item.id }}]"/><br/>
-                                    <span class="badge badge-pill badge-light">{{ loop.index }}</span>
+                                           name="movsSelecionadas[{{ item.id }}]"/>
                                 </td>
                                 <td>
-                                    <b>{{ item.carteira.descricaoMontada }}</b><br/>
-                                    {{ item.categoria.descricaoMontada }}<br/>
-                                    {{ item.modo.descricaoMontada }}
+                                    {{ item.id }}
                                 </td>
+                                <td>{{ item.carteira.descricaoMontada }}</td>
+                                <td>{{ item.categoria.descricaoMontada }}</td>
+                                <td>{{ item.centroCusto.descricaoMontada }}</td>
                                 <td>
                                     <div style="float: left">
                                         <b>{{ item.descricaoMontada|raw }}</b>
                                         {% if item.cedenteInfo %}
                                             <br/>{{ item.cedenteInfo }}
                                         {% endif %}
+                                        <br><span class="badge badge-pill badge-info">Recorrente (dia {{ item.recorrDia }})</span>
                                     </div>
 
                                     <div class="text-right">
 
                                         {% if (item.chequeNumCheque) %}
                                             <span class="badge badge-pill badge-danger">Cheque</span><br/>
-                                        {% endif %}
-
-
-                                        {% if (item.recorrente) %}
-
-                                            <span class="badge badge-pill badge-info">Recorrente (dia {{ item.recorrDia }})</span>
-
-                                        {% elseif (item.parcelamento) %}
-
-                                            <span class="badge badge-pill badge-info">Parcelamento</span>
-                                            <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
-                                               class="btn btn-sm btn-outline-secondary"
-                                               role="button" target="_blank" aria-pressed="true"><i
-                                                        class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
-
-                                        {% elseif (item.cadeia) %}
-                                            <span class="badge badge-pill badge-info">Em cadeia</span>
-                                            <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
-                                               class="btn btn-sm btn-outline-secondary"
-                                               role="button" target="_blank" aria-pressed="true"><i
-                                                        class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
-
                                         {% endif %}
 
                                         {% if (item.transferenciaEntreCarteiras and item.movimentacaoOposta and item.movimentacaoOposta.categoria) %}
@@ -160,7 +139,6 @@
                                             <i class="fas fa-dollar-sign"></i>
                                         </a>
                                     {% endif %}
-
 
                                     <button type="button" class="btn btn-sm btn-primary"
                                             onclick="window.location.href='{{ url('movimentacao_form_recorrente', {id: item.id}) }}'">
@@ -202,5 +180,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Financeiro/movimentacaoRecorrentesList.js') }}"></script>
+    {{ encore_entry_script_tags('Financeiro/movimentacaoRecorrentesList') }}
 {% endblock %}

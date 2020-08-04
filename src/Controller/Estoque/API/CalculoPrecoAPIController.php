@@ -2,8 +2,8 @@
 
 namespace App\Controller\Estoque\API;
 
-use App\Business\Estoque\CalculoPreco;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\APIProblem;
+use CrosierSource\CrosierLibRadxBundle\Business\Estoque\CalculoPreco;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,8 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CalculoPrecoAPIController extends AbstractController
 {
 
-    /** @var CalculoPreco */
-    private $calculoPreco;
+    private CalculoPreco $calculoPreco;
 
     /**
      * @required

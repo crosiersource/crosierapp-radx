@@ -2,15 +2,8 @@
 
 namespace App\Controller\Financeiro;
 
-use App\Business\Financeiro\MovimentacaoBusiness;
-use App\Entity\Financeiro\Carteira;
-use App\Entity\Financeiro\Movimentacao;
-use App\Entity\Financeiro\TipoLancto;
-use App\EntityHandler\Financeiro\CadeiaEntityHandler;
-use App\EntityHandler\Financeiro\MovimentacaoEntityHandler;
 use App\Form\Financeiro\MovimentacaoAPagarType;
 use App\Form\Financeiro\MovimentacaoAReceberType;
-use App\Repository\Financeiro\MovimentacaoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -20,6 +13,13 @@ use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\CadeiaEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -169,8 +169,6 @@ class MovimentacaoAPagarReceberController extends FormListController
                             $this->addFlash('success', 'Registro salvo com sucesso!');
                             $this->afterSave($movimentacao);
                             return $this->redirectTo($request, $movimentacao, $params['formRoute']);
-                        } catch (ViewException $e) {
-                            $this->addFlash('error', $e->getMessage());
                         } catch (\Exception $e) {
                             $msg = ExceptionUtils::treatException($e);
                             $this->addFlash('error', $msg);

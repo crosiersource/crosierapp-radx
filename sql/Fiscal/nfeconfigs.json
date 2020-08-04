@@ -1,0 +1,33 @@
+{
+  "atualizacao": "2017-02-20 09:11:21.000000",
+  "tpAmb": 1,
+  "razaosocial": "",
+  "siglaUF": "PR",
+  "ie": "",
+  "cnpj": "",
+  "schemes": "PL_009_V4",
+  "versao": "4.00",
+  "tokenIBPT": "AAAAAAA",
+  "aProxyConf": {
+    "proxyIp": "",
+    "proxyPort": "",
+    "proxyUser": "",
+    "proxyPass": ""
+  },
+  "CSC_prod": "",
+  "CSCid_prod": "00000X",
+  "CSC_hom": "",
+  "CSCid_hom": "00000X",
+  "serie_NFE_PROD": "",
+  "serie_NFCE_PROD": "",
+  "serie_NFE_HOM": "",
+  "serie_NFCE_HOM": "",
+  "enderecoCompleto": "",
+  "telefone": "",
+  "enderEmit_xLgr": "",
+  "enderEmit_nro": "",
+  "enderEmit_xBairro": "",
+  "enderEmit_cep": "",
+  "certificado": "",
+  "certificadoPwd": ""
+}

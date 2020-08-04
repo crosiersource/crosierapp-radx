@@ -2,16 +2,14 @@
 
 namespace App\Controller\Fiscal;
 
-use App\Business\Fiscal\NotaFiscalBusiness;
-use App\Entity\Fiscal\FinalidadeNF;
-use App\Entity\Fiscal\NotaFiscal;
-use App\Entity\Fiscal\NotaFiscalVenda;
-use App\Entity\Vendas\Venda;
 use App\Form\Fiscal\NotaFiscalType;
-use App\Repository\Fiscal\NotaFiscalVendaRepository;
-use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,17 +28,14 @@ use Symfony\Component\Serializer\Serializer;
 class EmissaoFiscalPVController extends BaseController
 {
 
-    /** @var NotaFiscalBusiness */
-    private $notaFiscalBusiness;
+    private NotaFiscalBusiness $notaFiscalBusiness;
 
-    /** @var NFeUtils */
-    private $nfeUtils;
+    private NFeUtils $nfeUtils;
 
-    /** @var CrosierEntityIdAPIClient */
-    private $crosierEntityIdAPIClient;
+    private CrosierEntityIdAPIClient $crosierEntityIdAPIClient;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
+
 
     /**
      * @required
@@ -88,21 +83,25 @@ class EmissaoFiscalPVController extends BaseController
      */
     public function form(Request $request, Venda $venda)
     {
-        // Verifica se a venda já tem uma NotaFiscal associada
-        /** @var NotaFiscalVendaRepository $repoNotaFiscalVenda */
-        $repoNotaFiscalVenda = $this->getDoctrine()->getRepository(NotaFiscalVenda::class);
+
         /** @var NotaFiscal $notaFiscal */
-        $notaFiscal = $repoNotaFiscalVenda->findNotaFiscalByVenda($venda);
+        $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+        $notaFiscalId = null;
         if (!$notaFiscal) {
             $notaFiscal = new NotaFiscal();
             $notaFiscal->setTipoNotaFiscal('NFCE');
             $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+        } else {
+            $notaFiscalId = $notaFiscal->getId();
         }
 
         $tipoAnterior = $notaFiscal->getTipoNotaFiscal();
 
         $form = $this->createForm(NotaFiscalType::class, $notaFiscal);
         $form->handleRequest($request);
+        if ($notaFiscalId) {
+            $notaFiscal->setId($notaFiscalId);
+        }
 
         $tipoAtual = $notaFiscal->getTipoNotaFiscal();
 
@@ -200,7 +199,6 @@ class EmissaoFiscalPVController extends BaseController
                 $this->notaFiscalBusiness->cancelar($notaFiscal);
                 return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
             }
-
             $form->getErrors(true, true);
         }
 
@@ -226,7 +224,7 @@ class EmissaoFiscalPVController extends BaseController
      */
     public function consultarStatus(NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
     {
-        $notaFiscal = $this->notaFiscalBusiness->consultarStatus($notaFiscal);
+        $this->notaFiscalBusiness->consultarStatus($notaFiscal);
         return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
     }
 
@@ -234,8 +232,9 @@ class EmissaoFiscalPVController extends BaseController
      *
      * @Route("/fis/emissaofiscalpv/consultarCNPJ/{cnpj}/{uf}", name="fis_emissaofiscalpv_consultarCNPJ")
      * @param string $cnpj
+     * @param string $uf
      * @return Response
-     * @throws \Exception
+     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
     public function consultarCNPJ(string $cnpj, string $uf): Response
     {
@@ -248,58 +247,6 @@ class EmissaoFiscalPVController extends BaseController
 
         return new Response($json);
     }
-
-
-//    /**
-//     *
-//     * @Route("/fis/getXmls", name="fis_getXmls")
-//     * @return Response
-//     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
-//     */
-//    public function getXmls(NotaFiscalEntityHandler $eh)
-//    {
-//        $mesano = '201910';
-//        $pastaUnimake = $_SERVER['FISCAL_UNIMAKE_PASTAROOT'];
-//
-//        $r = $mesano . '<hr>';
-//
-//        /** @var Connection $conn */
-//        $conn = $eh->getDoctrine()->getConnection();
-//
-//        $files = scandir($pastaUnimake . '/enviado/Autorizados/' . $mesano, SCANDIR_SORT_NONE);
-//        foreach ($files as $file) {
-//            if (strpos($file, 'procNFe') === FALSE || substr($file, -3) !== 'xml') {
-//                continue;
-//            }
-//            $contents = file_get_contents($pastaUnimake . '/enviado/Autorizados/' . $mesano . '/' . $file);
-//            $nfeLoaded = simplexml_load_string($contents);
-//
-//            /** @var NotaFiscal $nfe */
-//            $nfe = $this->getDoctrine()->getRepository(NotaFiscal::class)
-//                ->findOneBy([
-//                    'serie' => $nfeLoaded->NFe->infNFe->ide->serie,
-//                    'numero' => $nfeLoaded->NFe->infNFe->ide->nNF,
-//                    'ambiente' => 'PROD',
-//                ]);
-//
-//            if ($nfe) {
-//                if (!$nfe->getXmlNota()) {
-//
-//                    $r .= $nfe->getId() . ' atualizada! <br>';
-//
-//                    $conn->update('fis_nf', ['xml_nota' => $contents], ['id' => $nfe->getId()]);
-//
-////                    $nfe->setXmlNota($contents);
-////                    $eh->save($nfe);
-//                }
-//            } else {
-//                $r .= '<b>' . $mesano . '/' . $file . ' não tem na base! </b><br>';
-//            }
-//
-//        }
-//
-//        return new Response($r);
-//    }
 
 
 }

@@ -2,9 +2,9 @@
 
 namespace App\Controller\Financeiro;
 
-use App\Business\Financeiro\ConferenciaFinanceiroBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\ConferenciaFinanceiroBusiness;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,8 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ConferenciaFinanceiroController extends AbstractController
 {
 
-    /** @var ConferenciaFinanceiroBusiness */
-    private $business;
+    private ConferenciaFinanceiroBusiness $business;
 
     /**
      * ConferenciaFinanceiroController constructor.

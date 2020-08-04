@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Form\Vendas;
+
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\PlanoPagto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+/**
+ *
+ * @author Carlos Eduardo Pauluk
+ */
+class VendaType extends AbstractType
+{
+
+    /** @var EntityManagerInterface */
+    private EntityManagerInterface $doctrine;
+
+    public function __construct(EntityManagerInterface $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        /** @var AppConfigRepository $repoAppConfig */
+        $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
+        $jsonMetadata = json_decode($repoAppConfig->findByChave('ven_venda_json_metadata'), true);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($jsonMetadata) {
+            /** @var Venda $venda */
+            $venda = $event->getData();
+            $builder = $event->getForm();
+
+            $builder->add('id', IntegerType::class, [
+                'label' => 'Id',
+                'required' => true,
+                'attr' => ['readonly' => 'readonly']
+            ]);
+
+            $builder->add('dtVenda', DateTimeType::class, [
+                'label' => 'Dt Venda',
+                'widget' => 'single_text',
+                'html5' => false,
+                'format' => 'dd/MM/yyyy HH:mm:ss',
+                'attr' => [
+                    'class' => 'crsr-datetime'
+                ],
+                'required' => true,
+                'disabled' => true
+            ]);
+
+            $builder->add('status', TextType::class, [
+                'label' => 'Status',
+                'required' => false,
+                'attr' => ['readonly' => 'readonly']
+            ]);
+
+
+            $vendedorChoices = $this->doctrine->getRepository(Colaborador::class)
+                ->findByFiltersSimpl([['atual', 'EQ', true]], ['nome' => 'ASC']);
+
+            $builder->add('vendedor', EntityType::class, [
+                'label' => 'Vendedor',
+                'class' => Colaborador::class,
+                'placeholder' => '...',
+                'choices' => $vendedorChoices,
+                'choice_label' => function (?Colaborador $colaborador) {
+                    return $colaborador ? str_pad($colaborador->getId(), 3, '0', STR_PAD_LEFT) . ' - ' . $colaborador->nome : null;
+                },
+                'required' => false,
+                'attr' => ['class' => 'autoSelect2 ' . (!$venda->getId() ? 'focusOnReady' : '')]
+            ]);
+
+
+            $builder->add('subtotal', MoneyType::class, [
+                'label' => 'Subtotal',
+                'currency' => 'BRL',
+                'grouping' => 'true',
+                'attr' => [
+                    'class' => 'crsr-money'
+                ],
+                'required' => false,
+                'disabled' => true
+            ]);
+
+            $builder->add('desconto', MoneyType::class, [
+                'label' => 'Descontos',
+                'currency' => 'BRL',
+                'grouping' => 'true',
+                'attr' => [
+                    'class' => 'crsr-money'
+                ],
+                'disabled' => true,
+                'required' => false
+            ]);
+
+            $builder->add('valorTotal', MoneyType::class, [
+                'label' => 'Valor Total',
+                'currency' => 'BRL',
+                'grouping' => 'true',
+                'attr' => [
+                    'class' => 'crsr-money'
+                ],
+                'disabled' => true,
+                'required' => false
+            ]);
+
+
+            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => $venda->jsonData]);
+
+        });
+
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) use ($jsonMetadata) {
+
+                $builder = $event->getForm();
+                $data = $event->getData();
+
+                $builder->remove('jsonData');
+                $builder->add('jsonData', JsonType::class,
+                    [
+                        'jsonMetadata' => $jsonMetadata,
+                        'jsonData' => ($data['jsonData'] ?? null)
+                    ]);
+
+            }
+        );
+
+
+        // Necessário para os casos onde o formulário não tem todos os campos do json_data (para que eles não desapareçam por conta disto)
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($jsonMetadata) {
+                /** @var Venda $venda */
+                $venda = $event->getData();
+                if ($venda->getId()) {
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM ven_venda WHERE id = :id', ['id' => $venda->getId()])['json_data'] ?? '{}', true);
+                    $venda->jsonData = array_merge($jsonDataOrig, $venda->jsonData);
+                    $event->setData($venda);
+                }
+            }
+        );
+
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => Venda::class
+        ]);
+    }
+}

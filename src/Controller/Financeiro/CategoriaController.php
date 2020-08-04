@@ -2,12 +2,12 @@
 
 namespace App\Controller\Financeiro;
 
-use App\Entity\Financeiro\Categoria;
-use App\EntityHandler\Financeiro\CategoriaEntityHandler;
 use App\Form\Financeiro\CategoriaType;
-use App\Repository\Financeiro\CategoriaRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\CategoriaEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -138,7 +138,6 @@ class CategoriaController extends FormListController
 
         return new Response($json);
     }
-
 
 
 }

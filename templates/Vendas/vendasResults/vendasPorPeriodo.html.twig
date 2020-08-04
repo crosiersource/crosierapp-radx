@@ -64,7 +64,7 @@
                 <tbody>
                 {% for item in dados.rs %}
                     <tr>
-                        <td>{{ "%02d"|format(item.vendedor.codigo) }} - {{ item.vendedor.nomeEkt }}</td>
+                        <td>{{ "%02d"|format(item.vendedor.jsonData.codigo) }} - {{ item.vendedor.nome|default('') }}</td>
                         <td class="text-right">{{ item.total|number_format(2,',','.') }}</td>
                     </tr>
                 {% endfor %}
@@ -86,5 +86,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/ven/vendasPorPeriodo.js') }}"></script>
+    {{ encore_entry_script_tags('Vendas/vendasPorPeriodo') }}
 {% endblock %}

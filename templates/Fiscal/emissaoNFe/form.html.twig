@@ -87,7 +87,7 @@
 
                         {% if permiteFaturamento %}
 
-                            <button type="button" class="btn btn-success" value="Faturar"
+                            <button type="button" class="btn btn-success ml-1" value="Faturar"
                                     data-url="{{ url('fis_emissaonfe_faturar', {notaFiscal: notaFiscal.id}) }}"
                                     data-target="#confirmationModal" data-toggle="modal">
                                 <i class="fas fa-file-invoice" aria-hidden="true"></i> Faturar
@@ -96,15 +96,21 @@
                         {% endif %}
 
                         {% if permiteReimpressao %}
-                            <a role="button" value="Imprimir" class="btn btn-outline-primary"
+                            <a role="button" value="Imprimir" class="btn btn-outline-primary ml-1"
                                     href="{{ url('fis_emissaonfe_imprimir', {notaFiscal: notaFiscal.id}) }}"
                                     target="_blank">
                                 <i class="fas fa-print" aria-hidden="true"></i> Imprimir
                             </a>
+
+                            <a role="button" value="Download do XML" class="btn btn-outline-primary ml-1"
+                               href="{{ url('fis_emissaonfe_downloadXML', {nf: notaFiscal.id}) }}"
+                               target="_blank">
+                                <i class="fas fa-file-code"></i> XML
+                            </a>
                         {% endif %}
 
                         {% if notaFiscal.id %}
-                            <button type="button" value="Clonar" class="btn btn-secondary"
+                            <button type="button" value="Clonar" class="btn btn-secondary ml-1"
                                     data-url="{{ url('fis_emissaonfe_clonar', {notaFiscal: notaFiscal.id}) }}"
                                     data-target="#confirmationModal" data-toggle="modal">
                                 <i class="fas fa-copy" aria-hidden="true"></i> Clonar
@@ -112,14 +118,14 @@
                         {% endif %}
 
                         {% if permiteCancelamento or permiteReimpressaoCancelamento %}
-                            <button type="button" id="Cancelar" class="btn btn-warning"
+                            <button type="button" id="Cancelar" class="btn btn-warning ml-1"
                                     onclick="window.location.assign('{{ url('fis_emissaonfe_cancelarForm', {notaFiscal: notaFiscal.id}) }}')">
                                 <i class="fas fa-ban" aria-hidden="true"></i> Cancelar
                             </button>
                         {% endif %}
 
                         {% if notaFiscal.id %}
-                            <button type="button" value="Consultar Status" class="btn btn-outline-info"
+                            <button type="button" value="Consultar Status" class="btn btn-outline-info ml-1"
                                     data-url="{{ url('fis_emissaonfe_consultarStatus', {notaFiscal: notaFiscal.id}) }}"
                                     data-target="#confirmationModal"
                                     data-toggle="modal">
@@ -146,5 +152,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Fiscal/emissaoNFe/form.js') }}"></script>
+    {{ encore_entry_script_tags('Fiscal/emissaoNFe/form') }}
 {% endblock %}

@@ -3,11 +3,11 @@
 namespace App\Controller\Financeiro;
 
 
-use App\Entity\Financeiro\Modo;
-use App\EntityHandler\Financeiro\ModoEntityHandler;
 use App\Form\Financeiro\ModoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\ModoEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -106,7 +106,7 @@ class ModoController extends FormListController
      */
     public function delete(Request $request, Modo $modo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $modo);
+        return $this->doDelete($request, $modo, []);
     }
 
 

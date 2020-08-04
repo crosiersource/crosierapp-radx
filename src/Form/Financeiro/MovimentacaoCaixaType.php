@@ -2,17 +2,17 @@
 
 namespace App\Form\Financeiro;
 
-use App\Entity\Financeiro\Banco;
-use App\Entity\Financeiro\BandeiraCartao;
-use App\Entity\Financeiro\Carteira;
-use App\Entity\Financeiro\Categoria;
-use App\Entity\Financeiro\Modo;
-use App\Entity\Financeiro\Movimentacao;
-use App\Entity\Financeiro\OperadoraCartao;
-use App\Entity\Financeiro\TipoLancto;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Banco;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\BandeiraCartao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -89,7 +89,6 @@ class MovimentacaoCaixaType extends AbstractType
                 'choice_label' => 'descricaoMontada',
                 'required' => true,
                 'attr' => [
-                    'class' => 'autoSelect2',
                     'data-val' => $movimentacao->getTipoLancto() ? $movimentacao->getTipoLancto()->getId() : null
                 ],
                 'disabled' => $movimentacao->getId() ? true : false
@@ -104,7 +103,7 @@ class MovimentacaoCaixaType extends AbstractType
                 'empty_data' => $movimentacao->getCategoria(),
                 'attr' => [
                     'data-val' => (null !== $movimentacao and null !== $movimentacao->getCategoria() and null !== $movimentacao->getCategoria()->getId()) ? $movimentacao->getCategoria()->getId() : '',
-                    'class' => 'autoSelect2'
+                    'class' => ''
                 ],
                 'required' => false,
                 'disabled' => $disabled
@@ -123,7 +122,7 @@ class MovimentacaoCaixaType extends AbstractType
             ]);
 
             // Para que o campo select seja montado já com o valor selecionado (no $('#movimentacao_carteira').val())
-            $attr = ['class' => 'autoSelect2'];
+            $attr = [];
             if (null !== $movimentacao and null !== $movimentacao->getCarteira() and null !== $movimentacao->getCarteira()->getId()) {
                 $attr['data-val'] = $movimentacao->getCarteira()->getId();
                 $attr['data-caixa'] = $movimentacao->getCarteira()->getCaixa() ? 'true' : 'false';
@@ -149,7 +148,6 @@ class MovimentacaoCaixaType extends AbstractType
                 'choices' => null,
                 'attr' => [
                     'data-val' => (null !== $movimentacao and null !== $movimentacao->getCarteiraDestino()) ? $movimentacao->getCarteiraDestino()->getId() : '',
-                    'class' => 'autoSelect2'
                 ],
                 'required' => false,
                 'disabled' => $disabled
@@ -176,7 +174,6 @@ class MovimentacaoCaixaType extends AbstractType
                     return $modo ? $modo->getDescricaoMontada() : null;
                 },
                 'required' => false,
-                'attr' => ['class' => 'autoSelect2'],
                 'disabled' => $disabled
             ]);
 

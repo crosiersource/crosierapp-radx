@@ -153,7 +153,7 @@
 
                                         {% if item.status == 'ABERTA' %}
                                             <a class="btn btn-sm btn-outline-danger"
-                                               href="{{ url('movimentacao_form_pagto', {'id':item.id}) }}"
+                                               href="{{ url('movimentacao_form_pagto', {'id':item.id, 'reftoback': true}) }}"
                                                role="button" title="Registro de Pagamento">
                                                 <i class="fas fa-dollar-sign"></i>
                                             </a>
@@ -258,5 +258,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Financeiro/movimentacaoAPagarReceberList.js') }}"></script>
+    {{ encore_entry_script_tags('Financeiro/movimentacaoAPagarReceberList') }}
 {% endblock %}

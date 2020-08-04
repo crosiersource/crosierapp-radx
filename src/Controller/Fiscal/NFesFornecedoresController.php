@@ -2,14 +2,17 @@
 
 namespace App\Controller\Fiscal;
 
-use App\Business\Fiscal\NotaFiscalBusiness;
-use App\Business\Fiscal\SpedNFeBusiness;
-use App\Entity\Fiscal\NotaFiscal;
-use App\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use App\Form\Fiscal\NotaFiscalType;
-use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,14 +29,13 @@ class NFesFornecedoresController extends FormListController
     /** @var NotaFiscalEntityHandler */
     protected $entityHandler;
 
-    /** @var NFeUtils */
-    private $nfeUtils;
+    private NFeUtils $nfeUtils;
 
-    /** @var NotaFiscalBusiness */
-    private $notaFiscalBusiness;
+    private NotaFiscalBusiness $notaFiscalBusiness;
 
-    /** @var SpedNFeBusiness */
-    private $spedNFeBusiness;
+    private SpedNFeBusiness $spedNFeBusiness;
+
+    private DistDFeBusiness $distDFeBusiness;
 
     /**
      * @required
@@ -72,6 +74,16 @@ class NFesFornecedoresController extends FormListController
     }
 
     /**
+     * @required
+     * @param DistDFeBusiness $distDFeBusiness
+     */
+    public function setDistDFeBusiness(DistDFeBusiness $distDFeBusiness): void
+    {
+        $this->distDFeBusiness = $distDFeBusiness;
+    }
+
+
+    /**
      *
      * @Route("/fis/nfesFornecedores/form/{id}", name="nfesFornecedores_form", requirements={"id"="\d+"})
      * @param Request $request
@@ -87,11 +99,10 @@ class NFesFornecedoresController extends FormListController
             return $this->redirectToRoute('nfesFornecedores_formResumo', ['id' => $notaFiscal->getId()]);
         }
         $form = $this->createForm(NotaFiscalType::class, $notaFiscal);
-        $response = $this->doRender('/Fiscal/nfeFornecedores/form.html.twig', [
+        return $this->doRender('/Fiscal/nfeFornecedores/form.html.twig', [
             'form' => $form->createView(),
             'notaFiscal' => $notaFiscal
         ]);
-        return $response;
     }
 
     /**
@@ -104,12 +115,7 @@ class NFesFornecedoresController extends FormListController
      */
     public function formResumo(Request $request, NotaFiscal $notaFiscal)
     {
-        $form = $this->createForm(NotaFiscalType::class, $notaFiscal);
-        $response = $this->doRender('/Fiscal/nfeFornecedores/formResumo.html.twig', [
-            'form' => $form->createView(),
-            'notaFiscal' => $notaFiscal
-        ]);
-        return $response;
+        return $this->doRender('/Fiscal/nfeFornecedores/formResumo.html.twig', ['notaFiscal' => $notaFiscal]);
     }
 
     /**
@@ -137,13 +143,16 @@ class NFesFornecedoresController extends FormListController
      */
     public function list(Request $request)
     {
+        $nfeConfigs = $this->nfeUtils->getNFeConfigsEmUso();
+        $empresa = StringUtils::mascararCnpjCpf($nfeConfigs['cnpj']) . ' - ' . $nfeConfigs['razaosocial'];
         $params =
             [
-                'listView' => 'nfeFornecedores/nfesFornecedoresList.html.twig',
+                'listView' => 'Fiscal/nfeFornecedores/nfesFornecedoresList.html.twig',
                 'listRoute' => 'nfesFornecedores_list',
                 'listRouteAjax' => 'nfesFornecedores_datatablesJsList',
-                'listPageTitle' => 'NFe - Fornecedores',
+                'listPageTitle' => 'NFe Entrada',
                 'listId' => 'nfesFornecedoresList',
+                'page_subTitle' => $empresa
             ];
 
 
@@ -155,7 +164,7 @@ class NFesFornecedoresController extends FormListController
      * @Route("/fis/nfesFornecedores/datatablesJsList/", name="nfesFornecedores_datatablesJsList")
      * @param Request $request
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      */
     public function datatablesJsList(Request $request)
     {
@@ -178,11 +187,14 @@ class NFesFornecedoresController extends FormListController
      */
     public function downloadXML(NotaFiscal $nf): Response
     {
-        // Provide a name for your file with extension
         $filename = $nf->getChaveAcesso() . '.xml';
 
-        // The dinamically created content of the file
-        $fileContent = gzdecode(base64_decode($nf->getXmlNota()));
+
+        try {
+            $fileContent = gzdecode(base64_decode($nf->getXmlNota()));
+        } catch (\Exception $e) {
+            $fileContent = $nf->getXmlNota();
+        }
 
         // Return a response with a specific content
         $response = new Response($fileContent);
@@ -212,7 +224,7 @@ class NFesFornecedoresController extends FormListController
      */
     public function manifestar(Request $request, NotaFiscal $nf): Response
     {
-        $codManifest = $request->get('codManifest');
+        $codManifest = $request->get('codManifest') ?? '210210';
         try {
             $this->spedNFeBusiness->manifestar($nf, $codManifest);
             $this->addFlash('success', 'NF manifestada com sucesso.');
@@ -220,7 +232,54 @@ class NFesFornecedoresController extends FormListController
             $this->logger->error('Erro ao manifestar (nf.id = ' . $nf->getId() . ', codManifest = ' . $codManifest . ')');
             $this->addFlash('error', 'Erro ao manifestar a NF');
         }
-        return $this->redirectToRoute('nfesFornecedores_formResumo', ['id' => $nf->getId()]);
+        return $this->redirectToRoute('nfesFornecedores_list');
+    }
+
+
+    /**
+     *
+     * @Route("/fis/nfesFornecedores/gerarFatura/{notaFiscal}", name="fis_nfesFornecedores_gerarFatura", requirements={"notaFiscal"="\d+"})
+     * @param Request $request
+     * @param NotaFiscal|null $notaFiscal
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     */
+    public function gerarFatura(Request $request, NotaFiscal $notaFiscal)
+    {
+        try {
+            if (!$this->isCsrfTokenValid('fis_nfesFornecedores_gerarFatura', $request->get('token'))) {
+                throw new ViewException('Token inválido');
+            }
+            $this->notaFiscalBusiness->gerarFatura($notaFiscal);
+            $this->addFlash('success', 'Fatura gerada com sucesso');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao gerar fatura');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+        return $this->redirectToRoute('nfesFornecedores_form', ['id' => $notaFiscal->getId(), '_fragment' => 'duplicatas']);
+    }
+
+    /**
+     *
+     * @Route("/fis/nfesFornecedores/reparseDownloadedXML/{notaFiscal}", name="fis_nfesFornecedores_reparseDownloadedXML")
+     *
+     * @param NotaFiscal $notaFiscal
+     * @return Response
+     */
+    public function reparseDownloadedXML(NotaFiscal $notaFiscal): ?Response
+    {
+        try {
+            $this->distDFeBusiness->nfeProc2NotaFiscal($notaFiscal->getXMLDecoded(), $notaFiscal);
+            $this->addFlash('success', 'XML reprocessado com sucesso');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao reprocessar XML');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+        return $this->redirectToRoute('nfesFornecedores_form', ['id' => $notaFiscal->getId()]);
     }
 
 

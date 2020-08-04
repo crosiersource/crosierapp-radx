@@ -2,21 +2,21 @@
 
 namespace App\Form\Financeiro;
 
-use App\Entity\Financeiro\Banco;
-use App\Entity\Financeiro\BandeiraCartao;
-use App\Entity\Financeiro\Carteira;
-use App\Entity\Financeiro\Categoria;
-use App\Entity\Financeiro\CentroCusto;
-use App\Entity\Financeiro\GrupoItem;
-use App\Entity\Financeiro\Modo;
-use App\Entity\Financeiro\Movimentacao;
-use App\Entity\Financeiro\OperadoraCartao;
-use App\Entity\Financeiro\TipoLancto;
-use App\Repository\Financeiro\CarteiraRepository;
-use App\Repository\Financeiro\CategoriaRepository;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Banco;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\BandeiraCartao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\CentroCusto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -39,14 +39,11 @@ use Symfony\Component\Security\Core\Security;
 class MovimentacaoTypeBuilder
 {
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    /** @var Security */
-    private $security;
+    private Security $security;
 
-    /** @var UrlGeneratorInterface */
-    private $router;
+    private UrlGeneratorInterface $router;
 
 
     /**
@@ -131,6 +128,9 @@ class MovimentacaoTypeBuilder
         $form->add('descricao', TextType::class, [
             'label' => 'Descrição',
             'required' => false,
+            'attr' => [
+                'style' => 'background-color: lightgoldenrodyellow'
+            ],
         ]);
 
         $form->add('uuid', TextType::class, [
@@ -305,7 +305,7 @@ class MovimentacaoTypeBuilder
             'class' => CentroCusto::class,
             'data' => $movimentacao->getCentroCusto(),
             'empty_data' => $movimentacao->getCentroCusto(),
-            'choices' => $this->doctrine->getRepository(CentroCusto::class)->findAll(),
+            'choices' => $this->doctrine->getRepository(CentroCusto::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => 'descricaoMontada',
             'required' => false,
             'attr' => ['class' => 'autoSelect2']

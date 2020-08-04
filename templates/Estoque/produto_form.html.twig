@@ -3,7 +3,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('build/Estoque/produto_form.css') }}">
+    {{ encore_entry_link_tags('Estoque/produto_form') }}
 {% endblock %}
 
 
@@ -42,10 +42,11 @@
                         <div class="ml-auto text-right">
                             Estoque
                             {% if e.composicao == 'S' %}
-                                Disponível: {{ e.composicaoEstoqueDisponivel }}
+                                Disponível:
                             {% else %}
-                                Total: {{ e.jsonData['qtde_estoque_total']|default('') }}
+                                Total:
                             {% endif %}
+                            {{ e.jsonData['qtde_estoque_total']|default('') }}
                         </div>
                     </div>
                 </div>
@@ -61,10 +62,10 @@
 
                         <li class="nav-item">
                             <a class="nav-link {{ loop.index0 == 0 ? 'active' : '' }}"
-                               id="{{ aba|lower|transliterate }}-tab" data-toggle="tab"
-                               href="#{{ aba|lower|transliterate }}"
+                               id="{{ aba|lower|transliterate|replace({' ':''}) }}-tab" data-toggle="tab"
+                               href="#{{ aba|lower|transliterate|replace({' ':''}) }}"
                                role="tab"
-                               aria-controls="{{ aba|lower|transliterate }}"
+                               aria-controls="{{ aba|lower|transliterate|replace({' ':''}) }}"
                                aria-selected="false">{{ aba }}</a>
                         </li>
 
@@ -74,6 +75,13 @@
                         <li class="nav-item">
                             <a class="nav-link" id="composicao-tab" data-toggle="tab" href="#composicao" role="tab" aria-controls="composicao"
                                aria-selected="false">Composição</a>
+                        </li>
+                    {% endif %}
+
+                    {% if is_granted('ROLE_ESTOQUE_ECOMMERCE') %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="ecommerce-tab" data-toggle="tab" href="#ecommerce" role="tab" aria-controls="ecommerce"
+                               aria-selected="false">E-Commerce</a>
                         </li>
                     {% endif %}
 
@@ -96,8 +104,8 @@
                     {% for aba,camposNaAba in jsonMetadata.abas %}
 
                         {# Abas fixas que possuem arquivo próprio #}
-                        {% if aba in ['Produto','Fotos'] %}
-                            {% include 'Estoque/produto_form_' ~ aba|lower|transliterate ~ '.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
+                        {% if aba in ['Produto','Fotos','Estoques e Preços'] %}
+                            {% include 'Estoque/produto_form_' ~ aba|lower|transliterate|replace({' ':''}) ~ '.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
                         {% else %}
                             {% include 'Estoque/produto_form_aba.html.twig' with {'aba': aba, 'camposNaAba': camposNaAba} %}
                         {% endif %}
@@ -106,6 +114,10 @@
 
                     {% if e.composicao == 'S' %}
                         {% include 'Estoque/produto_form_composicao.html.twig' %}
+                    {% endif %}
+
+                    {% if is_granted('ROLE_ESTOQUE_ECOMMERCE') %}
+                        {% include 'Estoque/produto_form_ecommerce.html.twig' %}
                     {% endif %}
 
                 </div>
@@ -121,5 +133,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Estoque/produto_form.js') }}"></script>
+    {{ encore_entry_script_tags('Estoque/produto_form') }}
 {% endblock %}

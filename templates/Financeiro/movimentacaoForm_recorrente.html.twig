@@ -37,53 +37,81 @@
 
             <div class="card-body">
 
-                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
                 {{ form_start(form) }}
 
                 {{ form_row(form._token) }}
 
-                {{ form_row(form.id) }}
+                <div class="d-none">{{ form_row(form.id) }}</div>
+
 
                 <div class="card" id="divCamposRecorrencia"
                      style="margin-top: 20px">
                     <h5 class="card-header">Recorrência</h5>
                     <div class="card-body">
-                        {{ form_row(form.recorrDia) }}
-                        {{ form_row(form.recorrTipoRepet) }}
-                        {{ form_row(form.recorrFrequencia) }}
-                        {{ form_row(form.recorrVariacao) }}
+
+                        <div class="row">
+                            <div class="col-md-2 col-sm-12">
+                                {{ form_row(form.recorrDia) }}
+                            </div>
+
+                            <div class="col-md-4 col-sm-12">
+                                {{ form_row(form.recorrTipoRepet) }}
+                            </div>
+
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.recorrFrequencia) }}
+                            </div>
+
+                            <div class="col-md-3 col-sm-12">
+                                {{ form_row(form.recorrVariacao) }}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {{ form_row(form.modo) }}
 
-                {{ form_row(form.carteira) }}
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.sacado) }}
+                    </div>
 
-                {{ form_row(form.categoria) }}
-                {{ form_row(form.centroCusto) }}
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.cedente) }}
+                    </div>
+                </div>
 
-                {{ form_row(form.dtMoviment) }}
-                {{ form_row(form.dtVencto) }}
-                {{ form_row(form.dtVenctoEfetiva) }}
-                {{ form_row(form.dtPagto) }}
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                        {{ form_row(form.categoria) }}
+                    </div>
 
-                {{ form_row(form.sacado) }}
-                {{ form_row(form.cedente) }}
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.centroCusto) }}
+                    </div>
+                </div>
 
-                {{ form_row(form.descricao) }}
+                <div class="row">
+                    <div class="col-sm-4">
+                        {{ form_row(form.dtMoviment) }}
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form_row(form.dtVencto) }}
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form_row(form.dtVenctoEfetiva) }}
+                    </div>
+                </div>
 
-
-                <div style="margin-top: 20px" id="divCamposValores" class="card">
-                    <h5 class="card-header">Valores</h5>
-                    <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-8">
+                        {{ form_row(form.descricao) }}
+                    </div>
+                    <div class="col-sm-4">
                         {{ form_row(form.valor) }}
-                        {{ form_row(form.descontos) }}
-                        {{ form_row(form.acrescimos) }}
-                        {{ form_row(form.valorTotal) }}
                     </div>
                 </div>
-
 
 
                 <div style="margin-top: 20px" class="row">
@@ -117,5 +145,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Financeiro/movimentacaoForm_recorrente.js') }}"></script>
+    {{ encore_entry_script_tags('Financeiro/movimentacaoForm_recorrente') }}
 {% endblock %}

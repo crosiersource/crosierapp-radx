@@ -1,0 +1,60 @@
+{% for listaPrecos in listasPrecos %}
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <h5 class="card-title">{{ listaPrecos.lista.descricao }}</h5>
+
+
+            <div class="table-responsive-sm" id="divTbComposicao">
+
+                <table class="table table-striped table-hover">
+
+                    <thead>
+                    <tr>
+                        <th scope="col">Atual</th>
+                        <th scope="col">Unidade</th>
+                        <th scope="col">Dt Custo</th>
+                        <th scope="col">Preço Custo</th>
+                        <th scope="col">Margem</th>
+                        <th scope="col">Preço Venda</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="tbodySortableComposicao">
+                    {% for preco in listaPrecos.precos %}
+                        <tr data-id="{{ preco.id }}">
+                            <td>{{ preco.atual ? '*' : '' }}</td>
+                            <td>{{ preco.unidade.label }}</td>
+                            <td>{{ preco.dtCusto|date('d/m/Y H:i:s') }}</td>
+                            <td class="text-right ">{{ preco.precoCusto|number_format(2,',','.') }}</td>
+                            <td class="text-right ">{{ preco.margem|number_format(3,',','.') }}%</td>
+                            <td class="text-right">{{ preco.precoPrazo|number_format(2,',','.') }}</td>
+
+                            <td class="text-right text-nowrap">
+                                <button type="button" class="btn btn-sm btn-warning btnPrecoEdit"
+                                        data-json="{{ preco|serializeEntity }}">
+                                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                        data-url="{{ url('est_produto_precoDelete', {'produtoPreco': preco.id}) }}"
+                                        data-token="{{ csrf_token('est_produto_precoDelete') }}"
+                                        data-target="#confirmationModal" data-toggle="modal">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+
+            </div>
+
+        </div>
+    </div>
+
+{% endfor %}

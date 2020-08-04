@@ -1,6 +1,9 @@
 {% extends '@CrosierLibBase/index.html.twig' %}
 
 
+{% block up_scripts %}
+    {{ encore_entry_link_tags('Financeiro/movimentacaoExtratoList') }}
+{% endblock %}
 
 
 {% block page_content %}
@@ -26,19 +29,22 @@
 
                         <input type="text" class="form-control" id="filterDts"
                                name="filter[dts]" data-mask="00/00/0000 - 00/00/0000"
-                               style="width: 180px; text-align: center"
+                               style="width: 200px; text-align: center"
                                value="{{ filter.dts|default('') }}">
 
                         <button class="btn btn-outline-success ml-1"
                                 type="button" id="btnAnterior"
                                 data-ante-periodoi="{{ antePeriodoI }}"
                                 data-ante-periodof="{{ antePeriodoF }}">
-                            <i class="fas fa-chevron-left"></i></button>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+
                         <button class="btn btn-outline-success ml-1"
                                 type="button" id="btnProximo"
                                 data-prox-periodoi="{{ proxPeriodoI }}"
                                 data-prox-periodof="{{ proxPeriodoF }}">
-                            <i class="fas fa-chevron-right"></i></button>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
 
 
                         <button class="btn btn-outline-success ml-1" type="submit"><i class="fas fa-search"></i>
@@ -98,8 +104,7 @@
                                     <span class="badge badge-pill badge-light">{{ loop.index }}</span>
                                 </td>
                                 <td>
-                                    <b>{{ item.carteira.descricaoMontada }}</b><br/>
-                                    {{ item.categoria.descricaoMontada }}<br/>
+                                    <b><span style="{{ (item.categoria.codigo == 195 or item.categoria.codigo == 295) ? 'background-color: yellow' : ''  }}">{{ item.categoria.descricaoMontada }}</span></b><br/>
                                     {{ item.modo.descricaoMontada }}
                                 </td>
                                 <td>
@@ -119,7 +124,7 @@
 
                                         {% if (item.recorrente) %}
 
-                                            <span class="badge badge-pill badge-info">Recorrente</span><br/>
+                                            <span class="badge badge-pill badge-success">Recorrente</span><br/>
 
                                         {% elseif (item.parcelamento) %}
 
@@ -159,17 +164,17 @@
 
                                     {% if item.status == 'ABERTA' %}
                                         <a class="btn btn-sm btn-outline-danger"
-                                           href="{{ url('movimentacao_form_pagto', {'id':item.id}) }}"
+                                           href="{{ url('movimentacao_form_pagto', {'id':item.id, 'reftoback': true}) }}"
                                            role="button" title="Registro de Pagamento">
                                             <i class="fas fa-dollar-sign"></i>
                                         </a>
                                     {% endif %}
 
 
-                                    <button type="button" class="btn btn-sm btn-primary"
-                                            onclick="window.location.href='{{ url('movimentacao_edit', {id: item.id}) }}'">
+                                    <a role="button" class="btn btn-sm btn-primary" title="Editar registro"
+                                            href="{{ url('movimentacao_edit', {id: item.id, 'reftoback': true}) }}">
                                         <i class="fas fa-wrench" aria-hidden="true"></i>
-                                    </button>
+                                    </a>
                                     <button type="button" class="btn btn-sm btn-danger"
                                             data-url="{{ url('movimentacao_delete', {id: item.id}) }}"
                                             data-token="{{ csrf_token('delete') }}"
@@ -212,7 +217,8 @@
                         <tr style="background-color: lightblue">
                             <th scope="row" colspan="4" class="text-right">Taxa Crédito:</th>
                             <td class="text-right">
-                                {{ totaisExtratoCartao.taxaCreditos|number_format(2,',','.') }} %</td>
+                                {{ totaisExtratoCartao.taxaCreditos|number_format(2,',','.') }} %
+                            </td>
                             <td colspan="2"></td>
                         </tr>
                         <tr style="background-color: lightblue">
@@ -224,7 +230,8 @@
                         <tr style="background-color: lightblue">
                             <th scope="row" colspan="4" class="text-right">Taxa Débito:</th>
                             <td class="text-right">
-                                {{ totaisExtratoCartao.taxaDebitos|number_format(2,',','.') }} %</td>
+                                {{ totaisExtratoCartao.taxaDebitos|number_format(2,',','.') }} %
+                            </td>
                             <td colspan="2"></td>
                         </tr>
                         <tr style="background-color: lightblue">
@@ -253,5 +260,5 @@
 
 
 {% block down_scripts %}
-    <script src="{{ asset('build/Financeiro/movimentacaoExtratoList.js') }}"></script>
+    {{ encore_entry_script_tags('Financeiro/movimentacaoExtratoList') }}
 {% endblock %}

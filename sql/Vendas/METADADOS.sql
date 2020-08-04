@@ -1,104 +1,101 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 
+
 DROP TABLE IF EXISTS `ven_plano_pagto`;
 
 CREATE TABLE `ven_plano_pagto`
 (
-    `id`                 bigint(20)                           NOT NULL AUTO_INCREMENT,
-    `codigo`             varchar(255) COLLATE utf8_swedish_ci NOT NULL,
-    `descricao`          varchar(255) COLLATE utf8_swedish_ci NOT NULL,
+    `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
+    `codigo`             varchar(20)  NOT NULL,
+    `descricao`          varchar(200) NOT NULL,
+    `ativo`              tinyint(1)   NOT NULL,
+    `json_data`          json,
 
-    UNIQUE KEY `UK_ven_plano_pagto_codigo` (`codigo`),
-    UNIQUE KEY `UK_ven_plano_pagto_descricao` (`descricao`),
+    UNIQUE KEY `UK_ven_plano_pagto` (`codigo`),
 
-    -- campo de controle
+    -- campos de controle
     PRIMARY KEY (`id`),
-    `inserted`           datetime                             NOT NULL,
-    `updated`            datetime                             NOT NULL,
-    `version`            int(11) DEFAULT NULL,
-    `estabelecimento_id` bigint(20)                           NOT NULL,
-    `user_inserted_id`   bigint(20)                           NOT NULL,
-    `user_updated_id`    bigint(20)                           NOT NULL,
+    `inserted`           datetime     NOT NULL,
+    `updated`            datetime     NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)   NOT NULL,
+    `user_inserted_id`   bigint(20)   NOT NULL,
+    `user_updated_id`    bigint(20)   NOT NULL,
     KEY `K_ven_plano_pagto_estabelecimento` (`estabelecimento_id`),
     KEY `K_ven_plano_pagto_user_inserted` (`user_inserted_id`),
     KEY `K_ven_plano_pagto_user_updated` (`user_updated_id`),
     CONSTRAINT `FK_ven_plano_pagto_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
     CONSTRAINT `FK_ven_plano_pagto_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_ven_plano_pagto_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
-
-
-
-DROP TABLE IF EXISTS `ven_tipo_venda`;
-
-CREATE TABLE `ven_tipo_venda`
-(
-    `id`                 bigint(20)                           NOT NULL AUTO_INCREMENT,
-    `descricao`          varchar(100) COLLATE utf8_swedish_ci NOT NULL,
-
-    -- campo de controle
-    PRIMARY KEY (`id`),
-    `inserted`           datetime                             NOT NULL,
-    `updated`            datetime                             NOT NULL,
-    `version`            int(11) DEFAULT NULL,
-    `estabelecimento_id` bigint(20)                           NOT NULL,
-    `user_inserted_id`   bigint(20)                           NOT NULL,
-    `user_updated_id`    bigint(20)                           NOT NULL,
-    KEY `K_ven_tipo_venda_estabelecimento` (`estabelecimento_id`),
-    KEY `K_ven_tipo_venda_user_inserted` (`user_inserted_id`),
-    KEY `K_ven_tipo_venda_user_updated` (`user_updated_id`),
-    CONSTRAINT `FK_ven_tipo_venda_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `FK_ven_tipo_venda_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_ven_tipo_venda_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
-
-    UNIQUE KEY `UK_ven_tipo_venda` (`descricao`)
 
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
+
+
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '001', 'A VISTA (ESPÉCIE)', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '002', 'A VISTA (CHEQUE)', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '003', 'A VISTA (CARTÃO DÉBITO)', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '011', 'CARTÃO DE CRÉDITO (30DD/VENCTO)', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '012', 'CARTÃO DE CRÉDITO (2X)', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '099', 'MÚLTIPLAS FORMAS', true);
+
+INSERT INTO ven_plano_pagto(id, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id,
+                            codigo, descricao, ativo)
+VALUES (null, now(), now(), 0, 1, 1, 1, '013', 'FATURADO', true);
 
 
 DROP TABLE IF EXISTS `ven_venda`;
 
 CREATE TABLE `ven_venda`
 (
-    `id`                 bigint(20)                          NOT NULL AUTO_INCREMENT,
-    `dt_venda`           datetime                            NOT NULL,
-    `pv`                 int(11)                               DEFAULT NULL,
-    `sub_total`          decimal(19, 2)                      NOT NULL,
-    `valor_total`        decimal(19, 2)                      NOT NULL,
-    `desconto_especial`  decimal(19, 2)                      NOT NULL,
-    `desconto_plano`     decimal(19, 2)                      NOT NULL,
-    `historicoDesconto`  varchar(2000) COLLATE utf8_swedish_ci DEFAULT NULL,
-    `mesano`             varchar(6) COLLATE utf8_swedish_ci  NOT NULL,
-    `plano_pagto_id`     bigint(20)                          NOT NULL,
-    `vendedor_id`        bigint(20)                          NOT NULL,
-    `deletado`           bit(1)                                DEFAULT NULL,
-    `tipo_venda_id`      bigint(20)                          NOT NULL,
-    `cliente_id`         bigint(20)                            DEFAULT NULL,
-    `status`             varchar(30) COLLATE utf8_swedish_ci NOT NULL,
-    `obs`                varchar(3000) COLLATE utf8_swedish_ci DEFAULT NULL,
+    `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
+    `dt_venda`           datetime       NOT NULL,
+    `plano_pagto_id`     bigint(20),
+    `vendedor_id`        bigint(20),
+    `cliente_id`         bigint(20),
+    `subtotal`           decimal(15, 2) NOT NULL,
+    `desconto`           decimal(15, 2) NOT NULL,
+    `valor_total`        decimal(15, 2) NOT NULL,
+    `status`             varchar(50)    NOT NULL,
+    `json_data`          json,
 
-    UNIQUE KEY `UK_ven_venda` (`pv`, `mesano`),
-    KEY `K_ven_venda_vendedor` (`vendedor_id`),
-    KEY `K_ven_venda_tipo_venda` (`tipo_venda_id`),
     KEY `K_ven_venda_plano_pagto` (`plano_pagto_id`),
-    KEY `K_ven_venda_mesano` (`mesano`),
-    CONSTRAINT `FK_ven_venda_vendedor` FOREIGN KEY (`vendedor_id`) REFERENCES `rh_funcionario` (`id`),
-    CONSTRAINT `FK_ven_venda_tipo_venda` FOREIGN KEY (`tipo_venda_id`) REFERENCES `ven_tipo_venda` (`id`),
     CONSTRAINT `FK_ven_venda_plano_pagto` FOREIGN KEY (`plano_pagto_id`) REFERENCES `ven_plano_pagto` (`id`),
 
-    -- campo de controle
+    KEY `K_ven_venda_vendedor` (`plano_pagto_id`),
+    CONSTRAINT `FK_ven_venda_vendedor` FOREIGN KEY (`vendedor_id`) REFERENCES `rh_colaborador` (`id`),
+
+    KEY `K_ven_venda_cliente` (`cliente_id`),
+    CONSTRAINT `FK_ven_venda_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `crm_cliente` (`id`),
+
+    -- campos de controle
     PRIMARY KEY (`id`),
-    `inserted`           datetime                            NOT NULL,
-    `updated`            datetime                            NOT NULL,
-    `version`            int(11)                               DEFAULT NULL,
-    `estabelecimento_id` bigint(20)                          NOT NULL,
-    `user_inserted_id`   bigint(20)                          NOT NULL,
-    `user_updated_id`    bigint(20)                          NOT NULL,
+    `inserted`           datetime       NOT NULL,
+    `updated`            datetime       NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)     NOT NULL,
+    `user_inserted_id`   bigint(20)     NOT NULL,
+    `user_updated_id`    bigint(20)     NOT NULL,
     KEY `K_ven_venda_estabelecimento` (`estabelecimento_id`),
     KEY `K_ven_venda_user_inserted` (`user_inserted_id`),
     KEY `K_ven_venda_user_updated` (`user_updated_id`),
@@ -118,30 +115,32 @@ CREATE TABLE `ven_venda_item`
 (
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
     `venda_id`           bigint(20)     NOT NULL,
-    `produto_id`         bigint(20)                            DEFAULT NULL,
-    `obs`                varchar(5000) COLLATE utf8_swedish_ci DEFAULT NULL,
-    `ordem`              int(11)                               DEFAULT NULL,
-    `alteracao_preco`    bit(1)         NOT NULL,
-    `preco_venda`        decimal(19, 2) NOT NULL,
-    `preco_custo`        decimal(19, 2)                        DEFAULT NULL,
-    `dt_custo`           datetime                              DEFAULT NULL,
-    `qtde`               decimal(19, 2) NOT NULL,
-    `nc_descricao`       varchar(200) COLLATE utf8_swedish_ci  DEFAULT NULL,
-    `nc_reduzido`        bigint(20)                            DEFAULT NULL,
-    `nc_grade_tamanho`   varchar(200) COLLATE utf8_swedish_ci  DEFAULT NULL,
-    `ncm`                varchar(20) COLLATE utf8_swedish_ci   DEFAULT NULL,
-    `ncm_existente`      bit(1)                                DEFAULT NULL,
+    `ordem`              int(11),
+    `qtde`               decimal(15, 3) NOT NULL,
+    `unidade_id`         bigint(20)     NOT NULL,
+    `produto_id`         bigint(20),
+    `descricao`          varchar(255)   NOT NULL,
+    `preco_venda`        decimal(15, 2) NOT NULL,
+    `subtotal`           decimal(15, 2) NOT NULL,
+    `desconto`           decimal(15, 2) NOT NULL,
+    `total`              decimal(15, 2) NOT NULL,
+    `devolucao`          tinyint(1)     NOT NULL,
+    `json_data`          json,
 
     KEY `K_ven_venda_item_produto` (`produto_id`),
-    KEY `K_ven_venda_item_venda` (`venda_id`),
     CONSTRAINT `FK_ven_venda_item_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`),
+
+    KEY `K_ven_venda_item_unidade` (`unidade_id`),
+    CONSTRAINT `FK_ven_venda_item_unidade` FOREIGN KEY (`unidade_id`) REFERENCES `est_unidade` (`id`),
+
+    KEY `K_ven_venda_item_venda` (`venda_id`),
     CONSTRAINT `FK_ven_venda_item_venda` FOREIGN KEY (`venda_id`) REFERENCES `ven_venda` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 
-    -- campo de controle
+    -- campos de controle
     PRIMARY KEY (`id`),
     `inserted`           datetime       NOT NULL,
     `updated`            datetime       NOT NULL,
-    `version`            int(11)                               DEFAULT NULL,
+    `version`            int(11),
     `estabelecimento_id` bigint(20)     NOT NULL,
     `user_inserted_id`   bigint(20)     NOT NULL,
     `user_updated_id`    bigint(20)     NOT NULL,
@@ -156,26 +155,39 @@ CREATE TABLE `ven_venda_item`
   COLLATE = utf8_swedish_ci;
 
 
+DROP TABLE IF EXISTS `ven_venda_pagto`;
 
-
-
-
-DROP TABLE IF EXISTS `ven_venda_item_atributo`;
-
-CREATE TABLE `ven_venda_item_atributo`
+CREATE TABLE `ven_venda_pagto`
 (
-    `venda_item_id` bigint(20) NOT NULL,
-    `atributo_id`      bigint(20) NOT NULL,
+    `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
+    `venda_id`           bigint(20)     NOT NULL,
+    `plano_pagto_id`     bigint(20)     NOT NULL,
+    `valor_pagto`        decimal(15, 2) NOT NULL,
+    `json_data`          json,
 
-    PRIMARY KEY (`venda_item_id`, `atributo_id`),
+    KEY `K_ven_venda_pagto_venda` (`venda_id`),
+    CONSTRAINT `FK_ven_venda_pagto_venda` FOREIGN KEY (`venda_id`) REFERENCES `ven_venda` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 
-    KEY `K_ven_venda_item_atributo_venda_item_id` (`venda_item_id`),
-    CONSTRAINT `FK_ven_venda_item_atributo_venda_item_id` FOREIGN KEY (`venda_item_id`) REFERENCES `ven_venda_item` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-    KEY `K_ven_venda_item_atributo_atributo` (`atributo_id`),
-    CONSTRAINT `FK_ven_venda_item_atributo_atributo` FOREIGN KEY (`atributo_id`) REFERENCES `est_atributo` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+    KEY `K_ven_venda_pagto_plano_pagto` (`plano_pagto_id`),
+    CONSTRAINT `FK_ven_venda_pagto_plano_pagto` FOREIGN KEY (`plano_pagto_id`) REFERENCES `ven_plano_pagto` (`id`),
 
+    -- campos de controle
+    PRIMARY KEY (`id`),
+    `inserted`           datetime       NOT NULL,
+    `updated`            datetime       NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)     NOT NULL,
+    `user_inserted_id`   bigint(20)     NOT NULL,
+    `user_updated_id`    bigint(20)     NOT NULL,
+    KEY `K_ven_venda_pagto_estabelecimento` (`estabelecimento_id`),
+    KEY `K_ven_venda_pagto_user_inserted` (`user_inserted_id`),
+    KEY `K_ven_venda_pagto_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_ven_venda_pagto_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_ven_venda_pagto_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_ven_venda_pagto_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
+
 
 

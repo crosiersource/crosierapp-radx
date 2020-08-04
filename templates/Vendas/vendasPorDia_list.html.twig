@@ -1,0 +1,162 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+
+
+            <div class="d-flex flex-wrap align-items-center">
+
+                <div class="d-sm-flex text-nowrap mr-1">
+                    <h3 class="text-dark">Vendas</h3>
+                </div>
+
+                <div class="d-sm-flex ml-auto">
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="card-body">
+
+            <form name="form_vendasPorDia_list" id="form_vendasPorDia_list">
+                <div class="row">
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_dtVenda" class="required">Dt Venda</label>
+                            <input type="text" id="filter_dtVenda" name="filter[dtVenda]"
+                                   class="crsr-date form-control" maxlength="10"
+                                   value="{{ filter['dtVenda'] }}">
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_canal" class="required">Canal</label>
+                            <select id="filter_canal" name="filter[canal]"
+                                    data-options="{{ canais }}"
+                                    class="form-control autoSelect2"
+                                    data-val="{{ filter['canal']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_vendedor" class="required">Vendedor</label>
+                            <select id="filter_vendedor" name="filter[vendedor]"
+                                    data-options="{{ vendedores }}"
+                                    class="form-control autoSelect2"
+                                    data-val="{{ filter['vendedor']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_status" class="required">Status</label>
+                            <select id="filter_status" name="filter[status]"
+                                    data-options="{{ statuss }}"
+                                    class="form-control autoSelect2"
+                                    data-val="{{ filter['status']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12 text-right">
+
+                        <button type="submit" class="btn btn-primary" id="btnFiltrar">
+                            <i class="fas fa-search"></i>
+                        </button>
+
+                        <a role="button" class="btn btn-secondary" id="btnRecarregar"
+                           href="{{ url('ven_venda_listPorDia', {'r':1}) }}">
+                            <i class="fas fa-redo-alt"></i>
+                        </a>
+
+                        {% if ecomm_info_integra %}
+                            <button type="button" class="btn btn-warning" id="btnObterVendasECommerce"
+                                    data-url="{{ url('ven_venda_obterVendasECommerce') ~ '/' ~ filter['dtVenda']|parseDateStr|date('Y-m-d') }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </button>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </form>
+
+
+            <div class="table-responsive-sm">
+
+                <table class="table table-sm table-striped table-hover crsr-datatable" id="vendasPorDia_table">
+
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Id</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Vendedor</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Valor Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for venda in dados %}
+
+
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ venda.id|strpad(9) }}</td>
+                            <td>
+                                <div style="float: left">
+                                    {{ venda.cliente.documento|default('')|mascararCnpjCpf }} - {{ venda.cliente.nome }}
+                                </div>
+                                <div class="text-right">
+                                    <span class="badge badge-pill badge-info"><i
+                                                class="fas fa-bezier-curve"></i> {{ venda.jsonData.canal|default('') }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="float-left">
+                                    {{ venda.jsonData.vendedor_nome|default('') }}
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {{ venda.status|default('') }}
+                            </td>
+                            <td class="text-right">
+                                R$ {{ venda.valorTotal|number_format(2,',','.') }}
+                            </td>
+                            <td class="text-right">
+
+                                <a class="btn btn-sm btn-primary"
+                                   href="{{ url('ven_venda_form', {'id':venda.id}) }}"
+                                   role="button" title="Visualizar venda">
+                                    <i class="far fa-file-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Vendas/vendasPorDia_list') }}
+{% endblock %}

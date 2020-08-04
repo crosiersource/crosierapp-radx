@@ -2,10 +2,10 @@
 
 namespace App\Controller\Vendas;
 
-use App\Repository\Vendas\VendaRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,9 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class VendasResultsController extends BaseController
 {
 
-
-    /** @var VendaRepository */
-    private $vendaRepository;
+    private VendaRepository $vendaRepository;
 
     /**
      * @required

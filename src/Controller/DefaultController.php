@@ -20,7 +20,7 @@ class DefaultController extends BaseController
      */
     public function index()
     {
-        throw new \RuntimeException();
+        return $this->doRender('dashboard.html.twig');
     }
 
 }

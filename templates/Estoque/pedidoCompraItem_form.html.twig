@@ -1,0 +1,91 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Item do Pedido</h3>
+                        <h7>Pedido {{ e.pedidoCompra.id|strpad(6) }} - {{ e.pedidoCompra.dtEmissao|date('d/m/Y H:i') }}</h7>
+                    </div>
+                    <div class="col-4 text-right">
+                        <button type="button" class="btn btn-secondary"
+                                onclick="window.location.href='{{ url('est_pedidoCompra_form', {id: routeParams.pedidoCompra, '_fragment': 'itens'} ) }}'">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+                {{ form_start(form) }}
+
+                {{ form_row(form._token) }}
+
+                {% if jsonMetadata.vinculoAoEstoque|default('') == 'porProduto' %}
+                    <div class="form-group">
+                        <label for="produto">Produto</label>
+                        <select id="produto" name="produto" class="form-control" data-val="{{ e.jsonData.produto|default('') }}">
+                        </select>
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.qtde) }}
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        {{ form_row(form.referencia) }}
+                    </div>
+                    <div class="col-md-7 col-sm-12">
+                        {{ form_row(form.descricao) }}
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.precoCusto) }}
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.desconto) }}
+                    </div>
+                    <div class="col-md-5 col-sm-12">
+                        {{ form_row(form.total) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col text-right">
+                        <button type="submit" class="btn btn-primary" value="Salvar">
+                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                        </button>
+                    </div>
+                </div>
+
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Estoque/pedidoCompraItem_form') }}
+{% endblock %}

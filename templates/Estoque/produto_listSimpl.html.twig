@@ -1,0 +1,187 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+
+
+            <div class="d-flex flex-wrap align-items-center">
+
+                <div class="d-sm-flex text-nowrap mr-1">
+                    <h3 class="text-dark">Produtos</h3>
+                </div>
+
+                <div class="d-sm-flex flex-nowrap ml-auto">
+                    <a role="button" class="btn btn-primary ml-1" title="Novo" href="{{ url('est_produto_form') }}">
+                        <i class="fas fa-file" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="card-body">
+
+            <form name="form_produto_list" id="form_produto_list">
+
+                <input type="hidden" name="filter_order" id="filter_order">
+
+                <div class="row">
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_codigo">Id</label>
+                            <input type="number" id="filter_codigo" name="filter[id]"
+                                   class="form-control"
+                                   value="{{ filter['id']|default('') }}">
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_nome">Nome</label>
+                            <input type="text" id="filter_nome" name="filter[nome]"
+                                   class="form-control"
+                                   value="{{ filter['nome']|default('') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_fornecedor">Fornecedor</label>
+                            <input type="text" id="filter_fornecedor" name="filter[fornecedor]"
+                                   class="form-control"
+                                   value="{{ filter['fornecedor']|default('') }}">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_depto">Depto</label>
+                            <select id="filter_depto" name="filter[depto]"
+                                    data-options="{{ deptos }}"
+                                    class="form-control"
+                                    data-val="{{ filter['depto']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_grupo">Grupo</label>
+                            <select id="filter_grupo" name="filter[grupo]"
+                                    class="form-control"
+                                    data-val="{{ filter['grupo']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_subgrupo">Subgrupo</label>
+                            <select id="filter_subgrupo" name="filter[subgrupo]"
+                                    class="form-control"
+                                    data-val="{{ filter['subgrupo']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="btnFiltrar">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-block" id="btnFiltrar" title="Pesquisar">
+                                <i class="fas fa-search"></i> Pesquisar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-12">
+                        <div class="form-group">
+                            <label for="btnRecarregar">&nbsp;</label>
+                            <a role="button" class="btn btn-secondary btn-block" id="btnRecarregar"
+                               title="Limpar filtros e recarregar" href="{{ url('est_produto_listSimpl', {'r':1}) }}">
+                                <i class="fas fa-redo-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </form>
+
+
+            <div class="row">
+                <div class="col">
+                    {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                </div>
+            </div>
+
+
+            <div class="table-responsive-sm">
+
+                <table class="table table-sm table-striped table-hover crsr-datatable" id="produto_list">
+
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Fornecedor</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for e in dados %}
+
+                        <tr>
+                            <td>{{ e.id|strpad(9) }}</td>
+                            <td>
+                                {{ e.jsonData.titulo|default(false) ? e.jsonData.titulo : e.nome }}<br/>
+                                <span class="badge badge-primary">: {{ e.depto.codigo }} - {{ e.depto.nome }}</span>
+                                <span class="badge badge-secondary">:: {{ e.grupo.codigo }} - {{ e.grupo.nome }}</span>
+                                <span class="badge badge-success">::: {{ e.subgrupo.codigo }} - {{ e.subgrupo.nome }}</span>
+                            </td>
+                            <td>
+                                {{ e.jsonData.fornecedor_nomeFantasia ? e.jsonData.fornecedor_nomeFantasia : e.jsonData.fornecedor_nome }}
+                            </td>
+
+                            <td class="text-right">
+                                <a role="button" class="btn btn-primary btn-sm" title="Editar registro"
+                                   href="{{ formUrl }}/{{ e.id }}">
+                                    <i class="fas fa-wrench" aria-hidden="true"></i>
+                                </a>
+
+                                <br/>
+                                <span class="badge badge-pill badge-info">{{ e.updated|date('d/m/Y H:i:s') }}</span>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+
+                    </tbody>
+
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Estoque/produto_listSimpl') }}
+{% endblock %}

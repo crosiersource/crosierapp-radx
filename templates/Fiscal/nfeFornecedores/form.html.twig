@@ -11,13 +11,21 @@
 
                 <div class="row">
                     <div class="col-8">
-                        <h3>NFe - Fornecedor</h3>
+                        <h3>NFe Entrada</h3>
                     </div>
                     <div class="col-4 text-right">
+
+                        <button type="button" value="Reprocessar XML" class="btn btn-outline-danger"
+                                data-url="{{ url('fis_nfesFornecedores_reparseDownloadedXML', {'notaFiscal': notaFiscal.id}) }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-cogs"></i> Reprocessar XML
+                        </button>
+
                         <button type="button" class="btn btn-secondary"
                                 onclick="window.location.href='{{ url('nfesFornecedores_list') }}'">
                             <i class="fas fa-sync" aria-hidden="true"></i> Listar
                         </button>
+
                     </div>
                 </div>
 
@@ -30,6 +38,10 @@
                         <a class="nav-link active NOTAFISCAL_TAB" id="cabecalho-tab" data-toggle="tab" href="#cabecalho"
                            role="tab"
                            aria-controls="home" aria-selected="true">Cabeçalho</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="duplicatas-tab" data-toggle="tab" href="#duplicatas" role="tab"
+                           aria-controls="profile" aria-selected="false">Duplicatas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link NOTAFISCAL_TAB" id="itens-tab" data-toggle="tab" href="#itens" role="tab"
@@ -45,29 +57,21 @@
                 <div class="form-group row">
                 </div>
 
-                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+                {{ form_start(form) }}
 
 
                 <div class="tab-content" id="myTabContent">
 
                     {{ include('/Fiscal/nfeFornecedores/form_cabecalho.html.twig') }}
+                    {{ include('/Fiscal/nfeFornecedores/form_duplicatas.html.twig') }}
                     {{ include('/Fiscal/nfeFornecedores/form_itens.html.twig') }}
                     {{ include('/Fiscal/nfeFornecedores/form_transporte.html.twig') }}
 
                 </div>
 
-                <div class="row">
-                    <div class="col-12">&nbsp;</div>
-                </div>
-
-                <div class="row">
-                    <div class="col text-right">
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">&nbsp;</div>
-                </div>
+                {{ form_end(form, {'render_rest': false}) }}
 
             </div>
         </div>

@@ -1,0 +1,472 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Pré-Venda</h3>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+                {{ form_start(form) }}
+                {{ form_widget(form._token) }}
+
+                <fieldset {{ e.status != "PV ABERTO" ? 'disabled' : '' }}>
+
+                    <div class="row">
+                        <div class="col-md-2 col-sm-12">
+                            {{ form_row(form.id) }}
+                        </div>
+                        <div class="col-md-2 col-sm-12">
+                            {{ form_row(form.dtVenda) }}
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            {{ form_row(form.status) }}
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            {{ form_row(form.jsonData.canal) }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            {{ form_row(form.vendedor) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.jsonData['obs']) }}
+
+                    <div class="row">
+                        <div class="col-md-2 col-sm-12">
+                            {{ form_row(form.jsonData.cliente_documento) }}
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            {{ form_row(form.jsonData.cliente_nome) }}
+                        </div>
+                        <div class="col-md-3 col-sm-12">
+                            {{ form_row(form.jsonData.cliente_fone) }}
+                        </div>
+                        <div class="col-md-3 col-sm-12">
+                            {{ form_row(form.jsonData.cliente_email) }}
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <div class="col text-right">
+                            <button type="submit" class="btn btn-primary" value="Salvar">
+                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                            </button>
+                        </div>
+                    </div>
+
+                </fieldset>
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+                {% if e.id %}
+                    <form method="POST" action="{{ url('ven_venda_formItem', {'venda': e.id}) }}">
+                        <div class="card">
+                            <div class="card-header">
+
+                                <div class="row">
+                                    <div class="col-8">
+                                        <h5>Itens</h5>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="item_produto">Produto</label>
+                                            <input type="hidden" id="item_id" name="item[id]">
+                                            <select id="item_produto" name="item[produto]" required
+                                                    class="form-control {{ e.id ? 'focusOnReady' : '' }}">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_unidade">Unidade</label>
+                                            <select id="item_unidade" autocomplete="off"
+                                                    name="item[unidade]" required
+                                                    class="form-control"
+                                                    data-options="{{ unidades|default('{}') }}"
+                                                    aria-hidden="true">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-12">
+                                        <div class="form-group text-right">
+                                            <label for="item_devolucao"> </label>
+
+
+                                            <div class="custom-control custom-switch mt-2">
+                                                <input type="checkbox" class="custom-control-input"
+                                                       name="item[devolucao]" id="item_devolucao">
+                                                <label class="custom-control-label" for="item_devolucao">Item em
+                                                    devolução</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_qtde">Qtde</label>
+                                            <div class="input-group">
+                                                <input type="text" id="item_qtde" name="item[qtde]" required
+                                                       class="crsr-dec3 form-control">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"
+                                                          id="item_unidade_append_label">...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_precoVenda">Preço Venda</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">R$</span>
+                                                </div>
+                                                <input type="text" id="item_precoVenda" name="item[precoVenda]"
+                                                       readonly="readonly" class="crsr-money form-control disabled">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_desconto">Desconto</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">R$</span>
+                                                </div>
+                                                <input type="text" id="item_desconto" name="item[desconto]"
+                                                       class="crsr-money form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_valorTotal">Total Item</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">R$</span>
+                                                </div>
+                                                <input type="text" id="item_valorTotal" name="item[valorTotal]"
+                                                       readonly="readonly" class="crsr-money form-control disabled">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="btnInserirItem">&nbsp;</label>
+                                            <div class="input-group">
+                                                <button type="submit" class="btn btn-block btn-outline-primary"
+                                                        id="btnInserirItem" value="Inserir">
+                                                    <i class="fas fa-save" aria-hidden="true"></i> Inserir
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="btnRecarregar">&nbsp;</label>
+                                            <div class="input-group">
+                                                <a role="button" href="{{ url('ven_venda_form', {'id': e.id}) }}"
+                                                   class="btn btn-block btn-outline-warning"
+                                                   id="btnRecarregar" value="Recarregar">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="table-responsive-sm">
+                                    <table class="table table-sm table-striped table-hover">
+
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Produto</th>
+                                            <th scope="col">Qtde</th>
+                                            <th scope="col">Vlr Unit</th>
+                                            <th scope="col">Desc</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        {% for item in e.itens %}
+                                            <tr>
+                                                <td data-vendaitemid="{{ item.id }}"
+                                                    title="{{ item.id }}">{{ loop.index }}</td>
+                                                <td>
+                                                    {{ item.produto.codigo|default(0)|strpad(13) }}
+                                                    - {{ item.descricao }}
+                                                </td>
+                                                <td class="text-right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
+                                                <td class="text-right">{{ item.precoVenda|number_format(2,',','.') }}</td>
+                                                <td class="text-right">{{ item.desconto|number_format(2,',','.') }}</td>
+                                                <td class="text-right">{{ item.total|number_format(2,',','.') }}</td>
+                                                <td class="text-right">
+                                                    {% if e.status == 'PV ABERTO' %}
+
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-primary btnEditProduto"
+                                                                data-item-id="{{ item.id }}"
+                                                                data-item-produto-id="{{ item.produto.id|default('') }}"
+                                                                data-item-produto-nome="{{ item.produto.nome|default('') }}"
+                                                                data-item-unidade-id="{{ item.unidade.id|default('') }}"
+                                                                data-item-unidade-label="{{ item.unidade.label|default('') }}"
+                                                                data-item-unidade-casas-decimais="{{ item.unidade.casasDecimais|default('') }}"
+                                                                data-item-devolucao="{{ item.devolucao|default('') }}"
+                                                                data-item-qtde="{{ item.qtde|default('') }}"
+                                                                data-item-preco-venda="{{ item.precoVenda|default('') }}"
+                                                                data-item-desconto="{{ item.desconto|number_format(2,',','.') }}">
+                                                            <i class="fas fa-wrench" aria-hidden="true"></i>
+                                                        </button>
+
+                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                data-url="{{ url('ven_venda_deleteItem', {'item': item.id}) }}"
+                                                                data-token="{{ csrf_token('ven_venda_deleteItem') }}"
+                                                                data-target="#confirmationModal" data-toggle="modal">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </button>
+
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-sm-4" for="venda_subtotal">Subtotal</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$ </span>
+                                        </div>
+                                        <input type="text" id="venda_subtotal" disabled value="{{ e.subtotal }}"
+                                               readonly="readonly" class="crsr-money form-control disabled">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-sm-4" for="venda_desconto">Desconto</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$ </span>
+                                        </div>
+                                        <input type="text" id="venda_desconto" disabled value="{{ e.desconto }}"
+                                               readonly="readonly" class="crsr-money form-control disabled">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-sm-4" for="venda_valorTotal">Valor Total</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$ </span>
+                                        </div>
+                                        <input type="text" id="venda_valorTotal" disabled value="{{ e.valorTotal }}"
+                                               readonly="readonly" class="crsr-money form-control disabled">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <form method="POST" action="{{ url('ven_venda_formPagto', {'venda': e.id}) }}">
+                        <div class="card">
+                            <div class="card-header">
+
+                                <div class="row">
+                                    <div class="col-8">
+                                        <h5>Pagamentos</h5>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="pagto_planoPagto">Forma de Pagamento</label>
+                                            <select id="pagto_planoPagto" name="pagto[planoPagto]" required
+                                                    data-options="{{ planosPagto }}"
+                                                    class="form-control {{ e.id ? 'focusOnReady' : '' }}">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="pagto_valorPagto">Valor Pagto</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">R$</span>
+                                                </div>
+                                                <input type="text" id="pagto_valorPagto" name="pagto[valorPagto]"
+                                                       class="crsr-money form-control"
+                                                       value="{{ pagtos_diferenca|number_format(2,',','.') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="btnInserirPagto">&nbsp;</label>
+                                            <div class="input-group">
+                                                <button type="submit" class="btn btn-block btn-outline-primary"
+                                                        id="btnInserirPagto" value="Inserir">
+                                                    <i class="fas fa-save" aria-hidden="true"></i> Inserir
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="btnRecarregar">&nbsp;</label>
+                                            <div class="input-group">
+                                                <a role="button" href="{{ url('ven_venda_form', {'id': e.id}) }}"
+                                                   class="btn btn-block btn-outline-warning"
+                                                   id="btnRecarregar" value="Recarregar">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="table-responsive-sm">
+                                    <table class="table table-sm table-striped table-hover">
+
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Forma de Pagamento</th>
+                                            <th scope="col">Valor</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        {% for pagto in e.pagtos %}
+                                            <tr>
+                                                <td data-vendapagtoid="{{ pagto.id }}"
+                                                    title="{{ pagto.id }}">{{ loop.index }}</td>
+                                                <td>{{ pagto.planoPagto.codigo }}
+                                                    - {{ pagto.planoPagto.descricao }}</td>
+                                                <td class="text-right">{{ pagto.valorPagto|number_format(2,',','.') }}</td>
+                                                <td class="text-right">
+                                                    {% if e.status == 'PV ABERTO' %}
+                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                data-url="{{ url('ven_venda_deletePagto', {'pagto': pagto.id}) }}"
+                                                                data-token="{{ csrf_token('ven_venda_deletePagto') }}"
+                                                                data-target="#confirmationModal" data-toggle="modal">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </button>
+
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <button type="button" value="Imprimir" class="btn btn-outline-success"
+                            onclick="printJS('{{ url('ven_venda_imprimirPV', {'venda': e.id}) }}')"
+                            id="btnImprimirPV" data-venda="{{ e.id }}">
+                        <i class="fas fa-print" aria-hidden="true"></i> Imprimir
+                    </button>
+
+                {% endif %}
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Vendas/venda_form') }}
+{% endblock %}

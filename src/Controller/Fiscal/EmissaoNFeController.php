@@ -2,36 +2,30 @@
 
 namespace App\Controller\Fiscal;
 
-use App\Business\Fiscal\NotaFiscalBusiness;
-use App\Business\Fiscal\SpedNFeBusiness;
-use App\Entity\Crediario\Cliente;
-use App\Entity\Crediario\Venda;
-use App\Entity\Crediario\VendaParcela;
-use App\Entity\Fiscal\NotaFiscal;
-use App\Entity\Fiscal\NotaFiscalCartaCorrecao;
-use App\Entity\Fiscal\NotaFiscalItem;
-use App\EntityHandler\Fiscal\NotaFiscalCartaCorrecaoEntityHandler;
-use App\EntityHandler\Fiscal\NotaFiscalEntityHandler;
-use App\EntityHandler\Fiscal\NotaFiscalItemEntityHandler;
 use App\Form\Fiscal\NotaFiscalCartaCorrecaoType;
 use App\Form\Fiscal\NotaFiscalItemType;
 use App\Form\Fiscal\NotaFiscalType;
-use App\Repository\Crediario\VendaParcelaRepository;
-use App\Repository\Crediario\VendaRepository;
-use App\Repository\Fiscal\NotaFiscalRepository;
-use App\Utils\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\ValidaCPFCNPJ;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalCartaCorrecao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalItem;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalCartaCorrecaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalItemEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalRepository;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use NFePHP\DA\NFe\Danfe;
-use Picqer\Barcode\BarcodeGeneratorPNG;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -55,20 +49,15 @@ class EmissaoNFeController extends FormListController
     /** @var NotaFiscalEntityHandler */
     protected $entityHandler;
 
-    /** @var NotaFiscalBusiness */
-    private $notaFiscalBusiness;
+    private NotaFiscalBusiness $notaFiscalBusiness;
 
-    /** @var SpedNFeBusiness */
-    private $spedNFeBusiness;
+    private SpedNFeBusiness $spedNFeBusiness;
 
-    /** @var NotaFiscalItemEntityHandler */
-    private $notaFiscalItemEntityHandler;
+    private NotaFiscalItemEntityHandler $notaFiscalItemEntityHandler;
 
-    /** @var NotaFiscalCartaCorrecaoEntityHandler */
-    private $cartaCorrecaoEntityHandler;
+    private NotaFiscalCartaCorrecaoEntityHandler $cartaCorrecaoEntityHandler;
 
-    /** @var NFeUtils */
-    private $nfeUtils;
+    private NFeUtils $nfeUtils;
 
     /**
      * @required
@@ -196,17 +185,19 @@ class EmissaoNFeController extends FormListController
     /**
      *
      * @Route("/fis/emissaonfe/faturar/{notaFiscal}", name="fis_emissaonfe_faturar", requirements={"notaFiscal"="\d+"})
+     * @param Request $request
      * @param NotaFiscal|null $notaFiscal
      * @return RedirectResponse
      */
-    public function faturar(NotaFiscal $notaFiscal): RedirectResponse
+    public function faturar(Request $request, NotaFiscal $notaFiscal): RedirectResponse
     {
         try {
             $this->notaFiscalBusiness->faturarNFe($notaFiscal);
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
         }
-        return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
+        $route = $request->get('rtr') ?? 'fis_emissaonfe_form';
+        return $this->redirectToRoute($route, ['id' => $notaFiscal->getId()]);
     }
 
     /**
@@ -367,10 +358,6 @@ class EmissaoNFeController extends FormListController
      */
     public function imprimir(NotaFiscal $notaFiscal): RedirectResponse
     {
-//        $this->notaFiscalBusiness->imprimir($notaFiscal);
-//        $this->addFlash('success', 'Nota Fiscal enviada para reimpressão!');
-//        return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
-
         try {
             $xml = $notaFiscal->getXmlNota();
             $danfe = new Danfe($xml);
@@ -428,7 +415,7 @@ class EmissaoNFeController extends FormListController
     /**
      *
      * @Route("/fis/emissaonfe/formItem/{notaFiscal}/{item}", name="fis_emissaonfe_formItem", defaults={"item"=null}, requirements={"notaFiscal"="\d+","item"="\d+"})
-     * @ParamConverter("item", class="App\Entity\Fiscal\NotaFiscalItem", options={"mapping": {"item": "id"}})
+     * @ParamConverter("item", class="CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalItem", options={"mapping": {"item": "id"}})
      *
      * @param Request $request
      * @param NotaFiscal $notaFiscal
@@ -497,25 +484,21 @@ class EmissaoNFeController extends FormListController
      */
     public function list(Request $request)
     {
-
+        $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsEmUso();
         $params =
             [
                 'typeClass' => NotaFiscalType::class,
-
                 'formView' => 'Fiscal/emissaoNFe/form.html.twig',
                 'formRoute' => 'fis_emissaonfe_form',
                 'formPageTitle' => 'NFe',
-
                 'listView' => 'Fiscal/emissaoNFe/list.html.twig',
                 'listRoute' => 'fis_emissaonfe_list',
                 'listRouteAjax' => 'fis_emissaonfe_datatablesJsList',
                 'listPageTitle' => 'NFe\'s Emitidas',
+                'page_subTitle' => StringUtils::mascararCnpjCpf($nfeConfigsEmUso['cnpj']) . ' - ' . $nfeConfigsEmUso['razaosocial'],
                 'listId' => 'emissaoNFeList',
-
             ];
 
-
-        // $params['filter']['serie'] = $request->get('filter')['serie'] ?? $this->nfeUtils->getNFeConfigs()['serieNFe'];
         return $this->doList($request, $params);
     }
 
@@ -531,7 +514,7 @@ class EmissaoNFeController extends FormListController
         $rParams = $request->request->all();
         parse_str($rParams['formPesquisar'], $formPesquisar);
         // fixos
-        // $defaultFilters['filter']['documentoEmitente'] = preg_replace("/[^0-9]/", '', $this->nfeUtils->getNFeConfigs()['cnpj']);
+        $defaultFilters['filter']['documentoEmitente'] = preg_replace("/[^0-9]/", '', $this->nfeUtils->getNFeConfigsEmUso()['cnpj']);
         $defaultFilters['filter']['tipoNotaFiscal'] = 'NFE';
         return $this->doDatatablesJsList($request, $defaultFilters);
     }
@@ -589,6 +572,7 @@ class EmissaoNFeController extends FormListController
      * @param SessionInterface $session
      * @param NotaFiscal $notaFiscal
      * @return RedirectResponse
+     * @throws ViewException
      */
     public function colarNotaFiscalItem(SessionInterface $session, NotaFiscal $notaFiscal): RedirectResponse
     {
@@ -634,15 +618,15 @@ class EmissaoNFeController extends FormListController
      */
     public function downloadXML(NotaFiscal $nf): Response
     {
-        // ????????
-        // Provide a name for your file with extension
         $filename = $nf->getChaveAcesso() . '.xml';
-
 
         $nf = $this->spedNFeBusiness->gerarXML($nf);
 
         $tools = $this->nfeUtils->getToolsEmUso();
         $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
+
+        $this->notaFiscalBusiness->handleIdeFields($nf);
+
         $fileContent = $tools->signNFe($nf->getXmlNota());
 
         // The dinamically created content of the file
@@ -717,6 +701,7 @@ class EmissaoNFeController extends FormListController
         $verifNumeros = [];
 
         $problemas = [];
+        $problemas[] = 'CNPJ: ' . $nfeConfigs['cnpj'];
 
         /** @var NotaFiscal $nf */
         foreach ($nfes as $nf) {
@@ -725,12 +710,22 @@ class EmissaoNFeController extends FormListController
                 $this->logger->info('Nota sem número. Continuando...');
                 continue;
             }
+            if (!$nf->getCStat()) {
+                $this->logger->info('Nota sem "cstat". Continuando...');
+                continue;
+            }
 
-            if ($nf->getCStat() === -100) {
+            if ((int)$nf->getCStat() === -100) {
                 $this->spedNFeBusiness->consultarStatus($nf);
             }
 
-            if (($nf->getCStat() === 100 || $nf->getCStat() === 101) && !$nf->getXmlNota()) {
+            if (((int)$nf->getCStat() === 100 || (int)$nf->getCStat() === 101) && !$nf->getXmlNota()) {
+                if ((int)$nf->getCStatLote() === 217) {
+                    $msg = 'NFE (Chave: ' . $nf->getChaveAcesso() . ') com statLote = 217 (NF-E NAO CONSTA NA BASE DE DADOS DA SEFAZ). Não será possível exportar para o zip.';
+                    $problemas[] = $msg;
+                    $this->logger->error($msg);
+                    continue;
+                }
                 $this->logger->info('XML não encontrado para nota ' . $nf->getChaveAcesso());
                 $nf = $this->spedNFeBusiness->gerarXML($nf);
                 $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
@@ -738,10 +733,13 @@ class EmissaoNFeController extends FormListController
                 $nf->setXmlNota($fileContent);
                 $this->entityHandler->save($nf);
             }
+            if (!$nf->getXMLDecoded()) {
+                $this->logger->info('getXMLDecoded não encontrado para nota ' . $nf->getChaveAcesso());
+            }
             if ($nf->getXMLDecoded()->getName() !== 'nfeProc') {
                 $this->logger->info('XML sem o nfeProc. Consultando status...');
                 $this->spedNFeBusiness->consultarStatus($nf);
-                if ($nf->getCStatLote() !== 104 && $nf->getCStatLote() !== 100) {
+                if ((int)$nf->getCStatLote() !== 104 && (int)$nf->getCStatLote() !== 100) {
                     $msg = $nf->getTipoNotaFiscal() . '. Série: ' . $nf->getSerie() . ', Número: ' . $nf->getNumero() . ': cStatLote: ' . $nf->getCStatLote() . ', xMotivoLote: ' . $nf->getXMotivoLote();
                     $this->logger->error($msg);
                     $problemas[] = $msg;
@@ -750,26 +748,26 @@ class EmissaoNFeController extends FormListController
             }
 
             if ($nf->getTipoNotaFiscal() === 'NFE') {
-                if ($nf->getCStat() === 100) {
+                if ((int)$nf->getCStat() === 100) {
                     $nfes100[] = $nf;
-                } else if ($nf->getCStat() === 101) {
+                } else if ((int)$nf->getCStat() === 101) {
                     $nfes101[] = $nf;
                 } else {
                     $msg = 'NFE (Chave: ' . $nf->getChaveAcesso() . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
+                    $problemas[] = $msg;
                     $this->logger->error($msg);
                     continue;
-                    // $problemas[] = $msg;
                 }
             } else if ($nf->getTipoNotaFiscal() === 'NFCE') {
-                if ($nf->getCStat() === 100) {
+                if ((int)$nf->getCStat() === 100) {
                     $nfces100[] = $nf;
-                } else if ($nf->getCStat() === 101) {
+                } else if ((int)$nf->getCStat() === 101) {
                     $nfces101[] = $nf;
                 } else {
                     $msg = 'NFE (Chave: ' . $nf->getChaveAcesso() . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
+                    $problemas[] = $msg;
                     $this->logger->error($msg);
                     continue;
-                    // $problemas[] = $msg;
                 }
             }
             $verifNumeros[$nf->getTipoNotaFiscal()][] = $nf->getNumero();
@@ -784,7 +782,6 @@ class EmissaoNFeController extends FormListController
                     $aux = $numero;
                 }
                 $aux++;
-
             }
         }
 
@@ -869,158 +866,6 @@ class EmissaoNFeController extends FormListController
 
     }
 
-
-    /**
-     *
-     * @Route("/fis/emissaonfe/imprimirDANFE", name="fis_emissaonfe_imprimirDANFE")
-     * @param Request $request
-     * @return Response
-     *
-     * @throws ViewException
-     * @IsGranted("ROLE_FISCAL", statusCode=403)
-     */
-    public function imprimirDANFE(Request $request): Response
-    {
-        gc_collect_cycles();
-        gc_disable();
-
-        // Configure Dompdf according to your needs
-        $pdfOptions = new Options();
-        $pdfOptions->set('enable_remote', true);
-
-        // Instantiate Dompdf with our options
-        $dompdf = new Dompdf($pdfOptions);
-
-        $nfId = $request->get('nfId');
-        if (!$nfId) {
-            throw new \RuntimeException('nfId não informado');
-        }
-        /** @var NotaFiscal $nf */
-        $nf = $this->getDoctrine()->getRepository(NotaFiscal::class)->find($nfId);
-        if (!$nf) {
-            throw new \RuntimeException('nf não encontrada');
-        }
-
-        $configs = $this->nfeUtils->getNFeConfigsByCNPJ($nf->getDocumentoEmitente());
-
-        $primeiros = $nf->getChaveAcesso() . '|2|1|' . (int)$configs['CSCid_prod'];
-        $codigoHash = sha1($primeiros . $configs['CSC_prod']);
-        $qrcode = 'http://www.fazenda.pr.gov.br/nfce/qrcode?p=' . $primeiros . '|' . $codigoHash;
-
-        $nf->setChaveAcesso(
-            substr($nf->getChaveAcesso(), 0, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 4, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 8, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 12, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 16, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 24, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 28, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 32, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 36, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 40, 4)
-        );
-
-
-        $params = [
-            'nf' => $nf,
-            'cancelada' => $nf->getCStat() === 135,
-            'cnpj' => $configs['cnpj'],
-            'razaoSocial' => $configs['razaosocial'],
-            'enderecoCompleto' => $configs['enderecoCompleto'],
-            'telefone' => $configs['telefone'],
-            'qrcode' => $qrcode
-        ];
-
-        $bc = new BarcodeGeneratorPNG();
-        $params['barcode'] = base64_encode($bc->getBarcode('42181206114935001580550070000170901002638339', $bc::TYPE_CODE_128_C));
-
-
-        // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('/Fiscal/pdf/danfe-A4.html.twig', $params);
-        // Load HTML to Dompdf
-        $dompdf->loadHtml($html);
-
-
-        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
-        $dompdf->setPaper('A4', 'portrait');
-
-        // Render the HTML as PDF
-        $dompdf->render();
-
-        // Output the generated PDF to Browser (inline view)
-        $dompdf->stream('danfe.pdf', [
-            'Attachment' => false
-        ]);
-
-        gc_collect_cycles();
-        gc_enable();
-
-    }
-
-
-    /**
-     *
-     * @Route("/fis/emissaonfe/imprimirDANFEhtml", name="fis_emissaonfe_imprimirDANFEhtml")
-     * @param Request $request
-     * @return Response
-     *
-     * @throws ViewException
-     * @IsGranted("ROLE_FISCAL", statusCode=403)
-     */
-    public function imprimirDANFEhtml(Request $request): Response
-    {
-        gc_collect_cycles();
-        gc_disable();
-
-
-        $nfId = $request->get('nfId');
-        if (!$nfId) {
-            throw new \RuntimeException('nfId não informado');
-        }
-        /** @var NotaFiscal $nf */
-        $nf = $this->getDoctrine()->getRepository(NotaFiscal::class)->find($nfId);
-        if (!$nf) {
-            throw new \RuntimeException('nf não encontrada');
-        }
-
-        $configs = $this->nfeUtils->getNFeConfigsByCNPJ($nf->getDocumentoEmitente());
-
-        $primeiros = $nf->getChaveAcesso() . '|2|1|' . (int)$configs['CSCid_prod'];
-        $codigoHash = sha1($primeiros . $configs['CSC_prod']);
-        $qrcode = 'http://www.fazenda.pr.gov.br/nfce/qrcode?p=' . $primeiros . '|' . $codigoHash;
-
-        $nf->setChaveAcesso(
-            substr($nf->getChaveAcesso(), 0, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 4, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 8, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 12, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 16, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 24, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 28, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 32, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 36, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 40, 4)
-        );
-
-
-        $params = [
-            'nf' => $nf,
-            'cnpj' => $configs['cnpj'],
-            'razaoSocial' => $configs['razaosocial'],
-            'enderecoCompleto' => $configs['enderecoCompleto'],
-            'telefone' => $configs['telefone'],
-            'qrcode' => $qrcode
-        ];
-
-        $bc = new BarcodeGeneratorPNG();
-        $params['barcode'] = base64_encode($bc->getBarcode('42181206114935001580550070000170901002638339', $bc::TYPE_CODE_128_C));
-
-
-        return $this->render('/Fiscal/pdf/danfe-A4.html.twig', $params);
-
-    }
-
-
     /**
      *
      * @Route("/fis/emissaonfe/imprimirDANFCE", name="fis_emissaonfe_imprimirDANFCE")
@@ -1071,12 +916,11 @@ class EmissaoNFeController extends FormListController
             substr($nf->getChaveAcesso(), 28, 4) . ' ' .
             substr($nf->getChaveAcesso(), 32, 4) . ' ' .
             substr($nf->getChaveAcesso(), 36, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 40, 4)
-        ;
+            substr($nf->getChaveAcesso(), 40, 4);
 
         $params = [
             'xml' => $nf->getXMLDecoded(),
-            'cancelada' => $nf->getCStat() === 135,
+            'cancelada' => (int)$nf->getCStat() === 135,
             'chaveAcesso' => $chaveAcesso,
             'qrcode' => $qrcode
         ];
@@ -1102,7 +946,6 @@ class EmissaoNFeController extends FormListController
         gc_enable();
 
     }
-
 
 
     /**
@@ -1165,21 +1008,21 @@ class EmissaoNFeController extends FormListController
      */
     public function consultarRecibo(NotaFiscal $notaFiscal): Response
     {
-        $result = $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+        $this->spedNFeBusiness->consultaRecibo($notaFiscal);
+        $xml = $notaFiscal->getXMLDecoded();
         $r = [];
-        $r[] = 'cStat: ' . $result->cStat;
-        $r[] = 'xMotivo: ' . $result->xMotivo;
-        $r[] = 'dhRecbto: ' . $result->dhRecbto;
-        $r[] = 'protNFe.chNFe: ' . $result->protNFe->infProt->chNFe;
-        $r[] = 'protNFe.dhRecbto: ' . $result->protNFe->infProt->dhRecbto;
-        $r[] = 'protNFe.nProt: ' . $result->protNFe->infProt->nProt;
-        $r[] = 'protNFe.digVal: ' . $result->protNFe->infProt->digVal;
-        $r[] = 'protNFe.cStat: ' . $result->protNFe->infProt->cStat;
-        $r[] = 'protNFe.xMotivo: ' . $result->protNFe->infProt->xMotivo;
+        $r[] = 'cStat: ' . $xml->cStat;
+        $r[] = 'xMotivo: ' . $xml->xMotivo;
+        $r[] = 'dhRecbto: ' . $xml->dhRecbto;
+        $r[] = 'protNFe.chNFe: ' . $xml->protNFe->infProt->chNFe;
+        $r[] = 'protNFe.dhRecbto: ' . $xml->protNFe->infProt->dhRecbto;
+        $r[] = 'protNFe.nProt: ' . $xml->protNFe->infProt->nProt;
+        $r[] = 'protNFe.digVal: ' . $xml->protNFe->infProt->digVal;
+        $r[] = 'protNFe.cStat: ' . $xml->protNFe->infProt->cStat;
+        $r[] = 'protNFe.xMotivo: ' . $xml->protNFe->infProt->xMotivo;
 
         return new Response(implode('<br>', $r));
     }
-
 
 
 }

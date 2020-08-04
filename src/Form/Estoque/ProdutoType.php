@@ -2,17 +2,19 @@
 
 namespace App\Form\Estoque;
 
-use App\Entity\Estoque\Depto;
-use App\Entity\Estoque\Fornecedor;
-use App\Entity\Estoque\Grupo;
-use App\Entity\Estoque\Produto;
-use App\Entity\Estoque\Subgrupo;
-use App\Repository\Estoque\DeptoRepository;
-use App\Repository\Estoque\FornecedorRepository;
-use App\Repository\Estoque\GrupoRepository;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\FornecedorRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -52,7 +54,7 @@ class ProdutoType extends AbstractType
             $builder = $event->getForm();
 
             $builder->add('id', TextType::class, [
-                'label' => 'Código',
+                'label' => 'Id',
                 'required' => false,
                 'attr' => ['readonly' => 'readonly']
             ]);
@@ -62,10 +64,17 @@ class ProdutoType extends AbstractType
                 'attr' => ['class' => 'focusOnReady'],
             ]);
 
+
+            $builder->add('codigo', TextType::class, [
+                'label' => 'Código',
+                'required' => false
+            ]);
+
+
             /** @var DeptoRepository $repoDeptos */
             $repoDeptos = $this->doctrine->getRepository(Depto::class);
             $deptos = $repoDeptos->findAll(['codigo' => 'ASC']);
-            $builder->add('depto', EntityType::class, [
+            $builder->add('depto', EntityType::class, array(
                 'label' => 'Depto',
                 'placeholder' => '...',
                 'class' => Depto::class,
@@ -73,10 +82,7 @@ class ProdutoType extends AbstractType
                 'choice_label' => function (?Depto $depto) {
                     return $depto ? $depto->getDescricaoMontada() : null;
                 },
-                'attr' => [
-                    'class' => 'autoSelect2'
-                ],
-            ]);
+            ));
 
             $grupos = [];
             if ($produto && $produto->depto ?? false) {
@@ -90,9 +96,6 @@ class ProdutoType extends AbstractType
                 'class' => Grupo::class,
                 'choices' => $grupos,
                 'choice_label' => 'descricaoMontada',
-                'attr' => [
-                    'class' => 'autoSelect2'
-                ],
             ]);
 
             $subgrupos = [];
@@ -107,9 +110,6 @@ class ProdutoType extends AbstractType
                 'class' => Subgrupo::class,
                 'choices' => $subgrupos,
                 'choice_label' => 'descricaoMontada',
-                'attr' => [
-                    'class' => 'autoSelect2'
-                ],
                 'required' => true
             ]);
 
@@ -122,6 +122,21 @@ class ProdutoType extends AbstractType
                 'class' => Fornecedor::class,
                 'choices' => $fornecedores,
                 'choice_label' => 'nome',
+                'attr' => [
+                    'class' => 'autoSelect2'
+                ],
+                'required' => true
+            ]);
+
+            /** @var UnidadeRepository $repoUnidade */
+            $repoUnidade = $this->doctrine->getRepository(Unidade::class);
+            $unidades = $repoUnidade->findAll(['label' => 'ASC']);
+            $builder->add('unidadePadrao', EntityType::class, [
+                'label' => 'Unidade Padrão',
+                'placeholder' => '...',
+                'class' => Unidade::class,
+                'choices' => $unidades,
+                'choice_label' => 'label',
                 'attr' => [
                     'class' => 'autoSelect2'
                 ],
@@ -168,7 +183,7 @@ class ProdutoType extends AbstractType
 
             ]);
 
-            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => $produto->jsonData]);
+            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => ($produto->jsonData ?? null)]);
 
         });
 
@@ -198,6 +213,20 @@ class ProdutoType extends AbstractType
                     'choice_label' => 'descricaoMontada'
                 ]);
 
+            }
+        );
+
+        // Necessário para os casos onde o formulário não tem todos os campos do json_data (para que eles não desapareçam por conta disto)
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($jsonMetadata) {
+                /** @var Produto $produto */
+                $produto = $event->getData();
+                if ($produto->getId()) {
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM est_produto WHERE id = :id', ['id' => $produto->getId()])['json_data'] ?? '{}', true);
+                    $produto->jsonData = array_merge($jsonDataOrig, $produto->jsonData);
+                    $event->setData($produto);
+                }
             }
         );
 

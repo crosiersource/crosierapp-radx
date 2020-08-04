@@ -1,0 +1,39 @@
+<div class="tab-pane fade" id="ecommerce" role="tabpanel" aria-labelledby="ecommerce-tab">
+
+    {% if e.id %}
+        <div class="card">
+
+            <div class="card-body">
+
+
+                {{ form_row(form.jsonData['ecommerce_id']) }}
+                {{ form_row(form.jsonData['ecommerce_dt_integr']) }}
+                {{ form_row(form.jsonData['ecommerce_integr_por']) }}
+
+
+                <div class="row">
+                    <div class="col text-right">
+                        <button type="button" class="btn btn-outline-danger" value="Integrar"
+                                title="Integrar produto ao ecommerce"
+                                data-url="{{ url('est_integraWebStorm_integrarProduto', {'produto': e.id}) }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-cloud-upload-alt"></i> Integrar
+                        </button>
+
+                        {% if e.jsonData['ecommerce_id']|default('') != '' %}
+                            <button type="button" class="ml-2 btn btn-outline-warning" value="Integrar sem imagens"
+                                    title="Integrar produto ao ecommerce (não reenviar imagens)"
+                                    data-url="{{ url('est_integraWebStorm_integrarProduto', {'produto': e.id, 'integrarImagens': false}) }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-cloud-upload-alt"></i> Integrar (sem imagens)
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    {% endif %}
+
+</div>

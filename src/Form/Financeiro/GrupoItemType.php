@@ -2,12 +2,12 @@
 
 namespace App\Form\Financeiro;
 
-use App\Entity\Financeiro\Carteira;
-use App\Entity\Financeiro\GrupoItem;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
 use Doctrine\DBAL\Types\IntegerType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -34,7 +34,6 @@ class GrupoItemType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
 
 
         $builder->add('descricao', TextType::class, array(

@@ -23,7 +23,7 @@
     "ext-dom": "*",
     "ext-zlib": "*",
     "phpoffice/phpspreadsheet": "^1.9",
-    "dompdf/dompdf": "dev-master",
+    "dompdf/dompdf": "^0",
     "friendsofsymfony/jsrouting-bundle": "^2.2",
     "sensio/framework-extra-bundle": "^5.1",
     "nelmio/cors-bundle": "2.0.*",
@@ -56,19 +56,22 @@
     "symfony/yaml": "5.0.*",
     "twig/extensions": "^1.5",
     "crosiersource/crosierlib-base": "@dev",
+    "crosiersource/crosierlib-radx": "@dev",
     "symfony/web-profiler-bundle": "5.0.*",
     "nfephp-org/sped-common": "^5.0",
-    "nfephp-org/sped-da": "dev-master",
+    "nfephp-org/sped-da": "^0",
     "nfephp-org/sped-nfe": "^5.0",
     "picqer/php-barcode-generator": "^0.3.0",
     "econea/nusoap": "^0.9.7",
-    "vich/uploader-bundle": "^1.13"
+    "knplabs/knp-snappy-bundle": "^1.7",
+    "vich/uploader-bundle": "^1.13",
+    "symfony/messenger": "5.0.*"
   },
   "require-dev": {
-    "symfony/debug-bundle": "5.0.*",
-    "symfony/var-dumper": "5.0.*",
-    "sensiolabs/security-checker": "6.0.*",
-    "symfony/debug": "^4.4"
+    "symfony/debug-pack": "*",
+    "symfony/maker-bundle": "^1.0",
+    "symfony/profiler-pack": "*",
+    "symfony/test-pack": "*"
   },
   "config": {
     "minimum-stability": "dev",
@@ -97,7 +100,6 @@
   },
   "scripts": {
     "auto-scripts": {
-      "security-checker security:check": "script",
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     },
@@ -121,6 +123,13 @@
     {
       "type": "path",
       "url": "../crosierlib-base/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "../crosierlib-radx/",
       "options": {
         "symlink": true
       }
