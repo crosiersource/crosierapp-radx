@@ -78,7 +78,7 @@ class GrupoItemController extends FormListController
      * @Route("/fin/grupoItem/form/{id}", name="grupoItem_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param GrupoItem|null $grupoItem
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
@@ -129,7 +129,7 @@ class GrupoItemController extends FormListController
      * @Route("/fin/grupoItem/gerarNovo/{pai}", name="grupoItem_gerarNovo", requirements={"pai"="\d+"})
      * @param Request $request
      * @param Grupo $pai
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
@@ -150,7 +150,7 @@ class GrupoItemController extends FormListController
      * @Route("/fin/grupoItem/list/{pai}", name="grupoItem_list", requirements={"pai"="\d+"})
      * @param Request $request
      * @param Grupo $pai
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
@@ -216,7 +216,7 @@ class GrupoItemController extends FormListController
      *
      * @Route("/fin/grupoItem/listMovs/", name="grupoItem_listMovs")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
@@ -256,6 +256,9 @@ class GrupoItemController extends FormListController
                 $grupoItem = $ultimaMov[0]->getGrupoItem();
             } else {
                 $grupoItem = $grupo->getItens()->last();
+            }
+            if (!$grupoItem) {
+                $grupoItem = $this->grupoBusiness->gerarNovo($grupo);
             }
             return $this->redirectToRoute('grupoItem_listMovs', ['grupoItem' => $grupoItem->getId()]);
 

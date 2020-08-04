@@ -22,10 +22,12 @@
                             <i class="fas fa-file" aria-hidden="true"></i> Novo
                         </button>
 
-                        <button type="button" class="btn btn-secondary"
-                                onclick="window.location.href='{{ url('grupoItem_listMovs', {'grupoItem':e.grupoItem.id}) }}'">
-                            <i class="fas fa-sync" aria-hidden="true"></i> Listar
-                        </button>
+                        {% if e.grupoItem.id is defined %}
+                            <button type="button" class="btn btn-secondary"
+                                    onclick="window.location.href='{{ url('grupoItem_listMovs', {'grupoItem':e.grupoItem.id}) }}'">
+                                <i class="fas fa-sync" aria-hidden="true"></i> Listar
+                            </button>
+                        {% endif %}
 
                         {% if e.id %}
                             <button type="button" class="btn btn-danger"
@@ -58,8 +60,6 @@
                     {{ form_row(form.modo) }}
                     {{ form_row(form.carteira) }}
                 </div>
-
-
 
 
                 <div class="row">

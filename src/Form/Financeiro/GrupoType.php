@@ -36,7 +36,8 @@ class GrupoType extends AbstractType
     {
 
         $builder->add('descricao', TextType::class, array(
-            'label' => 'Descrição'
+            'label' => 'Descrição',
+            'attr' => ['class' => 'focusOnReady']
         ));
 
         $builder->add('diaVencto', IntegerType::class, array(
@@ -50,10 +51,11 @@ class GrupoType extends AbstractType
         ));
 
         $builder->add('ativo', ChoiceType::class, array(
-            'choices' => array(
+            'choices' => [
                 'Sim' => true,
                 'Não' => false
-            )
+            ],
+            'attr' => ['class' => 'autoSelect2']
         ));
 
         $repoCarteira = $this->doctrine->getRepository(Carteira::class);

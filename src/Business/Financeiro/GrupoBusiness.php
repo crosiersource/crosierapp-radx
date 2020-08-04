@@ -6,9 +6,13 @@ use App\Entity\Financeiro\Grupo;
 use App\Entity\Financeiro\GrupoItem;
 use App\EntityHandler\Financeiro\GrupoItemEntityHandler;
 
+/**
+ * Class GrupoBusiness
+ * @package App\Business\Financeiro
+ */
 class GrupoBusiness
 {
-    private $grupoItemEntityHandler;
+    private GrupoItemEntityHandler $grupoItemEntityHandler;
 
     public function __construct(GrupoItemEntityHandler $grupoItemEntityHandler)
     {
@@ -29,12 +33,12 @@ class GrupoBusiness
         try {
             $this->grupoItemEntityHandler->getDoctrine()->beginTransaction();
 
-            
+
             $novo = new GrupoItem();
             $novo->setPai($pai);
             $novo->setFechado(false);
             $novo->setValorInformado(0.0);
-            
+
             if ($prox) {
                 /** @var GrupoItem $ultimo */
                 $ultimo = $this->grupoItemEntityHandler->getDoctrine()->getRepository(GrupoItem::class)->findOneBy(['pai' => $pai], ['dtVencto' => 'DESC']);

@@ -6,7 +6,6 @@ use App\Business\Financeiro\MovimentacaoBusiness;
 use App\Entity\Financeiro\Cadeia;
 use App\Entity\Financeiro\Carteira;
 use App\Entity\Financeiro\Categoria;
-use App\Entity\Financeiro\GrupoItem;
 use App\Entity\Financeiro\Modo;
 use App\Entity\Financeiro\Movimentacao;
 use App\Entity\Financeiro\TipoLancto;
@@ -47,17 +46,13 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 class MovimentacaoController extends FormListController
 {
 
-    /** @var MovimentacaoBusiness */
-    private $business;
+    private MovimentacaoBusiness $business;
 
-    /** @var SessionInterface */
-    private $session;
+    private SessionInterface $session;
 
-    /** @var CadeiaEntityHandler */
-    private $cadeiaEntityHandler;
+    private CadeiaEntityHandler $cadeiaEntityHandler;
 
-    /** @var EntityIdUtils */
-    private $entityIdUtils;
+    private EntityIdUtils $entityIdUtils;
 
     /**
      * @required
@@ -579,7 +574,7 @@ class MovimentacaoController extends FormListController
     /**
      * Form para movimentações do tipoLancto 70.
      *
-     * @Route("/fin/movimentacao/form/grupo/{grupoItem}/{id}", name="movimentacao_form_grupo", defaults={"id"=null}, requirements={"grupoItem"="\d+", "id"="\d+"})
+     * @Route("/fin/movimentacao/form/grupo/{id}", name="movimentacao_form_grupo", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -587,13 +582,8 @@ class MovimentacaoController extends FormListController
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
-    public function formGrupo(Request $request, GrupoItem $grupoItem, Movimentacao $movimentacao = null)
+    public function formGrupo(Request $request, Movimentacao $movimentacao = null)
     {
-        if (!$grupoItem) {
-            $this->addFlash('error', 'Nenhum grupo informado');
-            return $this->redirectToRoute('grupoItem_listMovs');
-        }
-
         if (!$movimentacao && ($sviParams = $this->storedViewInfoBusiness->retrieve('movimentacao_form_grupo'))) {
             if (isset($sviParams['ultimaMovimentacaoSalva'])) {
                 /** @var Movimentacao $movimentacao */
@@ -638,7 +628,6 @@ class MovimentacaoController extends FormListController
         $movimentacao->setTipoLancto($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => $tipoLancto]));
         $movimentacao->setCarteira($this->getDoctrine()->getRepository(Carteira::class)->findOneBy(['codigo' => 7]));
         $movimentacao->setModo($this->getDoctrine()->getRepository(Modo::class)->findOneBy(['codigo' => 50]));
-        $movimentacao->setGrupoItem($grupoItem);
 
         $params['typeClass'] = MovimentacaoType::class; // ???
         $params['formView'] = 'Financeiro/movimentacaoForm_grupo.html.twig';
@@ -651,7 +640,6 @@ class MovimentacaoController extends FormListController
         $params['formView'] = $parcelamento ? 'Financeiro/movimentacaoForm_grupo_parcelamento.html.twig' : 'Financeiro/movimentacaoForm_grupo.html.twig';
         $params['typeClass'] = MovimentacaoType::class;
         $params['formRoute'] = 'movimentacao_form_grupo';
-
 
         $r = $this->doForm($request, $movimentacao, $params);
         if ($movimentacao->getId()) {
