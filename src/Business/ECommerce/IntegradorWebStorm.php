@@ -1217,7 +1217,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     {
         $dtIni = (clone $dtVenda)->setTime(0, 0);
         $dtFim = (clone $dtVenda)->setTime(23, 59, 59, 999999);
-        $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>    
+        $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
                     <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                     <chave>' . $this->getChave() . '</chave>
                     <acao>select</acao>
@@ -1361,6 +1361,9 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
         $venda->planoPagto = $planoPagto;
+
+
+        
 
         /** @var ColaboradorRepository $repoColaborador */
         $repoColaborador = $this->vendaEntityHandler->getDoctrine()->getRepository(Colaborador::class);

@@ -45,16 +45,27 @@ class IntegrarWebStormCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tipoIntegracao = $input->getArgument('tipoIntegracao');
-        $dtBase = DateTimeUtils::parseDateStr($input->getArgument('dtBase'));
-        if (!$dtBase) {
-            $dtBase = new \DateTime();
-        }
+
         switch ($tipoIntegracao) {
             case 'vendas':
                 try {
                     $output->writeln('Obtendo vendas');
-                    $qtdeVendas = $this->integraWebStorm->obterVendas($dtBase);
-                    $output->writeln('OK: ' . $qtdeVendas . ' venda(s) integrada(s)');
+                    $dtBase = DateTimeUtils::parseDateStr($input->getArgument('dtBase'));
+                    if (!$dtBase) {
+                        // Por padrão não é passado uma data no comando. Pega, portanto, as de ontem e hoje, para
+                        // não correr o risco de perder alguma venda de perto de meia-noite.
+                        $ontem = $dtBase->sub((new \DateInterval('P1D')));
+                        $hoje = new \DateTime();
+
+                        $qtdeVendas_ontem = $this->integraWebStorm->obterVendas($ontem);
+                        $output->writeln('Ontem: ' . $ontem->format('d/m/Y') . ': ' . $qtdeVendas_ontem);
+
+                        $qtdeVendas_hoje = $this->integraWebStorm->obterVendas($hoje);
+                        $output->writeln('Hoje: ' . $hoje->format('d/m/Y') . ': ' . $qtdeVendas_hoje);
+                    } else {
+                        $qtdeVendas = $this->integraWebStorm->obterVendas($dtBase);
+                        $output->writeln('OK: ' . $qtdeVendas . ' venda(s) integrada(s)');
+                    }
                 } catch (ViewException $e) {
                     $output->writeln('Erro ao obterVendas');
                     $output->writeln($e->getMessage());
