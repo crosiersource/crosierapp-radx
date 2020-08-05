@@ -15,7 +15,7 @@
                     <tr>
                         <th scope="col">Atual</th>
                         <th scope="col">Unidade</th>
-                        <th scope="col">Dt Custo</th>
+                        <th scope="col">Dt Custo<br/>Dt Preço Venda</th>
                         <th scope="col">Preço Custo</th>
                         <th scope="col">Margem</th>
                         <th scope="col">Preço Venda</th>
@@ -25,10 +25,13 @@
 
                     <tbody id="tbodySortableComposicao">
                     {% for preco in listaPrecos.precos %}
-                        <tr data-id="{{ preco.id }}">
-                            <td>{{ preco.atual ? '*' : '' }}</td>
+                        <tr data-id="{{ preco.id }}" style="{{ not preco.atual ? 'color: lightgrey' : ''  }}">
+                            <td class="text-center">{{ preco.atual ? '*' : '' }}</td>
                             <td>{{ preco.unidade.label }}</td>
-                            <td>{{ preco.dtCusto|date('d/m/Y H:i:s') }}</td>
+                            <td>
+                                {{ preco.dtCusto|date('d/m/Y') }}<br/>
+                                {{ preco.dtPrecoVenda|date('d/m/Y') }}
+                            </td>
                             <td class="text-right ">{{ preco.precoCusto|number_format(2,',','.') }}</td>
                             <td class="text-right ">{{ preco.margem|number_format(3,',','.') }}%</td>
                             <td class="text-right">{{ preco.precoPrazo|number_format(2,',','.') }}</td>

@@ -3,7 +3,6 @@
 namespace App\Controller\Estoque;
 
 use App\Form\Estoque\EntradaType;
-use Cassandra\Decimal;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -17,8 +16,10 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\EntradaItemEntityHa
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\EntradaItemRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
+use Doctrine\DBAL\Connection;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,6 +79,7 @@ class EntradaController extends FormListController
      * @param Entrada|null $entrada
      * @return RedirectResponse|Response
      * @throws ViewException
+     * @throws \Doctrine\DBAL\DBALException
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
     public function form(Request $request, Entrada $entrada = null)
@@ -99,45 +101,83 @@ class EntradaController extends FormListController
             $entrada->dtLote = new \DateTime();
             $entrada->status = 'ABERTO';
             $entrada->responsavel = $this->getUser()->getNome();
+        } else {
+            $this->preencherDadosPrecosProdutos($entrada);
         }
 
         return $this->doForm($request, $entrada, $params);
     }
 
+    private function preencherDadosPrecosProdutos(Entrada $entrada): void
+    {
+        $sqlPrecos = 'select lista.descricao as lista, u.label as unidade, preco.preco_prazo from est_produto_preco preco, est_unidade u, est_lista_preco lista where preco.produto_id = :produtoId and preco.lista_id = lista.id and preco.unidade_id = u.id and preco.atual IS TRUE';
+        $stmtPrecos = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlPrecos);
+        foreach ($entrada->itens as $item) {
+            $stmtPrecos->bindValue('produtoId', $item->produto->getId());
+            $stmtPrecos->execute();
+            $rPrecos = $stmtPrecos->fetchAll();
+            $helpText = '';
+            foreach ($rPrecos as $preco) {
+                if ($preco['unidade'] === $item->unidade->label) {
+                    $helpText .= $preco['lista'] . ': R$ ' . number_format($preco['preco_prazo'], 2, ',', '.') . ' . ';
+                }
+            }
+
+            $item->produto->precos_helpText = $helpText;
+        }
+    }
+
     /**
-     *
      * @Route("/est/entrada/formItem/{entrada}/", name="est_entrada_formItem", defaults={"entrada"=null}, requirements={"entrada"="\d+"})
+     *
      * @param Request $request
      * @param Entrada|null $entrada
-     * @return RedirectResponse|Response
+     * @return JsonResponse
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
-    public function formItem(Request $request, Entrada $entrada = null): RedirectResponse
+    public function formItem(Request $request, Entrada $entrada = null): JsonResponse
     {
+        $r = [];
         try {
             if ($entrada->status !== 'ABERTO') {
                 throw new ViewException('Status difere de "ABERTO"');
             }
+            $conn = $this->entityHandler->getDoctrine()->getConnection();
+            $item = $request->get('item');
             $entradaItem = [];
             $entradaItem['entrada_id'] = $entrada->getId();
-            $item = $request->get('item');
-            $entradaItem['qtde'] = DecimalUtils::parseStr($item['qtde']);
             $entradaItem['produto_id'] = $item['produto'];
             $entradaItem['unidade_id'] = $item['unidade'];
+
             $entradaItem['updated'] = (new \DateTime())->format('Y-m-d H:i:s');
-            $entradaItem['inserted'] = (new \DateTime())->format('Y-m-d H:i:s');
-            $entradaItem['estabelecimento_id'] = 1;
-            $entradaItem['user_inserted_id'] = 1;
-            $entradaItem['user_updated_id'] = 1;
-            $conn = $this->entityHandler->getDoctrine()->getConnection();
-            $conn->insert('est_entrada_item', $entradaItem);
+
+            if ($rs = $conn->fetchAll('SELECT * FROM est_entrada_item WHERE entrada_id = :entradaId AND produto_id = :produtoId AND unidade_id = :unidadeId',
+                [
+                    'entradaId' => $entradaItem['entrada_id'],
+                    'produtoId' => $entradaItem['produto_id'],
+                    'unidadeId' => $entradaItem['unidade_id']
+                ])) {
+                $entradaItem['qtde'] = $rs[0]['qtde'] + DecimalUtils::parseStr($item['qtde']);
+                $conn->update('est_entrada_item', $entradaItem, ['id' => $rs[0]['id']]);
+            } else {
+                $entradaItem['qtde'] = DecimalUtils::parseStr($item['qtde']);
+                $entradaItem['inserted'] = (new \DateTime())->format('Y-m-d H:i:s');
+                $entradaItem['estabelecimento_id'] = 1;
+                $entradaItem['user_inserted_id'] = 1;
+                $entradaItem['user_updated_id'] = 1;
+                $conn->insert('est_entrada_item', $entradaItem);
+            }
+            $r['result'] = 'OK';
         } catch (\Exception $e) {
+            $r['result'] = 'ERR';
             $this->addFlash('error', 'Erro ao inserir item');
             if ($e instanceof ViewException) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
-        return $this->redirectToRoute('est_entrada_form', ['id' => $entrada->getId()]);
+        $this->preencherDadosPrecosProdutos($entrada);
+        $r['divTbItens'] = $this->renderView('Estoque/entrada_form_divTbItens.html.twig', ['e' => $entrada]);
+        return new JsonResponse($r);
     }
 
     /**
@@ -235,4 +275,68 @@ class EntradaController extends FormListController
     }
 
 
+    /**
+     *
+     * @Route("/est/entrada/findProdutos/", name="est_entrada_findProdutos")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
+     */
+    public function findProdutos(Request $request): JsonResponse
+    {
+        try {
+            $str = $request->get('term');
+
+            $sql = 'SELECT prod.id, prod.codigo, prod.nome, u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
+                'FROM est_produto prod, est_unidade u ' .
+                'WHERE prod.unidade_padrao_id = u.id AND (prod.id = :id OR ' .
+                'prod.nome LIKE :nome OR ' .
+                'prod.codigo LIKE :codigo) ORDER BY prod.nome LIMIT 30';
+
+            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql,
+                [
+                    'id' => (int)$str,
+                    'nome' => '%' . $str . '%',
+                    'codigo' => '%' . $str
+                ]);
+            $results = [];
+
+            $sqlUnidades = 'SELECT u.id, u.label as text, preco.preco_prazo FROM est_produto_preco preco, est_unidade u WHERE preco.unidade_id = u.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId';
+            $stmtUnidades = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlUnidades);
+
+            $sqlPrecos = 'select lista.descricao as lista, u.label as unidade, preco.preco_prazo from est_produto_preco preco, est_unidade u, est_lista_preco lista where preco.produto_id = :produtoId and preco.lista_id = lista.id and preco.unidade_id = u.id and preco.atual IS TRUE';
+            $stmtPrecos = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlPrecos);
+
+            foreach ($rs as $r) {
+                $codigo = str_pad($r['codigo'], 9, '0', STR_PAD_LEFT);
+                $stmtUnidades->bindValue('produtoId', $r['id']);
+                $stmtUnidades->execute();
+                $rUnidades = $stmtUnidades->fetchAll();
+
+                $stmtPrecos->bindValue('produtoId', $r['id']);
+                $stmtPrecos->execute();
+                $rPrecos = $stmtPrecos->fetchAll();
+
+                $results[] = [
+                    'id' => $r['id'],
+                    'text' => '(' . $r['id'] . ') ' . $codigo . ' - ' . $r['nome'] . '(' . $r['unidade_label'] . ')',
+                    'unidade_label' => $r['unidade_label'],
+                    'unidade_casas_decimais' => $r['unidade_casas_decimais'],
+                    'unidades' => $rUnidades,
+                    'precos' => $rPrecos,
+                ];
+            }
+
+            return new JsonResponse(
+                ['results' => $results]
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['results' => []]
+            );
+        }
+    }
+
+
+    
 }

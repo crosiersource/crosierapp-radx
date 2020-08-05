@@ -1,0 +1,39 @@
+<table class="table table-sm table-striped table-hover">
+
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Produto</th>
+        <th scope="col">Qtde</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for item in e.itens %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>({{ item.produto.id }}) {{ item.produto.codigo|default(0)|strpad(13) }}
+                - {{ item.produto.nome }} <a href="{{ url('est_produto_form', {'id': item.produto.id}) }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+                <br/>
+                <small class="form-text text-muted">{{ item.produto.precos_helpText }}</small>
+
+            </td>
+            <td class="text-right text-nowrap">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
+            <td class="text-right">
+                {% if e.status != 'INTEGRADO' %}
+                    <button type="button" class="btn btn-sm btn-danger"
+                            data-url="{{ url('est_entrada_deleteItem', {'item': item.id}) }}"
+                            data-token="{{ csrf_token('est_entrada_deleteItem') }}"
+                            data-target="#confirmationModal" data-toggle="modal">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                    <br/>
+                {% endif %}
+                <span class="badge badge-pill badge-info">{{ e.updated|date('d/m/Y H:i:s') }}</span>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>

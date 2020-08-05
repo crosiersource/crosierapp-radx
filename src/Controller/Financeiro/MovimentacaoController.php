@@ -2,18 +2,6 @@
 
 namespace App\Controller\Financeiro;
 
-<<<<<<< HEAD
-use App\Business\Financeiro\MovimentacaoBusiness;
-use App\Entity\Financeiro\Cadeia;
-use App\Entity\Financeiro\Carteira;
-use App\Entity\Financeiro\Categoria;
-use App\Entity\Financeiro\Modo;
-use App\Entity\Financeiro\Movimentacao;
-use App\Entity\Financeiro\TipoLancto;
-use App\EntityHandler\Financeiro\CadeiaEntityHandler;
-use App\EntityHandler\Financeiro\MovimentacaoEntityHandler;
-=======
->>>>>>> bed7efa1c0dfdd7a433cbc3be53aeeec5d10b33c
 use App\Form\Financeiro\MovimentacaoAlterarEmLoteType;
 use App\Form\Financeiro\MovimentacaoChequeProprioType;
 use App\Form\Financeiro\MovimentacaoPagtoType;
@@ -36,7 +24,6 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Cadeia;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\CentroCusto;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;

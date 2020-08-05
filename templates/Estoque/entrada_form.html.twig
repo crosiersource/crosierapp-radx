@@ -98,12 +98,14 @@
                                                 <select id="item_produto" name="item[produto]" required
                                                         class="form-control {{ e.id ? 'focusOnReady' : '' }}">
                                                 </select>
+                                                <small id="item_produto_helpText" class="form-text text-muted"></small>
+                                                <input type="hidden" id="entrada_id" value="{{ e.id }}">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
 
-                                        <div class="col-md-3 col-sm-12">
+                                        <div class="col-md-4 col-sm-12">
                                             <div class="form-group">
                                                 <label class="" for="item_unidade">Unidade</label>
                                                 <select id="item_unidade" autocomplete="off"
@@ -142,11 +144,11 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3 col-sm-12">
+                                        <div class="col-md-2 col-sm-12">
                                             <div class="form-group">
                                                 <label for="btnInserirItem">&nbsp;</label>
                                                 <div class="input-group">
-                                                    <button type="submit" class="btn btn-outline-primary"
+                                                    <button type="button" class="btn btn-block btn-outline-primary"
                                                             id="btnInserirItem" value="Inserir">
                                                         <i class="fas fa-save" aria-hidden="true"></i> Inserir
                                                     </button>
@@ -158,42 +160,10 @@
 
                                 {% endif %}
 
-                                <div class="table-responsive-sm">
-                                    <table class="table table-sm table-striped table-hover">
+                                <div class="table-responsive-sm" id="divTbItens">
 
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Produto</th>
-                                            <th scope="col">Qtde</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                        </thead>
+                                    {% include('/Estoque/entrada_form_divTbItens.html.twig') %}
 
-                                        <tbody>
-                                        {% for item in e.itens %}
-                                            <tr>
-                                                <td>{{ loop.index }}</td>
-                                                <td>{{ item.produto.jsonData['codigo']|default(0)|strpad(9) }}
-                                                    - {{ item.produto.nome }}</td>
-                                                <td class="text-right text-nowrap">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
-                                                <td class="text-right">
-                                                    {% if e.status != 'INTEGRADO' %}
-                                                        <button type="button" class="btn btn-sm btn-danger"
-                                                                data-url="{{ url('est_entrada_deleteItem', {'item': item.id}) }}"
-                                                                data-token="{{ csrf_token('est_entrada_deleteItem') }}"
-                                                                data-target="#confirmationModal" data-toggle="modal">
-                                                            <i class="fa fa-trash" aria-hidden="true"></i>
-                                                        </button>
-                                                        <br/>
-                                                    {% endif %}
-                                                    <span class="badge badge-pill badge-info">{{ e.updated|date('d/m/Y H:i:s') }}</span>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                        </tbody>
-
-                                    </table>
                                 </div>
 
 

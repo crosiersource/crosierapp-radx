@@ -485,6 +485,8 @@ $(document).ready(function () {
                 $produtoPreco_precoPrazo.val('');
                 $produtoPreco_precoVista.val('');
                 $produtoPreco_precoPromo.val('');
+                $produtoPreco_dtPrecoVenda.val('');
+                $produtoPreco_dtCusto.val('');
 
                 initForm();
                 toastrr.success('Preço salvo com sucesso');
