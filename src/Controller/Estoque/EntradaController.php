@@ -16,7 +16,6 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\EntradaItemEntityHa
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\EntradaItemRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
-use Doctrine\DBAL\Connection;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -338,5 +337,4 @@ class EntradaController extends FormListController
     }
 
 
-    
 }

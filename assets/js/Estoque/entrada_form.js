@@ -45,8 +45,7 @@ $(document).ready(function () {
         ajax: {
             delay: 750,
             url: Routing.generate('est_entrada_findProdutos'),
-            dataType: 'json',
-            cache: true
+            dataType: 'json'
         }
     }).on('select2:select', function () {
         let o = $produto.select2('data')[0];
