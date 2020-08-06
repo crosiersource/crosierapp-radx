@@ -55,8 +55,19 @@ class FornecedorType extends AbstractType
             ]);
 
             $builder->add('nome', TextType::class, [
-                'label' => 'Nome',
+                'label' => 'Nome/Razão Social',
                 'attr' => ['class' => 'focusOnReady'],
+            ]);
+
+
+            $builder->add('nomeFantasia', TextType::class, [
+                'label' => 'Nome Fantasia',
+                'required' => false
+            ]);
+
+            $builder->add('inscricaoEstadual', TextType::class, [
+                'label' => 'Inscrição Estadual',
+                'required' => false
             ]);
 
 

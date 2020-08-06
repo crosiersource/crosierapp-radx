@@ -438,10 +438,18 @@ $(document).ready(function () {
 
     function submitPreco() {
 
-        if (!$produtoPreco_unidade.val() || !$produtoPreco_precoCusto.val() || !$produtoPreco_precoPrazo.val()) {
-            toastrr.error('"É necessário informar "Unidade", "Preço de Custo" e "Preço a Prazo"');
+        if (!$produtoPreco_lista.val()) {
+            toastrr.error('"É necessário informar "Lista"'); return;
+        }
+        if (!$produtoPreco_unidade.val()) {
+            toastrr.error('"É necessário informar "Unidade"');
             return;
         }
+        if (!$produtoPreco_precoCusto.val()) {
+            toastrr.error('"É necessário informar "Preço de Custo"'); return;
+        }
+
+
 
         let preco = {
             "produtoPreco": {

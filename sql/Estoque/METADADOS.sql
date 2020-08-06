@@ -106,8 +106,6 @@ CREATE TABLE `est_grupo`
     `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
     `uuid`               char(36)     NOT NULL,
     `depto_id`           bigint(20)   NOT NULL,
-    `depto_codigo`       varchar(50)  NOT NULL,
-    `depto_nome`         varchar(255) NOT NULL,
     `codigo`             varchar(50)  NOT NULL,
     `nome`               varchar(255) NOT NULL,
     `json_data`          json,

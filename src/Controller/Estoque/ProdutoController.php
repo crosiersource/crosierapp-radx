@@ -4,8 +4,9 @@ namespace App\Controller\Estoque;
 
 use App\Form\Estoque\ProdutoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Twig\SerializeEntityFilter;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
@@ -146,6 +147,7 @@ class ProdutoController extends FormListController
         if (!$produto) {
             $produto = new Produto();
         } else {
+            // Para a tabela na aba Estoques/Preços
             $listasPrecos = [];
             foreach ($produto->precos as $preco) {
                 $preco->lista->descricao;
@@ -153,17 +155,22 @@ class ProdutoController extends FormListController
                 $listasPrecos[$preco->lista->getId()]['precos'][] = $preco;
             }
             $params['listasPrecos'] = $listasPrecos;
-
-
-            /** @var UnidadeRepository $repoUnidade */
-            $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
-            $params['unidades'] = json_encode($repoUnidade->findUnidadesAtuaisSelect2JS());
-
-            /** @var ListaPrecoRepository $repoListaPreco */
-            $repoListaPreco = $this->getDoctrine()->getRepository(ListaPreco::class);
-            $params['listasPrecos_options'] = json_encode($repoListaPreco->findAllSelect2JS());
-
         }
+
+        /** @var UnidadeRepository $repoUnidade */
+        $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
+        $params['unidades'] = json_encode($repoUnidade->findUnidadesAtuaisSelect2JS());
+
+        /** @var ListaPrecoRepository $repoListaPreco */
+        $repoListaPreco = $this->getDoctrine()->getRepository(ListaPreco::class);
+        $params['listasPrecos_options'] = json_encode($repoListaPreco->findAllSelect2JS());
+
+        /** @var AppConfigRepository $repoAppConfig */
+        $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+        $params['custoOperacionalPadrao'] = $repoAppConfig->findByChave('estoque.precos.custoOperacionalPadrao');
+        $params['custoFinanceiroPadrao'] = $repoAppConfig->findByChave('estoque.precos.custoFinanceiroPadrao');
+        $params['margemPadrao'] = $repoAppConfig->findByChave('estoque.precos.margemPadrao');
+
 
         /** @var ProdutoRepository $repoProduto */
         $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
@@ -815,6 +822,16 @@ class ProdutoController extends FormListController
         try {
             $produtoPrecoArr = $request->get('produtoPreco');
 
+            if (!($produtoPrecoArr['lista'] ?? false)) {
+                throw new ViewException('É necessário informar "Lista"');
+            }
+            if (!($produtoPrecoArr['unidade'] ?? false)) {
+                throw new ViewException('É necessário informar "Unidade"');
+            }
+            if (!($produtoPrecoArr['precoCusto'] ?? false)) {
+                throw new ViewException('É necessário informar "Preço de Custo"');
+            }
+
             if ($produtoPrecoArr['id']) {
                 /** @var ProdutoPrecoRepository $repoProdutoPreco */
                 $repoProdutoPreco = $this->getDoctrine()->getRepository(ProdutoPreco::class);
@@ -896,6 +913,35 @@ class ProdutoController extends FormListController
         }
 
         return $this->redirectToRoute('est_produto_form', ['id' => $produtoPreco->produto->getId(), '_fragment' => 'estoqueseprecos']);
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/clonar/{produto}/", name="est_produto_clonar", requirements={"produto"="\d+"})
+     *
+     * @param Request $request
+     * @param Produto $produto
+     * @return RedirectResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function clonarProduto(Request $request, Produto $produto): RedirectResponse
+    {
+        try {
+            if (!$this->isCsrfTokenValid('est_produto_clonar', $request->get('token'))) {
+                throw new ViewException('Token inválido');
+            }
+            $clone = $this->entityHandler->doClone($produto);
+            $this->addFlash('success', 'Registro clonado com sucesso');
+            return $this->redirectToRoute('est_produto_form', ['id' => $clone->getId()]);
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao clonar o registro');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+            return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId()]);
+        }
     }
 
 

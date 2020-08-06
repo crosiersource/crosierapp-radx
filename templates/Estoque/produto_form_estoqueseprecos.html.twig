@@ -67,7 +67,7 @@
                         <label for="produtoPreco_margem">Margem</label>
                         <div class="input-group">
                             <input id="produtoPreco_margem" name="produtoPreco[margem]"
-                                   class="form-control crsr-dec3">
+                                   class="form-control crsr-dec3" value="{{ margemPadrao }}">
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
                             </div>
@@ -92,7 +92,7 @@
                     <div class="form-group text-right">
                         <label for="produtoPreco_atual"> </label>
                         <div class="custom-control custom-switch mt-2">
-                            <input type="checkbox" class="custom-control-input"
+                            <input type="checkbox" class="custom-control-input" checked
                                    name="produtoPreco[atual]" id="produtoPreco_atual">
                             <label class="custom-control-label" for="produtoPreco_atual">Atual</label>
                         </div>
@@ -116,10 +116,10 @@
 
                 <div class="col-md-3 col-sm-12">
                     <div class="form-group">
-                        <label for="produtoPreco_custoOperacional">Cto Operacional</label>
+                        <label for="produtoPreco_custoOperacional">Custo Operacional</label>
                         <div class="input-group">
                             <input id="produtoPreco_custoOperacional" name="produtoPreco[custoOperacional]"
-                                   class="form-control crsr-dec3">
+                                   class="form-control crsr-dec3" value="{{ custoOperacionalPadrao }}>">
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
                             </div>
@@ -132,7 +132,7 @@
                         <label for="produtoPreco_custoFinanceiro">Cto Financeiro</label>
                         <div class="input-group">
                             <input id="produtoPreco_custoFinanceiro" name="produtoPreco[custoFinanceiro]"
-                                   class="form-control crsr-dec3">
+                                   class="form-control crsr-dec3" value="{{ custoFinanceiroPadrao }}">
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
                             </div>

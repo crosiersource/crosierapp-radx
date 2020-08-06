@@ -26,14 +26,16 @@
                 <ul class="nav nav-tabs" id="principal" role="tablist">
 
                     {% for aba, campos in jsonMetadata.abas %}
-                        <li class="nav-item">
-                            <a class="nav-link {{ loop.index0 == 0 ? 'active' : '' }}"
-                               id="{{ aba|lower|transliterate }}-tab" data-toggle="tab"
-                               href="#{{ aba|lower|transliterate }}"
-                               role="tab"
-                               aria-controls="{{ aba|lower|transliterate }}"
-                               aria-selected="false">{{ aba }}</a>
-                        </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link {{ loop.index0 == 0 ? 'active' : '' }} {{ (aba != 'Dados' and e.id|default(false) == false) ? 'disabled' : '' }}"
+                                   id="{{ aba|lower|transliterate }}-tab" data-toggle="tab"
+                                   href="#{{ aba|lower|transliterate }}"
+                                   role="tab"
+                                   aria-controls="{{ aba|lower|transliterate }}"
+                                   aria-selected="false">{{ aba }}</a>
+                            </li>
+
                     {% endfor %}
 
                 </ul>
