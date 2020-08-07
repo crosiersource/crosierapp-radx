@@ -133,6 +133,7 @@
                     <thead>
                     <tr>
                         <th scope="col">Id</th>
+                        <th scope="col">Código</th>
                         <th scope="col">Nome</th>
                         <th scope="col">Fornecedor</th>
                         <th scope="col"></th>
@@ -145,6 +146,7 @@
 
                         <tr>
                             <td>{{ e.id|strpad(9) }}</td>
+                            <td>{{ e.codigo|strpad(13) }}</td>
                             <td>
                                 {{ e.jsonData.titulo|default(false) ? e.jsonData.titulo : e.nome }}<br/>
                                 <span class="badge badge-primary">: {{ e.depto.codigo }} - {{ e.depto.nome }}</span>

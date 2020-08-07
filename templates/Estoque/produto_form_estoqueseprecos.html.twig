@@ -12,7 +12,7 @@
                     <div class="form-group">
                         <label for="produtoPreco_lista">Lista</label>
                         <select id="produtoPreco_lista" autocomplete="off"
-                                name="produtoPreco[lista]" required
+                                name="produtoPreco[lista]"
                                 class="form-control"
                                 data-options="{{ listasPrecos_options|default('{}') }}"
                                 aria-hidden="true">
@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <label for="produtoPreco_unidade">Unidade</label>
                         <select id="produtoPreco_unidade" autocomplete="off"
-                                name="produtoPreco[unidade]" required
+                                name="produtoPreco[unidade]"
                                 class="form-control"
                                 data-options="{{ unidades|default('{}') }}"
                                 aria-hidden="true">
@@ -107,7 +107,7 @@
                     <div class="form-group">
                         <label for="produtoPreco_coeficiente">Coeficiente</label>
 
-                        <input id="produtoPreco_coeficiente" name="produtoPreco[coeficiente]"
+                        <input id="produtoPreco_coeficiente" name="produtoPreco[coeficiente]" disabled
                                class="form-control crsr-dec3">
 
                     </div>
