@@ -50,23 +50,33 @@ $(document).ready(function () {
     }).on('select2:select', function () {
         let o = $produto.select2('data')[0];
 
-
-        $qtde.removeClass();
-        $qtde.addClass('form-control').addClass('crsr-dec' + o.unidade_casas_decimais);
-        $('#item_unidade_append_label').html(o.unidade_label);
-
         $unidade.empty().trigger("change");
 
         $unidade.select2({
             'data': o.unidades
         });
 
-        $unidade.val(o.unidade_id).trigger('change');
+        if (o.unidades.length === 1) {
+            $unidade.val(o.unidades[0].id).trigger('change');
+            $qtde.focus();
+        }
 
-        CrosierMasks.maskDecs();
+        handleCampoQtde();
 
         showPreco();
     });
+
+    function handleCampoQtde() {
+        if ($produto.val() && $unidade.val()) {
+            let unidade = $unidade.select2('data')[0];
+
+            $qtde.removeClass();
+            $qtde.addClass('form-control').addClass('crsr-dec' + unidade.casas_decimais);
+            $('#item_unidade_append_label').html(unidade.text);
+
+            CrosierMasks.maskDecs();
+        }
+    }
 
 
     $unidade.select2({
@@ -77,12 +87,7 @@ $(document).ready(function () {
         tags: true,
         data: $unidade.data('options')
     }).on('select2:select', function () {
-        let o = $unidade.select2('data')[0];
-
-        $qtde.removeClass();
-        $qtde.addClass('form-control').addClass('crsr-dec' + o.casas_decimais);
-        $('#item_unidade_append_label').html(o.text);
-        CrosierMasks.maskDecs();
+        handleCampoQtde();
         showPreco();
     });
 
@@ -135,6 +140,7 @@ $(document).ready(function () {
             } else {
                 toastrr.error(data.msg ? data.msg : 'Erro ao salvar item');
             }
+            $produto.select2('focus');
 
         });
     });

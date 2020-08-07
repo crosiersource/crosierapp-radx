@@ -300,7 +300,7 @@ class EntradaController extends FormListController
                 ]);
             $results = [];
 
-            $sqlUnidades = 'SELECT u.id, u.label as text, preco.preco_prazo FROM est_produto_preco preco, est_unidade u WHERE preco.unidade_id = u.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId';
+            $sqlUnidades = 'SELECT u.id, u.label as text, u.casas_decimais FROM est_produto_preco preco, est_unidade u WHERE preco.unidade_id = u.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId GROUP BY u.id, u.label, u.casas_decimais';
             $stmtUnidades = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlUnidades);
 
             $sqlPrecos = 'select lista.descricao as lista, u.label as unidade, preco.preco_prazo from est_produto_preco preco, est_unidade u, est_lista_preco lista where preco.produto_id = :produtoId and preco.lista_id = lista.id and preco.unidade_id = u.id and preco.atual IS TRUE';
