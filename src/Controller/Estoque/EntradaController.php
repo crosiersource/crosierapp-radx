@@ -111,7 +111,7 @@ class EntradaController extends FormListController
 //        };
 
 
-//        $params['limit'] = 200;
+        $params['limit'] = 200;
 
 
         $fnHandleDadosList = function (array &$dados, int $totalRegistros) use ($params) {
