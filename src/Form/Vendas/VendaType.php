@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Security;
 
 /**
  *
@@ -27,12 +28,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class VendaType extends AbstractType
 {
 
-    /** @var EntityManagerInterface */
     private EntityManagerInterface $doctrine;
 
-    public function __construct(EntityManagerInterface $doctrine)
+    private Security $security;
+
+    public function __construct(EntityManagerInterface $doctrine, Security $security)
     {
         $this->doctrine = $doctrine;
+        $this->security = $security;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -61,7 +64,7 @@ class VendaType extends AbstractType
                     'class' => 'crsr-datetime'
                 ],
                 'required' => true,
-                'disabled' => true
+                'disabled' => !($this->security->isGranted('ROLE_ESTOQUE_ADMIN'))
             ]);
 
             $builder->add('status', TextType::class, [

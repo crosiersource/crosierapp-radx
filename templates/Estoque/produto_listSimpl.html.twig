@@ -136,6 +136,7 @@
                         <th scope="col">Código</th>
                         <th scope="col">Nome</th>
                         <th scope="col">Fornecedor</th>
+                        <th scope="col">Preço</th>
                         <th scope="col"></th>
                     </tr>
                     </thead>
@@ -148,14 +149,13 @@
                             <td>{{ e.id|strpad(9) }}</td>
                             <td>{{ e.codigo|strpad(13) }}</td>
                             <td>
-                                {{ e.jsonData.titulo|default(false) ? e.jsonData.titulo : e.nome }}<br/>
+                                <b>{{ e.jsonData.titulo|default(false) ? e.jsonData.titulo : e.nome }}</b><br/>
                                 <span class="badge badge-primary">: {{ e.depto.codigo }} - {{ e.depto.nome }}</span>
                                 <span class="badge badge-secondary">:: {{ e.grupo.codigo }} - {{ e.grupo.nome }}</span>
                                 <span class="badge badge-success">::: {{ e.subgrupo.codigo }} - {{ e.subgrupo.nome }}</span>
                             </td>
-                            <td>
-                                {{ e.jsonData.fornecedor_nomeFantasia ? e.jsonData.fornecedor_nomeFantasia : e.jsonData.fornecedor_nome }}
-                            </td>
+                            <td>{{ e.jsonData.fornecedor_nomeFantasia ? e.jsonData.fornecedor_nomeFantasia : e.jsonData.fornecedor_nome }}</td>
+                            <td>{{ e.jsonData.info_precos|default('') }}</td>
 
                             <td class="text-right">
                                 <a role="button" class="btn btn-primary btn-sm" title="Editar registro"

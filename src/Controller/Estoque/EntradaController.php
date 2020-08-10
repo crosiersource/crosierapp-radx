@@ -7,6 +7,8 @@ use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Entrada;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\EntradaItem;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
@@ -73,12 +75,61 @@ class EntradaController extends FormListController
 
     /**
      *
+     * @Route("/est/entrada/list/", name="est_entrada_list")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function listSimpl(Request $request): Response
+    {
+        $params = [
+            'formUrl' => '/est/entrada/form',
+            'listRoute' => 'est_entrada_list',
+            'listView' => 'Estoque/entrada_list.html.twig',
+        ];
+
+        $params['colunas'] = [
+            'id',
+            'dtLote',
+            'descricao',
+            'status',
+        ];
+
+//        $fnGetFilterDatas = function (array $params) use ($request) : array {
+//            $filterDatas = [
+//                new FilterData(['id'], 'EQ', 'id', $params),
+//                new FilterData(['nome'], 'LIKE', 'nome', $params),
+//                new FilterData(['depto'], 'EQ', 'depto', $params),
+//                new FilterData(['grupo'], 'EQ', 'grupo', $params),
+//                new FilterData(['subgrupo'], 'EQ', 'subgrupo', $params),
+//                new FilterData(['fornecedor_nomeFantasia', 'fornecedor_nome'], 'LIKE', 'fornecedor', $params, null, true),
+//            ];
+//
+//            return $filterDatas;
+//        };
+
+
+//        $params['limit'] = 200;
+
+
+        $fnHandleDadosList = function (array &$dados, int $totalRegistros) use ($params) {
+            if (count($dados) >= $params['limit'] && $totalRegistros > $params['limit']) {
+                $this->addFlash('warn', 'Retornando apenas ' . $params['limit'] . ' registros de um total de ' . $totalRegistros . '. Utilize os filtros!');
+            }
+        };
+
+        return $this->doListSimpl($request, $params, null, $fnHandleDadosList);
+    }
+
+    /**
+     *
      * @Route("/est/entrada/form/{id}", name="est_entrada_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Entrada|null $entrada
      * @return RedirectResponse|Response
      * @throws ViewException
-     * @throws \Doctrine\DBAL\DBALException
      * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
     public function form(Request $request, Entrada $entrada = null)
