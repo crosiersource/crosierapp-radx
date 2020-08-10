@@ -750,10 +750,11 @@ class EmissaoNFeController extends FormListController
             if ($nf->getTipoNotaFiscal() === 'NFE') {
                 if ((int)$nf->getCStat() === 100) {
                     $nfes100[] = $nf;
-                } else if ((int)$nf->getCStat() === 101) {
+                } else if ((int)$nf->getCStat() === 101 || ((int)$nf->getCStat() === 135 && (int)$nf->getCStatLote() === 101)) {
+                    $problemas[] = 'NFE ' . $nf->getNumero() . ' (Chave: ' . $nf->getChaveAcesso() . ') CANCELADA';
                     $nfes101[] = $nf;
                 } else {
-                    $msg = 'NFE (Chave: ' . $nf->getChaveAcesso() . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
+                    $msg = 'NFE ' . $nf->getNumero() . ' (Chave: ' . $nf->getChaveAcesso() . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
                     $problemas[] = $msg;
                     $this->logger->error($msg);
                     continue;
@@ -764,7 +765,7 @@ class EmissaoNFeController extends FormListController
                 } else if ((int)$nf->getCStat() === 101) {
                     $nfces101[] = $nf;
                 } else {
-                    $msg = 'NFE (Chave: ' . $nf->getChaveAcesso() . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
+                    $msg = 'NFE ' . $nf->getNumero() . ' (Chave: ' . $nf->getChaveAcesso() . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
                     $problemas[] = $msg;
                     $this->logger->error($msg);
                     continue;
@@ -824,7 +825,7 @@ class EmissaoNFeController extends FormListController
             $zip->addFile($arquivoCompleto, 'NFCEs/canceladas/' . $nomeArquivo);
         }
 
-        $zip->addFromString('problemas.txt', implode(PHP_EOL, $problemas));
+        $zip->addFromString('avisos.txt', implode(PHP_EOL, $problemas));
 
         $zip->status;
         $zip->close();
