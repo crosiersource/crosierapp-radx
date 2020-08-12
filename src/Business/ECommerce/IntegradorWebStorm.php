@@ -1363,8 +1363,6 @@ class IntegradorWebStorm implements IntegradorBusiness
         $venda->planoPagto = $planoPagto;
 
 
-        
-
         /** @var ColaboradorRepository $repoColaborador */
         $repoColaborador = $this->vendaEntityHandler->getDoctrine()->getRepository(Colaborador::class);
         $vendedorNaoIdentificado = $repoColaborador->findOneBy(['cpf' => '99999999999']);
@@ -1607,10 +1605,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     }
 
     /**
-     * Manda para a fila de integração todos os produtos com:
-     *  - porcent_preench=100%,
-     *  - com alteração posterior a última dt integração
-     *  - e dt marcada integração null
+     * Envia produtos para a fila (queue) que executará as integrações com o webstorm.
      *
      * @param int|null $limit
      * @return int

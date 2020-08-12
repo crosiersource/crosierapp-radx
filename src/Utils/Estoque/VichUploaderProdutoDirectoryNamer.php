@@ -4,7 +4,7 @@
 namespace App\Utils\Estoque;
 
 
-use App\Entity\Estoque\ProdutoImagem;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoImagem;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
 use Vich\UploaderBundle\Naming\DirectoryNamerInterface;
 
