@@ -50,21 +50,14 @@ $(document).ready(function () {
     }).on('select2:select', function () {
         let o = $produto.select2('data')[0];
 
-        $unidade.empty().trigger("change");
-
-        $unidade.select2({
-            'data': o.unidades
-        });
-
-        if (o.unidades.length === 1) {
-            $unidade.val(o.unidades[0].id).trigger('change');
-            $qtde.focus();
-        }
+        $unidade.val(o.unidade_padrao_id).trigger('change');
+        $qtde.focus();
 
         handleCampoQtde();
 
         showPreco();
     });
+
 
     function handleCampoQtde() {
         if ($produto.val() && $unidade.val()) {

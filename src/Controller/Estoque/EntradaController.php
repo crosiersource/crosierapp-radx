@@ -7,8 +7,6 @@ use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
-use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
-use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Entrada;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\EntradaItem;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
@@ -337,13 +335,15 @@ class EntradaController extends FormListController
         try {
             $str = $request->get('term');
 
-            $sql = 'SELECT prod.id, prod.codigo, prod.nome, u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
+            $conn = $this->entityHandler->getDoctrine()->getConnection();
+
+            $sql = 'SELECT prod.id, prod.codigo, prod.nome, prod.unidade_padrao_id, u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
                 'FROM est_produto prod, est_unidade u ' .
                 'WHERE prod.unidade_padrao_id = u.id AND (prod.id = :id OR ' .
                 'prod.nome LIKE :nome OR ' .
                 'prod.codigo LIKE :codigo) ORDER BY prod.nome LIMIT 30';
 
-            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql,
+            $rs = $conn->fetchAll($sql,
                 [
                     'id' => (int)$str,
                     'nome' => '%' . $str . '%',
@@ -351,17 +351,20 @@ class EntradaController extends FormListController
                 ]);
             $results = [];
 
-            $sqlUnidades = 'SELECT u.id, u.label as text, u.casas_decimais FROM est_produto_preco preco, est_unidade u WHERE preco.unidade_id = u.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId GROUP BY u.id, u.label, u.casas_decimais';
-            $stmtUnidades = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlUnidades);
+//            $sqlUnidades = 'SELECT u.id, u.label as text, u.casas_decimais FROM est_produto_preco preco, est_unidade u WHERE preco.unidade_id = u.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId GROUP BY u.id, u.label, u.casas_decimais';
+//            $stmtUnidades = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlUnidades);
+
+
+            $rUnidades = $conn->fetchAll('SELECT u.id, u.label as text, u.casas_decimais FROM est_unidade u ORDER BY u.label');
 
             $sqlPrecos = 'select lista.descricao as lista, u.label as unidade, preco.preco_prazo from est_produto_preco preco, est_unidade u, est_lista_preco lista where preco.produto_id = :produtoId and preco.lista_id = lista.id and preco.unidade_id = u.id and preco.atual IS TRUE';
-            $stmtPrecos = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlPrecos);
+            $stmtPrecos = $conn->prepare($sqlPrecos);
 
             foreach ($rs as $r) {
                 $codigo = str_pad($r['codigo'], 9, '0', STR_PAD_LEFT);
-                $stmtUnidades->bindValue('produtoId', $r['id']);
-                $stmtUnidades->execute();
-                $rUnidades = $stmtUnidades->fetchAll();
+//                $stmtUnidades->bindValue('produtoId', $r['id']);
+//                $stmtUnidades->execute();
+//                $rUnidades = $stmtUnidades->fetchAll();
 
                 $stmtPrecos->bindValue('produtoId', $r['id']);
                 $stmtPrecos->execute();
@@ -370,6 +373,7 @@ class EntradaController extends FormListController
                 $results[] = [
                     'id' => $r['id'],
                     'text' => '(' . $r['id'] . ') ' . $codigo . ' - ' . $r['nome'] . '(' . $r['unidade_label'] . ')',
+                    'unidade_padrao_id' => $r['unidade_padrao_id'],
                     'unidade_label' => $r['unidade_label'],
                     'unidade_casas_decimais' => $r['unidade_casas_decimais'],
                     'unidades' => $rUnidades,
