@@ -17,7 +17,7 @@ function getDatatablesColumns() {
             data: 'e.documento',
             title: 'CPF/CNPJ',
             render: function (data, type, row) {
-                return data ? (data.length == 14 ?
+                return data ? (data.length === 14 ?
                     data.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "\$1.\$2.\$3\/\$4\-\$5") :
                     data.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "\$1.\$2.\$3\-\$4")) : '';
             }

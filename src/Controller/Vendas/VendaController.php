@@ -418,6 +418,38 @@ class VendaController extends FormListController
                 $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
                 $notaFiscal->setDocumentoDestinatario($venda->cliente->documento);
                 $notaFiscal->setXNomeDestinatario($venda->cliente->nome);
+
+                $this->notaFiscalEntityHandler->save($notaFiscal);
+            }
+            return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+            $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
+            return $this->redirectToRoute($route, ['id' => $venda->getId()]);
+        }
+    }
+
+
+    /**
+     *
+     * @Route("/ven/venda/gerarNotaFiscalECommerce/{venda}", name="ven_venda_gerarNotaFiscalECommerce", requirements={"venda"="\d+"})
+     * @param Request $request
+     * @param Venda $venda
+     * @return RedirectResponse
+     */
+    public function gerarNotaFiscalECommerce(Request $request, Venda $venda): RedirectResponse
+    {
+        try {
+            /** @var NotaFiscal $notaFiscal */
+            $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+            if (!$notaFiscal) {
+                $notaFiscal = new NotaFiscal();
+                $notaFiscal->setTipoNotaFiscal('NFE');
+                $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+                $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
+                $notaFiscal->setDocumentoDestinatario($venda->cliente->documento);
+                $notaFiscal->setXNomeDestinatario($venda->cliente->nome);
+
                 $notaFiscal->setLogradouroDestinatario($venda->jsonData['ecommerce_entrega_logradouro']);
                 $notaFiscal->setNumeroDestinatario($venda->jsonData['ecommerce_entrega_numero']);
                 $notaFiscal->setBairroDestinatario($venda->jsonData['ecommerce_entrega_bairro']);
@@ -425,6 +457,7 @@ class VendaController extends FormListController
                 $notaFiscal->setCidadeDestinatario($venda->jsonData['ecommerce_entrega_cidade']);
                 $notaFiscal->setEstadoDestinatario($venda->jsonData['ecommerce_entrega_uf']);
                 $notaFiscal->setFoneDestinatario($venda->jsonData['ecommerce_entrega_telefone']);
+
                 $this->notaFiscalEntityHandler->save($notaFiscal);
             }
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);

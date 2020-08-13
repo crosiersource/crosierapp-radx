@@ -69,7 +69,7 @@ CREATE TABLE `fis_nf`
     `id`                       bigint(20)     NOT NULL AUTO_INCREMENT,
     `dt_emissao`               datetime,
     `numero`                   int(11),
-    `valor_total`              decimal(19, 2),
+    `valor_total`              decimal(15, 2),
     `xml_nota`                 longtext,
     `resumo`                   tinyint(1),
     `documento_emitente`       varchar(14),
@@ -99,8 +99,8 @@ CREATE TABLE `fis_nf`
     `ambiente`                 varchar(4),
     `info_compl`               varchar(3000),
     `pessoa_cadastro`          varchar(30),
-    `total_descontos`          decimal(19, 2) DEFAULT '0.00',
-    `subtotal`                 decimal(19, 2),
+    `total_descontos`          decimal(15, 2) DEFAULT '0.00',
+    `subtotal`                 decimal(15, 2),
     `transp_documento`         varchar(14),
     `transp_nome`              varchar(200),
     `transp_inscr_est`         varchar(50),
@@ -111,15 +111,15 @@ CREATE TABLE `fis_nf`
     `transp_marca_volumes`     varchar(200),
     `transp_modalidade_frete`  varchar(30),
     `transp_numeracao_volumes` varchar(200),
-    `transp_peso_bruto`        decimal(19, 2),
-    `transp_peso_liquido`      decimal(19, 2),
-    `transp_qtde_volumes`      decimal(19, 2),
+    `transp_peso_bruto`        decimal(15, 2),
+    `transp_peso_liquido`      decimal(15, 2),
+    `transp_qtde_volumes`      decimal(15, 2),
     `transp_fornecedor_id`     bigint(20),
     `indicador_forma_pagto`    varchar(30),
     `natureza_operacao`        varchar(60),
     `a03id_nf_referenciada`    varchar(100),
     `finalidade_nf`            varchar(30),
-    `transp_valor_total_frete` decimal(19, 2),
+    `transp_valor_total_frete` decimal(15, 2),
     `dt_saient`                datetime,
     `uuid`                     varchar(32),
     `cnf`                      char(8),
@@ -163,21 +163,6 @@ CREATE TABLE `fis_nf`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
 
-# ALTER TABLE fis_nf MODIFY pessoa_emitente_id bigint(20) ;
-# ALTER TABLE fis_nf MODIFY entrada_saida bit(1) ;
-# ALTER TABLE fis_nf MODIFY serie int(11) ;
-# ALTER TABLE fis_nf MODIFY transp_modalidade_frete varchar(30) ;
-# ALTER TABLE fis_nf MODIFY indicador_forma_pagto varchar(30) ;
-# ALTER TABLE fis_nf MODIFY natureza_operacao varchar(60) ;
-# ALTER TABLE fis_nf MODIFY finalidade_nf varchar(30) ;
-#
-#
-#
-# ALTER TABLE fis_nf ADD nrec varchar(30) ;
-# ALTER TABLE fis_nf ADD cstat_lote int(11) ;
-# ALTER TABLE fis_nf ADD xmotivo_lote varchar(255) ;
-# ALTER TABLE fis_nf ADD cstat int(11) ;
-# ALTER TABLE fis_nf ADD xmotivo varchar(255) ;
 
 
 DROP TABLE IF EXISTS `fis_nf_item`;
@@ -185,41 +170,61 @@ DROP TABLE IF EXISTS `fis_nf_item`;
 CREATE TABLE `fis_nf_item`
 (
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
+    `nota_fiscal_id`     bigint(20)     NOT NULL,
+
+    `csosn`              int(11),
     `cfop`               varchar(20)    NOT NULL,
+    `cst`                varchar(10),
+    `cest`               varchar(20),
+    `ean`                varchar(50),
     `codigo`             varchar(50)    NOT NULL,
     `descricao`          varchar(2000)  NOT NULL,
-    `icms`               decimal(15, 2),
-    `ncm`                varchar(20)    NOT NULL,
+    `ncm`                varchar(20),
     `ordem`              int(11)        NOT NULL,
-    `qtde`               decimal(19, 2) NOT NULL,
     `unidade`            varchar(50)    NOT NULL,
-    `valor_total`        decimal(19, 2) NOT NULL,
-    `valor_unit`         decimal(19, 2) NOT NULL,
-    `nota_fiscal_id`     bigint(20)     NOT NULL,
-    `valor_desconto`     decimal(19, 2),
-    `sub_total`          decimal(19, 2) NOT NULL,
-    `icms_valor`         decimal(19, 2),
-    `icms_valor_bc`      decimal(19, 2),
+    `qtde`               decimal(15, 2) NOT NULL,
+    `valor_unit`         decimal(15, 2) NOT NULL,
+    `sub_total`          decimal(15, 2) NOT NULL,
+    `valor_desconto`     decimal(15, 2),
+    `valor_total`        decimal(15, 2) NOT NULL,
+
+    `icms`               decimal(15, 2),
+    `icms_valor`         decimal(15, 2),
+    `icms_valor_bc`      decimal(15, 2),
+    `icms_mod_bc`        decimal(15, 2),
+
+    `pis`                decimal(15, 2),
+    `pis_valor`          decimal(15, 2),
+    `pis_valor_bc`       decimal(15, 2),
+
+    `cofins`             decimal(15, 2),
+    `cofins_valor`       decimal(15, 2),
+    `cofins_valor_bc`    decimal(15, 2),
+
     `ncm_existente`      tinyint(1),
-    `fis_nf_itemcol`     varchar(45),
-    `csosn`              int(11),
+
+    `json_data`          json,
+
     `inserted`           datetime       NOT NULL,
     `updated`            datetime       NOT NULL,
     `version`            int(11),
     `estabelecimento_id` bigint(20)     NOT NULL,
     `user_inserted_id`   bigint(20)     NOT NULL,
     `user_updated_id`    bigint(20)     NOT NULL,
-    `ean`                varchar(50),
+
     PRIMARY KEY (`id`),
+
     UNIQUE KEY `UK_fis_nf_item` (`nota_fiscal_id`, `ordem`),
     KEY `K_fis_nf_item_estabelecimento` (`estabelecimento_id`),
     KEY `K_fis_nf_item_user_inserted` (`user_inserted_id`),
     KEY `K_fis_nf_item_user_updated` (`user_updated_id`),
     KEY `K_fis_nf_item_nota_fiscal` (`nota_fiscal_id`),
+
     CONSTRAINT `FK_fis_nf_item_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_fis_nf_item_nota_fiscal` FOREIGN KEY (`nota_fiscal_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `FK_fis_nf_item_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
     CONSTRAINT `FK_fis_nf_item_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
@@ -271,6 +276,14 @@ CREATE TABLE `fis_nf_venda`
     `estabelecimento_id` bigint(20) NOT NULL,
     `user_inserted_id`   bigint(20) NOT NULL,
     `user_updated_id`    bigint(20) NOT NULL,
+
+
+    KEY `K_fis_nf_venda_nota_fiscal` (`nota_fiscal_id`),
+    KEY `K_fis_nf_venda_venda` (`venda_id`) USING BTREE,
+    CONSTRAINT `FK_fis_nf_venda_nota_fiscal` FOREIGN KEY (`nota_fiscal_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `FK_fis_nf_venda_venda` FOREIGN KEY (`venda_id`) REFERENCES `ven_venda` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+
+    PRIMARY KEY `id` (`id`),
     KEY `K_fis_nf_venda_estabelecimento` (`estabelecimento_id`),
     KEY `K_fis_nf_venda_user_inserted` (`user_inserted_id`),
     KEY `K_fis_nf_venda_user_updated` (`user_updated_id`),
@@ -278,11 +291,6 @@ CREATE TABLE `fis_nf_venda`
     CONSTRAINT `FK_fis_nf_venda_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_fis_nf_venda_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
 
-    UNIQUE KEY `id` (`id`),
-    KEY `K_fis_nf_venda_nota_fiscal` (`nota_fiscal_id`),
-    KEY `K_fis_nf_venda_venda` (`venda_id`) USING BTREE,
-    CONSTRAINT `FK_fis_nf_venda_nota_fiscal` FOREIGN KEY (`nota_fiscal_id`) REFERENCES `fis_nf` (`id`),
-    CONSTRAINT `FK_fis_nf_venda_venda` FOREIGN KEY (`venda_id`) REFERENCES `ven_venda` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci
@@ -297,7 +305,7 @@ CREATE TABLE `fis_nf_historico`
     `id`                 bigint(20)    NOT NULL AUTO_INCREMENT,
     `fis_nf_id`          bigint(20)    NOT NULL,
     `codigo_status`      int(11)       NOT NULL,
-    `descricao`          varchar(2000) NOT NULL,
+    `descricao`          varchar(20000) NOT NULL,
     `obs`                varchar(255),
     `dt_historico`       datetime      NOT NULL,
     `inserted`           datetime      NOT NULL,
@@ -306,15 +314,19 @@ CREATE TABLE `fis_nf_historico`
     `estabelecimento_id` bigint(20)    NOT NULL,
     `user_inserted_id`   bigint(20)    NOT NULL,
     `user_updated_id`    bigint(20)    NOT NULL,
-    PRIMARY KEY (`id`),
+
     KEY `fis_nf_id` (`fis_nf_id`),
+    CONSTRAINT `FK_fis_nf_historico_nota_fiscal` FOREIGN KEY (`fis_nf_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+
+    PRIMARY KEY (`id`),
+
     KEY `K_fis_nf_historico_estabelecimento` (`estabelecimento_id`),
     KEY `K_fis_nf_historico_user_inserted` (`user_inserted_id`),
     KEY `K_fis_nf_historico_user_updated` (`user_updated_id`),
     CONSTRAINT `FK_fis_nf_historico_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_fis_nf_historico_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
     CONSTRAINT `FK_fis_nf_historico_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `fis_nf_historico_fk1` FOREIGN KEY (`fis_nf_id`) REFERENCES `fis_nf` (`id`)
+
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci
