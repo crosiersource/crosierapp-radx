@@ -620,20 +620,15 @@ class EmissaoNFeController extends FormListController
     {
         $filename = $nf->getChaveAcesso() . '.xml';
 
-        $nf = $this->spedNFeBusiness->gerarXML($nf);
-
-        $tools = $this->nfeUtils->getToolsEmUso();
-        $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
-
-        $this->notaFiscalBusiness->handleIdeFields($nf);
-
-        $fileContent = $tools->signNFe($nf->getXmlNota());
-
-        // The dinamically created content of the file
-        //$dom = dom_import_simplexml($nf->getXMLDecoded())->ownerDocument;
-        //$dom->formatOutput = true;
-        // $fileContent = $dom->saveXML();
-
+        if (!$nf->getXMLDecoded() || $nf->getXMLDecoded()->getName() !== 'nfeProc') {
+            $nf = $this->spedNFeBusiness->gerarXML($nf);
+            $tools = $this->nfeUtils->getToolsEmUso();
+            $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
+            $this->notaFiscalBusiness->handleIdeFields($nf);
+            $fileContent = $tools->signNFe($nf->getXmlNota());
+        } else {
+            $fileContent = $nf->getXMLDecodedAsString();
+        }
 
         // Return a response with a specific content
         $response = new Response($fileContent);

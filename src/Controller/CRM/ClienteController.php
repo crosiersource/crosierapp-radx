@@ -81,8 +81,13 @@ class ClienteController extends FormListController
         $params['jsonMetadata'] = json_decode($repoCliente->getJsonMetadata(), true);
 
         $params['enderecoTipos'] = json_encode(Select2JsUtils::arrayToSelect2Data($params['jsonMetadata']['enderecoTipos'] ?? []));
+        $endereco = $request->get('endereco');
+        if ((strlen($endereco['logradouro'] ?? '') > 0) ||
+            (strlen($endereco['bairro'] ?? '') > 0) ||
+            (strlen($endereco['cidade'] ?? '') > 0) ||
+            (strlen($endereco['estado'] ?? '') > 0) ||
+            (strlen($endereco['cep'] ?? '') > 0)) {
 
-        if (($endereco = $request->get('endereco')) && ($endereco['logradouro'] ?? false)) {
             if (!$this->isCsrfTokenValid('tokenSalvarEndereco', $request->request->get('tokenSalvarEndereco'))) {
                 $this->addFlash('error', 'Não foi possível salvar o endereço. Token inválido.');
             }
