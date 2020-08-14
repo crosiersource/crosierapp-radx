@@ -8,10 +8,9 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Class IntegradorBusinessFactory
- * @package App\Business\ECommerce
+ * @author Carlos Eduardo Pauluk
  */
-class IntegradorBusinessFactory
+class IntegradorECommerceFactory
 {
 
     private IntegradorWebStorm $integradorWebStorm;
@@ -19,7 +18,7 @@ class IntegradorBusinessFactory
     private EntityManagerInterface $doctrine;
 
     /**
-     * IntegradorBusinessFactory constructor.
+     * IntegradorECommerceFactory constructor.
      * @param IntegradorWebStorm $integradorWebStorm
      * @param EntityManagerInterface $doctrine
      */

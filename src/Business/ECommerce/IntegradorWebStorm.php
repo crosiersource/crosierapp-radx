@@ -11,6 +11,7 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\WebUtils\WebUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
@@ -51,7 +52,7 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
  * @package App\Business\ECommerce
  * @author Carlos Eduardo Pauluk
  */
-class IntegradorWebStorm implements IntegradorBusiness
+class IntegradorWebStorm implements IntegradorECommerce
 {
 
     private ?string $chave = null;
@@ -556,7 +557,7 @@ class IntegradorWebStorm implements IntegradorBusiness
 
             $xml = '<![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
             <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <chave>TYzIFWVpnWzZVbKZjVtBnWXRkRWRVM=A3SWVUNPJVbxM1UxoVWWJDN4ZlRB1</chave>
+                    <chave>' . $this->getChave() . '</chave>
                     <acao>select</acao>
                     <modulo>registros</modulo>    
                     <filtro>
@@ -780,7 +781,7 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param int|null $ecommerce_id
      * @return int
      */
-    private function integraDeptoGrupoSubgrupo(string $descricao, int $nivel, ?int $idNivelPai1 = null, ?int $idNivelPai2 = null, ?int $ecommerce_id = null)
+    public function integraDeptoGrupoSubgrupo(string $descricao, int $nivel, ?int $idNivelPai1 = null, ?int $idNivelPai2 = null, ?int $ecommerce_id = null)
     {
         $syslog_obs =
             'descricao = ' . $descricao . ', ' .
@@ -1196,14 +1197,13 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param bool|null $resalvar
      * @return int
      * @throws ViewException
-     * @throws ConnectionException
      */
     public function obterVendas(\DateTime $dtVenda, ?bool $resalvar = false): int
     {
         $pedidos = $this->obterVendasPorData($dtVenda);
         if ($pedidos->pedido ?? false) {
             foreach ($pedidos->pedido as $pedido) {
-                $this->integrarVendaFromEcommerce($pedido, (int)$pedido->status === 2);
+                $this->integrarVendaParaCrosier($pedido, (int)$pedido->status === 2 || $resalvar);
             }
         }
         return count($pedidos);
@@ -1213,7 +1213,7 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param \DateTime $dtVenda
      * @return \SimpleXMLElement|void|null
      */
-    private function obterVendasPorData(\DateTime $dtVenda)
+    public function obterVendasPorData(\DateTime $dtVenda)
     {
         $dtIni = (clone $dtVenda)->setTime(0, 0);
         $dtFim = (clone $dtVenda)->setTime(23, 59, 59, 999999);
@@ -1252,7 +1252,6 @@ class IntegradorWebStorm implements IntegradorBusiness
         }
 
         return $xmlResult->resultado->filtro ?? null;
-
     }
 
     /**
@@ -1263,7 +1262,7 @@ class IntegradorWebStorm implements IntegradorBusiness
     {
         $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>    
                     <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <chave>TYzIFWVpnWzZVbKZjVtBnWXRkRWRVM=A3SWVUNPJVbxM1UxoVWWJDN4ZlRB1</chave>
+                    <chave>' . $this->getChave() . '</chave>
                     <acao>select</acao>
                     <modulo>cliente</modulo>    
                     <filtro>
@@ -1299,211 +1298,342 @@ class IntegradorWebStorm implements IntegradorBusiness
      * @param \SimpleXMLElement $pedido
      * @param bool|null $resalvar
      * @throws ViewException
-     * @throws ConnectionException
      */
-    private function integrarVendaFromEcommerce(\SimpleXMLElement $pedido, ?bool $resalvar = false)
+    private function integrarVendaParaCrosier(\SimpleXMLElement $pedido, ?bool $resalvar = false): void
     {
-        $dtPedido = DateTimeUtils::parseDateStr($pedido->dataPedido->__toString());
-        $this->syslog->info('Integrando pedido ' . $pedido->idPedido->__toString() . ' de ' .
-            $dtPedido->format('d/m/Y H:i:s') . ' Cliente: ' . $pedido->cliente->nome->__toString());
+        try {
+            $dtPedido = DateTimeUtils::parseDateStr($pedido->dataPedido->__toString());
 
-        /** @var Connection $conn */
-        $conn = $this->vendaEntityHandler->getDoctrine()->getConnection();
+            $this->syslog->info('Integrando pedido ' . $pedido->idPedido->__toString() . ' de ' .
+                $dtPedido->format('d/m/Y H:i:s') . ' Cliente: ' . $pedido->cliente->nome->__toString());
 
-        $venda = $conn->fetchAll('SELECT * FROM ven_venda WHERE json_data->>"$.ecommerce_idPedido" = :ecommerce_idPedido', ['ecommerce_idPedido' => $pedido->idPedido]);
-        $venda = $venda[0] ?? null;
+            /** @var Connection $conn */
+            $conn = $this->vendaEntityHandler->getDoctrine()->getConnection();
 
-        if ($venda) {
-            // se já existe, só confere o status
-            $vendaJsonData = json_decode($venda['json_data'], true);
-            if (($vendaJsonData['ecommerce_status'] ?? null) != $pedido->status->__toString()) {
+            $venda = $conn->fetchAll('SELECT * FROM ven_venda WHERE json_data->>"$.ecommerce_idPedido" = :ecommerce_idPedido', ['ecommerce_idPedido' => $pedido->idPedido]);
+            $venda = $venda[0] ?? null;
+            if ($venda) {
+                // se já existe, só confere o status
+                $vendaJsonData = json_decode($venda['json_data'], true);
+                if (($vendaJsonData['ecommerce_status'] ?? null) != $pedido->status->__toString()) {
 
-                $vendaJsonData['ecommerce_status'] = $pedido->status->__toString();
-                $vendaJsonData['ecommerce_status_descricao'] = $pedido->desStatus->__toString();
-                $venda_['json_data'] = json_encode($vendaJsonData);
-                try {
-                    $conn->update('ven_venda', $venda_, ['id' => $venda['id']]);
-                } catch (DBALException $e) {
-                    throw new ViewException('Erro ao alterar status da venda. (ecommerce_idPedido = ' . $pedido->idPedido->__toString() . ')');
+                    $vendaJsonData['ecommerce_status'] = $pedido->status->__toString();
+                    $vendaJsonData['ecommerce_status_descricao'] = $pedido->desStatus->__toString();
+                    $venda_['json_data'] = json_encode($vendaJsonData);
+                    try {
+                        $conn->update('ven_venda', $venda_, ['id' => $venda['id']]);
+                    } catch (DBALException $e) {
+                        throw new ViewException('Erro ao alterar status da venda. (ecommerce_idPedido = ' . $pedido->idPedido->__toString() . ')');
+                    }
                 }
+
+                // Se não estiver pedindo para resalvar as informações novamente (o que irá sobreescrever quaisquer alterações), já retorna...
+                if (!$resalvar) {
+                    return;
+                }
+
+                try {
+                    $conn->delete('ven_venda_item', ['venda_id' => $venda['id']]);
+                } catch (\Throwable $e) {
+                    $erro = 'Erro ao deletar itens da venda (id = "' . $venda['id'] . ')';
+                    $this->syslog->err($erro);
+                    throw new \RuntimeException($erro);
+                }
+                /** @var VendaRepository $repoVenda */
+                $repoVenda = $this->vendaEntityHandler->getDoctrine()->getRepository(Venda::class);
+                $venda = $repoVenda->find($venda['id']);
+
+            } else {
+                $venda = new Venda();
             }
 
-            // Se não estiver pedindo para resalvar as informações novamente (o que irá sobreescrever quaisquer alterações), já retorna...
-            if (!$resalvar) {
-                return;
+            $venda->dtVenda = $dtPedido;
+
+            /** @var ColaboradorRepository $repoColaborador */
+            $repoColaborador = $this->vendaEntityHandler->getDoctrine()->getRepository(Colaborador::class);
+            $vendedorNaoIdentificado = $repoColaborador->findOneBy(['cpf' => '99999999999']);
+            $venda->vendedor = $vendedorNaoIdentificado;
+
+            $venda->status = 'PV';
+
+            $cliente = $conn->fetchAll('SELECT id FROM crm_cliente WHERE documento = :documento', ['documento' => $pedido->cliente->cpf_cnpj->__toString()]);
+            /** @var ClienteRepository $repoCliente */
+            $repoCliente = $this->vendaEntityHandler->getDoctrine()->getRepository(Cliente::class);
+            if ($cliente[0]['id'] ?? false) {
+                $cliente = $repoCliente->find($cliente[0]['id']);
+            } else {
+                $cliente = null;
             }
+            if (!$cliente || $resalvar) {
+
+                $clienteECommerce = $this->obterCliente((int)$pedido->cliente->idCliente);
+
+                $cliente = $cliente ?? new Cliente();
+                if ($clienteECommerce->cpf->__toString()) {
+                    $cliente->documento = $clienteECommerce->cpf->__toString();
+                    $cliente->nome = $clienteECommerce->nome->__toString();
+                    $cliente->jsonData['tipo_pessoa'] = 'PF';
+                    $cliente->jsonData['rg'] = $clienteECommerce->rg->__toString();
+                    $cliente->jsonData['dtNascimento'] = $clienteECommerce->dataNascimento_dataCriacao->__toString();
+                    $cliente->jsonData['sexo'] = $clienteECommerce->sexo->__toString();
+                } else {
+                    $cliente->documento = $clienteECommerce->cnpj->__toString();
+                    $cliente->nome = $clienteECommerce->razaoSocial->__toString();
+                    $cliente->jsonData['tipo_pessoa'] = 'PJ';
+                    $cliente->jsonData['nome_fantasia'] = $clienteECommerce->nomeFantasia->__toString();
+                    $cliente->jsonData['inscricao_estadual'] = $clienteECommerce->inscricaoEstadual->__toString();
+                }
+
+                $cliente->jsonData['fone1'] = $clienteECommerce->telefone1->__toString();
+                $cliente->jsonData['fone2'] = $clienteECommerce->telefone2->__toString();
+
+                $cliente->jsonData['enderecos'][] = [
+                    'tipo' => 'ENTREGA,FATURAMENTO',
+                    'logradouro' => $clienteECommerce->endereco->__toString(),
+                    'numero' => $clienteECommerce->numero->__toString(),
+                    'complemento' => $clienteECommerce->complemento->__toString(),
+                    'bairro' => $clienteECommerce->bairro->__toString(),
+                    'cidade' => $clienteECommerce->cidade->__toString(),
+                    'estado' => $clienteECommerce->estado->__toString(),
+                ];
+
+                $cliente->jsonData['email'] = $clienteECommerce->email->__toString();
+                $cliente->jsonData['canal'] = 'ECOMMERCE';
+                $cliente->jsonData['ecommerce_id'] = $clienteECommerce->idCliente->__toString();
+
+                $cliente->jsonData['montadora'] = $clienteECommerce->montadora->__toString();
+                $cliente->jsonData['modelo'] = $clienteECommerce->modelo->__toString();
+                $cliente->jsonData['ano'] = $clienteECommerce->ano->__toString();
+
+                $cliente = $this->clienteEntityHandler->save($cliente);
+            }
+
+            $venda->cliente = $cliente;
+
+            $venda->jsonData['canal'] = 'ECOMMERCE';
+            $venda->jsonData['ecommerce_idPedido'] = $pedido->idPedido->__toString();
+            $venda->jsonData['ecommerce_status'] = $pedido->status->__toString();
+
+            $obs = [];
+            $venda->jsonData['ecommerce_entrega_retirarNaLoja'] = ($pedido->entrega->retirarLoja->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_logradouro'] = ($pedido->entrega->logradouro->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_numero'] = ($pedido->entrega->numero->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_complemento'] = ($pedido->entrega->complemento->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_bairro'] = ($pedido->entrega->bairro->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_cidade'] = ($pedido->entrega->cidade->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_uf'] = ($pedido->entrega->estado->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_cep'] = ($pedido->entrega->cep->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_telefone'] = ($pedido->entrega->telefone->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_frete_calculado'] = ($pedido->entrega->frete->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_frete_real'] = 0.00;
+            $venda->jsonData['ecommerce_status'] = $pedido->status->__toString();
+            $venda->jsonData['ecommerce_status_descricao'] = $pedido->desStatus->__toString();
+
+            $obs[] = 'IP: ' . ($pedido->ip ?? null);
+            $obs[] = 'Pagamento: ' . ($pedido->pagamentos->pagamento->tipoFormaPagamento->__toString() ?? null) . ' - ' . ($pedido->pagamentos->pagamento->nomeFormaPagamento->__toString() ?? null);
+            $obs[] = 'Desconto: ' . number_format($pedido->pagamentos->pagamento->desconto->__toString(), 2, ',', '.');
+            $obs[] = 'Parcelas: ' . ($pedido->pagamentos->pagamento->parcelas->__toString() ?? null);
+            $obs[] = 'Valor Parcela: R$ ' . number_format($pedido->pagamentos->pagamento->valorParcela->__toString(), 2, ',', '.');
+            $venda->jsonData['obs'] = implode(PHP_EOL, $obs);
+
+            $venda->subtotal = 0.0;// a ser recalculado posteriormente
+            $venda->desconto = 0.0;// a ser recalculado posteriormente
+            $venda->valorTotal = 0.0;// a ser recalculado posteriormente
+
+            $conn->beginTransaction();
+
+
+            $descontoTotal = (float)$pedido->pagamentos->pagamento->desconto->__toString();
+            $totalProdutos = 0.0;
+            foreach ($pedido->produtos->produto as $produtoWebStorm) {
+                $totalProdutos = bcadd($totalProdutos, bcmul($produtoWebStorm->quantidade, $produtoWebStorm->valorUnitario, 2), 2);
+            }
+            $pDesconto = bcdiv($descontoTotal, $totalProdutos, 4);
+
+
+            // Salvo aqui para poder pegar o id
+            $this->vendaEntityHandler->save($venda);
+
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
+            $ordem = 1;
+            $i = 0;
+            $descontoAcum = 0.0;
+            foreach ($pedido->produtos->produto as $produtoWebStorm) {
+                /** @var Produto $produto */
+                $produto = null;
+                try {
+                    // verifica se já existe uma ven_venda com o json_data.ecommerce_idPedido
+                    $sProduto = $conn->fetchAssoc('SELECT id FROM est_produto WHERE json_data->>"$.ecommerce_id" = :idProduto', ['idProduto' => $produtoWebStorm->idProduto->__toString()]);
+                    if (!isset($sProduto['id'])) {
+                        throw new \RuntimeException();
+                    }
+                    $produto = $repoProduto->find($sProduto['id']);
+                } catch (\Throwable $e) {
+                    throw new ViewException('Erro ao integrar venda. Erro ao pesquisar produto (idProduto = ' . $produtoWebStorm->idProduto->__toString() . ')');
+                }
+
+                $vendaItem = new VendaItem();
+                $venda->addItem($vendaItem);;
+                $vendaItem->descricao = $produto->nome;
+                $vendaItem->ordem = $ordem++;
+                $vendaItem->devolucao = false;
+
+                $vendaItem->unidade = $produto->unidadePadrao;
+
+                $vendaItem->precoVenda = $produtoWebStorm->valorUnitario->__toString();
+                $vendaItem->qtde = $produtoWebStorm->quantidade->__toString();
+                $vendaItem->subtotal = bcmul($vendaItem->precoVenda, $vendaItem->qtde, 2);
+                // Para arredondar para cima
+                $vendaItem->desconto = DecimalUtils::round(bcmul($pDesconto, $vendaItem->subtotal, 3));
+                $descontoAcum = (float)bcadd($descontoAcum, $vendaItem->desconto, 2);
+                $vendaItem->produto = $produto;
+
+                $vendaItem->jsonData['ecommerce_idItemVenda'] = $produtoWebStorm->idItemVenda->__toString();
+                $vendaItem->jsonData['ecommerce_codigo'] = $produtoWebStorm->codigo->__toString();
+
+                $this->vendaItemEntityHandler->save($vendaItem);
+                $i++;
+            }
+            if ($descontoTotal !== $descontoAcum) {
+                $diff = $descontoTotal - $descontoAcum;
+                $vendaItem->desconto = bcadd($vendaItem->desconto, $diff);
+                $this->vendaItemEntityHandler->save($vendaItem);
+            }
+
+            $venda->recalcularTotais();
+
 
             try {
-                $conn->delete('ven_venda_item', ['venda_id' => $venda['id']]);
+                $conn->delete('ven_venda_pagto', ['venda_id' => $venda->getId()]);
             } catch (\Throwable $e) {
-                $erro = 'Erro ao deletar itens da venda (id = "' . $venda['id'] . ')';
-                $this->syslog->info($erro);
+                $erro = 'Erro ao deletar pagtos da venda (id = "' . $venda['id'] . ')';
+                $this->syslog->err($erro);
                 throw new \RuntimeException($erro);
             }
-            /** @var VendaRepository $repoVenda */
-            $repoVenda = $this->vendaEntityHandler->getDoctrine()->getRepository(Venda::class);
-            $venda = $repoVenda->find($venda['id']);
-
-        } else {
-            $venda = new Venda();
-        }
-
-        $venda->dtVenda = $dtPedido;
-
-        /** @var PlanoPagtoRepository $repoPlanoPagto */
-        $repoPlanoPagto = $this->vendaEntityHandler->getDoctrine()->getRepository(PlanoPagto::class);
-        $rPlanoPagtoId = $conn->fetchAll('SELECT id FROM ven_plano_pagto WHERE json_data->>"$.ecommerce_id" = :idFormaPagamento', ['idFormaPagamento' => $pedido->pagamentos->pagamento->idFormaPagamento->__toString()]);
-
-        if (!$rPlanoPagtoId) {
-            $planoPagto = $repoPlanoPagto->findOneBy(['codigo' => 999]);
-        } else {
-            $planoPagto = $repoPlanoPagto->find($rPlanoPagtoId[0]['id']);
-        }
-
-        $venda->planoPagto = $planoPagto;
 
 
-        /** @var ColaboradorRepository $repoColaborador */
-        $repoColaborador = $this->vendaEntityHandler->getDoctrine()->getRepository(Colaborador::class);
-        $vendedorNaoIdentificado = $repoColaborador->findOneBy(['cpf' => '99999999999']);
-        $venda->vendedor = $vendedorNaoIdentificado;
-        $venda->status = 'PV';
+            /** @var PlanoPagtoRepository $repoPlanoPagto */
+            $repoPlanoPagto = $this->vendaEntityHandler->getDoctrine()->getRepository(PlanoPagto::class);
+            $arrayByCodigo = $repoPlanoPagto->arrayByCodigo();
 
-        $cliente = $conn->fetchAll('SELECT id FROM crm_cliente WHERE documento = :documento', ['documento' => $pedido->cliente->cpf_cnpj->__toString()]);
+//codigo | descricao
+//-------+------------------------
+//999    | NÃO INFORMADO
+//001    | A VISTA (ESPÉCIE)
+//002    | A VISTA (CHEQUE)
+//003    | A VISTA (CARTÃO DÉBITO)
+//020    | CARTÃO DE CRÉDITO
+//030    | BOLETO
 
-        /** @var ClienteRepository $repoCliente */
-        $repoCliente = $this->vendaEntityHandler->getDoctrine()->getRepository(Cliente::class);
-
-        if ($cliente[0]['id'] ?? false) {
-            $cliente = $repoCliente->find($cliente[0]['id']);
-        } else {
-            $cliente = null;
-        }
-
-        if (!$cliente || $resalvar) {
-
-            $clienteECommerce = $this->obterCliente((int)$pedido->cliente->idCliente);
-
-            $cliente = $cliente ?? new Cliente();
-            if ($clienteECommerce->cpf->__toString()) {
-                $cliente->documento = $clienteECommerce->cpf->__toString();
-                $cliente->nome = $clienteECommerce->nome->__toString();
-                $cliente->jsonData['tipo_pessoa'] = 'PF';
-                $cliente->jsonData['rg'] = $clienteECommerce->rg->__toString();
-                $cliente->jsonData['dtNascimento'] = $clienteECommerce->dataNascimento_dataCriacao->__toString();
-                $cliente->jsonData['sexo'] = $clienteECommerce->sexo->__toString();
-            } else {
-                $cliente->documento = $clienteECommerce->cnpj->__toString();
-                $cliente->nome = $clienteECommerce->razaoSocial->__toString();
-                $cliente->jsonData['tipo_pessoa'] = 'PJ';
-                $cliente->jsonData['nome_fantasia'] = $clienteECommerce->nomeFantasia->__toString();
-                $cliente->jsonData['inscricao_estadual'] = $clienteECommerce->inscricaoEstadual->__toString();
-            }
-
-            $cliente->jsonData['fone1'] = $clienteECommerce->telefone1->__toString();
-            $cliente->jsonData['fone2'] = $clienteECommerce->telefone2->__toString();
-
-            $cliente->jsonData['enderecos'][] = [
-                'tipo' => 'ENTREGA',
-                'logradouro' => $clienteECommerce->endereco->__toString(),
-                'numero' => $clienteECommerce->numero->__toString(),
-                'complemento' => $clienteECommerce->complemento->__toString(),
-                'bairro' => $clienteECommerce->bairro->__toString(),
-                'cidade' => $clienteECommerce->cidade->__toString(),
-                'estado' => $clienteECommerce->estado->__toString(),
+            $tipoFormaPagamento = $pedido->pagamentos->pagamento->tipoFormaPagamento->__toString();
+            $vendaPagto = [
+                'venda_id' => $venda->getId(),
+                'valor_pagto' => $venda->valorTotal,
+                'json_data' => json_encode([
+                    'idFormaPagamento' => $pedido->pagamentos->pagamento->idFormaPagamento->__toString(),
+                    'nomeFormaPagamento' => $pedido->pagamentos->pagamento->nomeFormaPagamento->__toString(),
+                    'tipoFormaPagamento' => $pedido->pagamentos->pagamento->tipoFormaPagamento->__toString(),
+                    'desconto' => $pedido->pagamentos->pagamento->desconto->__toString(),
+                    'parcelas' => $pedido->pagamentos->pagamento->parcelas->__toString(),
+                    'valorParcela' => $pedido->pagamentos->pagamento->valorParcela->__toString(),
+                ]),
+                'inserted' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'updated' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'version' => 0,
+                'user_inserted_id' => 1,
+                'user_updated_id' => 1,
+                'estabelecimento_id' => 1
             ];
-
-            $cliente->jsonData['email'] = $clienteECommerce->email->__toString();
-            $cliente->jsonData['canal'] = 'ECOMMERCE';
-            $cliente->jsonData['ecommerce_id'] = $clienteECommerce->idCliente->__toString();
-
-            $cliente->jsonData['montadora'] = $clienteECommerce->montadora->__toString();
-            $cliente->jsonData['modelo'] = $clienteECommerce->modelo->__toString();
-            $cliente->jsonData['ano'] = $clienteECommerce->ano->__toString();
-
-            $cliente = $this->clienteEntityHandler->save($cliente);
-        }
-
-
-        $venda->cliente = $cliente;
-
-
-        $venda->jsonData['canal'] = 'ECOMMERCE';
-        $venda->jsonData['ecommerce_idPedido'] = $pedido->idPedido->__toString();
-        $venda->jsonData['ecommerce_status'] = $pedido->status->__toString();
-        $obs = [];
-
-        $obs[] = 'IP: ' . ($pedido->ip ?? null);
-
-        $venda->jsonData['ecommerce_entrega_logradouro'] = ($pedido->entrega->logradouro->__toString() ?? null);
-        $venda->jsonData['ecommerce_entrega_numero'] = ($pedido->entrega->numero->__toString() ?? null);
-        $venda->jsonData['ecommerce_entrega_complemento'] = ($pedido->entrega->complemento->__toString() ?? null);
-        $venda->jsonData['ecommerce_entrega_bairro'] = ($pedido->entrega->bairro->__toString() ?? null);
-        $venda->jsonData['ecommerce_entrega_cidade'] = ($pedido->entrega->cidade->__toString() ?? null);
-        $venda->jsonData['ecommerce_entrega_uf'] = ($pedido->entrega->estado->__toString() ?? null);
-        $venda->jsonData['ecommerce_entrega_cep'] = ($pedido->entrega->cep->__toString() ?? null);
-        $venda->jsonData['ecommerce_entrega_telefone'] = ($pedido->entrega->telefone->__toString() ?? null);
-        $venda->jsonData['ecommerce_entrega_frete_calculado'] = ($pedido->entrega->frete->__toString() ?? null);
-        $venda->jsonData['ecommerce_entrega_frete_real'] = 0.00;
-
-        $obs[] = 'Pagamento: ' . ($pedido->pagamentos->pagamento->tipoFormaPagamento->__toString() ?? null) . ' - ' . ($pedido->pagamentos->pagamento->nomeFormaPagamento->__toString() ?? null);
-        $obs[] = 'Desconto: ' . number_format($pedido->pagamentos->pagamento->desconto->__toString(), 2, ',', '.');
-        $obs[] = 'Parcelas: ' . ($pedido->pagamentos->pagamento->parcelas->__toString() ?? null);
-        $obs[] = 'Valor Parcela: R$ ' . number_format($pedido->pagamentos->pagamento->valorParcela->__toString(), 2, ',', '.');
-
-        $venda->jsonData['obs'] = implode(PHP_EOL, $obs);
-
-        $venda->jsonData['ecommerce_status'] = $pedido->status->__toString();
-        $venda->jsonData['ecommerce_status_descricao'] = $pedido->desStatus->__toString();
-
-        $venda->subtotal = 0.0; // a ser recalculado posteriormente
-        $venda->desconto = 0.0; // a ser recalculado posteriormente
-        $venda->valorTotal = 0.0; // a ser recalculado posteriormente
-
-        $conn->beginTransaction();
-        $this->vendaEntityHandler->save($venda);
-
-        /** @var ProdutoRepository $repoProduto */
-        $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
-
-        $ordem = 1;
-        foreach ($pedido->produtos->produto as $produtoWebStorm) {
-            /** @var Produto $produto */
-            $produto = null;
-            try {
-                // verifica se já existe uma ven_venda com o json_data.ecommerce_idPedido
-                $sProduto = $conn->fetchAssoc('SELECT id FROM est_produto WHERE json_data->>"$.ecommerce_id" = :idProduto', ['idProduto' => $produtoWebStorm->idProduto->__toString()]);
-                if (!isset($sProduto['id'])) {
-                    throw new \RuntimeException();
-                }
-                $produto = $repoProduto->find($sProduto['id']);
-            } catch (\Throwable $e) {
-                throw new ViewException('Erro ao integrar venda. Erro ao pesquisar produto (idProduto = ' . $produtoWebStorm->idProduto->__toString() . ')');
+            $descricaoPlanoPagto = null;
+            switch ($tipoFormaPagamento) {
+                case 'boleto':
+                    $vendaPagto['plano_pagto_id'] = $arrayByCodigo['030']['id'];
+                    $descricaoPlanoPagto = $arrayByCodigo['030']['descricao'];
+                    break;
+                case 'cartao':
+                    $vendaPagto['plano_pagto_id'] = $arrayByCodigo['020']['id'];
+                    $descricaoPlanoPagto = $arrayByCodigo['020']['descricao'];
+                    break;
+                default:
+                    $vendaPagto['plano_pagto_id'] = $arrayByCodigo['999']['id'];
+                    $descricaoPlanoPagto = $arrayByCodigo['999']['descricao'];
+                    break;
             }
 
-            $vendaItem = new VendaItem();
-            $venda->addItem($vendaItem);;
-            $vendaItem->descricao = $produto->nome;
-            $vendaItem->ordem = $ordem++;
-            $vendaItem->devolucao = false;
+            try {
+                $conn->insert('ven_venda_pagto', $vendaPagto);
+            } catch (DBALException $e) {
+                throw new ViewException('Erro ao salvar dados do pagamento');
+            }
 
-            $vendaItem->unidade = $produto->unidadePadrao;
+            $venda->jsonData['infoPagtos'] = $descricaoPlanoPagto .
+                ': R$ ' . number_format($venda->valorTotal, 2, ',', '.') . ' - ' .
+                $pedido->pagamentos->pagamento->nomeFormaPagamento->__toString() . ' ' .
+                ((int)$pedido->pagamentos->pagamento->parcelas->__toString() > 0 ? $pedido->pagamentos->pagamento->parcelas->__toString() . ' parcela(s)' : '');
 
-            $vendaItem->precoVenda = $produtoWebStorm->valorUnitario->__toString();
-            $vendaItem->qtde = $produtoWebStorm->quantidade->__toString();
-            $vendaItem->subtotal = bcmul($vendaItem->precoVenda, $vendaItem->qtde, 2);
-            $vendaItem->produto = $produto;
-
-            $vendaItem->jsonData['ecommerce_idItemVenda'] = $produtoWebStorm->idItemVenda->__toString();
-            $vendaItem->jsonData['ecommerce_codigo'] = $produtoWebStorm->codigo->__toString();
-
-            $this->vendaItemEntityHandler->save($vendaItem);
-
+            $this->vendaEntityHandler->save($venda);
+            $conn->commit();
+        } catch (\Throwable $e) {
+            $this->syslog->err('Erro ao integrarVendaParaCrosier', $pedido->asXML());
+            if ($e instanceof ViewException) {
+                throw $e;
+            }
+            throw new ViewException('Erro ao integrarVendaParaCrosier');
         }
-        $venda->recalcularTotais();
-        $this->vendaEntityHandler->save($venda);
+    }
 
-        $conn->commit();
+    /**
+     * @param Venda $venda
+     * @return void
+     * @throws ViewException
+     */
+    public function reintegrarVendaParaCrosier(Venda $venda): void
+    {
+        if (!($venda->jsonData['ecommerce_idPedido'] ?? false)) {
+            throw new ViewException('Venda sem ecommerce_idPedido');
+        }
+        $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+                    <ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <chave>' . $this->getChave() . '</chave>
+                    <acao>select</acao>
+                    <modulo>pedido</modulo>    
+                    <filtro>
+                        <idPedido>' . (int)$venda->jsonData['ecommerce_idPedido'] . '</idPedido>
+                        <idCliente></idCliente>
+                        <cpf_cnpj></cpf_cnpj>
+                        <dataInicial></dataInicial>
+                        <dataFinal></dataFinal>
+                        <status></status>
+                    </filtro>
+                    </ws_integracao>]]>';
+
+        $client = $this->getNusoapClientExportacaoInstance();
+
+        $arResultado = $client->call('pedidoSelect', [
+            'xml' => utf8_decode($xml)
+        ]);
+
+        if ($client->faultcode) {
+            throw new \RuntimeException($client->faultcode);
+        }
+        if ($client->getError()) {
+            throw new \RuntimeException($client->getError());
+        }
+
+        $xmlResult = simplexml_load_string($arResultado);
+
+        if ($xmlResult->erros ?? false) {
+            throw new \RuntimeException($xmlResult->erros->erro->__toString());
+        }
+
+        $pedidoXml = $xmlResult->resultado->filtro->pedido ?? null;
+
+        if (!$pedidoXml) {
+            throw new ViewException('Pedido não encontrado no e-commerce');
+        }
+
+        $this->integrarVendaParaCrosier($pedidoXml, true);
     }
 
 

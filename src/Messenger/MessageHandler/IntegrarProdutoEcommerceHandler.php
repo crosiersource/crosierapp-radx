@@ -4,7 +4,7 @@
 namespace App\Messenger\MessageHandler;
 
 
-use App\Business\ECommerce\IntegradorBusinessFactory;
+use App\Business\ECommerce\IntegradorECommerceFactory;
 use App\Messenger\Message\IntegrarProdutoEcommerceMessage;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
@@ -23,10 +23,10 @@ class IntegrarProdutoEcommerceHandler implements MessageHandlerInterface
 
     private EntityManagerInterface $doctrine;
 
-    private IntegradorBusinessFactory $integradorBusinessFactory;
+    private IntegradorECommerceFactory $integradorBusinessFactory;
 
 
-    public function __construct(SyslogBusiness $syslog, EntityManagerInterface $doctrine, IntegradorBusinessFactory $integradorBusinessFactory)
+    public function __construct(SyslogBusiness $syslog, EntityManagerInterface $doctrine, IntegradorECommerceFactory $integradorBusinessFactory)
     {
         $this->syslog = $syslog->setApp('radx')->setComponent(self::class);
         $this->doctrine = $doctrine;

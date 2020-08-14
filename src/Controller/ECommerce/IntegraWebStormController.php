@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- *
  * @author Carlos Eduardo Pauluk
  */
 class IntegraWebStormController extends BaseController
@@ -29,7 +28,7 @@ class IntegraWebStormController extends BaseController
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function integrarDeptosGruposSubgrupos(IntegradorWebStorm $integraWebStormBusiness)
+    public function integrarDeptosGruposSubgrupos(IntegradorWebStorm $integraWebStormBusiness): Response
     {
         $integraWebStormBusiness->integrarDeptosGruposSubgrupos();
         return new Response('OK');
@@ -84,7 +83,7 @@ class IntegraWebStormController extends BaseController
 
             $rQtde = $integraWebStormBusiness->reenviarProdutosParaIntegracao($qtde);
             $this->addFlash('success', $rQtde . ' produtos enviados para integração com sucesso');
-        } catch (ViewException $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', 'Erro ao enviar produtos para integração (' . $e->getMessage() . ')');
         }
         return new Response('OK');
@@ -101,10 +100,9 @@ class IntegraWebStormController extends BaseController
      * @param \DateTime $dtVenda
      * @return Response
      * @throws ViewException
-     * @throws \Doctrine\DBAL\ConnectionException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function obterVendas(Request $request, IntegradorWebStorm $integraWebStormBusiness, ?\DateTime $dtVenda = null)
+    public function obterVendas(Request $request, IntegradorWebStorm $integraWebStormBusiness, ?\DateTime $dtVenda = null): Response
     {
         if (!$dtVenda) {
             $dtVenda = new \DateTime();
@@ -118,15 +116,30 @@ class IntegraWebStormController extends BaseController
      *
      * @Route("/est/integraWebStorm/integrarVendaParaECommerce/{venda}", name="est_integraWebStorm_integrarVendaParaECommerce")
      *
-     * @param Request $request
      * @param IntegradorWebStorm $integraWebStormBusiness
      * @param Venda|null $venda
      * @return Response
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function integrarVendaParaECommerce(Request $request, IntegradorWebStorm $integraWebStormBusiness, Venda $venda)
+    public function integrarVendaParaECommerce(IntegradorWebStorm $integraWebStormBusiness, Venda $venda): Response
     {
         $integraWebStormBusiness->integrarVendaParaECommerce($venda);
+        return new Response('OK');
+    }
+
+    /**
+     *
+     * @Route("/est/integraWebStorm/reintegrarVendaParaCrosier/{venda}", name="est_integraWebStorm_reintegrarVendaParaCrosier")
+     *
+     * @param IntegradorWebStorm $integraWebStormBusiness
+     * @param Venda|null $venda
+     * @return Response
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function reintegrarVendaParaCrosier(IntegradorWebStorm $integraWebStormBusiness, Venda $venda): Response
+    {
+        $integraWebStormBusiness->reintegrarVendaParaCrosier($venda);
         return new Response('OK');
     }
 
@@ -139,7 +152,7 @@ class IntegraWebStormController extends BaseController
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function atualizaEstoqueEPrecos(IntegradorWebStorm $integraWebStormBusiness)
+    public function atualizaEstoqueEPrecos(IntegradorWebStorm $integraWebStormBusiness): Response
     {
         $integraWebStormBusiness->atualizaEstoqueEPrecos();
         return new Response('OK');
