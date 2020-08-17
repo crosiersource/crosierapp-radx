@@ -12,6 +12,7 @@ use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Vendas\VendaBusiness;
@@ -143,38 +144,40 @@ class VendaController extends FormListController
             'formPageTitle' => 'Venda'
         ];
 
-        if (!$venda) {
-            $venda = new Venda();
-            $venda->dtVenda = new \DateTime();
-            $venda->status = 'PV ABERTO';
-            $venda->jsonData['canal'] = 'LOJA FÍSICA';
+        if (!$request->get('btnSalvar')) {
+            if (!$venda) {
+                $venda = new Venda();
+                $venda->dtVenda = new \DateTime();
+                $venda->status = 'PV ABERTO';
+                $venda->jsonData['canal'] = 'LOJA FÍSICA';
 
-            /** @var ClienteRepository $repoCliente */
-            $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
-            /** @var Cliente $consumidorNaoIdentificado */
-            $consumidorNaoIdentificado = $repoCliente->findOneBy(['documento' => '99999999999']);
-            $venda->cliente = $consumidorNaoIdentificado;
+                /** @var ClienteRepository $repoCliente */
+                $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+                /** @var Cliente $consumidorNaoIdentificado */
+                $consumidorNaoIdentificado = $repoCliente->findOneBy(['documento' => '99999999999']);
+                $venda->cliente = $consumidorNaoIdentificado;
 
-            /** @var PlanoPagtoRepository $repoPlanoPagto */
-            $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
-            /** @var PlanoPagto $planoPagto */
-            $planoPagto = $repoPlanoPagto->findOneBy(['codigo' => '001']);
-            $venda->planoPagto = $planoPagto;
+                /** @var PlanoPagtoRepository $repoPlanoPagto */
+                $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
+                /** @var PlanoPagto $planoPagto */
+                $planoPagto = $repoPlanoPagto->findOneBy(['codigo' => '001']);
+                $venda->planoPagto = $planoPagto;
 
-            /** @var ColaboradorRepository $repoColaborador */
-            $repoColaborador = $this->getDoctrine()->getRepository(Colaborador::class);
-            /** @var Colaborador $colaborador */
-            $colaborador = $repoColaborador->findOneBy(['nome' => 'NÃO INFORMADO']);
-            $venda->vendedor = $colaborador;
+                /** @var ColaboradorRepository $repoColaborador */
+                $repoColaborador = $this->getDoctrine()->getRepository(Colaborador::class);
+                /** @var Colaborador $colaborador */
+                $colaborador = $repoColaborador->findOneBy(['nome' => 'NÃO INFORMADO']);
+                $venda->vendedor = $colaborador;
 
-            $venda->jsonData['cliente_documento'] = '99999999999';
-            $venda->jsonData['cliente_nome'] = 'NÃO IDENTIFICADO';
-            $venda->subtotal = 0.0;
-            $venda->desconto = 0.0;
-        } else {
-            $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
-            $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
-            $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
+                $venda->jsonData['cliente_documento'] = '99999999999';
+                $venda->jsonData['cliente_nome'] = 'NÃO IDENTIFICADO';
+                $venda->subtotal = 0.0;
+                $venda->desconto = 0.0;
+            } else {
+                $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
+                $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
+                $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
+            }
         }
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
@@ -877,6 +880,43 @@ class VendaController extends FormListController
         return new PdfResponse(
             $this->knpSnappyPdf->getOutputFromHtml($html),
             'pv_' . $venda->getId() . '.pdf', 'application/pdf', 'inline'
+        );
+    }
+
+
+    /**
+     *
+     * @Route("/ven/venda/findClienteByStr/", name="ven_venda_findClienteByStr")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_CRM", statusCode=403)
+     */
+    public function findClienteByStr(Request $request): JsonResponse
+    {
+        $str = $request->get('term') ?? '';
+
+        $rs = $this->entityHandler->getDoctrine()->getConnection()
+            ->fetchAll('SELECT id, documento, nome, json_data FROM crm_cliente WHERE documento = :documento OR nome LIKE :nome LIMIT 30',
+                [
+                    'documento' => preg_replace("/[^0-9]/", "", $str),
+                    'nome' => '%' . $str . '%'
+                ]);
+
+        $clientes = [];
+
+        foreach ($rs as $r) {
+            $clientes[] = [
+                'id' => $r['id'],
+                'text' => $r['nome'],
+                'documento' => StringUtils::mascararCnpjCpf($r['documento']),
+                'json_data' => json_decode($r['json_data'], true)
+            ];
+        }
+
+        return new JsonResponse(
+            ['results' => $clientes]
         );
     }
 
