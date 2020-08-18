@@ -43,12 +43,12 @@ $(document).ready(function () {
     function handleFields() {
 
         if ($documentoDestinatario.val()) {
-            $documentoDestinatario.data('documento', $documentoDestinatario.val().replace(/[^\d]+/g, ''));
+            $documentoDestinatario.data('documento', $documentoDestinatario.val().replace(/[^G^g^\d]+/g, ''));
         }
         
 
         if ($transpDocumento.val()) {
-            $transpDocumento.data('documento', $transpDocumento.val().replace(/[^\d]+/g, ''));
+            $transpDocumento.data('documento', $transpDocumento.val().replace(/[^G^g^\d]+/g, ''));
         }
 
         let tipoVal = $("input[name*='nota_fiscal[tipoNotaFiscal]']:checked").val();
@@ -109,7 +109,7 @@ $(document).ready(function () {
 
     window.consultarCNPJDestinatario = function () {
 
-        let documentoVal = $documentoDestinatario.val().replace(/[^\d]+/g, '');
+        let documentoVal = $documentoDestinatario.val().replace(/[^G^g^\d]+/g, '');
         if (!documentoVal || !$estadoDestinatario.val()) {
             toastrr.error('É necessário informar o CNPJ e o UF');
             return;
@@ -138,7 +138,7 @@ $(document).ready(function () {
 
 
     window.consultarTranspDocumento = function () {
-        let documentoVal = $transpDocumento.val().replace(/[^\d]+/g, '');
+        let documentoVal = $transpDocumento.val().replace(/[^G^g^\d]+/g, '');
         if (!documentoVal || !$transpEstado.val()) {
             toastrr.error('É necessário informar o CNPJ e o UF');
             return;
