@@ -120,7 +120,7 @@
 
                         {% if permiteFaturamento %}
                             <button type="button" value="Nota Fiscal" class="btn btn-warning"
-                                    data-url="{{ url('ven_venda_gerarNotaFiscal', {'venda': e.id}) }}"
+                                    data-url="{{ url('ven_venda_gerarNotaFiscalEcommerce', {'venda': e.id}) }}"
                                     data-target="#confirmationModal"
                                     data-toggle="modal">
                                 <i class="fas fa-file-invoice" aria-hidden="true"></i> Nota Fiscal

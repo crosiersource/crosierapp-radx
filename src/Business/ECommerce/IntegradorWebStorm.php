@@ -790,6 +790,7 @@ class IntegradorWebStorm implements IntegradorECommerce
             'idNivelPai2 = ' . $idNivelPai2 . ', ' .
             'ecommerce_id = ' . $ecommerce_id;
         $this->syslog->info('integraDeptoGrupoSubgrupo - ini', $syslog_obs);
+
         $client = $this->getNusoapClientImportacaoInstance();
 
         $pais = '';
@@ -853,6 +854,13 @@ class IntegradorWebStorm implements IntegradorECommerce
         $appConfig = $this->repoAppConfig->findAppConfigByChave('est_produto_json_metadata');
         if (!$appConfig) {
             $err = 'est_produto_json_metadata N/D';
+            $this->syslog->err($err, $syslog_obs);
+            throw new \RuntimeException($err);
+        }
+
+        $preco = $produto->jsonData['preco_site'] ?? $produto->jsonData['preco_tabela'] ?? 0.0;
+        if ($preco <= 0) {
+            $err = 'Não é possível integrar produto com preço <= 0';
             $this->syslog->err($err, $syslog_obs);
             throw new \RuntimeException($err);
         }
@@ -1014,7 +1022,7 @@ class IntegradorWebStorm implements IntegradorECommerce
             '<itensVenda>
 				<idItemVenda>' . $produtoItemVendaId . '</idItemVenda>
 				<codigo>' . $produto->getId() . '</codigo>
-				<preco>' . ($produto->jsonData['preco_site'] ?? $produto->jsonData['preco_tabela'] ?? 0.0) . '</preco>
+				<preco>' . $preco . '</preco>
 				<estoque>' . ($produto->jsonData['qtde_estoque_total'] ?? 999999) . '</estoque>
 				<estoqueMin>0</estoqueMin>
 				<situacao>1</situacao>
@@ -1742,6 +1750,7 @@ class IntegradorWebStorm implements IntegradorECommerce
      */
     public function reenviarProdutosParaIntegracao(?int $limit = null): int
     {
+        $this->syslog->info('reenviarProdutosParaIntegracao');
         $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
         $sql = 'SELECT id FROM est_produto WHERE not JSON_IS_NULL_OR_EMPTY_OR_ZERO(json_data,\'ecommerce_id\')';
         if ($limit) {

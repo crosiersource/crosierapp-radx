@@ -428,6 +428,42 @@ class VendaController extends FormListController
 
     /**
      *
+     * @Route("/ven/venda/gerarNotaFiscalEcommerce/{venda}", name="ven_venda_gerarNotaFiscalEcommerce", requirements={"venda"="\d+"})
+     * @param Request $request
+     * @param Venda $venda
+     * @return RedirectResponse
+     */
+    public function gerarNotaFiscalEcommerce(Request $request, Venda $venda): RedirectResponse
+    {
+        try {
+            /** @var NotaFiscal $notaFiscal */
+            $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+            if (!$notaFiscal) {
+                $notaFiscal = new NotaFiscal();
+                $notaFiscal->setTipoNotaFiscal('NFE');
+                $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+                $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
+
+                $rInfo = $this->notaFiscalEntityHandler->getDoctrine()->getConnection()
+                    ->fetchAll('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                        ['appUUID' => $_SERVER['CROSIERAPPRADX_UUID'], 'chave' => 'fiscal.ecommerce.text_padrao_info_compl']
+                    );
+                $infoCompl = 'Pedido E-commerce: ' . $venda->jsonData['ecommerce_idPedido'] ?? '????';
+                $infoCompl .= "\n\r" . ($rInfo[0]['valor'] ?? '');
+                $notaFiscal->setInfoCompl($infoCompl);
+                $this->notaFiscalEntityHandler->save($notaFiscal);
+            }
+            return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+            $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
+            return $this->redirectToRoute($route, ['id' => $venda->getId()]);
+        }
+    }
+
+
+    /**
+     *
      * @Route("/ven/venda/consultarStatus/{notaFiscal}/{venda}", name="ven_venda_consultarStatus")
      * @param Request $request
      * @param NotaFiscal $notaFiscal
