@@ -215,21 +215,48 @@ $(document).ready(function () {
         placeholder: '...',
         allowClear: true,
         tags: true,
+        createTag: function (params) {
+            let term = $.trim(params.term);
+
+            if (term === '') {
+                return null;
+            }
+
+            return {
+                id: term,
+                text: term
+            }
+        },
         ajax: {
             delay: 750,
             url: Routing.generate('ven_venda_findClienteByStr'),
             dataType: 'json',
-            cache: true
+            processResults: function (data) {
+                let mapped = $.map(data.results, function (obj) {
+                    obj.id = obj.text;
+                    return obj;
+                });
+                return {
+                    results: mapped
+                };
+            },
         }
-    }).on('select2:close', function () {
+    }).on('select2:select', function () {
         let o = $cliente_nome.select2('data')[0];
 
-        $cliente_documento.val(o?.documento);
+        if (o?.documento) {
+            $cliente_documento.val(o?.documento);
+        }
         $cliente_fone.val(o?.fone1);
         $cliente_email.val(o?.email);
 
         CrosierMasks.maskDecs();
     });
+
+    if ($cliente_nome.data('val')) {
+        let val = $cliente_nome.data('val');
+        $cliente_nome.append(new Option(val, val, false, false)).trigger('change');
+    }
 
 
     if ($item_produto.hasClass('focusOnReady')) {

@@ -149,7 +149,6 @@ class VendaController extends FormListController
                 $venda = new Venda();
                 $venda->dtVenda = new \DateTime();
                 $venda->status = 'PV ABERTO';
-                $venda->jsonData['canal'] = 'LOJA FÍSICA';
 
                 /** @var ClienteRepository $repoCliente */
                 $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
@@ -163,21 +162,33 @@ class VendaController extends FormListController
                 $planoPagto = $repoPlanoPagto->findOneBy(['codigo' => '001']);
                 $venda->planoPagto = $planoPagto;
 
-                /** @var ColaboradorRepository $repoColaborador */
-                $repoColaborador = $this->getDoctrine()->getRepository(Colaborador::class);
-                /** @var Colaborador $colaborador */
-                $colaborador = $repoColaborador->findOneBy(['nome' => 'NÃO INFORMADO']);
-                $venda->vendedor = $colaborador;
-
                 $venda->jsonData['cliente_documento'] = '99999999999';
                 $venda->jsonData['cliente_nome'] = 'NÃO IDENTIFICADO';
                 $venda->subtotal = 0.0;
                 $venda->desconto = 0.0;
-            } else {
-                $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
-                $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
-                $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
+
+                $conn = $this->entityHandler->getDoctrine()->getConnection();
+                $ultimaVenda = $conn->fetchAll('SELECT vendedor_id, json_data FROM ven_venda ORDER BY updated DESC limit 1');
+                $ultimaVenda_jsonData = json_decode($ultimaVenda[0]['json_data'] ?? '{}', true);
+                $venda->jsonData['canal'] = $ultimaVenda_jsonData['canal'] ?? 'LOJA FÍSICA';
+
+                /** @var ColaboradorRepository $repoColaborador */
+                $repoColaborador = $this->getDoctrine()->getRepository(Colaborador::class);
+                if ($ultimaVenda[0]['vendedor_id'] ?? false) {
+                    /** @var Colaborador $colaborador */
+                    $colaborador = $repoColaborador->find($ultimaVenda[0]['vendedor_id']);
+                } else {
+                    /** @var Colaborador $colaborador */
+                    $colaborador = $repoColaborador->findOneBy(['cpf' => '99999999999']);
+                }
+                $venda->vendedor = $colaborador;
             }
+        }
+
+        if ($venda) {
+            $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
+            $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
+            $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
         }
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
@@ -186,6 +197,65 @@ class VendaController extends FormListController
 
 
         return $this->doForm($request, $venda, $params);
+    }
+
+    /**
+     * @param Request $request
+     * @param $venda
+     */
+    public function handleRequestOnValid(Request $request, $venda): void
+    {
+        /** @var Venda $venda */
+        if ($request->get('btnSalvar')) {
+            if ($venda->jsonData['cliente_documento'] ?? false) {
+                /** @var ClienteRepository $repoCliente */
+                $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+                /** @var Cliente $cliente */
+                $cliente = $repoCliente->findOneBy(['documento' => $venda->jsonData['cliente_documento']]);
+                $venda->cliente = $cliente;
+            }
+            if ($venda->getId() && $venda->cliente) {
+                if ($venda->jsonData['cliente_documento'] !== $venda->cliente->documento) {
+                    $venda->cliente = null; // o documento foi alterado, deve ser salvo como um novo cliente
+                }
+            }
+        } else if ($request->get('item')) {
+
+            $itemArr = $request->get('item');
+
+            if (!isset($itemArr['produto'])) {
+                return;
+            }
+
+            /** @var VendaItem $vendaItem */
+            if ($itemArr['id'] ?? null) {
+                /** @var VendaItemRepository $repoVendaItem */
+                $repoVendaItem = $this->getDoctrine()->getRepository(VendaItem::class);
+                $vendaItem = $repoVendaItem->find($itemArr['id']);
+            } else {
+                $vendaItem = new VendaItem();
+            }
+
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+            /** @var Produto $produto */
+            $produto = $repoProduto->find($itemArr['produto']);
+
+            $vendaItem->produto = $produto;
+
+            $vendaItem->qtde = DecimalUtils::parseStr($itemArr['qtde']);
+            $vendaItem->precoVenda = DecimalUtils::parseStr($itemArr['precoVenda']);
+            $vendaItem->desconto = DecimalUtils::parseStr($itemArr['desconto']);
+            $vendaItem->valorTotal = DecimalUtils::parseStr($itemArr['valorTotal']);
+
+            $vendaItem->venda = $venda;
+
+            try {
+                $this->vendaItemEntityHandler->save($vendaItem);
+            } catch (ViewException $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
     }
 
 
@@ -445,50 +515,6 @@ class VendaController extends FormListController
         return $this->redirectToRoute($route, ['venda' => $venda->getId()]);
     }
 
-    /**
-     * @param Request $request
-     * @param $venda
-     */
-    public function handleRequestOnValid(Request $request, /** @var Venda @venda */ $venda): void
-    {
-        if ($request->get('item')) {
-
-            $itemArr = $request->get('item');
-
-            if (!isset($itemArr['produto'])) {
-                return;
-            }
-
-            /** @var VendaItem $vendaItem */
-            if ($itemArr['id'] ?? null) {
-                /** @var VendaItemRepository $repoVendaItem */
-                $repoVendaItem = $this->getDoctrine()->getRepository(VendaItem::class);
-                $vendaItem = $repoVendaItem->find($itemArr['id']);
-            } else {
-                $vendaItem = new VendaItem();
-            }
-
-            /** @var ProdutoRepository $repoProduto */
-            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
-            /** @var Produto $produto */
-            $produto = $repoProduto->find($itemArr['produto']);
-
-            $vendaItem->produto = $produto;
-
-            $vendaItem->qtde = DecimalUtils::parseStr($itemArr['qtde']);
-            $vendaItem->precoVenda = DecimalUtils::parseStr($itemArr['precoVenda']);
-            $vendaItem->desconto = DecimalUtils::parseStr($itemArr['desconto']);
-            $vendaItem->valorTotal = DecimalUtils::parseStr($itemArr['valorTotal']);
-
-            $vendaItem->venda = $venda;
-
-            try {
-                $this->vendaItemEntityHandler->save($vendaItem);
-            } catch (ViewException $e) {
-                $this->addFlash('error', $e->getMessage());
-            }
-        }
-    }
 
     /**
      *

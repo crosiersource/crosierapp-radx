@@ -52,17 +52,17 @@
                 {% if permiteReimpressao %}
                     {% if notaFiscal.tipoNotaFiscal == 'NFCE' %}
 
-                        <a role="button" value="Imprimir" class="btn btn-outline-success"
-                                href="{{ url('fis_emissaonfe_imprimirDANFCE', {nfId: notaFiscal.id}) }}"
-                                target="_blank">
+                        <button type="button" value="Imprimir" class="btn btn-success"
+                                onclick="printJS('{{ url('fis_emissaonfe_imprimirDANFCE', {nfId: notaFiscal.id}) }}')"
+                                id="btnImprimir">
                             <i class="fas fa-print" aria-hidden="true"></i> Imprimir
-                        </a>
+                        </button>
 
                     {% else %}
 
-                        <button type="button" value="Reimprimir" class="btn btn-secondary"
-                                data-url="{{ url('fis_emissaofiscalpv_reimprimir', {notaFiscal: notaFiscal.id, venda: venda.id}) }}"
-                                data-target="#confirmationModal" data-toggle="modal">
+                        <button type="button" value="Reimprimir" class="btn btn-success"
+                                onclick="printJS('{{ url('fis_emissaofiscalpv_reimprimir', {notaFiscal: notaFiscal.id, venda: venda.id}) }}')"
+                                id="btnReimprimir">
                             <i class="fas fa-print" aria-hidden="true"></i> Reimprimir
                         </button>
 
