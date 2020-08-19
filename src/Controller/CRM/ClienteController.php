@@ -255,4 +255,39 @@ class ClienteController extends FormListController
     }
 
 
+    /**
+     *
+     * @Route("/crm/cliente/findClienteByDocumento/", name="crm_cliente_findClienteByDocumento")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_CRM", statusCode=403)
+     */
+    public function findClienteByDocumento(Request $request): JsonResponse
+    {
+        $str = $request->get('term') ?? '';
+
+        $rs = $this->entityHandler->getDoctrine()->getConnection()
+            ->fetchAll('SELECT id, documento, nome, json_data FROM crm_cliente WHERE documento = :documento LIMIT 1',
+                [
+                    'documento' => preg_replace("/[^G^0-9]/", "", $str),
+                ]);
+
+        $clientes = [];
+
+        if ($rs[0]['documento'] ?? false) {
+            $clientes[] = [
+                'id' => $rs[0]['id'],
+                'text' => $rs[0]['nome'],
+                'json_data' => json_decode($rs[0]['json_data'], true)
+            ];
+        }
+
+        return new JsonResponse(
+            ['results' => $clientes]
+        );
+    }
+
+
 }

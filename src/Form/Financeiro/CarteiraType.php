@@ -4,6 +4,7 @@ namespace App\Form\Financeiro;
 
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Banco;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -105,6 +106,15 @@ class CarteiraType extends AbstractType
             'attr' => [
                 'class' => 'crsr-money'
             ]
+        ]);
+
+        $builder->add('operadoraCartao', EntityType::class, [
+            'class' => OperadoraCartao::class,
+            'placeholder' => '...',
+            'required' => false,
+            // uses the User.username property as the visible option string
+            'choice_label' => 'descricao',
+            'attr' => ['class' => 'autoSelect2']
         ]);
 
         $builder->add('atual', ChoiceType::class, [

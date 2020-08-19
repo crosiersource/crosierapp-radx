@@ -12,6 +12,7 @@ use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Vendas\VendaBusiness;
@@ -143,35 +144,48 @@ class VendaController extends FormListController
             'formPageTitle' => 'Venda'
         ];
 
-        if (!$venda) {
-            $venda = new Venda();
-            $venda->dtVenda = new \DateTime();
-            $venda->status = 'PV ABERTO';
-            $venda->jsonData['canal'] = 'LOJA FÍSICA';
+        if (!$request->get('btnSalvar')) {
+            if (!$venda) {
+                $venda = new Venda();
+                $venda->dtVenda = new \DateTime();
+                $venda->status = 'PV ABERTO';
 
-            /** @var ClienteRepository $repoCliente */
-            $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
-            /** @var Cliente $consumidorNaoIdentificado */
-            $consumidorNaoIdentificado = $repoCliente->findOneBy(['documento' => '99999999999']);
-            $venda->cliente = $consumidorNaoIdentificado;
+                /** @var ClienteRepository $repoCliente */
+                $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+                /** @var Cliente $consumidorNaoIdentificado */
+                $consumidorNaoIdentificado = $repoCliente->findOneBy(['documento' => '99999999999']);
+                $venda->cliente = $consumidorNaoIdentificado;
 
-            /** @var PlanoPagtoRepository $repoPlanoPagto */
-            $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
-            /** @var PlanoPagto $planoPagto */
-            $planoPagto = $repoPlanoPagto->findOneBy(['codigo' => '001']);
-            $venda->planoPagto = $planoPagto;
+                /** @var PlanoPagtoRepository $repoPlanoPagto */
+                $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
+                /** @var PlanoPagto $planoPagto */
+                $planoPagto = $repoPlanoPagto->findOneBy(['codigo' => '001']);
+                $venda->planoPagto = $planoPagto;
 
-            /** @var ColaboradorRepository $repoColaborador */
-            $repoColaborador = $this->getDoctrine()->getRepository(Colaborador::class);
-            /** @var Colaborador $colaborador */
-            $colaborador = $repoColaborador->findOneBy(['nome' => 'NÃO INFORMADO']);
-            $venda->vendedor = $colaborador;
+                $venda->jsonData['cliente_documento'] = '99999999999';
+                $venda->jsonData['cliente_nome'] = 'NÃO IDENTIFICADO';
+                $venda->subtotal = 0.0;
+                $venda->desconto = 0.0;
 
-            $venda->jsonData['cliente_documento'] = '99999999999';
-            $venda->jsonData['cliente_nome'] = 'NÃO IDENTIFICADO';
-            $venda->subtotal = 0.0;
-            $venda->desconto = 0.0;
-        } else {
+                $conn = $this->entityHandler->getDoctrine()->getConnection();
+                $ultimaVenda = $conn->fetchAll('SELECT vendedor_id, json_data FROM ven_venda ORDER BY updated DESC limit 1');
+                $ultimaVenda_jsonData = json_decode($ultimaVenda[0]['json_data'] ?? '{}', true);
+                $venda->jsonData['canal'] = $ultimaVenda_jsonData['canal'] ?? 'LOJA FÍSICA';
+
+                /** @var ColaboradorRepository $repoColaborador */
+                $repoColaborador = $this->getDoctrine()->getRepository(Colaborador::class);
+                if ($ultimaVenda[0]['vendedor_id'] ?? false) {
+                    /** @var Colaborador $colaborador */
+                    $colaborador = $repoColaborador->find($ultimaVenda[0]['vendedor_id']);
+                } else {
+                    /** @var Colaborador $colaborador */
+                    $colaborador = $repoColaborador->findOneBy(['cpf' => '99999999999']);
+                }
+                $venda->vendedor = $colaborador;
+            }
+        }
+
+        if ($venda) {
             $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
             $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
             $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
@@ -183,6 +197,65 @@ class VendaController extends FormListController
 
 
         return $this->doForm($request, $venda, $params);
+    }
+
+    /**
+     * @param Request $request
+     * @param $venda
+     */
+    public function handleRequestOnValid(Request $request, $venda): void
+    {
+        /** @var Venda $venda */
+        if ($request->get('btnSalvar')) {
+            if ($venda->jsonData['cliente_documento'] ?? false) {
+                /** @var ClienteRepository $repoCliente */
+                $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+                /** @var Cliente $cliente */
+                $cliente = $repoCliente->findOneBy(['documento' => $venda->jsonData['cliente_documento']]);
+                $venda->cliente = $cliente;
+            }
+            if ($venda->getId() && $venda->cliente) {
+                if ($venda->jsonData['cliente_documento'] !== $venda->cliente->documento) {
+                    $venda->cliente = null; // o documento foi alterado, deve ser salvo como um novo cliente
+                }
+            }
+        } else if ($request->get('item')) {
+
+            $itemArr = $request->get('item');
+
+            if (!isset($itemArr['produto'])) {
+                return;
+            }
+
+            /** @var VendaItem $vendaItem */
+            if ($itemArr['id'] ?? null) {
+                /** @var VendaItemRepository $repoVendaItem */
+                $repoVendaItem = $this->getDoctrine()->getRepository(VendaItem::class);
+                $vendaItem = $repoVendaItem->find($itemArr['id']);
+            } else {
+                $vendaItem = new VendaItem();
+            }
+
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+            /** @var Produto $produto */
+            $produto = $repoProduto->find($itemArr['produto']);
+
+            $vendaItem->produto = $produto;
+
+            $vendaItem->qtde = DecimalUtils::parseStr($itemArr['qtde']);
+            $vendaItem->precoVenda = DecimalUtils::parseStr($itemArr['precoVenda']);
+            $vendaItem->desconto = DecimalUtils::parseStr($itemArr['desconto']);
+            $vendaItem->valorTotal = DecimalUtils::parseStr($itemArr['valorTotal']);
+
+            $vendaItem->venda = $venda;
+
+            try {
+                $this->vendaItemEntityHandler->save($vendaItem);
+            } catch (ViewException $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
     }
 
 
@@ -478,50 +551,6 @@ class VendaController extends FormListController
         return $this->redirectToRoute($route, ['venda' => $venda->getId()]);
     }
 
-    /**
-     * @param Request $request
-     * @param $venda
-     */
-    public function handleRequestOnValid(Request $request, /** @var Venda @venda */ $venda): void
-    {
-        if ($request->get('item')) {
-
-            $itemArr = $request->get('item');
-
-            if (!isset($itemArr['produto'])) {
-                return;
-            }
-
-            /** @var VendaItem $vendaItem */
-            if ($itemArr['id'] ?? null) {
-                /** @var VendaItemRepository $repoVendaItem */
-                $repoVendaItem = $this->getDoctrine()->getRepository(VendaItem::class);
-                $vendaItem = $repoVendaItem->find($itemArr['id']);
-            } else {
-                $vendaItem = new VendaItem();
-            }
-
-            /** @var ProdutoRepository $repoProduto */
-            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
-            /** @var Produto $produto */
-            $produto = $repoProduto->find($itemArr['produto']);
-
-            $vendaItem->produto = $produto;
-
-            $vendaItem->qtde = DecimalUtils::parseStr($itemArr['qtde']);
-            $vendaItem->precoVenda = DecimalUtils::parseStr($itemArr['precoVenda']);
-            $vendaItem->desconto = DecimalUtils::parseStr($itemArr['desconto']);
-            $vendaItem->valorTotal = DecimalUtils::parseStr($itemArr['valorTotal']);
-
-            $vendaItem->venda = $venda;
-
-            try {
-                $this->vendaItemEntityHandler->save($vendaItem);
-            } catch (ViewException $e) {
-                $this->addFlash('error', $e->getMessage());
-            }
-        }
-    }
 
     /**
      *
@@ -913,6 +942,43 @@ class VendaController extends FormListController
         return new PdfResponse(
             $this->knpSnappyPdf->getOutputFromHtml($html),
             'pv_' . $venda->getId() . '.pdf', 'application/pdf', 'inline'
+        );
+    }
+
+
+    /**
+     *
+     * @Route("/ven/venda/findClienteByStr/", name="ven_venda_findClienteByStr")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_CRM", statusCode=403)
+     */
+    public function findClienteByStr(Request $request): JsonResponse
+    {
+        $str = $request->get('term') ?? '';
+
+        $rs = $this->entityHandler->getDoctrine()->getConnection()
+            ->fetchAll('SELECT id, documento, nome, json_data FROM crm_cliente WHERE documento = :documento OR nome LIKE :nome LIMIT 30',
+                [
+                    'documento' => preg_replace("/[^0-9]/", "", $str),
+                    'nome' => '%' . $str . '%'
+                ]);
+
+        $clientes = [];
+
+        foreach ($rs as $r) {
+            $clientes[] = [
+                'id' => $r['id'],
+                'text' => $r['nome'],
+                'documento' => StringUtils::mascararCnpjCpf($r['documento']),
+                'json_data' => json_decode($r['json_data'], true)
+            ];
+        }
+
+        return new JsonResponse(
+            ['results' => $clientes]
         );
     }
 

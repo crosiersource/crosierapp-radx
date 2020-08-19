@@ -56,7 +56,7 @@ class CarteiraController extends FormListController
     {
         $params = [
             'typeClass' => CarteiraType::class,
-            'formView' => '@CrosierLibBase/form.html.twig',
+            'formView' => 'Financeiro/carteiraForm.html.twig',
             'formRoute' => 'carteira_form',
             'formPageTitle' => 'Carteira'
         ];

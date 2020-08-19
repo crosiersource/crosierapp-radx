@@ -12,13 +12,11 @@ import 'select2/dist/css/select2.css';
 import 'select2';
 import 'select2/dist/js/i18n/pt-BR.js';
 import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
+import routes from '../../static/fos_js_routes.json';
+import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
 
 $.fn.select2.defaults.set("theme", "bootstrap");
 $.fn.select2.defaults.set("language", "pt-BR");
-
-import routes from '../../static/fos_js_routes.json';
-import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
-import toastrr from "toastr";
 
 Numeral.locale('pt-br');
 
@@ -39,7 +37,7 @@ $(document).ready(function () {
 
     let $cliente_documento = $('#venda_jsonData_cliente_documento');
     let $cliente_nome = $('#venda_jsonData_cliente_nome');
-    let $cliente_telefone = $('#venda_jsonData_cliente_telefone');
+    let $cliente_fone = $('#venda_jsonData_cliente_fone');
     let $cliente_email = $('#venda_jsonData_cliente_email');
 
     let $planoPagto = $('#pagto_planoPagto');
@@ -152,7 +150,6 @@ $(document).ready(function () {
         $qtde.focus();
 
         CrosierMasks.maskDecs();
-
     });
 
     $unidade.select2({
@@ -189,25 +186,78 @@ $(document).ready(function () {
     // cache para não buscar toda hora
     $cliente_documento.data('val', $cliente_documento.val());
 
-    $cliente_documento.on('blur', function() {
+    $cliente_documento.on('blur', function () {
         console.log($cliente_documento.val());
         console.log($cliente_documento.data('val'));
         if ($cliente_documento.val() !== $cliente_documento.data('val')) {
             console.log('indo');
             $cliente_documento.data('val', $cliente_documento.val());
             $.ajax({
-                url: Routing.generate('crm_cliente_findClienteByStr') + '?term=' + $cliente_documento.val(),
+                url: Routing.generate('crm_cliente_findClienteByDocumento') + '?term=' + $cliente_documento.val(),
                 type: 'post',
                 dataType: 'json',
                 success: function (res) {
-                    console.dir(res);
-                    $cliente_nome.val(res.results[0].nome);
-                    $cliente_telefone.val(res.results[0].json_data.fone1);
-                    $cliente_email.val(res.results[0].json_data.email);
+
+                    $cliente_nome.empty().trigger("change");
+                    $cliente_nome.append(new Option(res?.results[0]?.text, res?.results[0]?.text, false, false)).trigger('change');
+                    $cliente_fone.val(res?.results[0]?.json_data?.fone1);
+                    $cliente_email.val(res?.results[0]?.json_data?.email);
                 }
             });
         }
     });
+
+
+    $cliente_nome.select2({
+        minimumInputLength: 4,
+        width: '100%',
+        dropdownAutoWidth: true,
+        placeholder: '...',
+        allowClear: true,
+        tags: true,
+        createTag: function (params) {
+            let term = $.trim(params.term);
+
+            if (term === '') {
+                return null;
+            }
+
+            return {
+                id: term,
+                text: term
+            }
+        },
+        ajax: {
+            delay: 750,
+            url: Routing.generate('ven_venda_findClienteByStr'),
+            dataType: 'json',
+            processResults: function (data) {
+                let mapped = $.map(data.results, function (obj) {
+                    obj.id = obj.text;
+                    return obj;
+                });
+                return {
+                    results: mapped
+                };
+            },
+        }
+    }).on('select2:select', function () {
+        let o = $cliente_nome.select2('data')[0];
+
+        if (o?.documento) {
+            $cliente_documento.val(o?.documento);
+        }
+        $cliente_fone.val(o?.fone1);
+        $cliente_email.val(o?.email);
+
+        CrosierMasks.maskDecs();
+    });
+
+    if ($cliente_nome.data('val')) {
+        let val = $cliente_nome.data('val');
+        $cliente_nome.append(new Option(val, val, false, false)).trigger('change');
+    }
+
 
     if ($item_produto.hasClass('focusOnReady')) {
         $item_produto.select2('focus');

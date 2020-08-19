@@ -1,5 +1,13 @@
 {% extends '@CrosierLibBase/index.html.twig' %}
 
+{% block up_scripts %}
+
+    <style>
+        .select2-search__field {
+            text-transform: uppercase;
+        }
+    </style>
+{% endblock %}
 
 {% block page_content %}
 
@@ -53,7 +61,12 @@
                             {{ form_row(form.jsonData.cliente_documento) }}
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            {{ form_row(form.jsonData.cliente_nome) }}
+                            <div class="form-group">
+                                <label for="venda_jsonData_cliente_nome">Nome/Razão Social</label>
+                                <select id="venda_jsonData_cliente_nome" data-val="{{ e.jsonData.cliente_nome|default('') }}"
+                                       name="venda[jsonData][cliente_nome]" class="form-control">
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-3 col-sm-12">
                             {{ form_row(form.jsonData.cliente_fone) }}
@@ -66,7 +79,7 @@
 
                     <div class="row mb-3">
                         <div class="col text-right">
-                            <button type="submit" class="btn btn-primary" value="Salvar">
+                            <button type="submit" class="btn btn-primary" value="Salvar" name="btnSalvar">
                                 <i class="fas fa-save" aria-hidden="true"></i> Salvar
                             </button>
                         </div>
@@ -452,8 +465,6 @@
                     </button>
 
                 {% endif %}
-
-
 
 
             </div>
