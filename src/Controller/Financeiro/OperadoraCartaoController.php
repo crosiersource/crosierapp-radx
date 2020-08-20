@@ -53,7 +53,7 @@ class OperadoraCartaoController extends FormListController
             'typeClass' => OperadoraCartaoType::class,
             'formView' => '@CrosierLibBase/form.html.twig',
             'formRoute' => 'operadoraCartao_form',
-            'formPageTitle' => 'Função'
+            'formPageTitle' => 'Operadora de Cartão'
         ];
         return $this->doForm($request, $operadoraCartao, $params);
     }
@@ -74,7 +74,7 @@ class OperadoraCartaoController extends FormListController
             'listView' => 'Financeiro/operadoraCartaoList.html.twig',
             'listRoute' => 'operadoraCartao_list',
             'listRouteAjax' => 'operadoraCartao_datatablesJsList',
-            'listPageTitle' => 'Funções/Cargos',
+            'listPageTitle' => 'Operadoras de Cartão',
             'listId' => 'operadoraCartaoList'
         ];
         return $this->doList($request, $params);

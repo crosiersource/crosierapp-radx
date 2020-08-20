@@ -20,6 +20,7 @@ use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoPreco;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
@@ -32,6 +33,7 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaItemRepository;
@@ -189,6 +191,14 @@ class VendaController extends FormListController
             $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
             $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
             $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
+            $params['permiteMaisPagtos'] = (float)$params['pagtos_diferenca'] !== 0.0;
+            /** @var CarteiraRepository $repoCarteira */
+            $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
+            foreach ($venda->pagtos as $pagto) {
+                if ($pagto->jsonData['carteira_id'] ?? false) {
+                    $pagto->carteira = $repoCarteira->find($pagto->jsonData['carteira_id']);
+                }
+            }
         }
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
@@ -396,6 +406,10 @@ class VendaController extends FormListController
             $vendaPagto['venda_id'] = $venda->getId();
             $vendaPagto['plano_pagto_id'] = $pagto['planoPagto'];
             $vendaPagto['valor_pagto'] = abs(DecimalUtils::parseStr($pagto['valorPagto']));
+            $vendaPagto['json_data'] = json_encode([
+                'carteira_id' => $pagto['carteira']
+            ]);
+
 
             $vendaPagto['updated'] = (new \DateTime())->format('Y-m-d H:i:s');
             $vendaPagto['inserted'] = (new \DateTime())->format('Y-m-d H:i:s');
@@ -444,6 +458,30 @@ class VendaController extends FormListController
         }
 
         return $this->doForm($request, $venda, $params);
+    }
+
+    /**
+     *
+     * @Route("/ven/venda/finalizarPV/{venda}", name="ven_venda_finalizarPV", defaults={"venda"=null}, requirements={"venda"="\d+"})
+     * @param Request $request
+     * @param Venda|null $venda
+     * @return RedirectResponse
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
+     */
+    public function finalizarPV(Request $request, Venda $venda): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('ven_venda_finalizarPV', $request->request->get('token'))) {
+            $this->addFlash('error', 'Erro interno do sistema.');
+        } else {
+            try {
+                $this->vendaBusiness->gerarFaturaPorVenda($venda);
+                $this->addFlash('success', 'PV finalizado com sucesso');
+            } catch (ViewException $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->redirectToRoute('ven_venda_form', ['id' => $venda->getId()]);
     }
 
     /**

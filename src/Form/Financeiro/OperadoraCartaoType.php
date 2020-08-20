@@ -30,7 +30,8 @@ class OperadoraCartaoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('descricao', TextType::class, array(
-            'label' => 'Descrição'
+            'label' => 'Descrição',
+            'attr' => ['class' => 'focusOnReady'],
         ));
 
         $repoCarteira = $this->doctrine->getRepository(Carteira::class);
@@ -40,7 +41,8 @@ class OperadoraCartaoType extends AbstractType
             'choices' => $carteiras,
             'choice_label' => function (Carteira $carteira) {
                 return $carteira->getCodigo() . " - " . $carteira->getDescricao();
-            }
+            },
+            'attr' => ['class' => 'autoSelect2']
         ));
 
 

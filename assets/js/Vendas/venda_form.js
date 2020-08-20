@@ -35,17 +35,18 @@ $(document).ready(function () {
     let $valorTotal = $('#item_valorTotal');
     let $devolucao = $('#item_devolucao');
 
+    let $cliente = $('#clienteId');
     let $cliente_documento = $('#venda_jsonData_cliente_documento');
     let $cliente_nome = $('#venda_jsonData_cliente_nome');
     let $cliente_fone = $('#venda_jsonData_cliente_fone');
     let $cliente_email = $('#venda_jsonData_cliente_email');
 
     let $planoPagto = $('#pagto_planoPagto');
+    let $planoPagto_carteira = $('#pagto_carteira');
+    let $planoPagto_numParcelas = $('#pagto_numParcelas');
 
 
     function resValorTotal() {
-        console.log($qtde.val());
-
         let qtde = $qtde.val().replace('.', '').replace(',', '.');
         let valorUnit = $precoVenda.val().replace('.', '').replace(',', '.');
         let subTotal = (qtde * valorUnit);
@@ -96,7 +97,6 @@ $(document).ready(function () {
         });
 
         $unidade.val(o.unidade_id).trigger('change');
-
 
         let precoVenda = parseFloat(o.preco_venda).toFixed(2).replace('.', ',');
         $precoVenda.val(precoVenda);
@@ -179,6 +179,29 @@ $(document).ready(function () {
         tags: true,
         data: $planoPagto.data('options')
     }).on('select2:select', function () {
+        let o = $planoPagto.select2('data')[0];
+
+        $.map(o.carteiras, function (obj) {
+            obj.text = obj['descricao'];
+            return obj;
+        });
+
+        $planoPagto_carteira.empty().trigger("change");
+
+        $planoPagto_carteira.select2({
+            width: '100%',
+            dropdownAutoWidth: true,
+            placeholder: '...',
+            allowClear: true,
+            tags: true,
+            data: o.carteiras
+        });
+
+        $planoPagto_carteira.prop('disabled', false);
+
+        $planoPagto_numParcelas.val('');
+
+        $planoPagto_numParcelas.prop('disabled', o.json_data?.aceita_parcelas === false);
 
     });
 
@@ -187,10 +210,7 @@ $(document).ready(function () {
     $cliente_documento.data('val', $cliente_documento.val());
 
     $cliente_documento.on('blur', function () {
-        console.log($cliente_documento.val());
-        console.log($cliente_documento.data('val'));
         if ($cliente_documento.val() !== $cliente_documento.data('val')) {
-            console.log('indo');
             $cliente_documento.data('val', $cliente_documento.val());
             $.ajax({
                 url: Routing.generate('crm_cliente_findClienteByDocumento') + '?term=' + $cliente_documento.val(),
@@ -202,6 +222,8 @@ $(document).ready(function () {
                     $cliente_nome.append(new Option(res?.results[0]?.text, res?.results[0]?.text, false, false)).trigger('change');
                     $cliente_fone.val(res?.results[0]?.json_data?.fone1);
                     $cliente_email.val(res?.results[0]?.json_data?.email);
+                    $cliente.val(res?.results[0]?.id)
+
                 }
             });
         }
@@ -245,7 +267,17 @@ $(document).ready(function () {
         let o = $cliente_nome.select2('data')[0];
 
         if (o?.documento) {
+            // só retorna documento se achou o cliente na base
             $cliente_documento.val(o?.documento);
+            $cliente.val(o?.id);
+        } else {
+            // Para deixar sempre em UPPERCASE
+            $cliente_nome.empty().trigger("change");
+            $cliente_nome.append(new Option(o.text.toUpperCase(), o.text.toUpperCase(), false, false)).trigger('change');
+            if ($cliente.val()) {
+                $cliente_documento.val('');
+                $cliente.val('');
+            }
         }
         $cliente_fone.val(o?.fone1);
         $cliente_email.val(o?.email);
