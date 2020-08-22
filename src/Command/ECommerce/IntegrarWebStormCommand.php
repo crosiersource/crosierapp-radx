@@ -54,8 +54,9 @@ class IntegrarWebStormCommand extends Command
                     if (!$dtBase) {
                         // Por padrão não é passado uma data no comando. Pega, portanto, as de ontem e hoje, para
                         // não correr o risco de perder alguma venda de perto de meia-noite.
-                        $ontem = $dtBase->sub((new \DateInterval('P1D')));
-                        $hoje = new \DateTime();
+
+                        $hoje = (new \DateTime())->setTime(12, 0);
+                        $ontem = (clone $hoje)->sub((new \DateInterval('P1D')));
 
                         $qtdeVendas_ontem = $this->integraWebStorm->obterVendas($ontem);
                         $output->writeln('Ontem: ' . $ontem->format('d/m/Y') . ': ' . $qtdeVendas_ontem);
