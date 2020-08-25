@@ -6,269 +6,328 @@
 
     <div class="container" style="margin-bottom: 50px">
         <div class="card">
+            <div class="card-header">
 
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Deptos/Grupos/Subgrupos</h3>
+                    </div>
+                </div>
+            </div>
 
             <div class="card-body">
 
+                <ul class="nav nav-tabs" id="principal" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="arvore-tab" data-toggle="tab" href="#arvore" role="tab"
+                           aria-controls="arvore" aria-selected="true">Árvore</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="gerenciar-tab" data-toggle="tab" href="#gerenciar" role="tab"
+                           aria-controls="gerenciar" aria-selected="false">Gerenciar</a>
+                    </li>
+                </ul>
 
-                <fieldset>
-                    <legend>Deptos</legend>
+                <div class="tab-content" id="myTabContent">
 
-                    <div class="table-responsive-sm">
-                        <table class="table table-striped table-hover">
+                    <div class="tab-pane fade show active" id="arvore" role="tabpanel" aria-labelledby="arvore-tab">
 
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Código</th>
-                                <th scope="col">Nome</th>
-                                <th scope="col"></th>
-                            </tr>
-                            </thead>
+                        <div class="container" style="margin-bottom: 50px">
 
-                            <tbody>
-                            {% for depto in deptos %}
-                                <form id="depto_form_{{ depto.id }}" name="depto_form[{{ depto.id }}]"
-                                      action="{{ url('est_deptoGrupoSubgrupo_deptoSave') }}" method="post">
-                                    <tr style="background-color: {{ deptoSelected is defined and depto.id == deptoSelected.id ? 'lightblue' : '' }}">
+                            <ul class="list-group">
+                                {% for depto in deptos %}
+                                    <li class="list-group-item active">
+                                        {{ depto.codigo }} - {{ depto.nome }}
+                                    </li>
+                                    <ul style="margin-left: 100px" class="list-group">
+                                        {% for grupo in depto.grupos %}
+                                            <li class="list-group-item">
+                                                <i class="fas fa-angle-right"></i> {{ grupo.codigo }} - {{ grupo.nome }}
+                                            </li>
+                                            <ul style="margin-left: 200px" class="list-group list-group-flush">
+                                                {% for subgrupo in grupo.subgrupos %}
+                                                    <li class="list-group-item">
+                                                        <i class="fas fa-angle-double-right"></i>
+                                                        {{ subgrupo.codigo }} - {{ subgrupo.nome }}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endfor %}
+                                    </ul>
+                                {% endfor %}
+                            </ul>
 
-                                        <td style="cursor: pointer" onclick="window.location = '{{ url('est_deptoGrupoSubgrupo_form', {'deptoId': depto.id}) }}'">
-                                            {{ loop.index }}
-                                        </td>
-                                        <td>
-                                            <input type="hidden" name="depto[id]" id="depto_id" value="{{ depto.id }}">
-                                            <input type="text" class="form-control" name="depto[codigo]"
-                                                   id="depto_codigo" value="{{ depto.codigo }}">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control notuppercase" name="depto[nome]" id="depto_nome"
-                                                   value="{{ depto.nome }}">
-                                        </td>
-                                        <td class="text-right">
-
-                                            {% if depto.jsonData.ecommerce_id|default(null) %}
-                                                <span class="badge badge-secondary">{{ depto.jsonData.ecommerce_id }}</span>
-                                            {% endif %}
-
-                                            <button type="button" class="btn btn-sm btn-outline-warning"
-                                                    data-url="{{ url('est_deptoGrupoSubgrupo_integraDepto', {'depto': depto.id}) }}"
-                                                    data-target="#confirmationModal" data-toggle="modal" title="Integrar com ecommerce">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                            </button>
-
-                                            <button type="submit" class="btn btn-sm btn-primary" value="Salvar">
-                                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-danger"
-                                                    data-url="{{ url('est_deptoGrupoSubgrupo_deptoDelete', {'depto' : depto.id}) }}"
-                                                    data-target="#confirmationModal" data-toggle="modal">
-                                                <i class="fa fa-trash" aria-hidden="true"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </form>
-                            {% endfor %}
-                            <form action="{{ url('est_deptoGrupoSubgrupo_deptoSave') }}" method="post">
-                                <tr>
-                                    <td></td>
-                                    <td><input type="text" class="form-control" name="depto[codigo]" id="depto_codigo">
-                                    </td>
-                                    <td><input type="text" class="form-control notuppercase" name="depto[nome]" id="depto_nome"></td>
-                                    <td class="text-right">
-                                        <button type="submit" class="btn btn-primary" value="Salvar">
-                                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                                        </button>
-                                    </td>
-                                </tr>
-                            </form>
-                            </tbody>
-
-                        </table>
+                        </div>
                     </div>
-                </fieldset>
 
-                {% if deptoSelected is defined %}
-                    <fieldset>
-                        <legend>Grupos</legend>
+                    <div class="tab-pane fade" id="gerenciar" role="tabpanel" aria-labelledby="gerenciar-tab">
 
-                        <div class="table-responsive-sm">
-                            <table class="table table-striped table-hover">
+                        <div class="container" style="margin-bottom: 50px">
 
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Código</th>
-                                    <th scope="col">Nome</th>
-                                    <th scope="col"></th>
-                                </tr>
-                                </thead>
+                            <fieldset>
+                                <legend>Deptos</legend>
 
-                                <tbody>
-                                {% for grupo in deptoSelected.grupos %}
-                                    <form id="grupo_form_{{ grupo.id }}" name="grupo_form[{{ grupo.id }}]"
-                                          action="{{ url('est_deptoGrupoSubgrupo_grupoSave') }}" method="post">
-                                        <tr style="background-color: {{ grupoSelected is defined and grupo.id == grupoSelected.id ? 'lightblue' : '' }}">
+                                <div class="table-responsive-sm">
+                                    <table class="table table-striped table-hover">
 
-                                            <td style="cursor: pointer" onclick="window.location = '{{ url('est_deptoGrupoSubgrupo_form', {'grupoId': grupo.id}) }}'">
-                                                {{ loop.index }}
-                                            </td>
-                                            <td>
-                                                <input type="hidden" name="grupo[id]" id="grupo_id"
-                                                       value="{{ grupo.id }}">
-                                                <input type="hidden" name="grupo[deptoId]" id="grupo_deptoId"
-                                                       value="{{ grupo.depto.id }}">
-                                                <input type="text" class="form-control notuppercase" name="grupo[codigo]"
-                                                       id="grupo_codigo" value="{{ grupo.codigo }}">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control notuppercase" name="grupo[nome]"
-                                                       id="grupo_nome"
-                                                       value="{{ grupo.nome }}">
-                                            </td>
-                                            <td class="text-right">
-
-                                                {% if grupo.jsonData.ecommerce_id|default(null) %}
-                                                    <span class="badge badge-secondary">{{ grupo.jsonData.ecommerce_id }}</span>
-                                                {% endif %}
-
-                                                <button type="button" class="btn btn-sm btn-outline-warning"
-                                                        data-url="{{ url('est_deptoGrupoSubgrupo_integraGrupo', {'grupo': grupo.id}) }}"
-                                                        data-target="#confirmationModal" data-toggle="modal" title="Integrar com ecommerce">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                </button>
-
-                                                <button type="submit" class="btn btn-sm btn-primary" value="Salvar">
-                                                    <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-danger"
-                                                        data-url="{{ url('est_deptoGrupoSubgrupo_grupoDelete', {'grupo' : grupo.id}) }}"
-                                                        data-target="#confirmationModal" data-toggle="modal">
-                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </form>
-                                {% endfor %}
-                                <form action="{{ url('est_deptoGrupoSubgrupo_grupoSave') }}" method="post">
-                                    <tr>
-                                        <td>
-                                            <input type="hidden" name="grupo[deptoId]" id="grupo_deptoId"
-                                                   value="{{ deptoSelected.id }}">
-                                        </td>
-                                        <td><input type="text" class="form-control" name="grupo[codigo]"
-                                                   id="grupo_codigo">
-                                        </td>
-                                        <td><input type="text" class="form-control notuppercase" name="grupo[nome]" id="grupo_nome">
-                                        </td>
-                                        <td class="text-right">
-                                            <button type="submit" class="btn btn-primary" value="Salvar">
-                                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </form>
-                                </tbody>
-
-                            </table>
-                        </div>
-                    </fieldset>
-                {% endif %}
-
-
-
-                {% if grupoSelected is defined %}
-                    <fieldset>
-                        <legend>Subgrupos</legend>
-
-                        <div class="table-responsive-sm">
-                            <table class="table table-striped table-hover">
-
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Código</th>
-                                    <th scope="col">Nome</th>
-                                    <th scope="col"></th>
-                                </tr>
-                                </thead>
-
-                                <tbody>
-                                {% for subgrupo in grupoSelected.subgrupos %}
-                                    <form id="subgrupo_form_{{ subgrupo.id }}" name="subgrupo_form[{{ subgrupo.id }}]"
-                                          action="{{ url('est_deptoGrupoSubgrupo_subgrupoSave') }}" method="post">
+                                        <thead>
                                         <tr>
-                                            <td>
-                                                {{ loop.index }}
-                                            </td>
-                                            <td>
-                                                <input type="hidden" name="subgrupo[id]" id="subgrupo_id"
-                                                       value="{{ subgrupo.id }}">
-                                                <input type="hidden" name="subgrupo[grupoId]" id="subgrupo_grupoId"
-                                                       value="{{ subgrupo.grupo.id }}">
-                                                <input type="text" class="form-control" name="subgrupo[codigo]"
-                                                       id="subgrupo_codigo" value="{{ subgrupo.codigo }}">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control notuppercase" name="subgrupo[nome]"
-                                                       id="subgrupo_nome"
-                                                       value="{{ subgrupo.nome }}">
-                                            </td>
-                                            <td class="text-right">
-
-                                                {% if subgrupo.jsonData.ecommerce_id|default(null) %}
-                                                    <span class="badge badge-secondary">{{ subgrupo.jsonData.ecommerce_id }}</span>
-                                                {% endif %}
-
-                                                <button type="button" class="btn btn-sm btn-outline-warning"
-                                                        data-url="{{ url('est_deptoGrupoSubgrupo_integraSubgrupo', {'subgrupo': subgrupo.id}) }}"
-                                                        data-target="#confirmationModal" data-toggle="modal" title="Integrar com ecommerce">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                </button>
-
-                                                <button type="submit" class="btn btn-sm btn-primary" value="Salvar">
-                                                    <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                                                </button>
-
-                                                <button type="button" class="btn btn-sm btn-danger"
-                                                        data-url="{{ url('est_deptoGrupoSubgrupo_subgrupoDelete', {'subgrupo' : subgrupo.id}) }}"
-                                                        data-target="#confirmationModal" data-toggle="modal">
-                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                </button>
-                                            </td>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Código</th>
+                                            <th scope="col">Nome</th>
+                                            <th scope="col"></th>
                                         </tr>
-                                    </form>
-                                {% endfor %}
-                                <form action="{{ url('est_deptoGrupoSubgrupo_subgrupoSave') }}" method="post">
-                                    <tr>
-                                        <td>
-                                            <input type="hidden" name="subgrupo[grupoId]" id="subgrupo_grupoId"
-                                                   value="{{ grupoSelected.id }}">
-                                        </td>
-                                        <td><input type="text" class="form-control" name="subgrupo[codigo]"
-                                                   id="subgrupo_codigo">
-                                        </td>
-                                        <td><input type="text" class="form-control notuppercase" name="subgrupo[nome]" id="subgrupo_nome">
-                                        </td>
-                                        <td class="text-right">
-                                            <button type="submit" class="btn btn-primary" value="Salvar">
-                                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </form>
-                                </tbody>
+                                        </thead>
 
-                            </table>
+                                        <tbody>
+                                        {% for depto in deptos %}
+                                            <form id="depto_form_{{ depto.id }}" name="depto_form[{{ depto.id }}]"
+                                                  action="{{ url('est_deptoGrupoSubgrupo_deptoSave') }}" method="post">
+                                                <tr style="background-color: {{ deptoSelected is defined and depto.id == deptoSelected.id ? 'lightblue' : '' }}">
+
+                                                    <td style="cursor: pointer"
+                                                        onclick="window.location = '{{ url('est_deptoGrupoSubgrupo_form', {'deptoId': depto.id, '_fragment': 'gerenciar'}) }}'">
+                                                        {{ loop.index }}
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" name="depto[id]" id="depto_id"
+                                                               value="{{ depto.id }}">
+                                                        <input type="text" class="form-control" name="depto[codigo]"
+                                                               id="depto_codigo" value="{{ depto.codigo }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control notuppercase"
+                                                               name="depto[nome]" id="depto_nome"
+                                                               value="{{ depto.nome }}">
+                                                    </td>
+                                                    <td class="text-right">
+
+                                                        {% if depto.jsonData.ecommerce_id|default(null) %}
+                                                            <span class="badge badge-secondary">{{ depto.jsonData.ecommerce_id }}</span>
+                                                        {% endif %}
+
+                                                        <button type="submit" class="btn btn-sm btn-primary" title="Salvar"
+                                                                value="Salvar">
+                                                            <i class="fas fa-save" aria-hidden="true"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-danger" title="Deletar"
+                                                                data-url="{{ url('est_deptoGrupoSubgrupo_deptoDelete', {'depto' : depto.id}) }}"
+                                                                data-target="#confirmationModal" data-toggle="modal">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                        {% endfor %}
+                                        <form action="{{ url('est_deptoGrupoSubgrupo_deptoSave') }}" method="post" id="formDepto">
+                                            <tr>
+                                                <td></td>
+                                                <td><input type="text" class="form-control" name="depto[codigo]"
+                                                           id="depto_codigo">
+                                                </td>
+                                                <td><input type="text" class="form-control notuppercase"
+                                                           name="depto[nome]" id="depto_nome"></td>
+                                                <td class="text-right">
+                                                    <button type="submit" class="btn btn-primary" value="Salvar">
+                                                        <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </form>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </fieldset>
+
+                            {% if deptoSelected is defined %}
+                                <fieldset id="fsGrupos">
+                                    <legend>Grupos</legend>
+
+                                    <div class="table-responsive-sm">
+                                        <table class="table table-striped table-hover">
+
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Código</th>
+                                                <th scope="col">Nome</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            {% for grupo in deptoSelected.grupos %}
+                                                <form id="grupo_form_{{ grupo.id }}" name="grupo_form[{{ grupo.id }}]"
+                                                      action="{{ url('est_deptoGrupoSubgrupo_grupoSave') }}"
+                                                      method="post">
+                                                    <tr style="background-color: {{ grupoSelected is defined and grupo.id == grupoSelected.id ? 'lightblue' : '' }}">
+
+                                                        <td style="cursor: pointer"
+                                                            onclick="window.location = '{{ url('est_deptoGrupoSubgrupo_form', {'grupoId': grupo.id, '_fragment': 'gerenciar'}) }}'">
+                                                            {{ loop.index }}
+                                                        </td>
+                                                        <td>
+                                                            <input type="hidden" name="grupo[id]" id="grupo_id"
+                                                                   value="{{ grupo.id }}">
+                                                            <input type="hidden" name="grupo[deptoId]"
+                                                                   id="grupo_deptoId"
+                                                                   value="{{ grupo.depto.id }}">
+                                                            <input type="text" class="form-control notuppercase"
+                                                                   name="grupo[codigo]"
+                                                                   id="grupo_codigo" value="{{ grupo.codigo }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control notuppercase"
+                                                                   name="grupo[nome]"
+                                                                   id="grupo_nome"
+                                                                   value="{{ grupo.nome }}">
+                                                        </td>
+                                                        <td class="text-right">
+
+                                                            {% if grupo.jsonData.ecommerce_id|default(null) %}
+                                                                <span class="badge badge-secondary">{{ grupo.jsonData.ecommerce_id }}</span>
+                                                            {% endif %}
+
+                                                            <button type="submit" class="btn btn-sm btn-primary" title="Salvar"
+                                                                    value="Salvar">
+                                                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                                                            </button>
+                                                            <button type="button" class="btn btn-sm btn-danger" title="Deletar"
+                                                                    data-url="{{ url('est_deptoGrupoSubgrupo_grupoDelete', {'grupo' : grupo.id}) }}"
+                                                                    data-target="#confirmationModal"
+                                                                    data-toggle="modal">
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </form>
+                                            {% endfor %}
+                                            <form action="{{ url('est_deptoGrupoSubgrupo_grupoSave') }}" method="post">
+                                                <tr>
+                                                    <td>
+                                                        <input type="hidden" name="grupo[deptoId]" id="grupo_deptoId"
+                                                               value="{{ deptoSelected.id }}">
+                                                    </td>
+                                                    <td><input type="text" class="form-control" name="grupo[codigo]"
+                                                               id="grupo_codigo">
+                                                    </td>
+                                                    <td><input type="text" class="form-control notuppercase"
+                                                               name="grupo[nome]" id="grupo_nome">
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <button type="submit" class="btn btn-primary" value="Salvar">
+                                                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            {% endif %}
+
+
+
+                            {% if grupoSelected is defined %}
+                                <fieldset>
+                                    <legend>Subgrupos</legend>
+
+                                    <div class="table-responsive-sm">
+                                        <table class="table table-striped table-hover">
+
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Código</th>
+                                                <th scope="col">Nome</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            {% for subgrupo in grupoSelected.subgrupos %}
+                                                <form id="subgrupo_form_{{ subgrupo.id }}"
+                                                      name="subgrupo_form[{{ subgrupo.id }}]"
+                                                      action="{{ url('est_deptoGrupoSubgrupo_subgrupoSave') }}"
+                                                      method="post">
+                                                    <tr>
+                                                        <td>
+                                                            {{ loop.index }}
+                                                        </td>
+                                                        <td>
+                                                            <input type="hidden" name="subgrupo[id]" id="subgrupo_id"
+                                                                   value="{{ subgrupo.id }}">
+                                                            <input type="hidden" name="subgrupo[grupoId]"
+                                                                   id="subgrupo_grupoId"
+                                                                   value="{{ subgrupo.grupo.id }}">
+                                                            <input type="text" class="form-control"
+                                                                   name="subgrupo[codigo]"
+                                                                   id="subgrupo_codigo" value="{{ subgrupo.codigo }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control notuppercase"
+                                                                   name="subgrupo[nome]"
+                                                                   id="subgrupo_nome"
+                                                                   value="{{ subgrupo.nome }}">
+                                                        </td>
+                                                        <td class="text-right">
+
+                                                            {% if subgrupo.jsonData.ecommerce_id|default(null) %}
+                                                                <span class="badge badge-secondary">{{ subgrupo.jsonData.ecommerce_id }}</span>
+                                                            {% endif %}
+
+                                                            <button type="submit" class="btn btn-sm btn-primary"
+                                                                    value="Salvar">
+                                                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                                                            </button>
+
+                                                            <button type="button" class="btn btn-sm btn-danger"
+                                                                    data-url="{{ url('est_deptoGrupoSubgrupo_subgrupoDelete', {'subgrupo' : subgrupo.id}) }}"
+                                                                    data-target="#confirmationModal"
+                                                                    data-toggle="modal">
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </form>
+                                            {% endfor %}
+                                            <form action="{{ url('est_deptoGrupoSubgrupo_subgrupoSave') }}"
+                                                  method="post">
+                                                <tr>
+                                                    <td>
+                                                        <input type="hidden" name="subgrupo[grupoId]"
+                                                               id="subgrupo_grupoId"
+                                                               value="{{ grupoSelected.id }}">
+                                                    </td>
+                                                    <td><input type="text" class="form-control" name="subgrupo[codigo]"
+                                                               id="subgrupo_codigo">
+                                                    </td>
+                                                    <td><input type="text" class="form-control notuppercase"
+                                                               name="subgrupo[nome]" id="subgrupo_nome">
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <button type="submit" class="btn btn-primary" value="Salvar">
+                                                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            {% endif %}
+
                         </div>
-                    </fieldset>
-                {% endif %}
-
+                    </div>
+                </div>
             </div>
-
         </div>
-
     </div>
-
 
 
 {% endblock %}

@@ -17,10 +17,6 @@ import 'select2';
 import 'select2/dist/js/i18n/pt-BR.js';
 import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
 
-$.fn.select2.defaults.set("theme", "bootstrap");
-$.fn.select2.defaults.set("language", "pt-BR");
-
-
 import toastrr from "toastr";
 
 import 'lightbox2/dist/css/lightbox.css';
@@ -30,6 +26,10 @@ import 'blueimp-file-upload';
 import Numeral from 'numeral';
 import 'numeral/locales/pt-br.js';
 import Moment from "moment";
+
+$.fn.select2.defaults.set("theme", "bootstrap");
+$.fn.select2.defaults.set("language", "pt-BR");
+
 
 Routing.setRoutingData(routes);
 
@@ -439,16 +439,17 @@ $(document).ready(function () {
     function submitPreco() {
 
         if (!$produtoPreco_lista.val()) {
-            toastrr.error('"É necessário informar "Lista"'); return;
+            toastrr.error('"É necessário informar "Lista"');
+            return;
         }
         if (!$produtoPreco_unidade.val()) {
             toastrr.error('"É necessário informar "Unidade"');
             return;
         }
         if (!$produtoPreco_precoCusto.val()) {
-            toastrr.error('"É necessário informar "Preço de Custo"'); return;
+            toastrr.error('"É necessário informar "Preço de Custo"');
+            return;
         }
-
 
 
         let preco = {
