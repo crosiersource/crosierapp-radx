@@ -279,8 +279,8 @@ $(document).ready(function () {
                 $cliente.val('');
             }
         }
-        $cliente_fone.val(o?.fone1);
-        $cliente_email.val(o?.email);
+        $cliente_fone.val(o?.json_data?.fone1);
+        $cliente_email.val(o?.json_data?.email);
 
         CrosierMasks.maskDecs();
     });

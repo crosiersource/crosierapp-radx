@@ -139,7 +139,7 @@ class VendaController extends FormListController
     public function form(Request $request, Venda $venda = null)
     {
         $params = [
-            'listRoute' => 'ven_venda_listPorDia',
+            'listRoute' => 'ven_venda_listVendasEcommerce',
             'typeClass' => VendaType::class,
             'formView' => 'Vendas/venda_form.html.twig',
             'formRoute' => 'ven_venda_form',
@@ -184,22 +184,33 @@ class VendaController extends FormListController
                     $colaborador = $repoColaborador->findOneBy(['cpf' => '99999999999']);
                 }
                 $venda->vendedor = $colaborador;
+            } else {
+                if ($venda) {
+                    $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
+                    $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
+                    $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
+                    $params['permiteMaisPagtos'] = (float)$params['pagtos_diferenca'] !== 0.0;
+                    /** @var CarteiraRepository $repoCarteira */
+                    $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
+                    foreach ($venda->pagtos as $pagto) {
+                        if ($pagto->jsonData['carteira_id'] ?? false) {
+                            $pagto->carteira = $repoCarteira->find($pagto->jsonData['carteira_id']);
+                        }
+                    }
+                }
+            }
+        } else if ($venda) {
+            $vendaRequest = $request->request->get('venda');
+            // Nos casos onde troca-se o cliente de uma venda por um novo
+            if ($venda->cliente && ($venda->cliente->documento !== $vendaRequest['jsonData']['cliente_documento'])) {
+                $venda->cliente = null;
+                $venda->jsonData['cliente_documento'] = $vendaRequest['jsonData']['cliente_documento'] ?? '';
+                $venda->jsonData['cliente_nome'] = $vendaRequest['jsonData']['cliente_nome'] ?? '';
+                $venda->jsonData['cliente_email'] = $vendaRequest['jsonData']['cliente_email'] ?? '';
+                $venda->jsonData['cliente_fone'] = $vendaRequest['jsonData']['cliente_fone'] ?? '';
             }
         }
 
-        if ($venda) {
-            $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
-            $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
-            $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
-            $params['permiteMaisPagtos'] = (float)$params['pagtos_diferenca'] !== 0.0;
-            /** @var CarteiraRepository $repoCarteira */
-            $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
-            foreach ($venda->pagtos as $pagto) {
-                if ($pagto->jsonData['carteira_id'] ?? false) {
-                    $pagto->carteira = $repoCarteira->find($pagto->jsonData['carteira_id']);
-                }
-            }
-        }
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
         $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);

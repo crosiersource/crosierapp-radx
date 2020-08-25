@@ -20,6 +20,21 @@
                     <div class="col-8">
                         <h3>Pré-Venda</h3>
                     </div>
+                    <div class="col-4 text-right">
+
+
+                        <a type="button" class="btn btn-info"
+                           href="{{ url(formRoute, formRouteParams|default([])) }}" title="Novo">
+                            <i class="fas fa-file" aria-hidden="true"></i>
+                        </a>
+
+                        <a role="button" class="btn btn-outline-secondary" href="{{ url(listRoute) }}"
+                           title="Listar">
+                            <i class="fas fa-list"></i>
+                        </a>
+
+
+                    </div>
                 </div>
 
             </div>
@@ -30,6 +45,8 @@
 
                 {{ form_start(form) }}
                 {{ form_widget(form._token) }}
+
+
 
 
                 <div class="row">
@@ -57,7 +74,6 @@
 
                 <div class="row">
                     <div class="col-md-2 col-sm-12">
-                        <input type="hidden" id="clienteId" value="{{ e.id }}">
                         {{ form_row(form.jsonData.cliente_documento) }}
                     </div>
                     <div class="col-md-4 col-sm-12">
@@ -93,20 +109,22 @@
                 {% if e.id %}
 
 
-                    {% if e.status == 'PV ABERTO' %}
-                        <form method="POST" action="{{ url('ven_venda_formItem', {'venda': e.id}) }}">
-                            <div class="card">
-                                <div class="card-header">
+                    <div class="card">
+                        <div class="card-header">
 
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <h5>Itens</h5>
-                                        </div>
-                                    </div>
-
+                            <div class="row">
+                                <div class="col-8">
+                                    <h5>Itens</h5>
                                 </div>
+                            </div>
 
-                                <div class="card-body">
+                        </div>
+
+                        <div class="card-body">
+
+                            {% if e.status == 'PV ABERTO' %}
+                                <form method="POST" action="{{ url('ven_venda_formItem', {'venda': e.id}) }}">
+
 
                                     <div class="row">
                                         <div class="col-sm-5">
@@ -227,74 +245,75 @@
                                         </div>
 
                                     </div>
+                                </form>
+                            {% endif %}
 
-                                    <div class="table-responsive-sm">
-                                        <table class="table table-sm table-striped table-hover">
+                            <div class="table-responsive-sm">
+                                <table class="table table-sm table-striped table-hover">
 
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Produto</th>
-                                                <th scope="col">Qtde</th>
-                                                <th scope="col">Vlr Unit</th>
-                                                <th scope="col">Desc</th>
-                                                <th scope="col">Total</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                            </thead>
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Produto</th>
+                                        <th scope="col">Qtde</th>
+                                        <th scope="col">Vlr Unit</th>
+                                        <th scope="col">Desc</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                    </thead>
 
-                                            <tbody>
-                                            {% for item in e.itens %}
-                                                <tr>
-                                                    <td data-vendaitemid="{{ item.id }}"
-                                                        title="{{ item.id }}">{{ loop.index }}</td>
-                                                    <td>
-                                                        {{ item.produto.codigo|default(0)|strpad(13) }}
-                                                        - {{ item.descricao }}
-                                                    </td>
-                                                    <td class="text-right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
-                                                    <td class="text-right">{{ item.precoVenda|number_format(2,',','.') }}</td>
-                                                    <td class="text-right">{{ item.desconto|number_format(2,',','.') }}</td>
-                                                    <td class="text-right">{{ item.total|number_format(2,',','.') }}</td>
-                                                    <td class="text-right">
-                                                        {% if e.status == 'PV ABERTO' %}
+                                    <tbody>
+                                    {% for item in e.itens %}
+                                        <tr>
+                                            <td data-vendaitemid="{{ item.id }}"
+                                                title="{{ item.id }}">{{ loop.index }}</td>
+                                            <td>
+                                                {{ item.produto.codigo|default(0)|strpad(13) }}
+                                                - {{ item.descricao }}
+                                            </td>
+                                            <td class="text-right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
+                                            <td class="text-right">{{ item.precoVenda|number_format(2,',','.') }}</td>
+                                            <td class="text-right">{{ item.desconto|number_format(2,',','.') }}</td>
+                                            <td class="text-right">{{ item.total|number_format(2,',','.') }}</td>
+                                            <td class="text-right">
+                                                {% if e.status == 'PV ABERTO' %}
 
-                                                            <button type="button"
-                                                                    class="btn btn-sm btn-primary btnEditProduto"
-                                                                    data-item-id="{{ item.id }}"
-                                                                    data-item-produto-id="{{ item.produto.id|default('') }}"
-                                                                    data-item-produto-nome="{{ item.produto.nome|default('') }}"
-                                                                    data-item-unidade-id="{{ item.unidade.id|default('') }}"
-                                                                    data-item-unidade-label="{{ item.unidade.label|default('') }}"
-                                                                    data-item-unidade-casas-decimais="{{ item.unidade.casasDecimais|default('') }}"
-                                                                    data-item-devolucao="{{ item.devolucao|default('') }}"
-                                                                    data-item-qtde="{{ item.qtde|default('') }}"
-                                                                    data-item-preco-venda="{{ item.precoVenda|default('') }}"
-                                                                    data-item-desconto="{{ item.desconto|number_format(2,',','.') }}">
-                                                                <i class="fas fa-wrench" aria-hidden="true"></i>
-                                                            </button>
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-primary btnEditProduto"
+                                                            data-item-id="{{ item.id }}"
+                                                            data-item-produto-id="{{ item.produto.id|default('') }}"
+                                                            data-item-produto-nome="{{ item.produto.nome|default('') }}"
+                                                            data-item-unidade-id="{{ item.unidade.id|default('') }}"
+                                                            data-item-unidade-label="{{ item.unidade.label|default('') }}"
+                                                            data-item-unidade-casas-decimais="{{ item.unidade.casasDecimais|default('') }}"
+                                                            data-item-devolucao="{{ item.devolucao|default('') }}"
+                                                            data-item-qtde="{{ item.qtde|default('') }}"
+                                                            data-item-preco-venda="{{ item.precoVenda|default('') }}"
+                                                            data-item-desconto="{{ item.desconto|number_format(2,',','.') }}">
+                                                        <i class="fas fa-wrench" aria-hidden="true"></i>
+                                                    </button>
 
-                                                            <button type="button" class="btn btn-sm btn-danger"
-                                                                    data-url="{{ url('ven_venda_deleteItem', {'item': item.id}) }}"
-                                                                    data-token="{{ csrf_token('ven_venda_deleteItem') }}"
-                                                                    data-target="#confirmationModal"
-                                                                    data-toggle="modal">
-                                                                <i class="fa fa-trash" aria-hidden="true"></i>
-                                                            </button>
+                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                            data-url="{{ url('ven_venda_deleteItem', {'item': item.id}) }}"
+                                                            data-token="{{ csrf_token('ven_venda_deleteItem') }}"
+                                                            data-target="#confirmationModal"
+                                                            data-toggle="modal">
+                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                    </button>
 
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
 
-                                        </table>
-                                    </div>
-
-                                </div>
+                                </table>
                             </div>
-                        </form>
-                    {% endif %}
+
+                        </div>
+                    </div>
+
 
 
                     <div class="row">
@@ -365,7 +384,7 @@
 
                         </div>
 
-                        <div class="card-body">
+                        <div class="card-body" style="background-color: ivory">
 
                             {% if permiteMaisPagtos %}
 
