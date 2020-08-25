@@ -1,0 +1,89 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Fatura de Venda</h3>
+                    </div>
+                    <div class="col-4 text-right">
+                        <a role="button" class="btn btn-outline-secondary" href="{{ url('carteira_list') }}"
+                           title="Listar">
+                            <i class="fas fa-list" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive-sm">
+
+                    <table class="table table-sm table-striped table-hover crsr-datatable">
+
+                        <thead>
+
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Categoria<br/>Modo</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Dt Vencto<br/>Dt Pagto</th>
+                            <th scope="col">Valor Total</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for mov in e.movimentacoes %}
+                            <tr>
+                                <td>
+                                    {{ mov.id }}
+                                    <br/>
+                                    <span class="badge badge-pill badge-light">{{ loop.index }}</span>
+                                </td>
+                                <td>
+                                    {{ mov.carteira.descricaoMontada }}
+                                </td>
+                                <td>
+                                    <b>{{ mov.descricao }}</b><br/>
+                                    {{ mov.modo.descricaoMontada }}
+                                </td>
+                                <td>
+                                        <span title="Dt Vencto: {{ mov.dtVencto|date('d/m/Y') }}">
+                                            {{ mov.dtVenctoEfetiva|date('d/m/Y') }}
+                                        </span>
+                                </td>
+                                <td class="text-right"
+                                    style="color: white; background-color: {{ mov.categoria.codigoSuper == 1 ? 'dodgerblue' : 'indianred' }}">
+                                    {{ mov.valorTotal|number_format(2,',','.') }}
+                                </td>
+                                <td class="text-right">
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
+
+

@@ -6,7 +6,6 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Form\JsonType;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
-use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\PlanoPagto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -49,10 +48,13 @@ class VendaType extends AbstractType
             $venda = $event->getData();
             $builder = $event->getForm();
 
+            $disabled = $venda->getId() && $venda->status !== 'PV ABERTO';
+
             $builder->add('id', IntegerType::class, [
                 'label' => 'Id',
                 'required' => true,
-                'attr' => ['readonly' => 'readonly']
+                'attr' => ['readonly' => 'readonly'],
+                'disabled' => $disabled
             ]);
 
             $builder->add('dtVenda', DateTimeType::class, [
@@ -64,13 +66,14 @@ class VendaType extends AbstractType
                     'class' => 'crsr-datetime'
                 ],
                 'required' => true,
-                'disabled' => !($this->security->isGranted('ROLE_ESTOQUE_ADMIN'))
+                'disabled' => $disabled || !($this->security->isGranted('ROLE_ESTOQUE_ADMIN'))
             ]);
 
             $builder->add('status', TextType::class, [
                 'label' => 'Status',
                 'required' => false,
-                'attr' => ['readonly' => 'readonly']
+                'attr' => ['readonly' => 'readonly'],
+                'disabled' => $disabled
             ]);
 
 
@@ -86,7 +89,8 @@ class VendaType extends AbstractType
                     return $colaborador ? str_pad($colaborador->getId(), 3, '0', STR_PAD_LEFT) . ' - ' . $colaborador->nome : null;
                 },
                 'required' => false,
-                'attr' => ['class' => 'autoSelect2 ' . (!$venda->getId() ? 'focusOnReady' : '')]
+                'attr' => ['class' => 'autoSelect2 ' . (!$venda->getId() ? 'focusOnReady' : '')],
+                'disabled' => $disabled
             ]);
 
 
@@ -124,7 +128,7 @@ class VendaType extends AbstractType
             ]);
 
 
-            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => $venda->jsonData]);
+            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => $venda->jsonData, 'disabled' => $disabled]);
 
         });
 

@@ -474,7 +474,7 @@ class VendaController extends FormListController
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
             try {
-                $this->vendaBusiness->gerarFaturaPorVenda($venda);
+                $this->vendaBusiness->finalizarPV($venda);
                 $this->addFlash('success', 'PV finalizado com sucesso');
             } catch (ViewException $e) {
                 $this->addFlash('error', $e->getMessage());
