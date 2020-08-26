@@ -122,7 +122,7 @@ class DeptoController extends BaseController
         $depto->codigo = $deptoArr['codigo'];
         $depto->nome = $deptoArr['nome'];
         $this->deptoEntityHandler->save($depto);
-        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['deptoId' => $depto->getId()]);
+        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['deptoId' => $depto->getId(), '_fragment' => 'gerenciar']);
     }
 
     /**
@@ -171,7 +171,7 @@ class DeptoController extends BaseController
         $grupo->codigo = $grupoArr['codigo'];
         $grupo->nome = $grupoArr['nome'];
         $this->grupoEntityHandler->save($grupo);
-        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $grupo->getId()]);
+        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $grupo->getId(), '_fragment' => 'gerenciar']);
     }
 
     /**
@@ -220,7 +220,7 @@ class DeptoController extends BaseController
         $subgrupo->codigo = $subgrupoArr['codigo'];
         $subgrupo->nome = $subgrupoArr['nome'];
         $this->subgrupoEntityHandler->save($subgrupo);
-        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $grupo->getId()]);
+        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $grupo->getId(), '_fragment' => 'gerenciar']);
     }
 
     /**
