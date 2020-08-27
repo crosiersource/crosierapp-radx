@@ -1650,9 +1650,27 @@ class IntegradorWebStorm implements IntegradorECommerce
     /**
      * @param Venda $venda
      * @return \SimpleXMLElement|null
+     * @throws ViewException
      */
     public function integrarVendaParaECommerce(Venda $venda)
     {
+        $conn = $this->vendaEntityHandler->getDoctrine()->getConnection();
+        $rsVenda = $conn->fetchAll('SELECT nf.numero, nf.serie, nf.chave_acesso FROM fis_nf nf, fis_nf_venda nfvenda WHERE nf.id = nfvenda.nota_fiscal_id AND nf.cstat = 100 AND nfvenda.venda_id = :vendaId',
+            ['vendaId' => $venda->getId()]);
+        $dadosNota = '';
+
+        if ($rsVenda[0]['numero'] ?? false) {
+            if (count($rsVenda) > 1) {
+                throw new ViewException('Mais de uma nota fiscal encontrada para esta venda. Verifique.');
+            }
+            $dadosNota = '
+            <notaFiscal>
+					<numero>' . $rsVenda[0]['numero'] . '</numero>
+					<serie>' . $rsVenda[0]['serie'] . '</serie>
+					<chave>' . $rsVenda[0]['chave_acesso'] . '</chave>
+				</notaFiscal>';
+        }
+
         $xml = '<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
 		<ws_integracao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<chave>' . $this->getChave() . '</chave>
@@ -1660,8 +1678,9 @@ class IntegradorWebStorm implements IntegradorECommerce
 			<modulo>alterarStatusPedido</modulo>    
 			<statusPedido>
 				<idPedido>' . $venda->jsonData['ecommerce_idPedido'] . '</idPedido>
-				<status>' . $venda->jsonData['ecommerce_status'] . '</status>
-			</statusPedido>
+				<status>' . $venda->jsonData['ecommerce_status'] . '</status>' .
+            $dadosNota .
+            '</statusPedido>
 		</ws_integracao>]]>';
 
         $client = $this->getNusoapClientImportacaoInstance();
