@@ -1322,8 +1322,10 @@ class IntegradorWebStorm implements IntegradorECommerce
             $venda = $venda[0] ?? null;
             if ($venda) {
                 // se já existe, só confere o status
+                // O único status que pode ser alterado no sentido WebStorm -> Crosier é quando está em 'Aguardando Pagamento'
                 $vendaJsonData = json_decode($venda['json_data'], true);
-                if (($vendaJsonData['ecommerce_status'] ?? null) != $pedido->status->__toString()) {
+                if (($vendaJsonData['ecommerce_status_descricao'] === 'Aguardando Pagamento') &&
+                    (($vendaJsonData['ecommerce_status'] ?? null) != $pedido->status->__toString())) {
 
                     $vendaJsonData['ecommerce_status'] = $pedido->status->__toString();
                     $vendaJsonData['ecommerce_status_descricao'] = $pedido->desStatus->__toString();
