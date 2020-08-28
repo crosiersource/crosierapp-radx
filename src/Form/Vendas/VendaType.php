@@ -48,7 +48,7 @@ class VendaType extends AbstractType
             $venda = $event->getData();
             $builder = $event->getForm();
 
-            $disabled = $venda->getId() && $venda->status !== 'PV ABERTO';
+            $disabled = $venda->getId() && ($venda->status !== 'PV ABERTO');
 
             $builder->add('id', IntegerType::class, [
                 'label' => 'Id',
