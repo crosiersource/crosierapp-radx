@@ -1362,7 +1362,7 @@ class IntegradorWebStorm implements IntegradorECommerce
             $vendedorNaoIdentificado = $repoColaborador->findOneBy(['cpf' => '99999999999']);
             $venda->vendedor = $vendedorNaoIdentificado;
 
-            $venda->status = 'PV';
+            $venda->status = 'PV ABERTO';
 
             $cliente = $conn->fetchAll('SELECT id FROM crm_cliente WHERE documento = :documento', ['documento' => $pedido->cliente->cpf_cnpj->__toString()]);
             /** @var ClienteRepository $repoCliente */
