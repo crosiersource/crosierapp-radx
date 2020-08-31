@@ -57,51 +57,51 @@
                         <i class="fas fa-exclamation-circle"></i> Entrega na loja.
                     </div>
                 {% else %}
-                <div class="form-group">
-                    <fieldset class="form-group">
-                        <legend>Entrega</legend>
+                    <div class="form-group">
+                        <fieldset class="form-group">
+                            <legend>Entrega</legend>
 
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6">
-                                {{ form_row(form.jsonData['ecommerce_entrega_logradouro']) }}
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    {{ form_row(form.jsonData['ecommerce_entrega_logradouro']) }}
+                                </div>
+                                <div class="col-md-2 col-sm-2">
+                                    {{ form_row(form.jsonData['ecommerce_entrega_numero']) }}
+                                </div>
+                                <div class="col-md-4 col-sm-4">
+                                    {{ form_row(form.jsonData['ecommerce_entrega_complemento']) }}
+                                </div>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                {{ form_row(form.jsonData['ecommerce_entrega_numero']) }}
-                            </div>
-                            <div class="col-md-4 col-sm-4">
-                                {{ form_row(form.jsonData['ecommerce_entrega_complemento']) }}
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-2 col-sm-6">
-                                {{ form_row(form.jsonData['ecommerce_entrega_bairro']) }}
+                            <div class="row">
+                                <div class="col-md-2 col-sm-6">
+                                    {{ form_row(form.jsonData['ecommerce_entrega_bairro']) }}
+                                </div>
+                                <div class="col-md-2 col-sm-2">
+                                    {{ form_row(form.jsonData['ecommerce_entrega_cep']) }}
+                                </div>
+                                <div class="col-md-5 col-sm-4">
+                                    {{ form_row(form.jsonData['ecommerce_entrega_cidade']) }}
+                                </div>
+                                <div class="col-md-3 col-sm-4">
+                                    {{ form_row(form.jsonData['ecommerce_entrega_uf']) }}
+                                </div>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                {{ form_row(form.jsonData['ecommerce_entrega_cep']) }}
-                            </div>
-                            <div class="col-md-5 col-sm-4">
-                                {{ form_row(form.jsonData['ecommerce_entrega_cidade']) }}
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                {{ form_row(form.jsonData['ecommerce_entrega_uf']) }}
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
 
+                                </div>
+                                <div class="col-md-3 col-sm-3">
+                                    {{ form_row(form.jsonData['ecommerce_entrega_frete_calculado']) }}
+                                </div>
+                                <div class="col-md-3 col-sm-3">
+                                    {{ form_row(form.jsonData['ecommerce_entrega_frete_real']) }}
+                                </div>
                             </div>
-                            <div class="col-md-3 col-sm-3">
-                                {{ form_row(form.jsonData['ecommerce_entrega_frete_calculado']) }}
-                            </div>
-                            <div class="col-md-3 col-sm-3">
-                                {{ form_row(form.jsonData['ecommerce_entrega_frete_real']) }}
-                            </div>
-                        </div>
 
-                    </fieldset>
-                </div>
+                        </fieldset>
+                    </div>
                 {% endif %}
 
 
@@ -111,21 +111,20 @@
                             <i class="fas fa-save" aria-hidden="true"></i> Salvar
                         </button>
 
-                        <button type="button" value="Atualizar e-commerce" title="Atualizar e-commerce" class="btn btn-outline-primary"
+                        <button type="button" value="Atualizar e-commerce" title="Atualizar e-commerce"
+                                class="btn btn-outline-primary"
                                 data-url="{{ url('est_venda_integrarVendaParaECommerce', {'venda': e.id}) }}"
                                 data-target="#confirmationModal"
                                 data-toggle="modal">
                             <i class="fas fa-cloud-upload-alt"></i> Atualizar e-commerce
                         </button>
 
-                        {% if permiteFaturamento %}
-                            <button type="button" value="Nota Fiscal" class="btn btn-warning"
-                                    data-url="{{ url('ven_venda_gerarNotaFiscalEcommerce', {'venda': e.id}) }}"
-                                    data-target="#confirmationModal"
-                                    data-toggle="modal">
-                                <i class="fas fa-file-invoice" aria-hidden="true"></i> Nota Fiscal
-                            </button>
-                        {% endif %}
+                        <button type="button" value="Nota Fiscal" class="btn btn-warning"
+                                data-url="{{ url('ven_venda_gerarNotaFiscalEcommerce', {'venda': e.id}) }}"
+                                data-target="#confirmationModal"
+                                data-toggle="modal">
+                            <i class="fas fa-file-invoice" aria-hidden="true"></i> Nota Fiscal
+                        </button>
 
                     </div>
 
@@ -165,7 +164,8 @@
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>
-                                            <a href="{{ url('est_produto_form', {'id' : item.produto.id}) }}" target="_blank">
+                                            <a href="{{ url('est_produto_form', {'id' : item.produto.id}) }}"
+                                               target="_blank">
                                                 {{ item.id|strpad(9) }} - {{ item.descricao }}
                                             </a>
                                         </td>

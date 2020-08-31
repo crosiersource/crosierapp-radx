@@ -461,10 +461,6 @@ class VendaController extends FormListController
             'formPageTitle' => 'Venda'
         ];
 
-
-        $params['permiteFaturamento'] = $venda->getId() && $this->vendaBusiness->permiteFaturamento($venda);
-
-
         if (!$venda) {
             // Este formulário não serve para inserir novas vendas
             return $this->redirectToRoute('ven_venda_listVendasPorDiaComEcommerce');
@@ -560,6 +556,7 @@ class VendaController extends FormListController
     public function gerarNotaFiscalEcommerce(Request $request, Venda $venda): RedirectResponse
     {
         try {
+            $this->vendaBusiness->verificarPermiteFaturamento($venda);
             /** @var NotaFiscal $notaFiscal */
             $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
             if (!$notaFiscal) {
@@ -579,7 +576,12 @@ class VendaController extends FormListController
             }
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
         } catch (\Exception $e) {
-            $this->addFlash('error', $e->getMessage());
+            if ($e instanceof ViewException) {
+                $msg = $e->getMessage();
+            } else {
+                $msg = 'Ocorreu um erro ao faturar';
+            }
+            $this->addFlash('error', $msg);
             $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
             return $this->redirectToRoute($route, ['id' => $venda->getId()]);
         }
