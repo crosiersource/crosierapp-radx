@@ -1397,15 +1397,32 @@ class IntegradorWebStorm implements IntegradorECommerce
                 $cliente->jsonData['fone1'] = $clienteECommerce->telefone1->__toString();
                 $cliente->jsonData['fone2'] = $clienteECommerce->telefone2->__toString();
 
-                $cliente->jsonData['enderecos'][] = [
-                    'tipo' => 'ENTREGA,FATURAMENTO',
-                    'logradouro' => $clienteECommerce->endereco->__toString(),
-                    'numero' => $clienteECommerce->numero->__toString(),
-                    'complemento' => $clienteECommerce->complemento->__toString(),
-                    'bairro' => $clienteECommerce->bairro->__toString(),
-                    'cidade' => $clienteECommerce->cidade->__toString(),
-                    'estado' => $clienteECommerce->estado->__toString(),
-                ];
+                $encontrouMesmo = false;
+                if (($cliente->jsonData['enderecos'] ?? false) && count($cliente->jsonData['enderecos']) > 0) {
+                    foreach ($cliente->jsonData['enderecos'] as $endereco) {
+                        if (($endereco['tipo'] === 'ENTREGA,FATURAMENTO') &&
+                            ($endereco['logradouro'] === $clienteECommerce->endereco->__toString()) &&
+                            ($endereco['numero'] === $clienteECommerce->numero->__toString()) &&
+                            ($endereco['complemento'] === $clienteECommerce->complemento->__toString()) &&
+                            ($endereco['bairro'] === $clienteECommerce->bairro->__toString()) &&
+                            ($endereco['cidade'] === $clienteECommerce->cidade->__toString()) &&
+                            ($endereco['estado'] === $clienteECommerce->estado->__toString())) {
+                            $encontrouMesmo = true;
+                        }
+                    }
+                }
+
+                if (!$encontrouMesmo) {
+                    $cliente->jsonData['enderecos'][] = [
+                        'tipo' => 'ENTREGA,FATURAMENTO',
+                        'logradouro' => $clienteECommerce->endereco->__toString(),
+                        'numero' => $clienteECommerce->numero->__toString(),
+                        'complemento' => $clienteECommerce->complemento->__toString(),
+                        'bairro' => $clienteECommerce->bairro->__toString(),
+                        'cidade' => $clienteECommerce->cidade->__toString(),
+                        'estado' => $clienteECommerce->estado->__toString(),
+                    ];
+                }
 
                 $cliente->jsonData['email'] = $clienteECommerce->email->__toString();
                 $cliente->jsonData['canal'] = 'ECOMMERCE';
@@ -1458,7 +1475,7 @@ class IntegradorWebStorm implements IntegradorECommerce
             foreach ($pedido->produtos->produto as $produtoWebStorm) {
                 $totalProdutos = bcadd($totalProdutos, bcmul($produtoWebStorm->quantidade, $produtoWebStorm->valorUnitario, 2), 2);
             }
-            $pDesconto = bcdiv($descontoTotal, $totalProdutos, 4);
+            $pDesconto = bcdiv($descontoTotal, $totalProdutos, 8);
 
 
             // Salvo aqui para poder pegar o id
@@ -1507,7 +1524,7 @@ class IntegradorWebStorm implements IntegradorECommerce
             }
             if ($descontoTotal !== $descontoAcum) {
                 $diff = $descontoTotal - $descontoAcum;
-                $vendaItem->desconto = bcadd($vendaItem->desconto, $diff);
+                $vendaItem->desconto = bcadd($vendaItem->desconto, $diff, 2);
                 $this->vendaItemEntityHandler->save($vendaItem);
             }
 
