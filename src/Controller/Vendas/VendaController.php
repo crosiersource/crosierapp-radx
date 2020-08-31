@@ -461,7 +461,9 @@ class VendaController extends FormListController
             'formPageTitle' => 'Venda'
         ];
 
-        $params['permiteFaturamento'] = ($venda->jsonData['ecommerce_status_descricao'] ?? '') === 'Pedido em Separação';
+
+        $params['permiteFaturamento'] = $venda->getId() && $this->vendaBusiness->permiteFaturamento($venda);
+
 
         if (!$venda) {
             // Este formulário não serve para inserir novas vendas

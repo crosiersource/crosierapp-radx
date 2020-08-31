@@ -157,9 +157,14 @@ class VendaType extends AbstractType
             function (FormEvent $event) use ($jsonMetadata) {
                 /** @var Venda $venda */
                 $venda = $event->getData();
+
                 if ($venda->getId()) {
                     $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM ven_venda WHERE id = :id', ['id' => $venda->getId()])['json_data'] ?? '{}', true);
-                    $venda->jsonData = array_merge($jsonDataOrig, $venda->jsonData);
+                    foreach ($jsonDataOrig as $campo => $valor) {
+                        if (!($_POST['venda']['jsonData'][$campo] ?? false)) {
+                            $venda->jsonData[$campo] = $valor;
+                        }
+                    }
                     $event->setData($venda);
                 }
             }
