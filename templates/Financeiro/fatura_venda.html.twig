@@ -12,6 +12,7 @@
                 <div class="row">
                     <div class="col-8">
                         <h3>Fatura de Venda</h3>
+                        <h6>{{ venda.dtVenda|date('d/m/Y') }} - {{ venda.jsonData.cliente_nome|default('') }}</h6>
                     </div>
                     <div class="col-4 text-right">
                         <a role="button" class="btn btn-outline-secondary" href="{{ url('carteira_list') }}"
@@ -27,52 +28,50 @@
 
                 <div class="table-responsive-sm">
 
-                    <table class="table table-sm table-striped table-hover crsr-datatable">
+                    <form action="{{ url('fin_fatura_visualizarFaturaVenda', {'fatura': e.id}) }}">
+                        <table class="table table-sm table-striped table-hover crsr-datatable">
 
-                        <thead>
+                            <thead>
 
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Categoria<br/>Modo</th>
-                            <th scope="col">Descrição</th>
-                            <th scope="col">Dt Vencto<br/>Dt Pagto</th>
-                            <th scope="col">Valor Total</th>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for mov in e.movimentacoes %}
                             <tr>
-                                <td>
-                                    {{ mov.id }}
-                                    <br/>
-                                    <span class="badge badge-pill badge-light">{{ loop.index }}</span>
-                                </td>
-                                <td>
-                                    {{ mov.carteira.descricaoMontada }}
-                                </td>
-                                <td>
-                                    <b>{{ mov.descricao }}</b><br/>
-                                    {{ mov.modo.descricaoMontada }}
-                                </td>
-                                <td>
-                                        <span title="Dt Vencto: {{ mov.dtVencto|date('d/m/Y') }}">
-                                            {{ mov.dtVenctoEfetiva|date('d/m/Y') }}
-                                        </span>
-                                </td>
-                                <td class="text-right"
-                                    style="color: white; background-color: {{ mov.categoria.codigoSuper == 1 ? 'dodgerblue' : 'indianred' }}">
-                                    {{ mov.valorTotal|number_format(2,',','.') }}
-                                </td>
-                                <td class="text-right">
-                                </td>
+                                <th scope="col">Id</th>
+                                <th scope="col">Carteira<br/>Modo</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col">Dt Vencto</th>
+                                <th scope="col">Valor Total</th>
+                                <th scope="col"></th>
                             </tr>
-                        {% endfor %}
+                            </thead>
 
-                        </tbody>
+                            <tbody>
+                            {% for mov in e.movimentacoes %}
+                                <tr>
+                                    <td>
+                                        {{ mov.id }}
+                                    </td>
+                                    <td>
+                                        {{ mov.carteira.getDescricaoMontada() }}<br>
+                                        {{ mov.modo.descricaoMontada }}
+                                    </td>
+                                    <td>
+                                        <b>{{ mov.descricao }}</b><br/>
+                                    </td>
+                                    <td>
+                                        {{ mov.dtVencto|date('d/m/Y') }}
+                                    </td>
+                                    <td class="text-right"
+                                        style="color: white; background-color: {{ mov.categoria.codigoSuper == 1 ? 'dodgerblue' : 'indianred' }}">
+                                        {{ mov.valorTotal|number_format(2,',','.') }}
+                                    </td>
+                                    <td class="text-right">
+                                    </td>
+                                </tr>
+                            {% endfor %}
 
-                    </table>
+                            </tbody>
+
+                        </table>
+                    </form>
                 </div>
 
 

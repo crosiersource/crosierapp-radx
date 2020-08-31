@@ -5,6 +5,7 @@ namespace App\Controller\Financeiro;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Fatura;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\FaturaEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -36,11 +37,17 @@ class FaturaController extends FormListController
      *
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function form(Request $request, Fatura $fatura = null)
+    public function visualizarFaturaVenda(Request $request, Fatura $fatura = null)
     {
         $params = [
             'e' => $fatura
         ];
+        if ($fatura->jsonData['venda_id'] ?? false) {
+            $venda = $this->getDoctrine()->getRepository(Venda::class)->find($fatura->jsonData['venda_id']);
+            $params['venda'] = $venda;
+        } else {
+            throw new \RuntimeException('Fatura de venda sem jsonData[venda_id]');
+        }
         return $this->doRender('Financeiro/fatura_venda.html.twig', $params);
     }
 
