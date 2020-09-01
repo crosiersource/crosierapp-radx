@@ -199,16 +199,22 @@ class VendaController extends FormListController
                     }
                 }
             }
-        } else if ($venda) {
-            $vendaRequest = $request->request->get('venda');
+        }
+
+        $vendaRequest = $request->request->get('venda');
+        if ($vendaRequest) {
             // Nos casos onde troca-se o cliente de uma venda por um novo
-            if ($venda->cliente && ($venda->cliente->documento !== $vendaRequest['jsonData']['cliente_documento'])) {
-                $venda->cliente = null;
-                $venda->jsonData['cliente_documento'] = $vendaRequest['jsonData']['cliente_documento'] ?? '';
-                $venda->jsonData['cliente_nome'] = $vendaRequest['jsonData']['cliente_nome'] ?? '';
-                $venda->jsonData['cliente_email'] = $vendaRequest['jsonData']['cliente_email'] ?? '';
-                $venda->jsonData['cliente_fone'] = $vendaRequest['jsonData']['cliente_fone'] ?? '';
+            if ($venda) {
+                if ($venda->cliente && ($venda->cliente->documento !== $vendaRequest['jsonData']['cliente_documento'])) {
+                    $venda->cliente = null;
+                }
+            } else {
+                $venda = new Venda();
             }
+            $venda->jsonData['cliente_documento'] = $vendaRequest['jsonData']['cliente_documento'] ?? '';
+            $venda->jsonData['cliente_nome'] = $vendaRequest['jsonData']['cliente_nome'] ?? '';
+            $venda->jsonData['cliente_email'] = $vendaRequest['jsonData']['cliente_email'] ?? '';
+            $venda->jsonData['cliente_fone'] = $vendaRequest['jsonData']['cliente_fone'] ?? '';
         }
 
 

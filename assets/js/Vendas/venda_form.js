@@ -274,7 +274,7 @@ $(document).ready(function () {
             // Para deixar sempre em UPPERCASE
             $cliente_nome.empty().trigger("change");
             $cliente_nome.append(new Option(o.text.toUpperCase(), o.text.toUpperCase(), false, false)).trigger('change');
-            if ($cliente.val()) {
+            if (!$cliente.val()) {
                 $cliente_documento.val('');
                 $cliente.val('');
             }
