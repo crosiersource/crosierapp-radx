@@ -279,8 +279,8 @@ $(document).ready(function () {
                 $cliente.val('');
             }
         }
-        $cliente_fone.val(o?.json_data?.fone1);
-        $cliente_email.val(o?.json_data?.email);
+        $cliente_fone.val(o?.json_data?.fone1 ?? '');
+        $cliente_email.val(o?.json_data?.email ?? '');
 
         CrosierMasks.maskDecs();
     });
@@ -295,6 +295,16 @@ $(document).ready(function () {
         $item_produto.select2('focus');
     }
 
+
+    /**
+     * RTA: como o venda_jsonData_cliente_nome é adicionando manualmente sem o form do symfony (para poder ser um
+     * select2js), e mais tarde é necessário adicionar os demais campos json_data com o {{ form_widget(form) }}
+     * então o Symfony vai adicionar outro venda_jsonData_cliente_nome, porém do tipo input text. Removemos ele
+     * do DOM para não ser submetido.
+     *
+     *
+     */
+    $('input[type=text]#venda_jsonData_cliente_nome').remove();
 
 });
 

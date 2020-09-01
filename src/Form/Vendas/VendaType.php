@@ -150,26 +150,6 @@ class VendaType extends AbstractType
             }
         );
 
-
-        // Necessário para os casos onde o formulário não tem todos os campos do json_data (para que eles não desapareçam por conta disto)
-        $builder->addEventListener(
-            FormEvents::SUBMIT,
-            function (FormEvent $event) use ($jsonMetadata) {
-                /** @var Venda $venda */
-                $venda = $event->getData();
-
-                if ($venda->getId()) {
-                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM ven_venda WHERE id = :id', ['id' => $venda->getId()])['json_data'] ?? '{}', true);
-                    foreach ($jsonDataOrig as $campo => $valor) {
-                        if (!($_POST['venda']['jsonData'][$campo] ?? false)) {
-                            $venda->jsonData[$campo] = $valor;
-                        }
-                    }
-                    $event->setData($venda);
-                }
-            }
-        );
-
     }
 
     public function configureOptions(OptionsResolver $resolver)
