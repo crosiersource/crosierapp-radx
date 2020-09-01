@@ -1405,6 +1405,7 @@ class IntegradorWebStorm implements IntegradorECommerce
                             ($endereco['numero'] === $clienteECommerce->numero->__toString()) &&
                             ($endereco['complemento'] === $clienteECommerce->complemento->__toString()) &&
                             ($endereco['bairro'] === $clienteECommerce->bairro->__toString()) &&
+                            ($endereco['cep'] === $clienteECommerce->cep->__toString()) &&
                             ($endereco['cidade'] === $clienteECommerce->cidade->__toString()) &&
                             ($endereco['estado'] === $clienteECommerce->estado->__toString())) {
                             $encontrouMesmo = true;
@@ -1419,6 +1420,7 @@ class IntegradorWebStorm implements IntegradorECommerce
                         'numero' => $clienteECommerce->numero->__toString(),
                         'complemento' => $clienteECommerce->complemento->__toString(),
                         'bairro' => $clienteECommerce->bairro->__toString(),
+                        'cep' => $clienteECommerce->cep->__toString(),
                         'cidade' => $clienteECommerce->cidade->__toString(),
                         'estado' => $clienteECommerce->estado->__toString(),
                     ];
