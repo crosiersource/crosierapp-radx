@@ -33,6 +33,15 @@
                             <i class="fas fa-list"></i>
                         </a>
 
+                        {% if e.id %}
+                            <button type="button" class="btn btn-outline-warning"
+                                    data-url="{{ url('ven_venda_clonar', {'venda': e.id}) }}"
+                                    data-token="{{ csrf_token('ven_venda_clonar') }}" title="Clonar"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        {% endif %}
+
 
                     </div>
                 </div>
@@ -45,8 +54,6 @@
 
                 {{ form_start(form) }}
                 {{ form_widget(form._token) }}
-
-
 
 
                 <div class="row">

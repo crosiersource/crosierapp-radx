@@ -1042,4 +1042,33 @@ class VendaController extends FormListController
     }
 
 
+    /**
+     *
+     * @Route("/venda/venda/clonar/{venda}/", name="ven_venda_clonar", requirements={"venda"="\d+"})
+     *
+     * @param Request $request
+     * @param Venda $venda
+     * @return RedirectResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function clonar(Request $request, Venda $venda): RedirectResponse
+    {
+        try {
+            if (!$this->isCsrfTokenValid('ven_venda_clonar', $request->get('token'))) {
+                throw new ViewException('Token inválido');
+            }
+            $clone = $this->entityHandler->doClone($venda);
+            $this->addFlash('success', 'Registro clonado com sucesso');
+            return $this->redirectToRoute('ven_venda_form', ['id' => $clone->getId()]);
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao clonar o registro');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+            return $this->redirectToRoute('ven_venda_form', ['id' => $venda->getId()]);
+        }
+    }
+
+
 }
