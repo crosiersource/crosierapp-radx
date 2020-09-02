@@ -48,7 +48,12 @@
                                                 {% for subgrupo in grupo.subgrupos %}
                                                     <li class="list-group-item">
                                                         <i class="fas fa-angle-double-right"></i>
-                                                        {{ subgrupo.codigo }} - {{ subgrupo.nome }}
+                                                        <div style="float: left">
+                                                            {{ subgrupo.codigo }} - {{ subgrupo.nome }}
+                                                        </div>
+                                                        <div class="text-right">
+                                                            <span class="badge badge-secondary"> {{ subgrupo.qtdeTotalProdutos }}</span>
+                                                        </div>
                                                     </li>
                                                 {% endfor %}
                                             </ul>
@@ -106,11 +111,13 @@
                                                             <span class="badge badge-secondary">{{ depto.jsonData.ecommerce_id }}</span>
                                                         {% endif %}
 
-                                                        <button type="submit" class="btn btn-sm btn-primary" title="Salvar"
+                                                        <button type="submit" class="btn btn-sm btn-primary"
+                                                                title="Salvar"
                                                                 value="Salvar">
                                                             <i class="fas fa-save" aria-hidden="true"></i>
                                                         </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" title="Deletar"
+                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                title="Deletar"
                                                                 data-url="{{ url('est_deptoGrupoSubgrupo_deptoDelete', {'depto' : depto.id}) }}"
                                                                 data-target="#confirmationModal" data-toggle="modal">
                                                             <i class="fa fa-trash" aria-hidden="true"></i>
@@ -119,7 +126,8 @@
                                                 </tr>
                                             </form>
                                         {% endfor %}
-                                        <form action="{{ url('est_deptoGrupoSubgrupo_deptoSave') }}" method="post" id="formDepto">
+                                        <form action="{{ url('est_deptoGrupoSubgrupo_deptoSave') }}" method="post"
+                                              id="formDepto">
                                             <tr>
                                                 <td></td>
                                                 <td><input type="text" class="form-control" name="depto[codigo]"
@@ -189,11 +197,13 @@
                                                                 <span class="badge badge-secondary">{{ grupo.jsonData.ecommerce_id }}</span>
                                                             {% endif %}
 
-                                                            <button type="submit" class="btn btn-sm btn-primary" title="Salvar"
+                                                            <button type="submit" class="btn btn-sm btn-primary"
+                                                                    title="Salvar"
                                                                     value="Salvar">
                                                                 <i class="fas fa-save" aria-hidden="true"></i> Salvar
                                                             </button>
-                                                            <button type="button" class="btn btn-sm btn-danger" title="Deletar"
+                                                            <button type="button" class="btn btn-sm btn-danger"
+                                                                    title="Deletar"
                                                                     data-url="{{ url('est_deptoGrupoSubgrupo_grupoDelete', {'grupo' : grupo.id}) }}"
                                                                     data-target="#confirmationModal"
                                                                     data-toggle="modal">

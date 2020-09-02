@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Entrada;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\EntradaItem;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
@@ -95,22 +96,21 @@ class EntradaController extends FormListController
             'status',
         ];
 
-//        $fnGetFilterDatas = function (array $params) use ($request) : array {
-//            $filterDatas = [
-//                new FilterData(['id'], 'EQ', 'id', $params),
-//                new FilterData(['nome'], 'LIKE', 'nome', $params),
-//                new FilterData(['depto'], 'EQ', 'depto', $params),
-//                new FilterData(['grupo'], 'EQ', 'grupo', $params),
-//                new FilterData(['subgrupo'], 'EQ', 'subgrupo', $params),
-//                new FilterData(['fornecedor_nomeFantasia', 'fornecedor_nome'], 'LIKE', 'fornecedor', $params, null, true),
-//            ];
-//
-//            return $filterDatas;
-//        };
-
+        $fnGetFilterDatas = function (array $params) use ($request) : array {
+            return [
+                new FilterData(['id'], 'EQ', 'id', $params),
+                new FilterData(['descricao'], 'LIKE', 'descricao', $params),
+                new FilterData(['status'], 'EQ', 'status', $params),
+                new FilterData(['dtLote'], 'BETWEEN_DATE', 'dtLote', $params),
+            ];
+        };
 
         $params['limit'] = 200;
 
+        $params['statuss'] = json_encode([
+            ['id' => 'ABERTO', 'text' => 'ABERTO'],
+            ['id' => 'INTEGRADO', 'text' => 'INTEGRADO'],
+        ]);
 
         $fnHandleDadosList = function (array &$dados, int $totalRegistros) use ($params) {
             if (count($dados) >= $params['limit'] && $totalRegistros > $params['limit']) {
@@ -118,7 +118,7 @@ class EntradaController extends FormListController
             }
         };
 
-        return $this->doListSimpl($request, $params, null, $fnHandleDadosList);
+        return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);
     }
 
     /**

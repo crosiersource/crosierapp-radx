@@ -26,6 +26,92 @@
 
         <div class="card-body">
 
+            <form name="form_entrada_list" id="form_entrada_list">
+
+                <input type="hidden" name="filter_order" id="filter_order">
+
+                <div class="row">
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_codigo">Id</label>
+                            <input type="number" id="filter_codigo" name="filter[id]"
+                                   class="form-control"
+                                   value="{{ filter['id']|default('') }}">
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-8 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_descricao">Descrição</label>
+                            <input type="text" id="filter_descricao" name="filter[descricao]"
+                                   class="form-control"
+                                   value="{{ filter['descricao']|default('') }}">
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 col-sm-12">
+
+                        <div class="form-group">
+                            <label>Dt Lote</label>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="date" size="15" class="form-control" name="filter[dtLote][i]"
+                                           value="{{ filter.dtLote.i|default('') }}">
+                                </div>
+                                <div class="col">
+                                    <input type="date" size="15" class="form-control" name="filter[dtLote][f]"
+                                           value="{{ filter.dtLote.f|default('') }}">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_status">Status</label>
+                            <select id="filter_status" name="filter[status]"
+                                    data-options="{{ statuss }}"
+                                    class="form-control autoSelect2"
+                                    data-val="{{ filter['status']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="btnFiltrar">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-block" id="btnFiltrar" title="Pesquisar">
+                                <i class="fas fa-search"></i> Pesquisar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-12">
+                        <div class="form-group">
+                            <label for="btnRecarregar">&nbsp;</label>
+                            <a role="button" class="btn btn-secondary btn-block" id="btnRecarregar"
+                               title="Limpar filtros e recarregar" href="{{ url('est_entrada_list', {'r':1}) }}">
+                                <i class="fas fa-redo-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </form>
+
 
             <div class="row">
                 <div class="col">

@@ -774,16 +774,15 @@ class ProdutoController extends FormListController
         ];
 
         $fnGetFilterDatas = function (array $params) use ($request) : array {
-            $filterDatas = [
+            return [
                 new FilterData(['id'], 'EQ', 'id', $params),
+                new FilterData(['codigo'], 'LIKE', 'codigo', $params),
                 new FilterData(['nome'], 'LIKE', 'nome', $params),
                 new FilterData(['depto'], 'EQ', 'depto', $params),
                 new FilterData(['grupo'], 'EQ', 'grupo', $params),
                 new FilterData(['subgrupo'], 'EQ', 'subgrupo', $params),
                 new FilterData(['fornecedor_nomeFantasia', 'fornecedor_nome'], 'LIKE', 'fornecedor', $params, null, true),
             ];
-
-            return $filterDatas;
         };
 
 
@@ -861,6 +860,14 @@ class ProdutoController extends FormListController
             $preco->dtPrecoVenda = DateTimeUtils::parseDateStr($produtoPrecoArr['dtCusto'] ?: (new \DateTime())->format('d/m/Y'));
 
             $this->produtoPrecoEntityHandler->save($preco);
+
+            // campos para facilitar o acesso
+            $produto->jsonData['preco_custo'] = $preco->precoCusto;
+            if ($preco->lista->descricao === 'VAREJO') {
+                $produto->jsonData['preco_varejo'] = $preco->precoPrazo;
+             } else if ($preco->lista->descricao === 'ATACADO') {
+                $produto->jsonData['preco_atacado'] = $preco->precoPrazo;
+            }
 
 
             $listasPrecos = [];

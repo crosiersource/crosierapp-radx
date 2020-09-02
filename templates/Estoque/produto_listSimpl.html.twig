@@ -34,15 +34,24 @@
 
                     <div class="col-md-2 col-sm-12">
                         <div class="form-group">
-                            <label for="filter_codigo">Id</label>
-                            <input type="number" id="filter_codigo" name="filter[id]"
+                            <label for="filter_id">Id</label>
+                            <input type="number" id="filter_id" name="filter[id]"
                                    class="form-control"
                                    value="{{ filter['id']|default('') }}">
                         </div>
                     </div>
 
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="filter_codigo">Código</label>
+                            <input type="number" id="filter_codigo" name="filter[codigo]"
+                                   class="form-control"
+                                   value="{{ filter['codigo']|default('') }}">
+                        </div>
+                    </div>
 
-                    <div class="col-md-6 col-sm-12">
+
+                    <div class="col-md-5 col-sm-12">
                         <div class="form-group">
                             <label for="filter_nome">Nome</label>
                             <input type="text" id="filter_nome" name="filter[nome]"
@@ -51,7 +60,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-3 col-sm-12">
                         <div class="form-group">
                             <label for="filter_fornecedor">Fornecedor</label>
                             <input type="text" id="filter_fornecedor" name="filter[fornecedor]"
@@ -136,7 +145,7 @@
                         <th scope="col">Código</th>
                         <th scope="col">Nome</th>
                         <th scope="col">Fornecedor</th>
-                        <th scope="col">Preço</th>
+                        <th scope="col">Preços</th>
                         <th scope="col"></th>
                     </tr>
                     </thead>
@@ -155,7 +164,19 @@
                                 <span class="badge badge-success">::: {{ e.subgrupo.codigo }} - {{ e.subgrupo.nome }}</span>
                             </td>
                             <td>{{ e.jsonData.fornecedor_nomeFantasia ? e.jsonData.fornecedor_nomeFantasia : e.jsonData.fornecedor_nome }}</td>
-                            <td>{{ e.jsonData.info_precos|default('') }}</td>
+                            <td class="text-right">
+                                <div style="float: left">
+                                    Preço Custo: R$ {{ e.jsonData.preco_custo|default(0)|number_format(2,',','.') }}
+                                    <br/>
+                                </div>
+                                <div class="text-right">
+                                    Preço Varejo:
+                                    <b>R$ {{ e.jsonData.preco_varejo|default(0)|number_format(2,',','.') }}</b><br/>
+                                    Preço Atacado <span
+                                            class="badge badge-secondary"> Mín: {{ e.jsonData.qtde_min_para_atacado|default(0) }}</span>:
+                                    R$ {{ e.jsonData.preco_atacado|default(0)|number_format(2,',','.') }}
+                                </div>
+                            </td>
 
                             <td class="text-right">
                                 <a role="button" class="btn btn-primary btn-sm" title="Editar registro"

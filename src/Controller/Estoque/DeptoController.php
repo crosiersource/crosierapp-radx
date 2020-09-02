@@ -14,6 +14,7 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\SubgrupoEntityHandl
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\SubgrupoRepository;
+use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,6 +76,23 @@ class DeptoController extends BaseController
         $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
         $deptos = $repoDepto->findAll(['codigo' => 'ASC']);
         $parameters = [];
+
+        /** @var Connection $conn */
+        $conn = $this->getDoctrine()->getConnection();
+        $stmt_qtdePorSubgrupo = $conn->prepare('SELECT count(*) as qt FROM est_produto WHERE subgrupo_id = :subgrupoId');
+
+        /** @var Depto $depto */
+        foreach ($deptos as $depto) {
+            foreach ($depto->grupos as $grupo) {
+                foreach ($grupo->subgrupos as $subgrupo) {
+                    $stmt_qtdePorSubgrupo->bindValue('subgrupoId', $subgrupo->getId());
+                    $stmt_qtdePorSubgrupo->execute();
+                    $rs_qtdePorSubgrupo = $stmt_qtdePorSubgrupo->fetchAll();
+                    $subgrupo->qtdeTotalProdutos = $rs_qtdePorSubgrupo[0]['qt'] ?? 0;
+                }
+            }
+        }
+
         $parameters['deptos'] = $deptos;
 
         /** @var GrupoRepository $repoGrupo */
