@@ -562,9 +562,16 @@ class VendaController extends FormListController
     public function gerarNotaFiscalEcommerce(Request $request, Venda $venda): RedirectResponse
     {
         try {
-            $this->vendaBusiness->verificarPermiteFaturamento($venda);
+
             /** @var NotaFiscal $notaFiscal */
             $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+
+            if ($notaFiscal) {
+                return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
+            }
+
+            $this->vendaBusiness->verificarPermiteFaturamento($venda);
+
             if (!$notaFiscal) {
                 $notaFiscal = new NotaFiscal();
                 $notaFiscal->setTipoNotaFiscal('NFE');

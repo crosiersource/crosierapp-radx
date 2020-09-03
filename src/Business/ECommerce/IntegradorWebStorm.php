@@ -1400,14 +1400,14 @@ class IntegradorWebStorm implements IntegradorECommerce
                 $encontrouMesmo = false;
                 if (($cliente->jsonData['enderecos'] ?? false) && count($cliente->jsonData['enderecos']) > 0) {
                     foreach ($cliente->jsonData['enderecos'] as $endereco) {
-                        if (($endereco['tipo'] === 'ENTREGA,FATURAMENTO') &&
-                            ($endereco['logradouro'] === $clienteECommerce->endereco->__toString()) &&
-                            ($endereco['numero'] === $clienteECommerce->numero->__toString()) &&
-                            ($endereco['complemento'] === $clienteECommerce->complemento->__toString()) &&
-                            ($endereco['bairro'] === $clienteECommerce->bairro->__toString()) &&
-                            ($endereco['cep'] === $clienteECommerce->cep->__toString()) &&
-                            ($endereco['cidade'] === $clienteECommerce->cidade->__toString()) &&
-                            ($endereco['estado'] === $clienteECommerce->estado->__toString())) {
+                        if ((($endereco['tipo'] ?? '') === 'ENTREGA,FATURAMENTO') &&
+                            (($endereco['logradouro'] ?? '') === $clienteECommerce->endereco->__toString()) &&
+                            (($endereco['numero'] ?? '') === $clienteECommerce->numero->__toString()) &&
+                            (($endereco['complemento'] ?? '') === $clienteECommerce->complemento->__toString()) &&
+                            (($endereco['bairro'] ?? '') === $clienteECommerce->bairro->__toString()) &&
+                            (($endereco['cep'] ?? '') === $clienteECommerce->cep->__toString()) &&
+                            (($endereco['cidade'] ?? '') === $clienteECommerce->cidade->__toString()) &&
+                            (($endereco['estado'] ?? '') === $clienteECommerce->estado->__toString())) {
                             $encontrouMesmo = true;
                         }
                     }
