@@ -163,7 +163,7 @@
                                 <span class="badge badge-secondary">:: {{ e.grupo.codigo }} - {{ e.grupo.nome }}</span>
                                 <span class="badge badge-success">::: {{ e.subgrupo.codigo }} - {{ e.subgrupo.nome }}</span>
                             </td>
-                            <td>{{ e.jsonData.fornecedor_nomeFantasia ? e.jsonData.fornecedor_nomeFantasia : e.jsonData.fornecedor_nome }}</td>
+                            <td>{{ e.jsonData.fornecedor_nomeFantasia|default('') != '' ? e.jsonData.fornecedor_nomeFantasia : e.jsonData.fornecedor_nome|default('') }}</td>
                             <td class="text-right">
                                 <div style="float: left">
                                     Preço Custo: R$ {{ e.jsonData.preco_custo|default(0)|number_format(2,',','.') }}
