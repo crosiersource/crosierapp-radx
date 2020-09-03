@@ -191,7 +191,7 @@ CREATE TABLE `fis_nf_item`
     `icms`               decimal(15, 2),
     `icms_valor`         decimal(15, 2),
     `icms_valor_bc`      decimal(15, 2),
-    `icms_mod_bc`        decimal(15, 2),
+    `icms_mod_bc`        varchar(10),
 
     `pis`                decimal(15, 2),
     `pis_valor`          decimal(15, 2),
