@@ -2,9 +2,9 @@
 
 namespace App\Command\ECommerce;
 
-use App\Business\ECommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorWebStorm;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,7 +31,7 @@ class IntegrarWebStormCommand extends Command
     protected function configure()
     {
         $this->setName('crosierappradx:integrarWebStorm');
-        $this->addArgument('tipoIntegracao', InputArgument::REQUIRED, 'Tipo de Integração: "vendas", "produtos", "estoqueEprecos"');
+        $this->addArgument('tipoIntegracao', InputArgument::REQUIRED, 'Tipo de Integração: "vendas", "reintegrarProdutosDesatualizados"');
         $this->addArgument('dtBase', InputArgument::OPTIONAL, 'Data Base');
     }
 
@@ -73,24 +73,13 @@ class IntegrarWebStormCommand extends Command
                     $output->writeln($e->getTraceAsString());
                 }
                 break;
-            case 'produtos':
+            case 'reintegrarProdutosDesatualizados':
                 try {
-                    $output->writeln('Integrando produtos');
-                    $qtde = $this->integraWebStorm->reenviarProdutosParaIntegracao();
-                    $output->writeln('OK: ' . $qtde . ' produtos marcados para integração');
+                    $output->writeln('Reenviando para integração produtos alterados');
+                    $qtde = $this->integraWebStorm->reenviarParaIntegracaoProdutosAlterados();
+                    $output->writeln('OK: ' . $qtde . ' produtos enviados');
                 } catch (ViewException $e) {
-                    $output->writeln('Erro ao reenviarProdutosParaIntegracao');
-                    $output->writeln($e->getMessage());
-                    $output->writeln($e->getTraceAsString());
-                }
-                break;
-            case 'estoqueEprecos':
-                try {
-                    $output->writeln('Atualizando estoques e preços');
-                    $qtde = $this->integraWebStorm->atualizaEstoqueEPrecos();
-                    $output->writeln('OK: ' . $qtde . ' produtos atualizados');
-                } catch (ViewException $e) {
-                    $output->writeln('Erro ao atualizaEstoqueEPrecos');
+                    $output->writeln('Erro ao reenviarParaIntegracaoProdutosAlterados');
                     $output->writeln($e->getMessage());
                     $output->writeln($e->getTraceAsString());
                 }
@@ -100,11 +89,5 @@ class IntegrarWebStormCommand extends Command
         }
         return 1;
     }
-
-    private function integrarVendas()
-    {
-
-    }
-
 
 }

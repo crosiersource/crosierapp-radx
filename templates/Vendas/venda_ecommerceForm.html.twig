@@ -111,20 +111,30 @@
                             <i class="fas fa-save" aria-hidden="true"></i> Salvar
                         </button>
 
-                        <button type="button" value="Atualizar e-commerce" title="Atualizar e-commerce"
-                                class="btn btn-outline-primary"
-                                data-url="{{ url('est_venda_integrarVendaParaECommerce', {'venda': e.id}) }}"
-                                data-target="#confirmationModal"
-                                data-toggle="modal">
-                            <i class="fas fa-cloud-upload-alt"></i> Atualizar e-commerce
-                        </button>
+                        {#
+                        agora está sendo chamado sempre após resalvar a venda...
+                    <button type="button" value="Atualizar e-commerce" title="Atualizar e-commerce"
+                            class="btn btn-outline-primary"
+                            data-url="{{ url('est_venda_integrarVendaParaECommerce', {'venda': e.id}) }}"
+                            data-target="#confirmationModal"
+                            data-toggle="modal">
+                        <i class="fas fa-cloud-upload-alt"></i> Atualizar e-commerce
+                    </button>
+                        #}
 
-                        <button type="button" value="Nota Fiscal" class="btn btn-warning"
-                                data-url="{{ url('ven_venda_gerarNotaFiscalEcommerce', {'venda': e.id}) }}"
-                                data-target="#confirmationModal"
-                                data-toggle="modal">
-                            <i class="fas fa-file-invoice" aria-hidden="true"></i> Nota Fiscal
-                        </button>
+                        {% if notaFiscalVendaId|default(false) %}
+                            <a role="button" class="btn btn-warning"
+                               href="{{ url('fis_emissaonfe_form', {'id': notaFiscalVendaId}) }}">
+                                <i class="fas fa-file-invoice" aria-hidden="true"></i> Nota Fiscal
+                            </a>
+                        {% else %}
+                            <button type="button" value="Nota Fiscal" class="btn btn-warning"
+                                    data-url="{{ url('ven_venda_gerarNotaFiscalEcommerce', {'venda': e.id}) }}"
+                                    data-target="#confirmationModal"
+                                    data-toggle="modal">
+                                <i class="fas fa-file-invoice" aria-hidden="true"></i> Nota Fiscal
+                            </button>
+                        {% endif %}
 
                     </div>
 

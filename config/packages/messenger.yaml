@@ -11,4 +11,5 @@ framework:
 
         routing:
             # Route your messages to the transports
-            'App\Messenger\Message\IntegrarProdutoEcommerceMessage': async
+            'CrosierSource\CrosierLibRadxBundle\Messenger\ECommerce\Message\IntegrarProdutoEcommerceMessage': async
+            'CrosierSource\CrosierLibRadxBundle\Messenger\ECommerce\Message\IntegrarEstoqueEPrecosEcommerceMessage': async

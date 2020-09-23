@@ -457,7 +457,7 @@ class VendaController extends FormListController
      * @throws ViewException
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function ecommerceForm(Request $request, Venda $venda = null)
+    public function ecommerceForm(Request $request, IntegradorECommerceFactory $integradorBusinessFactory, Venda $venda = null)
     {
         $params = [
             'listRoute' => 'ven_venda_listVendasPorDiaComEcommerce',
@@ -472,7 +472,16 @@ class VendaController extends FormListController
             return $this->redirectToRoute('ven_venda_listVendasPorDiaComEcommerce');
         }
 
-        return $this->doForm($request, $venda, $params);
+        $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+        if ($notaFiscal) {
+            $params['notaFiscalVendaId'] = $notaFiscal->getId();
+        }
+
+        $fnHandleRequestOnValid = function (Request $request, $venda) use ($integradorBusinessFactory): void {
+            $this->integrarVendaParaECommerce($request, $venda, $integradorBusinessFactory);
+        };
+
+        return $this->doForm($request, $venda, $params, false, $fnHandleRequestOnValid);
     }
 
     /**
@@ -506,7 +515,6 @@ class VendaController extends FormListController
      * @param Request $request
      * @param Venda|null $venda
      * @param IntegradorECommerceFactory $integradorBusinessFactory
-     * @return Response
      * @IsGranted("ROLE_VENDAS_ADMIN", statusCode=403)
      */
     public function integrarVendaParaECommerce(Request $request, Venda $venda, IntegradorECommerceFactory $integradorBusinessFactory)
@@ -520,8 +528,9 @@ class VendaController extends FormListController
             $this->addFlash('error', 'Erro ao integrar venda');
             $this->getSyslog()->info('Erro ao integrar venda (id: ' . $venda->getId() . ')', $e->getTraceAsString());
         }
-        $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
-        return $this->redirectToRoute($route, ['id' => $venda->getId()]);
+        // agora está sendo chamado sempre após resalvar a venda
+//        $route = $request->get('rtr') ?? 'ven_venda_ecommerceForm';
+//        return $this->redirectToRoute($route, ['id' => $venda->getId()]);
     }
 
 
@@ -779,7 +788,6 @@ class VendaController extends FormListController
         } else {
             $this->addFlash('warn', ' Nenhuma venda obtida');
         }
-
 
         return $this->redirect($request->server->get('HTTP_REFERER'));
     }

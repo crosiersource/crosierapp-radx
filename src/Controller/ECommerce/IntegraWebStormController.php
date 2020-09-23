@@ -2,9 +2,9 @@
 
 namespace App\Controller\ECommerce;
 
-use App\Business\ECommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -78,10 +78,10 @@ class IntegraWebStormController extends BaseController
             if ($request->query->has('qtde')) {
                 $qtde = $request->query->get('qtde');
             } else {
-                $qtde = null;
+                $qtde = 1;
             }
 
-            $rQtde = $integraWebStormBusiness->reenviarProdutosParaIntegracao($qtde);
+            $rQtde = $integraWebStormBusiness->reenviarTodosOsProdutosParaIntegracao($qtde);
             $this->addFlash('success', $rQtde . ' produtos enviados para integração com sucesso');
         } catch (\Throwable $e) {
             $this->addFlash('error', 'Erro ao enviar produtos para integração (' . $e->getMessage() . ')');
@@ -140,21 +140,6 @@ class IntegraWebStormController extends BaseController
     public function reintegrarVendaParaCrosier(IntegradorWebStorm $integraWebStormBusiness, Venda $venda): Response
     {
         $integraWebStormBusiness->reintegrarVendaParaCrosier($venda);
-        return new Response('OK');
-    }
-
-    /**
-     *
-     * @Route("/est/integraWebStorm/atualizaEstoqueEPrecos", name="est_integraWebStorm_atualizaEstoqueEPrecos")
-     *
-     * @param IntegradorWebStorm $integraWebStormBusiness
-     * @return Response
-     * @throws ViewException
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function atualizaEstoqueEPrecos(IntegradorWebStorm $integraWebStormBusiness): Response
-    {
-        $integraWebStormBusiness->atualizaEstoqueEPrecos();
         return new Response('OK');
     }
 
