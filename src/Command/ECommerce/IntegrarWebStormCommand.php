@@ -87,7 +87,7 @@ class IntegrarWebStormCommand extends Command
             default:
                 throw new \RuntimeException('tipoIntegracao desconhecido: ' . $tipoIntegracao);
         }
-        return 1;
+        return 0;
     }
 
 }
