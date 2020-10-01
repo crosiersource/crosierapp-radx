@@ -28,3 +28,5 @@ src/Entity/uppercaseFields.json
 /public/images/*
 
 /files/Fiscal/download_xmls/*
+
+/src/.preload.php
