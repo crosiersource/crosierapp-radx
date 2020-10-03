@@ -176,8 +176,12 @@ class ProdutoController extends FormListController
         $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
         $params['jsonMetadata'] = json_decode($repoProduto->getJsonMetadata(), true);
 
+        $fnHandleRequestOnValid = function(Request $request, Produto $produto) {
+            $produto->jsonData['ecommerce_desatualizado'] = 1;
+        };
+
         // Verifique o método handleRequestOnValid abaixo
-        return $this->doForm($request, $produto, $params);
+        return $this->doForm($request, $produto, $params, false, $fnHandleRequestOnValid);
     }
 
     /**
