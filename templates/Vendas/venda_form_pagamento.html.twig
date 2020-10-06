@@ -1,0 +1,312 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+{% block up_scripts %}
+
+    <style>
+        .select2-search__field {
+            text-transform: uppercase;
+        }
+    </style>
+{% endblock %}
+
+{% block page_content %}
+
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Pré-Venda</h3>
+                        <h6>{{ e.id|strpad(9) }}</h6>
+                    </div>
+                    <div class="col-4 text-right">
+
+                        <a type="button" class="btn btn-info"
+                           href="{{ url(formRoute, formRouteParams|default([])) }}" title="Novo">
+                            <i class="fas fa-file" aria-hidden="true"></i>
+                        </a>
+
+                        <a role="button" class="btn btn-outline-secondary" href="{{ url(listRoute) }}"
+                           title="Listar">
+                            <i class="fas fa-list"></i>
+                        </a>
+
+                        {% if e.id %}
+                            <button type="button" class="btn btn-outline-warning"
+                                    data-url="{{ url('ven_venda_clonar', {'venda': e.id}) }}"
+                                    data-token="{{ csrf_token('ven_venda_clonar') }}" title="Clonar"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-4">
+                        <a role="button" href="{{ url('ven_venda_form_dados', {'venda':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
+                            <i class="far fa-file"></i>  1 - Dados</a>
+                    </div>
+                    <div class="col-4">
+                        <a role="button" href="{{ url('ven_venda_form_itens', {'venda':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
+                            <i class="far fa-file-alt"></i> 2 - Itens</a>
+                    </div>
+                    <div class="col-4">
+                        <a role="button" href="{{ url('ven_venda_form_pagto', {'venda':e.id|default('')}) }}" class="btn btn-primary btn-sm btn-block">
+                            <i class="fas fa-file-invoice-dollar"></i> 3 - Pagamento</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <hr>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4" for="venda_subtotal">Subtotal</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">R$ </span>
+                                    </div>
+                                    <input type="text" id="venda_subtotal" disabled
+                                           value="{{ e.subtotal|number_format(2,',','.') }}"
+                                           readonly="readonly" class="crsr-money form-control disabled">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4" for="venda_desconto">Desconto</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">R$ </span>
+                                    </div>
+                                    <input type="text" id="venda_desconto" disabled
+                                           value="{{ e.desconto|number_format(2,',','.') }}"
+                                           readonly="readonly" class="crsr-money form-control disabled">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4" for="venda_valorTotal">Valor Total</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">R$ </span>
+                                    </div>
+                                    <input type="text" id="venda_valorTotal" disabled
+                                           value="{{ e.valorTotal|number_format(2,',','.') }}"
+                                           readonly="readonly" class="crsr-money form-control disabled">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-header">
+
+                        <div class="row">
+                            <div class="col-8">
+                                <h5>Pagamentos</h5>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-body" style="background-color: ivory">
+
+                        {% if permiteMaisPagtos %}
+
+                            <form method="POST" action="{{ url('ven_venda_savePagto', {'venda': e.id}) }}">
+
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="pagto_planoPagto">Forma de Pagamento</label>
+                                            <select id="pagto_planoPagto" name="pagto[planoPagto]" required
+                                                    data-options="{{ planosPagto }}"
+                                                    class="form-control">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="pagto_carteira">Carteira</label>
+                                            <select id="pagto_carteira" name="pagto[carteira]" required disabled
+                                                    class="form-control">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="pagto_numParcelas">Parcelas</label>
+                                            <input type="number" min="0" id="pagto_numParcelas"
+                                                   name="pagto[numParcelas]" required disabled
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="pagto_valorPagto">Valor Pagto</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">R$</span>
+                                                </div>
+                                                <input type="text" id="pagto_valorPagto" name="pagto[valorPagto]"
+                                                       class="crsr-money form-control"
+                                                       value="{{ pagtos_diferenca|number_format(2,',','.') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-12 d-flex">
+                                        <div class="form-group ml-auto">
+                                            <label for="btnInserirPagto">&nbsp;</label>
+                                            <div class="input-group">
+
+
+                                                <div class="btn-group" role="group">
+                                                    <button type="submit" class="btn btn-warning"
+                                                            id="btnInserirPagto" value="Inserir">
+                                                        <i class="fas fa-save" aria-hidden="true"></i> Inserir Pagto
+                                                    </button>
+
+                                                    <button type="button"
+                                                            onclick="window.location = '{{ url('ven_venda_form_pagto', {'venda': e.id}) }}'"
+                                                            class="btn btn-outline-warning"
+                                                            value="Recarregar">
+                                                        <i class="fas fa-sync-alt"></i>
+                                                    </button>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </form>
+                        {% endif %}
+
+                        <div class="table-responsive-sm">
+                            <table class="table table-sm table-striped table-hover">
+
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Forma de Pagamento</th>
+                                    <th scope="col">Valor</th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {% for pagto in e.pagtos %}
+                                    <tr>
+                                        <td data-vendapagtoid="{{ pagto.id }}"
+                                            title="{{ pagto.id }}">{{ loop.index }}</td>
+                                        <td>
+                                            {{ pagto.planoPagto.descricao }}<br/>
+                                            {{ pagto.carteira.getDescricaoMontada()|default('') }}
+                                        </td>
+                                        <td class="text-right">{{ pagto.valorPagto|number_format(2,',','.') }}</td>
+                                        <td class="text-right">
+                                            {% if e.status == 'PV ABERTO' %}
+                                                <button type="button" class="btn btn-sm btn-danger"
+                                                        data-url="{{ url('ven_venda_deletePagto', {'pagto': pagto.id}) }}"
+                                                        data-token="{{ csrf_token('ven_venda_deletePagto') }}"
+                                                        data-target="#confirmationModal" data-toggle="modal">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </button>
+
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row mt-3">
+                    <div class="col text-right">
+
+                        {% if e.status == 'PV ABERTO' %}
+                            <button type="button" class="btn btn-success"
+                                    data-url="{{ url('ven_venda_finalizarPV', {'venda': e.id}) }}"
+                                    data-token="{{ csrf_token('ven_venda_finalizarPV') }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="far fa-check-circle"></i> Finalizar PV
+                            </button>
+                        {% endif %}
+
+                        {% if e.status == 'PV FINALIZADO' %}
+                            <button type="button" value="Imprimir" class="btn btn-outline-success"
+                                    onclick="printJS('{{ url('ven_venda_imprimirPV', {'venda': e.id}) }}')"
+                                    id="btnImprimirPV">
+                                <i class="fas fa-print" aria-hidden="true"></i> Imprimir
+                            </button>
+
+                            <a role="button" value="Visualizar Fatura" class="btn btn-outline-success"
+                               href="{{ url('fin_fatura_visualizarFaturaVenda', {'fatura': e.jsonData.fatura_id}) }}"
+                               id="btnVisualizarFatura">
+                                <i class="fas fa-file-invoice-dollar"></i> Fatura
+                            </a>
+
+                        {% endif %}
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Vendas/venda_form') }}
+{% endblock %}

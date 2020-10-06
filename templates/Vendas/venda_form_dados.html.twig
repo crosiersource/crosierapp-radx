@@ -1,0 +1,171 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+{% block up_scripts %}
+
+    <style>
+        .select2-search__field {
+            text-transform: uppercase;
+        }
+    </style>
+{% endblock %}
+
+{% block page_content %}
+
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Pré-Venda</h3>
+                        {% if (e.id|default(false)) %}
+                            <h6>{{ e.id|strpad(9) }}</h6>
+                        {% endif %}
+                    </div>
+                    <div class="col-4 text-right">
+
+                        <a type="button" class="btn btn-info"
+                           href="{{ url(formRoute, formRouteParams|default([])) }}" title="Novo">
+                            <i class="fas fa-file" aria-hidden="true"></i>
+                        </a>
+
+                        <a role="button" class="btn btn-outline-secondary" href="{{ url(listRoute) }}"
+                           title="Listar">
+                            <i class="fas fa-list"></i>
+                        </a>
+
+                        {% if e.id %}
+                            <button type="button" class="btn btn-outline-warning"
+                                    data-url="{{ url('ven_venda_clonar', {'venda': e.id}) }}"
+                                    data-token="{{ csrf_token('ven_venda_clonar') }}" title="Clonar"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-4">
+                        <a role="button" href="{{ url('ven_venda_form_dados', {'venda':e.id|default('')}) }}" class="btn btn-primary btn-sm btn-block">
+                            <i class="far fa-file"></i> 1 - Dados
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        {% if (e.id|default(false)) %}
+                            <a role="button" href="{{ url('ven_venda_form_itens', {'venda':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
+                                <i class="far fa-file-alt"></i> 2 - Itens
+                            </a>
+                        {% else %}
+                            <button type="button" class="btn btn-outline-secondary btn-sm btn-block disabled">
+                                <i class="far fa-file-alt"></i> 2 - Itens
+                            </button>
+                        {% endif %}
+                    </div>
+                    <div class="col-4">
+                        {% if (e.id|default(false)) %}
+                            <a role="button" href="{{ url('ven_venda_form_pagto', {'venda':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
+                                <i class="fas fa-file-invoice-dollar"></i> 3 - Pagamento
+                            </a>
+                        {% else %}
+                            <button type="button" class="btn btn-outline-secondary btn-sm btn-block disabled">
+                                <i class="fas fa-file-invoice-dollar"></i> 3 - Pagamento
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <hr>
+                    </div>
+                </div>
+
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+                {{ form_start(form) }}
+                {{ form_widget(form._token) }}
+
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-12">
+                        {{ form_row(form.id) }}
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        {{ form_row(form.dtVenda) }}
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.status) }}
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        {{ form_row(form.jsonData.canal) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        {{ form_row(form.vendedor) }}
+                    </div>
+                </div>
+
+                {{ form_row(form.jsonData['obs']) }}
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-12">
+                        {{ form_row(form.jsonData.cliente_documento) }}
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="venda_jsonData_cliente_nome">Nome/Razão Social</label>
+                            <select id="venda_jsonData_cliente_nome" {{ e.status != 'PV ABERTO' ? 'disabled' : '' }}
+                                    data-val="{{ e.jsonData.cliente_nome|default('') }}"
+                                    name="venda[jsonData][cliente_nome]" class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.jsonData.cliente_fone) }}
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.jsonData.cliente_email) }}
+                    </div>
+                </div>
+
+                {% if e.status == 'PV ABERTO' %}
+                    <div class="row mb-3">
+                        <div class="col text-right">
+                            <button type="submit" class="btn btn-primary" value="Salvar" name="btnSalvar">
+                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="d-none">
+                    {# Necessário para renderizar os demais campos do jsonData #}
+                    {{ form_widget(form) }}
+                </div>
+
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
+
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Vendas/venda_form') }}
+{% endblock %}

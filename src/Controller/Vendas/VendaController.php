@@ -2,7 +2,6 @@
 
 namespace App\Controller\Vendas;
 
-use App\Business\ECommerce\IntegradorECommerceFactory;
 use App\Form\Vendas\VendaType;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
@@ -14,6 +13,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorECommerceFactory;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Vendas\VendaBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
@@ -129,20 +129,19 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/ven/venda/form/{id}", name="ven_venda_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/ven/venda/form/dados/{venda}", name="ven_venda_form_dados", defaults={"venda"=null}, requirements={"venda"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
-     * @throws ViewException
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function form(Request $request, Venda $venda = null)
+    public function vendaFormDados(Request $request, Venda $venda = null)
     {
         $params = [
             'listRoute' => 'ven_venda_listVendasEcommerce',
             'typeClass' => VendaType::class,
-            'formView' => 'Vendas/venda_form.html.twig',
-            'formRoute' => 'ven_venda_form',
+            'formView' => 'Vendas/venda_form_dados.html.twig',
+            'formRoute' => 'ven_venda_form_dados',
             'formPageTitle' => 'Venda'
         ];
 
@@ -170,7 +169,7 @@ class VendaController extends FormListController
                 $venda->desconto = 0.0;
 
                 $conn = $this->entityHandler->getDoctrine()->getConnection();
-                $ultimaVenda = $conn->fetchAll('SELECT vendedor_id, json_data FROM ven_venda ORDER BY updated DESC limit 1');
+                $ultimaVenda = $conn->fetchAllAssociative('SELECT vendedor_id, json_data FROM ven_venda ORDER BY updated DESC limit 1');
                 $ultimaVenda_jsonData = json_decode($ultimaVenda[0]['json_data'] ?? '{}', true);
                 $venda->jsonData['canal'] = $ultimaVenda_jsonData['canal'] ?? 'LOJA FÍSICA';
 
@@ -184,56 +183,15 @@ class VendaController extends FormListController
                     $colaborador = $repoColaborador->findOneBy(['cpf' => '99999999999']);
                 }
                 $venda->vendedor = $colaborador;
-            } else {
-                if ($venda) {
-                    $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
-                    $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
-                    $params['pagtos_diferenca'] = bcsub($venda->valorTotal, $rsTotalPagtos[0]['totalPagtos'] ?? 0.0, 2);
-                    $params['permiteMaisPagtos'] = (float)$params['pagtos_diferenca'] !== 0.0;
-                    /** @var CarteiraRepository $repoCarteira */
-                    $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
-                    foreach ($venda->pagtos as $pagto) {
-                        if ($pagto->jsonData['carteira_id'] ?? false) {
-                            $pagto->carteira = $repoCarteira->find($pagto->jsonData['carteira_id']);
-                        }
-                    }
-                }
             }
         }
-//
-//        $vendaRequest = $request->request->get('venda');
-//        if ($vendaRequest) {
-//            // Nos casos onde troca-se o cliente de uma venda por um novo
-//            if ($venda) {
-//                if ($venda->cliente && ($venda->cliente->documento !== $vendaRequest['jsonData']['cliente_documento'])) {
-//                    $venda->cliente = null;
-//                }
-//            } else {
-//                $venda = new Venda();
-//            }
-//            $venda->jsonData['cliente_documento'] = $vendaRequest['jsonData']['cliente_documento'] ?? '';
-//            $venda->jsonData['cliente_nome'] = $vendaRequest['jsonData']['cliente_nome'] ?? '';
-//            $venda->jsonData['cliente_email'] = $vendaRequest['jsonData']['cliente_email'] ?? '';
-//            $venda->jsonData['cliente_fone'] = $vendaRequest['jsonData']['cliente_fone'] ?? '';
-//        }
-
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
         $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
         $params['planosPagto'] = json_encode($repoPlanoPagto->findAtuaisSelect2JS());
 
 
-        return $this->doForm($request, $venda, $params);
-    }
-
-    /**
-     * @param Request $request
-     * @param $venda
-     */
-    public function handleRequestOnValid(Request $request, $venda): void
-    {
-        /** @var Venda $venda */
-        if ($request->get('btnSalvar')) {
+        $fnHandleRequestOnValid = function (Request $request, Venda $venda): void {
             if ($venda->jsonData['cliente_documento'] ?? false) {
                 /** @var ClienteRepository $repoCliente */
                 $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
@@ -246,60 +204,91 @@ class VendaController extends FormListController
                     $venda->cliente = null; // o documento foi alterado, deve ser salvo como um novo cliente
                 }
             }
-        } else if ($request->get('item')) {
+        };
 
-            $itemArr = $request->get('item');
-
-            if (!isset($itemArr['produto'])) {
-                return;
-            }
-
-            /** @var VendaItem $vendaItem */
-            if ($itemArr['id'] ?? null) {
-                /** @var VendaItemRepository $repoVendaItem */
-                $repoVendaItem = $this->getDoctrine()->getRepository(VendaItem::class);
-                $vendaItem = $repoVendaItem->find($itemArr['id']);
-            } else {
-                $vendaItem = new VendaItem();
-            }
-
-            /** @var ProdutoRepository $repoProduto */
-            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
-            /** @var Produto $produto */
-            $produto = $repoProduto->find($itemArr['produto']);
-
-            $vendaItem->produto = $produto;
-
-            $vendaItem->qtde = DecimalUtils::parseStr($itemArr['qtde']);
-            $vendaItem->precoVenda = DecimalUtils::parseStr($itemArr['precoVenda']);
-            $vendaItem->desconto = DecimalUtils::parseStr($itemArr['desconto']);
-            $vendaItem->valorTotal = DecimalUtils::parseStr($itemArr['valorTotal']);
-
-            $vendaItem->venda = $venda;
-
-            try {
-                $this->vendaItemEntityHandler->save($vendaItem);
-            } catch (ViewException $e) {
-                $this->addFlash('error', $e->getMessage());
-            }
-        }
+        return $this->doForm($request, $venda, $params, false, $fnHandleRequestOnValid);
     }
 
 
     /**
      *
-     * @Route("/ven/venda/formItem/{venda}", name="ven_venda_formItem", defaults={"venda"=null}, requirements={"venda"="\d+"})
+     * @Route("/ven/venda/form/itens/{venda}", name="ven_venda_form_itens", requirements={"venda"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function formItem(Request $request, Venda $venda = null)
+    public function vendaFormItens(Request $request, Venda $venda)
+    {
+        $params = [
+            'listRoute' => 'ven_venda_listVendasEcommerce',
+            'typeClass' => VendaType::class,
+            'formView' => 'Vendas/venda_form_dados.html.twig',
+            'formRoute' => 'ven_venda_form_dados',
+            'formPageTitle' => 'Venda',
+            'e' => $venda,
+        ];
+        return $this->doRender('Vendas/venda_form_itens.html.twig', $params);
+    }
+
+    /**
+     *
+     * @Route("/ven/venda/saveItem/{venda}", name="ven_venda_saveItem", requirements={"venda"="\d+"})
+     * @param Request $request
+     * @param Venda|null $venda
+     * @return RedirectResponse|Response
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
+     */
+    public function saveItem(Request $request, Venda $venda)
     {
         try {
             if ($venda->status !== 'PV ABERTO') {
                 throw new ViewException('Status difere de "PV ABERTO"');
             }
+
+            // ???????????????????????????????????
+
+
+            if ($request->get('item')) {
+
+                $itemArr = $request->get('item');
+
+                if (!isset($itemArr['produto'])) {
+                    return;
+                }
+
+                /** @var VendaItem $vendaItem */
+                if ($itemArr['id'] ?? null) {
+                    /** @var VendaItemRepository $repoVendaItem */
+                    $repoVendaItem = $this->getDoctrine()->getRepository(VendaItem::class);
+                    $vendaItem = $repoVendaItem->find($itemArr['id']);
+                } else {
+                    $vendaItem = new VendaItem();
+                }
+
+                /** @var ProdutoRepository $repoProduto */
+                $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+                /** @var Produto $produto */
+                $produto = $repoProduto->find($itemArr['produto']);
+
+                $vendaItem->produto = $produto;
+
+                $vendaItem->qtde = DecimalUtils::parseStr($itemArr['qtde']);
+                $vendaItem->precoVenda = DecimalUtils::parseStr($itemArr['precoVenda']);
+                $vendaItem->desconto = DecimalUtils::parseStr($itemArr['desconto']);
+                $vendaItem->valorTotal = DecimalUtils::parseStr($itemArr['valorTotal']);
+
+                $vendaItem->venda = $venda;
+
+                try {
+                    $this->vendaItemEntityHandler->save($vendaItem);
+                } catch (ViewException $e) {
+                    $this->addFlash('error', $e->getMessage());
+                }
+            }
+
+            // ???????????????????????????????????
+
 
             $conn = $this->entityHandler->getDoctrine()->getConnection();
 
@@ -334,7 +323,7 @@ class VendaController extends FormListController
 
                         $itemNaVenda->desconto = $desconto;
                         $this->vendaItemEntityHandler->save($itemNaVenda);
-                        return $this->redirectToRoute('ven_venda_form', ['id' => $venda->getId()]);
+                        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
                     }
                 }
             }
@@ -396,19 +385,55 @@ class VendaController extends FormListController
                 $this->addFlash('error', $e->getMessage());
             }
         }
-        return $this->redirectToRoute('ven_venda_form', ['id' => $venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
     }
 
 
     /**
      *
-     * @Route("/ven/venda/formPagto/{venda}", name="ven_venda_formPagto", defaults={"venda"=null}, requirements={"venda"="\d+"})
+     * @Route("/ven/venda/form/pagto/{venda}", name="ven_venda_form_pagto", requirements={"venda"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function formPagto(Request $request, Venda $venda = null)
+    public function vendaFormPagto(Request $request, Venda $venda)
+    {
+        $params = [
+            'listRoute' => 'ven_venda_listVendasEcommerce',
+            'typeClass' => VendaType::class,
+            'formView' => 'Vendas/venda_form_pagamento.html.twig',
+            'formRoute' => 'ven_venda_form_dados',
+            'formPageTitle' => 'Venda',
+            'e' => $venda,
+        ];
+
+
+        $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
+        $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
+        $params['pagtos_diferenca'] = bcsub($venda->valorTotal, ($rsTotalPagtos[0]['totalPagtos'] ?? 0.0), 2);
+        $params['permiteMaisPagtos'] = (float)$params['pagtos_diferenca'] !== 0.0;
+        /** @var CarteiraRepository $repoCarteira */
+        $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
+        foreach ($venda->pagtos as $pagto) {
+            if ($pagto->jsonData['carteira_id'] ?? false) {
+                $pagto->carteira = $repoCarteira->find($pagto->jsonData['carteira_id']);
+            }
+        }
+
+
+        return $this->doRender('Vendas/venda_form_pagamento.html.twig', $params);
+    }
+
+    /**
+     *
+     * @Route("/ven/venda/savePagto/{venda}", name="ven_venda_savePagto", requirements={"venda"="\d+"})
+     * @param Request $request
+     * @param Venda|null $venda
+     * @return RedirectResponse|Response
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
+     */
+    public function savePagto(Request $request, Venda $venda)
     {
         try {
             if ($venda->status !== 'PV ABERTO') {
@@ -444,7 +469,7 @@ class VendaController extends FormListController
                 $this->addFlash('error', $e->getMessage());
             }
         }
-        return $this->redirectToRoute('ven_venda_form', ['id' => $venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_pagto', ['id' => $venda->getId()]);
     }
 
 
@@ -452,6 +477,7 @@ class VendaController extends FormListController
      *
      * @Route("/ven/venda/ecommerceForm/{id}", name="ven_venda_ecommerceForm", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
+     * @param IntegradorECommerceFactory $integradorBusinessFactory
      * @param Venda|null $venda
      * @return RedirectResponse|Response
      * @throws ViewException
@@ -486,7 +512,7 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/ven/venda/finalizarPV/{venda}", name="ven_venda_finalizarPV", defaults={"venda"=null}, requirements={"venda"="\d+"})
+     * @Route("/ven/venda/finalizarPV/{venda}", name="ven_venda_finalizarPV", requirements={"venda"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse
@@ -505,7 +531,7 @@ class VendaController extends FormListController
             }
         }
 
-        return $this->redirectToRoute('ven_venda_form', ['id' => $venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_dados', ['id' => $venda->getId()]);
     }
 
     /**
@@ -588,7 +614,7 @@ class VendaController extends FormListController
                 $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
 
                 $rInfo = $this->notaFiscalEntityHandler->getDoctrine()->getConnection()
-                    ->fetchAll('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                    ->fetchAllAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
                         ['appUUID' => $_SERVER['CROSIERAPPRADX_UUID'], 'chave' => 'fiscal.ecommerce.text_padrao_info_compl']
                     );
                 $infoCompl = 'Pedido E-commerce: ' . $venda->jsonData['ecommerce_idPedido'] ?? '????';
@@ -622,7 +648,7 @@ class VendaController extends FormListController
     public function consultarStatus(Request $request, NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
     {
         $this->notaFiscalBusiness->consultarStatus($notaFiscal);
-        $route = $request->get('rtr') ?? 'ven_venda_form';
+        $route = $request->get('rtr') ?? 'ven_venda_form_dados';
         return $this->redirectToRoute($route, ['venda' => $venda->getId()]);
     }
 
@@ -639,7 +665,7 @@ class VendaController extends FormListController
     public function listVendasPorDiaComEcommerce(Request $request): Response
     {
         $params = [
-            'formRoute' => 'ven_venda_form',
+            'formRoute' => 'ven_venda_form_dados',
             'listView' => 'Vendas/venda_listVendasPorDiaComEcommerce.html.twig',
             'listRoute' => 'ven_venda_listVendasPorDiaComEcommerce',
             'listPageTitle' => 'Vendas',
@@ -730,7 +756,7 @@ class VendaController extends FormListController
             }
         }
 
-        return $this->redirectToRoute('ven_venda_form', ['id' => $item->venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $item->venda->getId()]);
     }
 
     /**
@@ -757,7 +783,7 @@ class VendaController extends FormListController
             }
         }
 
-        return $this->redirectToRoute('ven_venda_form', ['id' => $pagto->venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_pagto', ['id' => $pagto->venda->getId()]);
     }
 
     /**
@@ -998,7 +1024,7 @@ class VendaController extends FormListController
                 'JOIN est_unidade u ON prod.unidade_id = u.id ' .
                 'WHERE preco.atual AND prod.id = :id';
 
-            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql,
+            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative($sql,
                 [
                     'id' => $id,
                 ]);
@@ -1030,7 +1056,7 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/ven/venda/imprimirPV/{venda}", name="ven_venda_imprimirPV", defaults={"venda"=null}, requirements={"venda"="\d+"})
+     * @Route("/ven/venda/imprimirPV/{venda}", name="ven_venda_imprimirPV", requirements={"venda"="\d+"})
      * @param Venda $venda
      * @return Response
      *
@@ -1064,7 +1090,7 @@ class VendaController extends FormListController
         $str = $request->get('term') ?? '';
 
         $rs = $this->entityHandler->getDoctrine()->getConnection()
-            ->fetchAll('SELECT id, documento, nome, json_data FROM crm_cliente WHERE documento = :documento OR nome LIKE :nome LIMIT 30',
+            ->fetchAllAssociative('SELECT id, documento, nome, json_data FROM crm_cliente WHERE documento = :documento OR nome LIKE :nome LIMIT 30',
                 [
                     'documento' => preg_replace("/[^0-9]/", "", $str),
                     'nome' => '%' . $str . '%'
@@ -1105,13 +1131,13 @@ class VendaController extends FormListController
             }
             $clone = $this->entityHandler->doClone($venda);
             $this->addFlash('success', 'Registro clonado com sucesso');
-            return $this->redirectToRoute('ven_venda_form', ['id' => $clone->getId()]);
+            return $this->redirectToRoute('ven_venda_form_dados', ['id' => $clone->getId()]);
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erro ao clonar o registro');
             if ($e instanceof ViewException) {
                 $this->addFlash('error', $e->getMessage());
             }
-            return $this->redirectToRoute('ven_venda_form', ['id' => $venda->getId()]);
+            return $this->redirectToRoute('ven_venda_form_dados', ['id' => $venda->getId()]);
         }
     }
 
