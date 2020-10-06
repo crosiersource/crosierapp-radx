@@ -22,7 +22,6 @@
                     </div>
                     <div class="col-4 text-right">
 
-
                         <a type="button" class="btn btn-info"
                            href="{{ url(formRoute, formRouteParams|default([])) }}" title="Novo">
                             <i class="fas fa-file" aria-hidden="true"></i>
@@ -203,6 +202,7 @@
                                                     <input type="text" id="item_precoVenda" name="item[precoVenda]"
                                                            readonly="readonly" class="crsr-money form-control disabled">
                                                 </div>
+                                                <small id="item_precoVenda_help" class="form-text text-muted">*Preço Varejo</small>
                                             </div>
                                         </div>
 
@@ -461,7 +461,7 @@
                                                         <button type="button"
                                                                 onclick="window.location = '{{ url('ven_venda_form', {'id': e.id}) }}'"
                                                                 class="btn btn-outline-warning"
-                                                                id="btnRecarregar" value="Recarregar">
+                                                                value="Recarregar">
                                                             <i class="fas fa-sync-alt"></i>
                                                         </button>
                                                     </div>

@@ -41,7 +41,7 @@ class GrupoController extends FormListController
 
     /**
      *
-     * @Route("/est/grupo/form/{id}", name="est/grupo_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/est/grupo/form/{id}", name="est_grupo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Grupo|null $grupo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
@@ -117,7 +117,7 @@ class GrupoController extends FormListController
      * @return JsonResponse
      *
      * @throws \Exception
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
     public function grupoSelect2json(Depto $depto): JsonResponse
     {

@@ -40,7 +40,8 @@ class CarteiraType extends AbstractType
             'html5' => false,
             'format' => 'dd/MM/yyyy',
             'label' => 'Dt Consolidado',
-            'attr' => ['class' => 'crsr-date']
+            'attr' => ['class' => 'crsr-date'],
+            'help' => 'Trava lançamentos para datas anteriores'
         ]);
 
         $builder->add('concreta', ChoiceType::class, [

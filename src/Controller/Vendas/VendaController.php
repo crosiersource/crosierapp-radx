@@ -880,38 +880,68 @@ class VendaController extends FormListController
     {
         try {
             $str = $request->get('term');
+            $listaId = $request->get('listaId') ? $request->get('listaId') : 1; // por padrão só trás da lista "VAREJO"
 
             // Pesquisa o produto e seu preço já levando em consideração a unidade padrão
-            $sql = 'SELECT prod.id, prod.codigo, prod.nome, preco.preco_prazo as precoVenda, u.id as unidade_id, u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
+            $sql = 'SELECT prod.id, prod.codigo, prod.nome, prod.json_data->>"$.qtde_min_para_atacado" as qtde_min_para_atacado, ' .
+                'preco.preco_prazo as precoVenda, u.id as unidade_id, ' .
+                'u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
                 'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
-                'JOIN est_unidade u ON preco.unidade_id = u.id ' .
-                'WHERE preco.atual AND (' .
+                'JOIN est_unidade u ON preco.unidade_id = u.id AND u.id = prod.unidade_padrao_id ' .
+                'WHERE preco.atual AND preco.lista_id = :listaId AND (' .
                 'prod.nome LIKE :nome OR ' .
                 'prod.codigo LIKE :codigo) ORDER BY prod.nome LIMIT 20';
 
-            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql,
+            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative($sql,
                 [
+                    'listaId' => $listaId,
                     'nome' => '%' . $str . '%',
                     'codigo' => '%' . $str
                 ]);
             $results = [];
 
-            $sqlUnidades = 'SELECT u.id, u.label as text, preco.preco_prazo FROM est_produto_preco preco, est_unidade u WHERE preco.unidade_id = u.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId';
+
+            $sqlUnidades = 'SELECT u.id, u.label as text ' .
+                'FROM est_produto_preco preco, est_unidade u ' .
+                'WHERE preco.unidade_id = u.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId GROUP BY u.id, u.label ORDER BY u.label';
             $stmtUnidades = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlUnidades);
+
+            $sqlPrecos = 'SELECT u.id, u.label as text, preco.preco_prazo, lista.descricao as lista ' .
+                'FROM est_produto_preco preco, est_unidade u, est_lista_preco lista ' .
+                'WHERE preco.unidade_id = u.id AND preco.lista_id = lista.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId';
+            $stmtPrecos = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlPrecos);
+
+            // Melhora a disposição do array para facilitar o acesso no javascript
+            function fixPrecos(array $rsUnidadesPrecos)
+            {
+                $rs = [];
+                foreach ($rsUnidadesPrecos as $rUnidadesPrecos) {
+                    $rs[$rUnidadesPrecos['text']][$rUnidadesPrecos['lista']] = $rUnidadesPrecos;
+                }
+                return $rs;
+            }
 
             foreach ($rs as $r) {
                 $codigo = str_pad($r['codigo'], 9, '0', STR_PAD_LEFT);
+
                 $stmtUnidades->bindValue('produtoId', $r['id']);
                 $stmtUnidades->execute();
-                $rUnidades = $stmtUnidades->fetchAll();
+                $rUnidades = $stmtUnidades->fetchAllAssociative();
+
+                $stmtPrecos->bindValue('produtoId', $r['id']);
+                $stmtPrecos->execute();
+                $rPrecos = $stmtPrecos->fetchAllAssociative();
+
                 $results[] = [
                     'id' => $r['id'],
                     'text' => $codigo . ' - ' . $r['nome'] . '(' . $r['unidade_label'] . ')',
                     'preco_venda' => $r['precoVenda'],
+                    'qtde_min_para_atacado' => $r['qtde_min_para_atacado'],
                     'unidade_id' => $r['unidade_id'],
                     'unidade_label' => $r['unidade_label'],
                     'unidade_casas_decimais' => $r['unidade_casas_decimais'],
-                    'unidades' => $rUnidades
+                    'unidades' => $rUnidades,
+                    'precos' => fixPrecos($rPrecos)
                 ];
             }
 

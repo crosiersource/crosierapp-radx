@@ -41,7 +41,7 @@ class SubgrupoController extends FormListController
 
     /**
      *
-     * @Route("/est/subgrupo/form/{id}", name="est/subgrupo_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/est/subgrupo/form/{id}", name="est_subgrupo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Subgrupo|null $subgrupo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
@@ -117,7 +117,7 @@ class SubgrupoController extends FormListController
      * @return JsonResponse
      *
      * @throws \Exception
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
      */
     public function subgrupoSelect2json(Grupo $grupo): JsonResponse
     {

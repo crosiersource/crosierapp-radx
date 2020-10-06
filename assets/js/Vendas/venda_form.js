@@ -47,8 +47,17 @@ $(document).ready(function () {
 
 
     function resValorTotal() {
+        let produto = $item_produto.select2('data')[0];
+        let unidade = $unidade.select2('data')[0].text;
+
         let qtde = $qtde.val().replace('.', '').replace(',', '.');
-        let valorUnit = $precoVenda.val().replace('.', '').replace(',', '.');
+
+        let lista  = qtde < produto.qtde_min_para_atacado ? 'VAREJO' : 'ATACADO';
+        let valorUnit = parseFloat(produto.precos[unidade][lista]['preco_prazo']);
+        $precoVenda.val(valorUnit.toFixed(2).replace('.', ','));
+
+        $('#item_precoVenda_help').html('* ' + lista);
+
         let subTotal = (qtde * valorUnit);
 
         let desconto = $desconto.val().replace('.', '').replace(',', '.');
