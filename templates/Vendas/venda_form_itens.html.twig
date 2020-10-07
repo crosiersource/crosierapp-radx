@@ -51,7 +51,7 @@
 
                 <div class="row">
                     <div class="col-4">
-                        <a role="button" href="{{ url('ven_venda_form_dados', {'venda':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
+                        <a role="button" href="{{ url('ven_venda_form_dados', {'id':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
                             <i class="far fa-file"></i>  1 - Dados</a>
                     </div>
                     <div class="col-4">
@@ -153,8 +153,7 @@
                                                 <input type="text" id="item_precoVenda" name="item[precoVenda]"
                                                        readonly="readonly" class="crsr-money form-control disabled">
                                             </div>
-                                            <small id="item_precoVenda_help" class="form-text text-muted">*Preço
-                                                Varejo</small>
+                                            <small id="item_precoVenda_help" class="form-text text-muted"></small>
                                         </div>
                                     </div>
 
@@ -349,5 +348,5 @@
 
 
 {% block down_scripts %}
-    {{ encore_entry_script_tags('Vendas/venda_form') }}
+    {{ encore_entry_script_tags('Vendas/venda_form_itens') }}
 {% endblock %}

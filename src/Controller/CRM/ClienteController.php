@@ -269,7 +269,7 @@ class ClienteController extends FormListController
         $str = $request->get('term') ?? '';
 
         $rs = $this->entityHandler->getDoctrine()->getConnection()
-            ->fetchAll('SELECT id, documento, nome, json_data FROM crm_cliente WHERE documento = :documento LIMIT 1',
+            ->fetchAllAssociative('SELECT id, documento, nome, json_data FROM crm_cliente WHERE documento = :documento LIMIT 1',
                 [
                     'documento' => preg_replace("/[^G^0-9]/", "", $str),
                 ]);

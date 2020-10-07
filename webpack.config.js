@@ -96,7 +96,9 @@ Encore
 
 
     .addEntry('Vendas/ven_venda_listVendasPorDiaComEcommerce', './assets/js/Vendas/ven_venda_listVendasPorDiaComEcommerce.js')
-    .addEntry('Vendas/venda_form', './assets/js/Vendas/venda_form.js')
+    .addEntry('Vendas/venda_form_dados', './assets/js/Vendas/venda_form_dados.js')
+    .addEntry('Vendas/venda_form_itens', './assets/js/Vendas/venda_form_itens.js')
+    .addEntry('Vendas/venda_form_pagamento', './assets/js/Vendas/venda_form_pagamento.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

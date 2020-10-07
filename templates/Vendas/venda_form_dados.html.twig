@@ -53,7 +53,7 @@
 
                 <div class="row">
                     <div class="col-4">
-                        <a role="button" href="{{ url('ven_venda_form_dados', {'venda':e.id|default('')}) }}" class="btn btn-primary btn-sm btn-block">
+                        <a role="button" href="{{ url('ven_venda_form_dados', {'id':e.id|default('')}) }}" class="btn btn-primary btn-sm btn-block">
                             <i class="far fa-file"></i> 1 - Dados
                         </a>
                     </div>
@@ -96,10 +96,10 @@
                     <div class="col-md-2 col-sm-12">
                         {{ form_row(form.id) }}
                     </div>
-                    <div class="col-md-2 col-sm-12">
+                    <div class="col-md-3 col-sm-12">
                         {{ form_row(form.dtVenda) }}
                     </div>
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-3 col-sm-12">
                         {{ form_row(form.status) }}
                     </div>
                     <div class="col-md-4 col-sm-12">
@@ -122,10 +122,9 @@
                     <div class="col-md-4 col-sm-12">
                         <div class="form-group">
                             <label for="venda_jsonData_cliente_nome">Nome/Razão Social</label>
-                            <select id="venda_jsonData_cliente_nome" {{ e.status != 'PV ABERTO' ? 'disabled' : '' }}
-                                    data-val="{{ e.jsonData.cliente_nome|default('') }}"
-                                    name="venda[jsonData][cliente_nome]" class="form-control">
-                            </select>
+                            {# Atenção: ver a RTA no venda_form_dados.js #}
+                            <input type="text" class="form-control" name="cliente_nome" {{ e.status != 'PV ABERTO' ? 'disabled' : '' }}
+                                   id="cliente_nome" value="{{ e.jsonData.cliente_nome|default('') }}">
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-12">
@@ -167,5 +166,5 @@
 
 
 {% block down_scripts %}
-    {{ encore_entry_script_tags('Vendas/venda_form') }}
+    {{ encore_entry_script_tags('Vendas/venda_form_dados') }}
 {% endblock %}

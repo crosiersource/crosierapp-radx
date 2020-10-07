@@ -33,10 +33,12 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaItemRepository;
+use Doctrine\DBAL\Connection;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -129,7 +131,7 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/ven/venda/form/dados/{venda}", name="ven_venda_form_dados", defaults={"venda"=null}, requirements={"venda"="\d+"})
+     * @Route("/ven/venda/form/dados/{id}", name="ven_venda_form_dados", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
@@ -186,21 +188,26 @@ class VendaController extends FormListController
             }
         }
 
-        /** @var PlanoPagtoRepository $repoPlanoPagto */
-        $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
-        $params['planosPagto'] = json_encode($repoPlanoPagto->findAtuaisSelect2JS());
-
-
         $fnHandleRequestOnValid = function (Request $request, Venda $venda): void {
-            if ($venda->jsonData['cliente_documento'] ?? false) {
-                /** @var ClienteRepository $repoCliente */
-                $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+            /** @var ClienteRepository $repoCliente */
+            $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+            $documento = preg_replace("/[^G^0-9]/", '', ($venda->jsonData['cliente_documento'] ?? ''));
+            if ($documento) {
                 /** @var Cliente $cliente */
-                $cliente = $repoCliente->findOneBy(['documento' => $venda->jsonData['cliente_documento']]);
+                $cliente = $repoCliente->findOneBy(['documento' => $documento]);
                 $venda->cliente = $cliente;
+            } else {
+                if (($request->get('cliente_nome') ?? false)) {
+                    $venda->cliente = null;
+                    $venda->jsonData['cliente_nome'] = $request->get('cliente_nome');
+                } else {
+                    /** @var Cliente $cliente */
+                    $cliente = $repoCliente->findOneBy(['documento' => '99999999999']);
+                    $venda->cliente = $cliente;
+                }
             }
             if ($venda->getId() && $venda->cliente) {
-                if ($venda->jsonData['cliente_documento'] !== $venda->cliente->documento) {
+                if ($documento !== $venda->cliente->documento) {
                     $venda->cliente = null; // o documento foi alterado, deve ser salvo como um novo cliente
                 }
             }
@@ -246,53 +253,13 @@ class VendaController extends FormListController
                 throw new ViewException('Status difere de "PV ABERTO"');
             }
 
-            // ???????????????????????????????????
+            $item = $request->get('item');
 
-
-            if ($request->get('item')) {
-
-                $itemArr = $request->get('item');
-
-                if (!isset($itemArr['produto'])) {
-                    return;
-                }
-
-                /** @var VendaItem $vendaItem */
-                if ($itemArr['id'] ?? null) {
-                    /** @var VendaItemRepository $repoVendaItem */
-                    $repoVendaItem = $this->getDoctrine()->getRepository(VendaItem::class);
-                    $vendaItem = $repoVendaItem->find($itemArr['id']);
-                } else {
-                    $vendaItem = new VendaItem();
-                }
-
-                /** @var ProdutoRepository $repoProduto */
-                $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
-                /** @var Produto $produto */
-                $produto = $repoProduto->find($itemArr['produto']);
-
-                $vendaItem->produto = $produto;
-
-                $vendaItem->qtde = DecimalUtils::parseStr($itemArr['qtde']);
-                $vendaItem->precoVenda = DecimalUtils::parseStr($itemArr['precoVenda']);
-                $vendaItem->desconto = DecimalUtils::parseStr($itemArr['desconto']);
-                $vendaItem->valorTotal = DecimalUtils::parseStr($itemArr['valorTotal']);
-
-                $vendaItem->venda = $venda;
-
-                try {
-                    $this->vendaItemEntityHandler->save($vendaItem);
-                } catch (ViewException $e) {
-                    $this->addFlash('error', $e->getMessage());
-                }
+            if (!isset($item['id']) && !isset($item['produto'])) {
+                throw new ViewException('Produto não informado');
             }
 
-            // ???????????????????????????????????
-
-
             $conn = $this->entityHandler->getDoctrine()->getConnection();
-
-            $item = $request->get('item');
 
             $qtde = abs(DecimalUtils::parseStr($item['qtde']));
             $desconto = abs(DecimalUtils::parseStr($item['desconto'] ?: '0,00'));
@@ -323,7 +290,7 @@ class VendaController extends FormListController
 
                         $itemNaVenda->desconto = $desconto;
                         $this->vendaItemEntityHandler->save($itemNaVenda);
-                        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
+                        return $this->redirectToRoute('ven_venda_form_itens', ['venda' => $venda->getId()]);
                     }
                 }
             }
@@ -379,13 +346,13 @@ class VendaController extends FormListController
 
             $this->vendaBusiness->recalcularTotais($venda->getId());
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', 'Erro ao inserir item');
             if ($e instanceof ViewException) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
-        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_itens', ['venda' => $venda->getId()]);
     }
 
 
@@ -756,7 +723,7 @@ class VendaController extends FormListController
             }
         }
 
-        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $item->venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_itens', ['venda' => $item->venda->getId()]);
     }
 
     /**
@@ -906,7 +873,8 @@ class VendaController extends FormListController
     {
         try {
             $str = $request->get('term');
-            $listaId = $request->get('listaId') ? $request->get('listaId') : 1; // por padrão só trás da lista "VAREJO"
+
+            $conn = $this->entityHandler->getDoctrine()->getConnection();
 
             // Pesquisa o produto e seu preço já levando em consideração a unidade padrão
             $sql = 'SELECT prod.id, prod.codigo, prod.nome, prod.json_data->>"$.qtde_min_para_atacado" as qtde_min_para_atacado, ' .
@@ -914,62 +882,16 @@ class VendaController extends FormListController
                 'u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
                 'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
                 'JOIN est_unidade u ON preco.unidade_id = u.id AND u.id = prod.unidade_padrao_id ' .
-                'WHERE preco.atual AND preco.lista_id = :listaId AND (' .
+                'WHERE preco.atual AND (' .
                 'prod.nome LIKE :nome OR ' .
                 'prod.codigo LIKE :codigo) ORDER BY prod.nome LIMIT 20';
 
-            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative($sql,
+            $rs = $conn->fetchAllAssociative($sql,
                 [
-                    'listaId' => $listaId,
                     'nome' => '%' . $str . '%',
                     'codigo' => '%' . $str
                 ]);
-            $results = [];
-
-
-            $sqlUnidades = 'SELECT u.id, u.label as text ' .
-                'FROM est_produto_preco preco, est_unidade u ' .
-                'WHERE preco.unidade_id = u.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId GROUP BY u.id, u.label ORDER BY u.label';
-            $stmtUnidades = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlUnidades);
-
-            $sqlPrecos = 'SELECT u.id, u.label as text, preco.preco_prazo, lista.descricao as lista ' .
-                'FROM est_produto_preco preco, est_unidade u, est_lista_preco lista ' .
-                'WHERE preco.unidade_id = u.id AND preco.lista_id = lista.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId';
-            $stmtPrecos = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlPrecos);
-
-            // Melhora a disposição do array para facilitar o acesso no javascript
-            function fixPrecos(array $rsUnidadesPrecos)
-            {
-                $rs = [];
-                foreach ($rsUnidadesPrecos as $rUnidadesPrecos) {
-                    $rs[$rUnidadesPrecos['text']][$rUnidadesPrecos['lista']] = $rUnidadesPrecos;
-                }
-                return $rs;
-            }
-
-            foreach ($rs as $r) {
-                $codigo = str_pad($r['codigo'], 9, '0', STR_PAD_LEFT);
-
-                $stmtUnidades->bindValue('produtoId', $r['id']);
-                $stmtUnidades->execute();
-                $rUnidades = $stmtUnidades->fetchAllAssociative();
-
-                $stmtPrecos->bindValue('produtoId', $r['id']);
-                $stmtPrecos->execute();
-                $rPrecos = $stmtPrecos->fetchAllAssociative();
-
-                $results[] = [
-                    'id' => $r['id'],
-                    'text' => $codigo . ' - ' . $r['nome'] . '(' . $r['unidade_label'] . ')',
-                    'preco_venda' => $r['precoVenda'],
-                    'qtde_min_para_atacado' => $r['qtde_min_para_atacado'],
-                    'unidade_id' => $r['unidade_id'],
-                    'unidade_label' => $r['unidade_label'],
-                    'unidade_casas_decimais' => $r['unidade_casas_decimais'],
-                    'unidades' => $rUnidades,
-                    'precos' => fixPrecos($rPrecos)
-                ];
-            }
+            $results = $this->handleResultProdutoSelect2($rs);
 
             return new JsonResponse(
                 ['results' => $results]
@@ -978,31 +900,6 @@ class VendaController extends FormListController
             return new JsonResponse(
                 ['results' => []]
             );
-        }
-    }
-
-
-    /**
-     *
-     * @Route("/ven/venda/findProdutoPrecoByProdutoEUnidadeJson/{produto}/{unidade}/", name="ven_venda_findProdutoPrecoByProdutoEUnidadeJson", requirements={"produto"="\d+","unidade"="\d+"})
-     * @param Produto $produto
-     * @param Unidade $unidade
-     * @return JsonResponse
-     * @IsGranted("ROLE_VENDAS", statusCode=403)
-     */
-    public function findProdutoPrecoByProdutoEUnidadeJson(Produto $produto, Unidade $unidade): JsonResponse
-    {
-        try {
-            foreach ($produto->precos as $produtoPreco) {
-                if ($produtoPreco->unidade->getId() === $unidade->getId()) {
-                    return new JsonResponse(['result' => [
-                        'preco_prazo' => $produtoPreco->precoPrazo
-                    ]]);
-                }
-            }
-            return new JsonResponse(['err' => 'Nenhum preço encontrado para produto (id = "' . $produto->getId() . '") e unidade "' . $unidade->label . '"']);
-        } catch (\Exception $e) {
-            return new JsonResponse(['err' => 'Erro ao pesquisar preços - produto (id = "' . $produto->getId() . '") e unidade "' . $unidade->label . '"']);
         }
     }
 
@@ -1019,9 +916,12 @@ class VendaController extends FormListController
         try {
             $id = $request->get('term');
 
-            $sql = 'SELECT prod.id, prod.codigo, prod.nome, preco.preco_prazo as precoVenda, u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
+            // Pesquisa o produto e seu preço já levando em consideração a unidade padrão
+            $sql = 'SELECT prod.id, prod.codigo, prod.nome, prod.json_data->>"$.qtde_min_para_atacado" as qtde_min_para_atacado, ' .
+                'preco.preco_prazo as precoVenda, u.id as unidade_id, ' .
+                'u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
                 'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
-                'JOIN est_unidade u ON prod.unidade_id = u.id ' .
+                'JOIN est_unidade u ON preco.unidade_id = u.id AND u.id = prod.unidade_padrao_id ' .
                 'WHERE preco.atual AND prod.id = :id';
 
             $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative($sql,
@@ -1031,17 +931,8 @@ class VendaController extends FormListController
             if (!$rs) {
                 $this->logger->error('Produto não encontrado para id ="' . $id . '"');
             }
-            $r = $rs[0];
-            $results = [];
 
-            $codigo = str_pad($r['codigo'], 9, '0', STR_PAD_LEFT);
-            $results[] = [
-                'id' => $r['id'],
-                'text' => $codigo . ' - ' . $r['nome'],
-                'preco_venda' => $r['precoVenda'],
-                'unidade_label' => $r['unidade_label'],
-                'unidade_casas_decimais' => $r['unidade_casas_decimais'],
-            ];
+            $results = $this->handleResultProdutoSelect2($rs);
 
             return new JsonResponse(
                 ['results' => $results]
@@ -1051,6 +942,83 @@ class VendaController extends FormListController
                 ['results' => []]
             );
         }
+    }
+
+
+    /**
+     * Monta o resultado esperado pelo campo select2js do produto.
+     * Este método é chamado tanto quando a buscar vem pelo , quando pelo findProdutoById
+     *
+     * @param array $rs
+     * @return array
+     */
+    private function handleResultProdutoSelect2(array $rs): array
+    {
+        $conn = $this->entityHandler->getDoctrine()->getConnection();
+
+        $results = [];
+
+
+        $sqlUnidades = 'SELECT preco.produto_id, u.id, u.label as text ' .
+            'FROM est_produto_preco preco, est_unidade u ' .
+            'WHERE preco.unidade_id = u.id AND preco.atual IS TRUE AND preco.produto_id = :produtoId GROUP BY preco.produto_id, u.id, u.label ORDER BY u.label';
+        $stmtUnidades = $conn->prepare($sqlUnidades);
+
+
+        // Melhora a disposição do array para facilitar o acesso no javascript
+        function handlePrecos(Connection $conn, array $rsUnidades)
+        {
+            $sqlPrecos = 'SELECT u.id, u.label as text, preco.preco_prazo, lista.descricao as lista ' .
+                'FROM est_produto_preco preco, est_unidade u, est_lista_preco lista ' .
+                'WHERE preco.unidade_id = u.id AND ' .
+                'u.label = :unidade AND ' .
+                'preco.lista_id = lista.id AND ' .
+                'lista.descricao = :listaDescricao AND ' .
+                'preco.atual IS TRUE AND ' .
+                'preco.produto_id = :produtoId';
+            $stmtPrecos = $conn->prepare($sqlPrecos);
+
+            $rs = [];
+            foreach ($rsUnidades as $rUnidadesPrecos) {
+
+                $stmtPrecos->bindValue('produtoId', $rUnidadesPrecos['produto_id']);
+                $stmtPrecos->bindValue('unidade', $rUnidadesPrecos['text']);
+                $stmtPrecos->bindValue('listaDescricao', 'ATACADO');
+                $stmtPrecos->execute();
+                $rPrecoAtacado = $stmtPrecos->fetchAssociative();
+
+                $stmtPrecos->bindValue('listaDescricao', 'VAREJO');
+                $stmtPrecos->execute();
+                $rPrecoVarejo = $stmtPrecos->fetchAssociative();
+
+                // Se não tiver preço no ATACADO, utiliza o de VAREJO
+                $rs[$rUnidadesPrecos['text']]['ATACADO'] = $rPrecoAtacado ?: $rPrecoVarejo;
+                $rs[$rUnidadesPrecos['text']]['VAREJO'] = $rPrecoVarejo;
+            }
+            return $rs;
+        }
+
+        foreach ($rs as $r) {
+            $codigo = str_pad($r['codigo'], 9, '0', STR_PAD_LEFT);
+
+            $stmtUnidades->bindValue('produtoId', $r['id']);
+            $stmtUnidades->execute();
+            $rUnidades = $stmtUnidades->fetchAllAssociative();
+
+
+            $results[] = [
+                'id' => $r['id'],
+                'text' => $codigo . ' - ' . $r['nome'] . '(' . $r['unidade_label'] . ')',
+                'preco_venda' => $r['precoVenda'],
+                'qtde_min_para_atacado' => $r['qtde_min_para_atacado'],
+                'unidade_id' => $r['unidade_id'],
+                'unidade_label' => $r['unidade_label'],
+                'unidade_casas_decimais' => $r['unidade_casas_decimais'],
+                'unidades' => $rUnidades,
+                'precos' => handlePrecos($conn, $rUnidades)
+            ];
+        }
+        return $results;
     }
 
 
