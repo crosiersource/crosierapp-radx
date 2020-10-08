@@ -50,17 +50,28 @@
             <div class="card-body">
 
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-md-3 col-sm-12">
                         <a role="button" href="{{ url('ven_venda_form_dados', {'id':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
                             <i class="far fa-file"></i>  1 - Dados</a>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-3 col-sm-12">
                         <a role="button" href="{{ url('ven_venda_form_itens', {'venda':e.id|default('')}) }}" class="btn btn-primary btn-sm btn-block">
                             <i class="far fa-file-alt"></i> 2 - Itens</a>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-3 col-sm-12">
                         <a role="button" href="{{ url('ven_venda_form_pagto', {'venda':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
                             <i class="fas fa-file-invoice-dollar"></i> 3 - Pagamento</a>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        {% if (e.id|default(false)) %}
+                            <a role="button" href="{{ url('ven_venda_form_resumo', {'venda':e.id|default('')}) }}" class="btn btn-outline-success btn-sm btn-block">
+                                <i class="fas fa-file-invoice-dollar"></i> 4 - Resumo
+                            </a>
+                        {% else %}
+                            <button type="button" class="btn btn-outline-secondary btn-sm btn-block disabled">
+                                <i class="fas fa-file-invoice-dollar"></i> 4 - Resumo
+                            </button>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="row">

@@ -188,7 +188,7 @@ class VendaController extends FormListController
             }
         }
 
-        $fnHandleRequestOnValid = function (Request $request, Venda $venda): void {
+        $fnHandleRequestOnValid = function (Request $request, Venda $venda) use(&$params) : void {
             /** @var ClienteRepository $repoCliente */
             $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
             $documento = preg_replace("/[^G^0-9]/", '', ($venda->jsonData['cliente_documento'] ?? ''));
@@ -211,6 +211,7 @@ class VendaController extends FormListController
                     $venda->cliente = null; // o documento foi alterado, deve ser salvo como um novo cliente
                 }
             }
+            $params['formView'] = 'Vendas/venda_form_itens.html.twig';
         };
 
         return $this->doForm($request, $venda, $params, false, $fnHandleRequestOnValid);
@@ -286,7 +287,6 @@ class VendaController extends FormListController
                             $conn->delete('ven_venda_item', ['id' => $item['id']]);
                         }
                         $itemNaVenda->qtde = bcadd($qtde, abs($itemNaVenda->qtde), 2);
-                        $itemNaVenda->qtde = $itemNaVenda->devolucao ? $itemNaVenda->qtde * -1 : $itemNaVenda->qtde;
 
                         $itemNaVenda->desconto = $desconto;
                         $this->vendaItemEntityHandler->save($itemNaVenda);
@@ -303,9 +303,7 @@ class VendaController extends FormListController
             $produto = $repoProduto->find($produtoId);
 
             $vendaItem['produto_id'] = $produtoId;
-
             $vendaItem['venda_id'] = $venda->getId();
-
 
             $repoProdutoPreco = $this->getDoctrine()->getRepository(ProdutoPreco::class);
             $precoAtual = $repoProdutoPreco->findBy(['produto' => $produto, 'atual' => true, 'unidade' => $unidadeId]);
@@ -325,11 +323,10 @@ class VendaController extends FormListController
             $vendaItem['unidade_id'] = $unidadeId;
 
             $vendaItem['devolucao'] = $devolucao;
-            $vendaItem['qtde'] = ($vendaItem['devolucao']) ? abs($qtde) * -1 : abs($qtde);
-
+            $vendaItem['qtde'] = ($vendaItem['devolucao'] ? -1 : 1) * abs($qtde);
 
             $vendaItem['subtotal'] = bcmul($vendaItem['qtde'], $vendaItem['preco_venda'], 2);
-            $vendaItem['desconto'] = $desconto;
+            $vendaItem['desconto'] = ($vendaItem['devolucao'] ? -1 : 1) * abs($desconto);
             $vendaItem['total'] = bcsub($vendaItem['subtotal'], $vendaItem['desconto'], 2);
 
             $vendaItem['updated'] = (new \DateTime())->format('Y-m-d H:i:s');
@@ -388,9 +385,37 @@ class VendaController extends FormListController
             }
         }
 
+        /** @var PlanoPagtoRepository $repoPlanoPagto */
+        $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
+        $params['planosPagto'] = json_encode($repoPlanoPagto->findAtuaisSelect2JS());
+
 
         return $this->doRender('Vendas/venda_form_pagamento.html.twig', $params);
     }
+
+
+    /**
+     *
+     * @Route("/ven/venda/form/resumo/{venda}", name="ven_venda_form_resumo", requirements={"venda"="\d+"})
+     * @param Request $request
+     * @param Venda|null $venda
+     * @return RedirectResponse|Response
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
+     */
+    public function vendaFormResumo(Request $request, Venda $venda = null)
+    {
+        $params = [
+            'listRoute' => 'ven_venda_listVendasEcommerce',
+            'typeClass' => VendaType::class,
+            'formView' => 'Vendas/venda_form_itens.html.twig', // para redirecionar
+            'formRoute' => 'ven_venda_form_dados',
+            'formPageTitle' => 'Venda',
+            'e' => $venda
+        ];
+
+        return $this->doRender('Vendas/venda_form_resumo.html.twig', $params);
+    }
+
 
     /**
      *
@@ -416,7 +441,8 @@ class VendaController extends FormListController
             $vendaPagto['plano_pagto_id'] = $pagto['planoPagto'];
             $vendaPagto['valor_pagto'] = abs(DecimalUtils::parseStr($pagto['valorPagto']));
             $vendaPagto['json_data'] = json_encode([
-                'carteira_id' => $pagto['carteira']
+                'carteira_id' => $pagto['carteira'],
+                'num_parcelas' => $pagto['numParcelas'] ?? 0
             ]);
 
 
@@ -436,7 +462,7 @@ class VendaController extends FormListController
                 $this->addFlash('error', $e->getMessage());
             }
         }
-        return $this->redirectToRoute('ven_venda_form_pagto', ['id' => $venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_pagto', ['venda' => $venda->getId()]);
     }
 
 
@@ -882,7 +908,8 @@ class VendaController extends FormListController
                 'u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
                 'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
                 'JOIN est_unidade u ON preco.unidade_id = u.id AND u.id = prod.unidade_padrao_id ' .
-                'WHERE preco.atual AND (' .
+                'JOIN est_lista_preco lista ON preco.lista_id = lista.id ' .
+                'WHERE preco.atual AND lista.descricao = \'VAREJO\' AND (' .
                 'prod.nome LIKE :nome OR ' .
                 'prod.codigo LIKE :codigo) ORDER BY prod.nome LIMIT 20';
 
@@ -922,7 +949,8 @@ class VendaController extends FormListController
                 'u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
                 'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
                 'JOIN est_unidade u ON preco.unidade_id = u.id AND u.id = prod.unidade_padrao_id ' .
-                'WHERE preco.atual AND prod.id = :id';
+                'JOIN est_lista_preco lista ON preco.lista_id = lista.id ' .
+                'WHERE preco.atual AND lista.descricao = \'VAREJO\' AND prod.id = :id';
 
             $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative($sql,
                 [

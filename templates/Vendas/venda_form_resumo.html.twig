@@ -1,0 +1,91 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+{% block up_scripts %}
+
+    <style>
+        .select2-search__field {
+            text-transform: uppercase;
+        }
+    </style>
+{% endblock %}
+
+{% block page_content %}
+
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Pré-Venda</h3>
+                        {% if (e.id|default(false)) %}
+                            <h6>{{ e.id|strpad(9) }}</h6>
+                        {% endif %}
+                    </div>
+                    <div class="col-4 text-right">
+
+                        <a type="button" class="btn btn-info"
+                           href="{{ url(formRoute, formRouteParams|default([])) }}" title="Novo">
+                            <i class="fas fa-file" aria-hidden="true"></i>
+                        </a>
+
+                        <a role="button" class="btn btn-outline-secondary" href="{{ url(listRoute) }}"
+                           title="Listar">
+                            <i class="fas fa-list"></i>
+                        </a>
+
+                        {% if e.id %}
+                            <button type="button" class="btn btn-outline-warning"
+                                    data-url="{{ url('ven_venda_clonar', {'venda': e.id}) }}"
+                                    data-token="{{ csrf_token('ven_venda_clonar') }}" title="Clonar"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-md-3 col-sm-12">
+                        <a role="button" href="{{ url('ven_venda_form_dados', {'id':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
+                            <i class="far fa-file"></i> 1 - Dados</a>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <a role="button" href="{{ url('ven_venda_form_itens', {'venda':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
+                            <i class="far fa-file-alt"></i> 2 - Itens</a>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <a role="button" href="{{ url('ven_venda_form_pagto', {'venda':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
+                            <i class="fas fa-file-invoice-dollar"></i> 3 - Pagamento</a>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <a role="button" href="{{ url('ven_venda_form_resumo', {'venda':e.id|default('')}) }}" class="btn btn-success btn-sm btn-block">
+                            <i class="fas fa-file-invoice-dollar"></i> 4 - Resumo
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <hr>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
+
