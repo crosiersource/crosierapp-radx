@@ -14,6 +14,7 @@ import 'select2/dist/js/i18n/pt-BR.js';
 import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
 import routes from '../../static/fos_js_routes.json';
 import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
+import hotkeys from 'hotkeys-js';
 
 $.fn.select2.defaults.set("theme", "bootstrap");
 $.fn.select2.defaults.set("language", "pt-BR");
@@ -64,65 +65,84 @@ $(document).ready(function () {
     });
 
 
-    $cliente_nome.select2({
-        minimumInputLength: 4,
-        width: '100%',
-        dropdownAutoWidth: true,
-        placeholder: '...',
-        allowClear: true,
-        tags: true,
-        createTag: function (params) {
-            let term = $.trim(params.term);
+    // $cliente_nome.select2({
+    //     minimumInputLength: 4,
+    //     width: '100%',
+    //     dropdownAutoWidth: true,
+    //     placeholder: '...',
+    //     allowClear: true,
+    //     tags: true,
+    //     createTag: function (params) {
+    //         let term = $.trim(params.term);
+    //
+    //         if (term === '') {
+    //             return null;
+    //         }
+    //
+    //         return {
+    //             id: term,
+    //             text: term
+    //         }
+    //     },
+    //     ajax: {
+    //         delay: 750,
+    //         url: Routing.generate('ven_venda_findClienteByStr'),
+    //         dataType: 'json',
+    //         processResults: function (data) {
+    //             let mapped = $.map(data.results, function (obj) {
+    //                 obj.id = obj.text;
+    //                 return obj;
+    //             });
+    //             return {
+    //                 results: mapped
+    //             };
+    //         },
+    //     }
+    // }).on('select2:select', function () {
+    //     let o = $cliente_nome.select2('data')[0];
+    //
+    //     if (o?.documento) {
+    //         // só retorna documento se achou o cliente na base
+    //         $cliente_documento.val(o?.documento);
+    //         $cliente.val(o?.id);
+    //     } else {
+    //         // Para deixar sempre em UPPERCASE
+    //         $cliente_nome.empty().trigger("change");
+    //         $cliente_nome.append(new Option(o.text.toUpperCase(), o.text.toUpperCase(), false, false)).trigger('change');
+    //         if (!$cliente.val()) {
+    //             $cliente_documento.val('');
+    //             $cliente.val('');
+    //         }
+    //     }
+    //     $cliente_fone.val(o?.json_data?.fone1 ?? '');
+    //     $cliente_email.val(o?.json_data?.email ?? '');
+    //
+    //     CrosierMasks.maskDecs();
+    // });
+    //
+    // if ($cliente_nome.data('val')) {
+    //     let val = $cliente_nome.data('val');
+    //     $cliente_nome.append(new Option(val, val, false, false)).trigger('change');
+    // }
 
-            if (term === '') {
-                return null;
-            }
-
-            return {
-                id: term,
-                text: term
-            }
-        },
-        ajax: {
-            delay: 750,
-            url: Routing.generate('ven_venda_findClienteByStr'),
-            dataType: 'json',
-            processResults: function (data) {
-                let mapped = $.map(data.results, function (obj) {
-                    obj.id = obj.text;
-                    return obj;
-                });
-                return {
-                    results: mapped
-                };
-            },
-        }
-    }).on('select2:select', function () {
-        let o = $cliente_nome.select2('data')[0];
-
-        if (o?.documento) {
-            // só retorna documento se achou o cliente na base
-            $cliente_documento.val(o?.documento);
-            $cliente.val(o?.id);
-        } else {
-            // Para deixar sempre em UPPERCASE
-            $cliente_nome.empty().trigger("change");
-            $cliente_nome.append(new Option(o.text.toUpperCase(), o.text.toUpperCase(), false, false)).trigger('change');
-            if (!$cliente.val()) {
-                $cliente_documento.val('');
-                $cliente.val('');
-            }
-        }
-        $cliente_fone.val(o?.json_data?.fone1 ?? '');
-        $cliente_email.val(o?.json_data?.email ?? '');
-
-        CrosierMasks.maskDecs();
+    let k = hotkeys.noConflict();
+    k('ctrl+1', function (event, handler) {
+        event.preventDefault();
+        $('#aDados')[0].click();
+    });
+    k('ctrl+2', function (event, handler) {
+        event.preventDefault();
+        $('#aItens')[0].click();
+    });
+    k('ctrl+3', function (event, handler) {
+        event.preventDefault();
+        $('#aPagto')[0].click();
+    });
+    k('ctrl+4', function (event, handler) {
+        event.preventDefault();
+        $('#aResumo')[0].click();
     });
 
-    if ($cliente_nome.data('val')) {
-        let val = $cliente_nome.data('val');
-        $cliente_nome.append(new Option(val, val, false, false)).trigger('change');
-    }
 
     /**
      * RTA: como o venda_jsonData_cliente_nome é adicionando manualmente sem o form do symfony (para poder ser um

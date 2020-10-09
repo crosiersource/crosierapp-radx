@@ -99,6 +99,7 @@ Encore
     .addEntry('Vendas/venda_form_dados', './assets/js/Vendas/venda_form_dados.js')
     .addEntry('Vendas/venda_form_itens', './assets/js/Vendas/venda_form_itens.js')
     .addEntry('Vendas/venda_form_pagamento', './assets/js/Vendas/venda_form_pagamento.js')
+    .addEntry('Vendas/venda_form_resumo', './assets/js/Vendas/venda_form_resumo.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

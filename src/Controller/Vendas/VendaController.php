@@ -372,7 +372,6 @@ class VendaController extends FormListController
             'e' => $venda,
         ];
 
-
         $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
         $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
         $params['pagtos_diferenca'] = bcsub($venda->valorTotal, ($rsTotalPagtos[0]['totalPagtos'] ?? 0.0), 2);
@@ -776,7 +775,7 @@ class VendaController extends FormListController
             }
         }
 
-        return $this->redirectToRoute('ven_venda_form_pagto', ['id' => $pagto->venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_pagto', ['venda' => $pagto->venda->getId()]);
     }
 
     /**

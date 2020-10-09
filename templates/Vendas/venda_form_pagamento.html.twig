@@ -49,36 +49,7 @@
 
             <div class="card-body">
 
-                <div class="row">
-                    <div class="col-md-3 col-sm-12">
-                        <a role="button" href="{{ url('ven_venda_form_dados', {'id':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
-                            <i class="far fa-file"></i>  1 - Dados</a>
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        <a role="button" href="{{ url('ven_venda_form_itens', {'venda':e.id|default('')}) }}" class="btn btn-outline-primary btn-sm btn-block">
-                            <i class="far fa-file-alt"></i> 2 - Itens</a>
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        <a role="button" href="{{ url('ven_venda_form_pagto', {'venda':e.id|default('')}) }}" class="btn btn-primary btn-sm btn-block">
-                            <i class="fas fa-file-invoice-dollar"></i> 3 - Pagamento</a>
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        {% if (e.id|default(false)) %}
-                            <a role="button" href="{{ url('ven_venda_form_resumo', {'venda':e.id|default('')}) }}" class="btn btn-outline-success btn-sm btn-block">
-                                <i class="fas fa-file-invoice-dollar"></i> 4 - Resumo
-                            </a>
-                        {% else %}
-                            <button type="button" class="btn btn-outline-secondary btn-sm btn-block disabled">
-                                <i class="fas fa-file-invoice-dollar"></i> 4 - Resumo
-                            </button>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <hr>
-                    </div>
-                </div>
+                {% include 'Vendas/venda_form_botoes.html.twig' %}
 
 
                 <div class="row">
@@ -280,34 +251,7 @@
                 </div>
 
 
-                <div class="row mt-3">
-                    <div class="col text-right">
 
-                        {% if e.status == 'PV ABERTO' %}
-                            <button type="button" class="btn btn-success"
-                                    data-url="{{ url('ven_venda_finalizarPV', {'venda': e.id}) }}"
-                                    data-token="{{ csrf_token('ven_venda_finalizarPV') }}"
-                                    data-target="#confirmationModal" data-toggle="modal">
-                                <i class="far fa-check-circle"></i> Finalizar PV
-                            </button>
-                        {% endif %}
-
-                        {% if e.status == 'PV FINALIZADO' %}
-                            <button type="button" value="Imprimir" class="btn btn-outline-success"
-                                    onclick="printJS('{{ url('ven_venda_imprimirPV', {'venda': e.id}) }}')"
-                                    id="btnImprimirPV">
-                                <i class="fas fa-print" aria-hidden="true"></i> Imprimir
-                            </button>
-
-                            <a role="button" value="Visualizar Fatura" class="btn btn-outline-success"
-                               href="{{ url('fin_fatura_visualizarFaturaVenda', {'fatura': e.jsonData.fatura_id}) }}"
-                               id="btnVisualizarFatura">
-                                <i class="fas fa-file-invoice-dollar"></i> Fatura
-                            </a>
-
-                        {% endif %}
-                    </div>
-                </div>
 
 
             </div>

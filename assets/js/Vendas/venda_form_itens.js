@@ -20,6 +20,8 @@ $.fn.select2.defaults.set("language", "pt-BR");
 
 Numeral.locale('pt-br');
 
+import hotkeys from 'hotkeys-js';
+
 Routing.setRoutingData(routes);
 
 
@@ -188,6 +190,25 @@ $(document).ready(function () {
     if ($item_produto.hasClass('focusOnReady')) {
         $item_produto.select2('focus');
     }
+
+
+    let k = hotkeys.noConflict();
+    k('ctrl+1', function (event, handler) {
+        event.preventDefault();
+        $('#aDados')[0].click();
+    });
+    k('ctrl+2', function (event, handler) {
+        event.preventDefault();
+        $('#aItens')[0].click();
+    });
+    k('ctrl+3', function (event, handler) {
+        event.preventDefault();
+        $('#aPagto')[0].click();
+    });
+    k('ctrl+4', function (event, handler) {
+        event.preventDefault();
+        $('#aResumo')[0].click();
+    });
 
 
 });

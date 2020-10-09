@@ -4,8 +4,6 @@ import $ from "jquery";
 
 import Numeral from 'numeral';
 
-import 'print-js';
-
 import 'numeral/locales/pt-br.js';
 
 import 'select2/dist/css/select2.css';
@@ -21,6 +19,8 @@ $.fn.select2.defaults.set("language", "pt-BR");
 Numeral.locale('pt-br');
 
 Routing.setRoutingData(routes);
+
+import hotkeys from 'hotkeys-js';
 
 
 $(document).ready(function () {
@@ -41,7 +41,7 @@ $(document).ready(function () {
         let o = $planoPagto.select2('data')[0];
 
         $.map(o.carteiras, function (obj) {
-            obj.text = obj['descricao'];
+            obj.text = String(obj['codigo']).padStart(2,'0') + ' - ' + obj['descricao'];
             return obj;
         });
 
@@ -65,6 +65,24 @@ $(document).ready(function () {
     });
 
     $planoPagto.select2('focus');
+
+    let k = hotkeys.noConflict();
+    k('ctrl+1', function (event, handler) {
+        event.preventDefault();
+        $('#aDados')[0].click();
+    });
+    k('ctrl+2', function (event, handler) {
+        event.preventDefault();
+        $('#aItens')[0].click();
+    });
+    k('ctrl+3', function (event, handler) {
+        event.preventDefault();
+        $('#aPagto')[0].click();
+    });
+    k('ctrl+4', function (event, handler) {
+        event.preventDefault();
+        $('#aResumo')[0].click();
+    });
 
 
 });
