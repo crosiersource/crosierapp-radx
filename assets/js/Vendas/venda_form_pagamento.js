@@ -28,6 +28,7 @@ $(document).ready(function () {
 
     let $planoPagto = $('#pagto_planoPagto');
     let $planoPagto_carteira = $('#pagto_carteira');
+    let $planoPagto_carteira_destino = $('#pagto_carteira_destino');
     let $planoPagto_numParcelas = $('#pagto_numParcelas');
 
     $planoPagto.select2({
@@ -40,29 +41,34 @@ $(document).ready(function () {
     }).on('select2:select', function () {
         let o = $planoPagto.select2('data')[0];
 
-        $.map(o.carteiras, function (obj) {
-            obj.text = String(obj['codigo']).padStart(2,'0') + ' - ' + obj['descricao'];
-            return obj;
-        });
 
-        $planoPagto_carteira.empty().trigger("change");
+        $planoPagto_carteira_destino.prop('disabled', true);
+        $planoPagto_carteira_destino.empty().trigger("change");
+        if (o?.carteirasDestino) {
 
-        $planoPagto_carteira.select2({
-            width: '100%',
-            dropdownAutoWidth: true,
-            placeholder: '...',
-            allowClear: true,
-            tags: true,
-            data: o.carteiras
-        });
+            $.map(o.carteirasDestino, function (obj) {
+                obj.text = String(obj['codigo']).padStart(2, '0') + ' - ' + obj['descricao'];
+                return obj;
+            });
 
-        $planoPagto_carteira.prop('disabled', false);
+            $planoPagto_carteira_destino.select2({
+                width: '100%',
+                dropdownAutoWidth: true,
+                placeholder: '...',
+                allowClear: true,
+                tags: true,
+                data: o.carteirasDestino
+            });
+
+            $planoPagto_carteira_destino.prop('disabled', false);
+        }
 
         $planoPagto_numParcelas.val('');
 
         $planoPagto_numParcelas.prop('disabled', o.json_data?.aceita_parcelas === false);
 
     });
+
 
     $planoPagto.select2('focus');
 

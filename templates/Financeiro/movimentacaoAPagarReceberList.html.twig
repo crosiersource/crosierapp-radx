@@ -92,7 +92,7 @@
                                         <span class="badge badge-pill badge-light">{{ i }}</span>
                                     </td>
                                     <td>
-                                        <b>{{ item.carteira.descricaoMontada }}</b><br/>
+                                        <b>{{ item.carteira.getDescricaoMontada() }}</b><br/>
                                         {{ item.categoria.descricaoMontada }}<br/>
                                         {{ item.modo.descricaoMontada }}
                                     </td>
@@ -135,7 +135,7 @@
                                             {% if (item.transferenciaEntreCarteiras and item.movimentacaoOposta and item.movimentacaoOposta.categoria) %}
                                                 <span class="badge badge-pill badge-light">
                                             {{ (item.movimentacaoOposta.categoria.codigo == 199 ? '<i class="fas fa-sign-out-alt"></i> Para: ' : '<i class="fas fa-sign-in-alt"></i> De: ') }}
-                                                    {{ item.movimentacaoOposta.carteira.descricaoMontada }} </span>
+                                                    {{ item.movimentacaoOposta.carteira.getDescricaoMontada() }} </span>
                                             {% endif %}
                                         </div>
 

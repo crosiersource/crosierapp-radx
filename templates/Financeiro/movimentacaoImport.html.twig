@@ -165,7 +165,7 @@
                                     </td>
                                     <td>{{ item.id }}</td>
                                     <td>
-                                        {{ item.carteira.descricaoMontada }}
+                                        {{ item.carteira.getDescricaoMontada() }}
                                         {% if item.carteiraDestino %}
                                             <br />
                                             <span class="badge badge-pill badge-info">Oposta: {{ item.carteiraDestino.descricaoMontada }}</span>

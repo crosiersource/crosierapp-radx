@@ -5,6 +5,7 @@ namespace App\Controller\Financeiro;
 
 use App\Form\Financeiro\GrupoItemType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
@@ -180,7 +181,7 @@ class GrupoItemController extends FormListController
     {
         $paiId = $request->get('pai');
         if (!$paiId) {
-            return null;
+            throw new ViewException('pai n/d');
         }
 
         $where = ['pai' => $paiId];

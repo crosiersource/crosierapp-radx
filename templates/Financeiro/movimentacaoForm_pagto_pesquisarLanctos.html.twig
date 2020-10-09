@@ -85,7 +85,7 @@
                         <td>
                             {{ item.categoria.descricaoMontada }}<br/>
                             {{ item.modo.descricaoMontada }}<br />
-                            {{ item.carteira.descricaoMontada }}
+                            {{ item.carteira.getDescricaoMontada() }}
                         </td>
                         <td>
                             <div style="float: left">
@@ -100,7 +100,7 @@
                                 {% if item.transferenciaEntreCarteiras %}
                                     <br/><span class="badge badge-pill badge-warning">
                                                     {{ item.movimentacaoOposta.categoria.codigo == 199 ? 'Para: ' : 'De: ' }}
-                                    {{ item.movimentacaoOposta.carteira.descricaoMontada }}
+                                    {{ item.movimentacaoOposta.carteira.getDescricaoMontada() }}
                                                 </span>
 
                                 {% endif %}

@@ -237,7 +237,11 @@
                     <thead>
                     <tr>
                         <th scope="col">Id</th>
-                        <th scope="col">Categoria<br/>Modo</th>
+                        <th scope="col">
+                            Categoria<br/>
+                            Modo<br/>
+                            Carteira
+                        </th>
                         <th scope="col">Descrição<br/>Cedente</th>
                         <th scope="col">Dt Vencto<br/>Dt Pagto</th>
                         <th scope="col">Valor Total</th>
@@ -256,9 +260,9 @@
                                 <span class="badge badge-pill badge-light">{{ loop.index }}</span>
                             </td>
                             <td>
-                                <b>{{ item.carteira.descricaoMontada }}</b><br/>
                                 {{ item.categoria.descricaoMontada }}<br/>
-                                {{ item.modo.descricaoMontada }}
+                                {{ item.modo.descricaoMontada }}<br/>
+                                <b>{{ item.carteira.getDescricaoMontada() }}</b><br/>
                             </td>
                             <td>
                                 <div style="float: left">
@@ -299,7 +303,7 @@
                                     {% if (item.transferenciaEntreCarteiras and item.movimentacaoOposta and item.movimentacaoOposta.categoria) %}
                                         <span class="badge badge-pill badge-light">
                                             {{ (item.movimentacaoOposta.categoria.codigo == 199 ? '<i class="fas fa-sign-out-alt"></i> Para: ' : '<i class="fas fa-sign-in-alt"></i> De: ') }}
-                                            {{ item.movimentacaoOposta.carteira.descricaoMontada }} </span>
+                                            {{ item.movimentacaoOposta.carteira.getDescricaoMontada() }} </span>
                                     {% endif %}
                                 </div>
 

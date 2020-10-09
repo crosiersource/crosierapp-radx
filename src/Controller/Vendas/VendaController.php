@@ -19,7 +19,6 @@ use CrosierSource\CrosierLibRadxBundle\Business\Vendas\VendaBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoPreco;
-use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
@@ -32,12 +31,9 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHand
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaItemRepository;
 use Doctrine\DBAL\Connection;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
@@ -188,7 +184,7 @@ class VendaController extends FormListController
             }
         }
 
-        $fnHandleRequestOnValid = function (Request $request, Venda $venda) use(&$params) : void {
+        $fnHandleRequestOnValid = function (Request $request, Venda $venda) use (&$params) : void {
             /** @var ClienteRepository $repoCliente */
             $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
             $documento = preg_replace("/[^G^0-9]/", '', ($venda->jsonData['cliente_documento'] ?? ''));
@@ -379,10 +375,14 @@ class VendaController extends FormListController
         /** @var CarteiraRepository $repoCarteira */
         $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
         foreach ($venda->pagtos as $pagto) {
-            if ($pagto->jsonData['carteira_id'] ?? false) {
-                $pagto->carteira = $repoCarteira->find($pagto->jsonData['carteira_id']);
-            }
+            // Para exibir na lista, por padrão pega a carteira_destino (caso seja null, então é movimentação direto no caixa)
+            $carteiraId = $pagto->jsonData['carteira_destino_id'] ?? $carteiraId = $pagto->jsonData['carteira_id'];
+            $pagto->carteira = $repoCarteira->find($carteiraId);
         }
+
+        $carteirasCaixa = $repoCarteira->findByFiltersSimpl([['caixa', 'EQ', true]], ['descricao' => 'ASC']);
+        $params['carteirasCaixa'] = json_encode(Select2JsUtils::toSelect2Data($carteirasCaixa, '%s', ['descricaoMontada']));
+
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
         $repoPlanoPagto = $this->getDoctrine()->getRepository(PlanoPagto::class);
@@ -390,6 +390,63 @@ class VendaController extends FormListController
 
 
         return $this->doRender('Vendas/venda_form_pagamento.html.twig', $params);
+    }
+
+    /**
+     *
+     * @Route("/ven/venda/savePagto/{venda}", name="ven_venda_savePagto", requirements={"venda"="\d+"})
+     * @param Request $request
+     * @param Venda|null $venda
+     * @return RedirectResponse|Response
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
+     */
+    public function savePagto(Request $request, Venda $venda)
+    {
+        try {
+            if ($venda->status !== 'PV ABERTO') {
+                throw new ViewException('Status difere de "PV ABERTO"');
+            }
+
+            $pagto = $request->get('pagto');
+
+            $vendaPagto = [];
+
+            $vendaPagto['venda_id'] = $venda->getId();
+            $vendaPagto['plano_pagto_id'] = $pagto['planoPagto'];
+            $vendaPagto['valor_pagto'] = abs(DecimalUtils::parseStr($pagto['valorPagto']));
+            $vendaPagto['json_data'] = json_encode([
+                'carteira_id' => $pagto['carteira'],
+                'carteira_destino_id' => $pagto['carteira_destino'] ?? null,
+                'num_parcelas' => $pagto['numParcelas'] ?? 0
+            ]);
+
+
+            $vendaPagto['updated'] = (new \DateTime())->format('Y-m-d H:i:s');
+            $vendaPagto['inserted'] = (new \DateTime())->format('Y-m-d H:i:s');
+            $vendaPagto['estabelecimento_id'] = 1;
+            $vendaPagto['user_inserted_id'] = 1;
+            $vendaPagto['user_updated_id'] = 1;
+            $conn = $this->entityHandler->getDoctrine()->getConnection();
+
+            $conn->insert('ven_venda_pagto', $vendaPagto);
+
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao inserir pagto');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
+        $pagtos_diferenca = (float)bcsub($venda->valorTotal, ($rsTotalPagtos[0]['totalPagtos'] ?? 0.0), 2);
+        $permiteMaisPagtos = $pagtos_diferenca !== 0.0;
+
+        if ($permiteMaisPagtos) {
+            return $this->redirectToRoute('ven_venda_form_pagto', ['venda' => $venda->getId()]);
+        } else {
+            return $this->redirectToRoute('ven_venda_form_resumo', ['venda' => $venda->getId()]);
+        }
     }
 
 
@@ -412,56 +469,15 @@ class VendaController extends FormListController
             'e' => $venda
         ];
 
-        return $this->doRender('Vendas/venda_form_resumo.html.twig', $params);
-    }
-
-
-    /**
-     *
-     * @Route("/ven/venda/savePagto/{venda}", name="ven_venda_savePagto", requirements={"venda"="\d+"})
-     * @param Request $request
-     * @param Venda|null $venda
-     * @return RedirectResponse|Response
-     * @IsGranted("ROLE_VENDAS", statusCode=403)
-     */
-    public function savePagto(Request $request, Venda $venda)
-    {
-        try {
-            if ($venda->status !== 'PV ABERTO') {
-                throw new ViewException('Status difere de "PV ABERTO"');
-            }
-
-            $pagto = $request->get('pagto');
-
-
-            $vendaPagto = [];
-
-            $vendaPagto['venda_id'] = $venda->getId();
-            $vendaPagto['plano_pagto_id'] = $pagto['planoPagto'];
-            $vendaPagto['valor_pagto'] = abs(DecimalUtils::parseStr($pagto['valorPagto']));
-            $vendaPagto['json_data'] = json_encode([
-                'carteira_id' => $pagto['carteira'],
-                'num_parcelas' => $pagto['numParcelas'] ?? 0
-            ]);
-
-
-            $vendaPagto['updated'] = (new \DateTime())->format('Y-m-d H:i:s');
-            $vendaPagto['inserted'] = (new \DateTime())->format('Y-m-d H:i:s');
-            $vendaPagto['estabelecimento_id'] = 1;
-            $vendaPagto['user_inserted_id'] = 1;
-            $vendaPagto['user_updated_id'] = 1;
-            $conn = $this->entityHandler->getDoctrine()->getConnection();
-
-            $conn->insert('ven_venda_pagto', $vendaPagto);
-
-
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Erro ao inserir pagto');
-            if ($e instanceof ViewException) {
-                $this->addFlash('error', $e->getMessage());
-            }
+        /** @var CarteiraRepository $repoCarteira */
+        $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
+        foreach ($venda->pagtos as $pagto) {
+            // Para exibir na lista, por padrão pega a carteira_destino (caso seja null, então é movimentação direto no caixa)
+            $carteiraId = $pagto->jsonData['carteira_destino_id'] ?? $carteiraId = $pagto->jsonData['carteira_id'];
+            $pagto->carteira = $repoCarteira->find($carteiraId);
         }
-        return $this->redirectToRoute('ven_venda_form_pagto', ['venda' => $venda->getId()]);
+
+        return $this->doRender('Vendas/venda_form_resumo.html.twig', $params);
     }
 
 
