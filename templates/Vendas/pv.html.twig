@@ -6,10 +6,15 @@
     <style>
 
 
+        html {
+            margin: 0;
+            padding: 0;
+        }
+
         @page {
-            margin: 1mm;
-            size: 8cm 30cm;
-            max-width: 8cm;
+            margin: 5mm 2mm 5mm 2mm;
+            size: 78mm 18cm;
+            max-width: 78mm;
         }
 
         /** Define now the real margins of every page in the PDF **/
@@ -35,9 +40,6 @@
     {{ venda.id|strpad(9) }}
     {{ venda.vendedor.cpf|default('99999999999') != '99999999999' ? venda.vendedor.nome : '' }}
 </p>
-
-
-
 
 
 <p style="text-align: center;">
