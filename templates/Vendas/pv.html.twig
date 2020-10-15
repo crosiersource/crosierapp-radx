@@ -31,7 +31,9 @@
     ----- Documento Não Fiscal -----
 </p>
 <p style="text-align: center">
-    {{ venda.dtVenda|date('d/m/Y H:i:s') }}
+    {{ venda.dtVenda|date('d/m/Y H:i:s') }}<br>
+    {{ venda.id|strpad(9) }}
+    {{ venda.vendedor.cpf|default('99999999999') != '99999999999' ? venda.vendedor.nome : '' }}
 </p>
 
 
@@ -49,7 +51,7 @@
     {% for item in venda.itens %}
         <tr>
             <td>
-                * {{ item.getDescricaoMontadaResumida() }} {{ item.desconto > 0.0 ? (('<br>(Desc.: ' ~ item.desconto|number_format(2,',','.') ~ ')')|raw) : '' }}
+                *{{ item.getDescricaoMontadaResumida() }} {{ item.desconto > 0.0 ? (('<br>(Desc.: ' ~ item.desconto|number_format(2,',','.') ~ ')')|raw) : '' }}
             </td>
             <td style="text-align: right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }}{{ item.unidade.label }}</td>
             <td style="text-align: right"></td>
