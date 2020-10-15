@@ -35,8 +35,8 @@
                         <a class="nav-link NOTAFISCAL_TAB {{ notaFiscal.id|default('') != '' ? '' : 'disabled' }}" id="itens-tab" data-toggle="tab" href="#itens" role="tab"
                            aria-controls="profile" aria-selected="false">Itens</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link NOTAFISCAL_TAB" id="transporte-tab" data-toggle="tab" href="#transporte"
+                    <li class="nav-item" title="{{ notaFiscal.transpModalidadeFrete == 'SEM_FRETE' ? 'Modalidade: Sem frete' : '' }}">
+                        <a class="nav-link {{ notaFiscal.transpModalidadeFrete == 'SEM_FRETE' ? 'disabled' : '' }} NOTAFISCAL_TAB" id="transporte-tab" data-toggle="tab" href="#transporte"
                            role="tab"
                            aria-controls="contact" aria-selected="false">Transporte</a>
                     </li>

@@ -35,7 +35,7 @@
 
                             <tr>
                                 <th scope="col">Id</th>
-                                <th scope="col">Carteira<br/>Modo</th>
+                                <th scope="col">Carteira<br/>Modo<br/>Categoria</th>
                                 <th scope="col">Descrição</th>
                                 <th scope="col">Dt Vencto</th>
                                 <th scope="col">Valor Total</th>
@@ -44,14 +44,15 @@
                             </thead>
 
                             <tbody>
-                            {% for mov in e.movimentacoes %}
+                            {% for mov in movs %}
                                 <tr>
                                     <td>
                                         {{ mov.id }}
                                     </td>
                                     <td>
                                         {{ mov.carteira.getDescricaoMontada() }}<br>
-                                        {{ mov.modo.descricaoMontada }}
+                                        {{ mov.modo.descricaoMontada }}<br/>
+                                        {{ mov.categoria.descricaoMontada }}
                                     </td>
                                     <td>
                                         <b>{{ mov.descricao }}</b><br/>

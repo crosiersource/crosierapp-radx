@@ -260,7 +260,7 @@ class PedidoCompraController extends FormListController
         return $this->doForm($request, $pedidoCompraItem, $params);
     }
 
-    public function handleRequestOnValid(Request $request, $entity): void
+    public function handleRequestOnValid(Request $request, $entity, ?array &$params = []): void
     {
         if ($entity instanceof PedidoCompraItem) {
             /** @var AppConfigRepository $repoAppConfig */

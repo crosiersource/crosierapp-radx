@@ -184,7 +184,7 @@ class VendaController extends FormListController
             }
         }
 
-        $fnHandleRequestOnValid = function (Request $request, Venda $venda) use (&$params) : void {
+        $fnHandleRequestOnValid = function (Request $request, Venda $venda, ?array &$params = []): void {
             /** @var ClienteRepository $repoCliente */
             $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
             $documento = preg_replace("/[^G^0-9]/", '', ($venda->jsonData['cliente_documento'] ?? ''));
@@ -208,6 +208,7 @@ class VendaController extends FormListController
                 }
             }
             $params['formView'] = 'Vendas/venda_form_itens.html.twig';
+            $params['formRoute'] = 'ven_venda_form_itens';
         };
 
         return $this->doForm($request, $venda, $params, false, $fnHandleRequestOnValid);
@@ -216,7 +217,7 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/ven/venda/form/itens/{venda}", name="ven_venda_form_itens", requirements={"venda"="\d+"})
+     * @Route("/ven/venda/form/itens/{id}", name="ven_venda_form_itens", requirements={"id"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
@@ -286,7 +287,7 @@ class VendaController extends FormListController
 
                         $itemNaVenda->desconto = $desconto;
                         $this->vendaItemEntityHandler->save($itemNaVenda);
-                        return $this->redirectToRoute('ven_venda_form_itens', ['venda' => $venda->getId()]);
+                        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
                     }
                 }
             }
@@ -345,13 +346,13 @@ class VendaController extends FormListController
                 $this->addFlash('error', $e->getMessage());
             }
         }
-        return $this->redirectToRoute('ven_venda_form_itens', ['venda' => $venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
     }
 
 
     /**
      *
-     * @Route("/ven/venda/form/pagto/{venda}", name="ven_venda_form_pagto", requirements={"venda"="\d+"})
+     * @Route("/ven/venda/form/pagto/{id}", name="ven_venda_form_pagto", requirements={"id"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
@@ -359,6 +360,10 @@ class VendaController extends FormListController
      */
     public function vendaFormPagto(Request $request, Venda $venda)
     {
+        if ($venda->itens->count() < 1) {
+            $this->addFlash('warn', 'Nenhum item adicionado na compra');
+            return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
+        }
         $params = [
             'listRoute' => 'ven_venda_listVendasEcommerce',
             'typeClass' => VendaType::class,
@@ -370,7 +375,10 @@ class VendaController extends FormListController
 
         $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
         $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
-        $params['pagtos_diferenca'] = bcsub($venda->valorTotal, ($rsTotalPagtos[0]['totalPagtos'] ?? 0.0), 2);
+        $params['pagtos_diferenca'] = '0.00';
+        if ((float)$venda->valorTotal > (float)($rsTotalPagtos[0]['totalPagtos'] ?? 0.0)) {
+            $params['pagtos_diferenca'] = bcsub($venda->valorTotal, ($rsTotalPagtos[0]['totalPagtos'] ?? 0.0), 2);
+        }
         $params['permiteMaisPagtos'] = (float)$params['pagtos_diferenca'] !== 0.0;
         /** @var CarteiraRepository $repoCarteira */
         $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
@@ -405,6 +413,11 @@ class VendaController extends FormListController
         try {
             if ($venda->status !== 'PV ABERTO') {
                 throw new ViewException('Status difere de "PV ABERTO"');
+            }
+
+            $venda->recalcularTotais();
+            if ($venda->getTotalPagtos() >= $venda->valorTotal) {
+                throw new ViewException('Total de pagtos maior ou igual ao valor da venda');
             }
 
             $pagto = $request->get('pagto');
@@ -443,16 +456,16 @@ class VendaController extends FormListController
         $permiteMaisPagtos = $pagtos_diferenca !== 0.0;
 
         if ($permiteMaisPagtos) {
-            return $this->redirectToRoute('ven_venda_form_pagto', ['venda' => $venda->getId()]);
+            return $this->redirectToRoute('ven_venda_form_pagto', ['id' => $venda->getId()]);
         } else {
-            return $this->redirectToRoute('ven_venda_form_resumo', ['venda' => $venda->getId()]);
+            return $this->redirectToRoute('ven_venda_form_resumo', ['id' => $venda->getId()]);
         }
     }
 
 
     /**
      *
-     * @Route("/ven/venda/form/resumo/{venda}", name="ven_venda_form_resumo", requirements={"venda"="\d+"})
+     * @Route("/ven/venda/form/resumo/{id}", name="ven_venda_form_resumo", requirements={"id"="\d+"})
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
@@ -539,7 +552,7 @@ class VendaController extends FormListController
             }
         }
 
-        return $this->redirectToRoute('ven_venda_form_dados', ['id' => $venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_resumo', ['id' => $venda->getId()]);
     }
 
     /**
@@ -619,6 +632,7 @@ class VendaController extends FormListController
                 $notaFiscal = new NotaFiscal();
                 $notaFiscal->setTipoNotaFiscal('NFE');
                 $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+
                 $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
 
                 $rInfo = $this->notaFiscalEntityHandler->getDoctrine()->getConnection()
@@ -764,7 +778,7 @@ class VendaController extends FormListController
             }
         }
 
-        return $this->redirectToRoute('ven_venda_form_itens', ['venda' => $item->venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $item->venda->getId()]);
     }
 
     /**
@@ -791,7 +805,7 @@ class VendaController extends FormListController
             }
         }
 
-        return $this->redirectToRoute('ven_venda_form_pagto', ['venda' => $pagto->venda->getId()]);
+        return $this->redirectToRoute('ven_venda_form_pagto', ['id' => $pagto->venda->getId()]);
     }
 
     /**

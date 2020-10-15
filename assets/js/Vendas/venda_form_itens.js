@@ -45,13 +45,13 @@ $(document).ready(function () {
         let qtde = $qtde.val().replace('.', '').replace(',', '.');
 
         let lista = 'VAREJO';
-        if (produto.qtde_min_para_atacado > 0) {
-            lista = qtde < produto.qtde_min_para_atacado ? 'VAREJO' : 'ATACADO';
+        if (qtde && produto.qtde_min_para_atacado > 0) {
+            lista = parseFloat(qtde) < parseFloat(produto.qtde_min_para_atacado) ? 'VAREJO' : 'ATACADO';
         }
         let preco_prazo = produto.precos[unidade][lista]['preco_prazo'];
         let valorUnit = parseFloat(preco_prazo);
         $precoVenda.val(valorUnit.toFixed(2).replace('.', ','));
-        $('#item_precoVenda_help').html('* ' + lista);
+        $('#item_precoVenda_help').html('* ' + lista + ' (Mín: ' + produto.qtde_min_para_atacado + ')');
 
         let subTotal = (qtde * valorUnit);
 
@@ -102,6 +102,8 @@ $(document).ready(function () {
 
         let precoVenda = parseFloat(o.preco_venda).toFixed(2).replace('.', ',');
         $precoVenda.val(precoVenda);
+
+        resValorTotal();
 
         CrosierMasks.maskDecs();
     });

@@ -256,8 +256,9 @@ class EntradaController extends FormListController
     /**
      * @param Request $request
      * @param $entrada
+     * @param array|null $params
      */
-    public function handleRequestOnValid(Request $request, /** @var Entrada @entrada */ $entrada): void
+    public function handleRequestOnValid(Request $request, /** @var Entrada @entrada */ $entrada, ?array &$params = []): void
     {
         if ($request->get('item')) {
 

@@ -30,6 +30,12 @@
 <p style="text-align: center">
     ----- Documento Não Fiscal -----
 </p>
+<p style="text-align: center">
+    {{ venda.dtVenda|date('d/m/Y H:i:s') }}
+</p>
+
+
+
 
 
 <p style="text-align: center;">
@@ -43,10 +49,9 @@
     {% for item in venda.itens %}
         <tr>
             <td>
-                {{ item.produto.codigo }} <br>
-                {{ item.descricao }} {{ item.desconto > 0.0 ? ('Desc.: ' ~ item.desconto|number_format(2,',','.') ~ ')') : '' }}
+                * {{ item.getDescricaoMontadaResumida() }} {{ item.desconto > 0.0 ? (('<br>(Desc.: ' ~ item.desconto|number_format(2,',','.') ~ ')')|raw) : '' }}
             </td>
-            <td style="text-align: right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
+            <td style="text-align: right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }}{{ item.unidade.label }}</td>
             <td style="text-align: right"></td>
             <td style="text-align: right">{{ item.total|number_format(2,',','.') }}</td>
         </tr>

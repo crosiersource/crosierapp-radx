@@ -397,7 +397,7 @@ class NotaFiscalType extends AbstractType
             ]);
 
             $builder->add('transpNumeracaoVolumes', TextType::class, [
-                'label' => 'Marca Volumes',
+                'label' => 'Numeração Volumes',
                 'required' => false,
                 'disabled' => $disabledTransp
             ]);
@@ -430,6 +430,17 @@ class NotaFiscalType extends AbstractType
             $builder->add('transpQtdeVolumes', IntegerType::class, [
                 'label' => 'Qtde Volumes',
                 'required' => false,
+                'disabled' => $disabledTransp
+            ]);
+
+            $builder->add('transpValorTotalFrete', MoneyType::class, [
+                'label' => 'Total Frete',
+                'currency' => 'BRL',
+                'grouping' => 'true',
+                'required' => false,
+                'attr' => [
+                    'class' => 'crsr-money'
+                ],
                 'disabled' => $disabledTransp
             ]);
 

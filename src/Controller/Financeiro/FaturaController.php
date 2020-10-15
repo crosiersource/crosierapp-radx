@@ -5,8 +5,10 @@ namespace App\Controller\Financeiro;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Fatura;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\FaturaEntityHandler;
+use Doctrine\DBAL\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,16 +39,29 @@ class FaturaController extends FormListController
      *
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function visualizarFaturaVenda(Request $request, Fatura $fatura = null)
+    public function visualizarFaturaVenda(Request $request, Fatura $fatura)
     {
         $params = [
             'e' => $fatura
         ];
-        if ($fatura->jsonData['venda_id'] ?? false) {
-            $venda = $this->getDoctrine()->getRepository(Venda::class)->find($fatura->jsonData['venda_id']);
-            $params['venda'] = $venda;
-        } else {
-            throw new \RuntimeException('Fatura de venda sem jsonData[venda_id]');
+
+        try {
+            $conn = $this->getEntityHandler()->getDoctrine()->getConnection();
+            $rsMovsIds = $conn->fetchAllAssociative('SELECT mov.id FROM fin_movimentacao mov, fin_categoria cat, fin_carteira carteira WHERE mov.carteira_id = carteira.id AND mov.categoria_id = cat.id AND fatura_id = :faturaId ORDER BY carteira.id, cat.codigo DESC', ['faturaId' => $fatura->getId()]);
+            $movs = [];
+            $repoMovimentacao = $this->getDoctrine()->getRepository(Movimentacao::class);
+            foreach ($rsMovsIds as $rMovId) {
+                $movs[] = $repoMovimentacao->find($rMovId['id']);
+            }
+            $params['movs'] = $movs;
+            if ($fatura->jsonData['venda_id'] ?? false) {
+                $venda = $this->getDoctrine()->getRepository(Venda::class)->find($fatura->jsonData['venda_id']);
+                $params['venda'] = $venda;
+            } else {
+                throw new \RuntimeException('Fatura de venda sem jsonData[venda_id]');
+            }
+        } catch (\Throwable $e) {
+            $this->addFlash('error', 'Erro ao pesquisar movimentações da fatura');
         }
         return $this->doRender('Financeiro/fatura_venda.html.twig', $params);
     }

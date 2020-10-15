@@ -177,7 +177,7 @@
                                                     </button>
 
                                                     <button type="button"
-                                                            onclick="window.location = '{{ url('ven_venda_form_itens', {'venda': e.id}) }}'"
+                                                            onclick="window.location = '{{ url('ven_venda_form_itens', {'id': e.id}) }}'"
                                                             class="btn btn-outline-warning"
                                                             id="btnRecarregar" value="Recarregar">
                                                         <i class="fas fa-sync-alt"></i>
@@ -213,8 +213,15 @@
                                         <td data-vendaitemid="{{ item.id }}"
                                             title="{{ item.id }}">{{ loop.index }}</td>
                                         <td>
+                                            <div class="float-left">
                                             {{ item.produto.codigo|default(0)|strpad(13) }}
                                             - {{ item.descricao }}
+                                            </div>
+                                            <div class="float-right">
+                                                <a href="{{ url('est_produto_form', {'id':item.produto.id}) }}" target="_blank">
+                                                    <i class="fas fa-external-link-alt"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                         <td class="text-right">{{ item.qtde|number_format(item.unidade.casasDecimais,',','.') }} {{ item.unidade.label }}</td>
                                         <td class="text-right">{{ item.precoVenda|number_format(2,',','.') }}</td>
