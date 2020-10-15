@@ -66,10 +66,25 @@
                     <div class="card-body">
 
                         {% if e.status == 'PV ABERTO' %}
-                            <form method="POST" action="{{ url('ven_venda_saveItem', {'venda': e.id}) }}">
+                            <form method="POST" action="{{ url('ven_venda_saveItem', {'venda': e.id}) }}" id="formItem">
 
 
                                 <div class="row">
+
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_qtde">Qtde</label>
+                                            <div class="input-group">
+                                                <input type="text" id="item_qtde" name="item[qtde]" required
+                                                       class="crsr-dec3 form-control" value="1">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"
+                                                          id="item_unidade_append_label">...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="col-sm-5">
                                         <div class="form-group">
                                             <label for="item_produto">Produto</label>
@@ -92,19 +107,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="item_qtde">Qtde</label>
-                                            <div class="input-group">
-                                                <input type="text" id="item_qtde" name="item[qtde]" required
-                                                       class="crsr-dec3 form-control">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text"
-                                                          id="item_unidade_append_label">...</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
 
                                     <div class="col-md-2 col-sm-12">
                                         <div class="form-group text-right">
@@ -133,7 +136,7 @@
                                                     <span class="input-group-text">R$</span>
                                                 </div>
                                                 <input type="text" id="item_precoVenda" name="item[precoVenda]"
-                                                       readonly="readonly" class="crsr-money form-control disabled">
+                                                       class="crsr-money form-control">
                                             </div>
                                             <small id="item_precoVenda_help" class="form-text text-muted"></small>
                                         </div>

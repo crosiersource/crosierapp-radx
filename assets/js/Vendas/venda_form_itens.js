@@ -14,19 +14,19 @@ import 'select2/dist/js/i18n/pt-BR.js';
 import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
 import routes from '../../static/fos_js_routes.json';
 import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
+import hotkeys from 'hotkeys-js';
 
 $.fn.select2.defaults.set("theme", "bootstrap");
 $.fn.select2.defaults.set("language", "pt-BR");
 
 Numeral.locale('pt-br');
 
-import hotkeys from 'hotkeys-js';
-
 Routing.setRoutingData(routes);
 
 
 $(document).ready(function () {
 
+    let $formItem = $('#formItem');
     let $item_produto = $('#item_produto');
     let $item_id = $('#item_id');
 
@@ -40,25 +40,28 @@ $(document).ready(function () {
 
     function resValorTotal() {
         let produto = $item_produto.select2('data')[0];
-        let unidade = $unidade.select2('data')[0].text;
+        if (produto) {
+            let unidade = $unidade.select2('data')[0].text;
 
-        let qtde = $qtde.val().replace('.', '').replace(',', '.');
+            let qtde = $qtde.val().replace('.', '').replace(',', '.');
 
-        let lista = 'VAREJO';
-        if (qtde && produto.qtde_min_para_atacado > 0) {
-            lista = parseFloat(qtde) < parseFloat(produto.qtde_min_para_atacado) ? 'VAREJO' : 'ATACADO';
+            let lista = 'VAREJO';
+            if (qtde && produto.qtde_min_para_atacado > 0) {
+                lista = parseFloat(qtde) < parseFloat(produto.qtde_min_para_atacado) ? 'VAREJO' : 'ATACADO';
+            }
+            // let preco_prazo = produto.precos[unidade][lista]['preco_prazo'];
+            let preco_prazo = $precoVenda.val().replace('.', '').replace(',', '.');
+            let valorUnit = parseFloat(preco_prazo);
+            $precoVenda.val(valorUnit.toFixed(2).replace('.', ','));
+            $('#item_precoVenda_help').html('* ' + lista + ' (Mín: ' + produto.qtde_min_para_atacado + ')');
+
+            let subTotal = (qtde * valorUnit);
+
+            let desconto = $desconto.val().replace('.', '').replace(',', '.');
+            let valorTotal = (subTotal - desconto).toFixed(2).replace('.', ',');
+            $valorTotal.val(valorTotal);
+            CrosierMasks.maskDecs();
         }
-        let preco_prazo = produto.precos[unidade][lista]['preco_prazo'];
-        let valorUnit = parseFloat(preco_prazo);
-        $precoVenda.val(valorUnit.toFixed(2).replace('.', ','));
-        $('#item_precoVenda_help').html('* ' + lista + ' (Mín: ' + produto.qtde_min_para_atacado + ')');
-
-        let subTotal = (qtde * valorUnit);
-
-        let desconto = $desconto.val().replace('.', '').replace(',', '.');
-        let valorTotal = (subTotal - desconto).toFixed(2).replace('.', ',');
-        $valorTotal.val(valorTotal);
-        CrosierMasks.maskDecs();
     }
 
     $qtde.blur(function () {
@@ -84,12 +87,27 @@ $(document).ready(function () {
             delay: 750,
             url: Routing.generate('ven_venda_findProdutosByCodigoOuNomeJson'),
             dataType: 'json',
-            cache: true
+            cache: true,
+            processResults: function (data) {
+                if (data.results.length == 1 && data.results[0].codigoExato) {
+                    $item_produto.empty().trigger("change");
+                    $item_produto.select2({
+                            data: data.results,
+                            dropdownAutoWidth: true,
+                            width: '100%'
+                        }
+                    );
+                    $item_produto.val(data.results[0].id).trigger('change');
+                    $formItem.submit();
+                }
+                return data;
+            }
         }
     }).on('select2:select', function () {
         let o = $item_produto.select2('data')[0];
         $qtde.removeClass();
         $qtde.addClass('form-control').addClass('crsr-dec' + o.unidade_casas_decimais);
+
         $('#item_unidade_append_label').html(o.unidade_label);
 
         $unidade.empty().trigger("change");
@@ -104,9 +122,7 @@ $(document).ready(function () {
         $precoVenda.val(precoVenda);
 
         resValorTotal();
-
-        CrosierMasks.maskDecs();
-    });
+    }).select2('open');
 
 
     $('.btnEditProduto').click(function () {
@@ -117,11 +133,13 @@ $(document).ready(function () {
 
         $('#btnInserirItem').html('<i class="fas fa-save" aria-hidden="true"></i>  Alterar');
 
+        $qtde.removeClass();
+        $qtde.addClass('form-control').addClass('crsr-dec' + dados.itemUnidadeCasasDecimais);
+        CrosierMasks.maskDecs();
+
         let qtde = parseFloat(dados.itemQtde).toFixed(dados.itemUnidadeCasasDecimais);
         $qtde.val(qtde.replace('.', ','));
 
-        $qtde.removeClass();
-        $qtde.addClass('form-control').addClass('crsr-dec' + dados.itemUnidadeCasasDecimais);
         $('#item_unidade_append_label').html(dados.itemUnidadeLabel);
 
         let precoVenda = parseFloat(dados.itemPrecoVenda).toFixed(2);
@@ -144,7 +162,6 @@ $(document).ready(function () {
         $devolucao.prop('checked', dados.itemDevolucao === 1);
 
         $qtde.focus();
-
 
 
         // Remonta o select2 do produto já com o produto selecionado
@@ -185,7 +202,7 @@ $(document).ready(function () {
         $('#item_unidade_append_label').html(o.text);
         let precoVenda = parseFloat(o.preco_prazo).toFixed(2).replace('.', ',');
         $precoVenda.val(precoVenda);
-        CrosierMasks.maskDecs();
+        resValorTotal();
     });
 
 

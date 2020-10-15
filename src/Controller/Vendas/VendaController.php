@@ -19,6 +19,7 @@ use CrosierSource\CrosierLibRadxBundle\Business\Vendas\VendaBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoPreco;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
@@ -270,7 +271,16 @@ class VendaController extends FormListController
                 $unidadeId = $vendaItem_->unidade->getId();
             } else {
                 $produtoId = (int)$item['produto'];
-                $unidadeId = (int)$item['unidade'];
+                $unidadeId = $item['unidade'] ?? null;
+            }
+
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+            /** @var Produto $produto */
+            $produto = $repoProduto->find($produtoId);
+
+            // quando o form é submetido automaticamente numa pesquisa por EAN exato, vem sem a unidade
+            if (!$unidadeId) {
+                $unidadeId = $produto->unidadePadrao->getId();
             }
 
 
@@ -295,9 +305,7 @@ class VendaController extends FormListController
             $vendaItem = [];
 
 
-            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
-            /** @var Produto $produto */
-            $produto = $repoProduto->find($produtoId);
+
 
             $vendaItem['produto_id'] = $produtoId;
             $vendaItem['venda_id'] = $venda->getId();
@@ -310,19 +318,27 @@ class VendaController extends FormListController
             /** @var ProdutoPreco $precoAtual */
             $precoAtual = $precoAtual[0];
 
-            $vendaItem['preco_venda'] = $precoAtual->precoPrazo;
+            if ($item['precoVenda'] ?? false) {
+                $vendaItem['preco_venda'] = DecimalUtils::parseStr($item['precoVenda']);
+            } else {
+                $vendaItem['preco_venda'] = $precoAtual->precoPrazo;
+            }
 
             $vendaItem['descricao'] = $produto->nome;
             if (!($item['id'] ?? false)) {
                 $vendaItem['ordem'] = $venda->itens->count() + 1;
             }
 
+            $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
+            /** @var Unidade $unidade */
+            $unidade = $repoUnidade->find($unidadeId);
+
             $vendaItem['unidade_id'] = $unidadeId;
 
             $vendaItem['devolucao'] = $devolucao;
-            $vendaItem['qtde'] = ($vendaItem['devolucao'] ? -1 : 1) * abs($qtde);
+            $vendaItem['qtde'] = bcmul( ($vendaItem['devolucao'] ? -1 : 1) * abs($qtde) , 1, $unidade->casasDecimais);
 
-            $vendaItem['subtotal'] = bcmul($vendaItem['qtde'], $vendaItem['preco_venda'], 2);
+            $vendaItem['subtotal'] = DecimalUtils::roundUp(bcmul($vendaItem['qtde'], $vendaItem['preco_venda'], 4));
             $vendaItem['desconto'] = ($vendaItem['devolucao'] ? -1 : 1) * abs($desconto);
             $vendaItem['total'] = bcsub($vendaItem['subtotal'], $vendaItem['desconto'], 2);
 
@@ -949,6 +965,10 @@ class VendaController extends FormListController
                 ]);
             $results = $this->handleResultProdutoSelect2($rs);
 
+            if (count($results) === 1 && $results[0]['codigo'] === $str) {
+                $results[0]['codigoExato'] = true;
+            }
+
             return new JsonResponse(
                 ['results' => $results]
             );
@@ -1066,6 +1086,7 @@ class VendaController extends FormListController
             $results[] = [
                 'id' => $r['id'],
                 'text' => $codigo . ' - ' . $r['nome'] . '(' . $r['unidade_label'] . ')',
+                'codigo' => $codigo,
                 'preco_venda' => $r['precoVenda'],
                 'qtde_min_para_atacado' => $r['qtde_min_para_atacado'],
                 'unidade_id' => $r['unidade_id'],
@@ -1075,6 +1096,7 @@ class VendaController extends FormListController
                 'precos' => handlePrecos($conn, $rUnidades)
             ];
         }
+
         return $results;
     }
 
