@@ -52,63 +52,7 @@
                 {% include 'Vendas/venda_form_botoes.html.twig' %}
 
 
-                <div class="row">
-                    <div class="col-md-6 col-sm-12">
-                    </div>
-                    <div class="col-md-6 col-sm-12">
-                        <div class="form-group row">
-                            <label class="col-form-label col-sm-4" for="venda_subtotal">Subtotal</label>
-                            <div class="col-sm-8">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">R$ </span>
-                                    </div>
-                                    <input type="text" id="venda_subtotal" disabled
-                                           value="{{ e.subtotal|number_format(2,',','.') }}"
-                                           readonly="readonly" class="crsr-money form-control disabled">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 col-sm-12">
-                    </div>
-                    <div class="col-md-6 col-sm-12">
-                        <div class="form-group row">
-                            <label class="col-form-label col-sm-4" for="venda_desconto">Desconto</label>
-                            <div class="col-sm-8">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">R$ </span>
-                                    </div>
-                                    <input type="text" id="venda_desconto" disabled
-                                           value="{{ e.desconto|number_format(2,',','.') }}"
-                                           readonly="readonly" class="crsr-money form-control disabled">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 col-sm-12">
-                    </div>
-                    <div class="col-md-6 col-sm-12">
-                        <div class="form-group row">
-                            <label class="col-form-label col-sm-4" for="venda_valorTotal">Valor Total</label>
-                            <div class="col-sm-8">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">R$ </span>
-                                    </div>
-                                    <input type="text" id="venda_valorTotal" disabled
-                                           value="{{ e.valorTotal|number_format(2,',','.') }}"
-                                           readonly="readonly" class="crsr-money form-control disabled">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
 
 
                 <div class="card">
@@ -257,6 +201,64 @@
 
                     </div>
 
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4" for="venda_subtotal">Subtotal</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">R$ </span>
+                                    </div>
+                                    <input type="text" id="venda_subtotal" disabled
+                                           value="{{ e.subtotal|number_format(2,',','.') }}"
+                                           readonly="readonly" class="crsr-money form-control disabled">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4" for="venda_desconto">Desconto</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">R$ </span>
+                                    </div>
+                                    <input type="text" id="venda_desconto" disabled
+                                           value="{{ e.desconto|number_format(2,',','.') }}"
+                                           readonly="readonly" class="crsr-money form-control disabled">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4" for="venda_valorTotal">Valor Total</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">R$ </span>
+                                    </div>
+                                    <input type="text" id="venda_valorTotal" disabled
+                                           value="{{ e.valorTotal|number_format(2,',','.') }}"
+                                           readonly="readonly" class="crsr-money form-control disabled">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
