@@ -33,7 +33,7 @@
 
 
 <p style="text-align: center">
-    ----- Documento Não Fiscal -----
+    -------- Documento Não Fiscal --------
 </p>
 <p style="text-align: center">
     {{ venda.dtVenda|date('d/m/Y H:i:s') }}<br>
@@ -42,12 +42,19 @@
 </p>
 
 
-<p style="text-align: center;">
-<table style="font-size: 8pt; width: 100%; padding: 0; border-spacing: 0; border: #eeeeee dashed thin">
+<p style="margin-top: 5mm; text-align: center;">
+
+    --------------------------------------
+
+
+<table style="font-size: 8pt; width: 100%; padding: 0; border-spacing: 0; border: white dashed thin">
+    <tr>
+        <td colspan="999"></td>
+    </tr>
     <tr style="font-weight: bold">
         <td>Produto</td>
-        <td>Qtde</td>
-        <td>Total</td>
+        <td>|Qt</td>
+        <td>|Total</td>
     </tr>
 
     {% for item in venda.itens %}
@@ -62,9 +69,12 @@
     {% endfor %}
 
 </table>
+
+--------------------------------------
+
 </p>
 <p style="text-align: center;">
-<table style="width: 100%; font-size: 8pt;">
+<table style="margin-top: 15mm; width: 100%; font-size: 8pt;">
 
     {% if venda.desconto > 0 %}
         <tr>
@@ -83,6 +93,9 @@
 
 
 </table>
+
+--------------------------------------
+
 </p>
 
 
