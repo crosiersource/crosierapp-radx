@@ -41,35 +41,9 @@ class NotaFiscalItemType extends AbstractType
             'required' => true
         ]);
 
-        $builder->add('icmsAliquota', NumberType::class, [
-            'label' => 'ICMS Aliq',
-            'scale' => 2,
-            'help' => 'Em %',
-            'grouping' => 'true',
+        $builder->add('csosn', IntegerType::class, [
+            'label' => 'CSOSN',
             'required' => false,
-            'attr' => [
-                'class' => 'crsr-dec2'
-            ]
-        ]);
-
-        $builder->add('icms_valor', MoneyType::class, [
-            'label' => 'ICMS Valor',
-            'currency' => 'BRL',
-            'grouping' => 'true',
-            'required' => true,
-            'attr' => [
-                'class' => 'crsr-money'
-            ]
-        ]);
-
-        $builder->add('icms_valor_bc', MoneyType::class, [
-            'label' => 'ICMS BC',
-            'currency' => 'BRL',
-            'grouping' => 'true',
-            'required' => true,
-            'attr' => [
-                'class' => 'crsr-money'
-            ]
         ]);
 
         $builder->add('ncm', TextType::class, [
@@ -77,10 +51,14 @@ class NotaFiscalItemType extends AbstractType
             'required' => true
         ]);
 
-        $builder->add('csosn', IntegerType::class, [
-            'label' => 'CSOSN',
-            'required' => true,
-            'empty_data' => '103'
+        $builder->add('cest', TextType::class, [
+            'label' => 'CEST',
+            'required' => false,
+        ]);
+
+        $builder->add('cst', IntegerType::class, [
+            'label' => 'CST',
+            'required' => false,
         ]);
 
         $builder->add('qtde', NumberType::class, [
@@ -97,6 +75,112 @@ class NotaFiscalItemType extends AbstractType
             'label' => 'Unidade',
             'required' => true
         ]);
+
+
+        $builder->add('icmsValor', MoneyType::class, [
+            'label' => 'ICMS Valor',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'required' => false,
+            'attr' => [
+                'class' => 'crsr-money'
+            ]
+        ]);
+
+        $builder->add('icmsModBC', TextType::class, [
+            'label' => 'Unidade',
+            'required' => false
+        ]);
+
+        $builder->add('icmsAliquota', NumberType::class, [
+            'label' => 'ICMS Aliq',
+            'scale' => 2,
+            'help' => 'Em %',
+            'grouping' => 'true',
+            'required' => false,
+            'attr' => [
+                'class' => 'crsr-dec2'
+            ]
+        ]);
+
+        $builder->add('icmsValorBc', MoneyType::class, [
+            'label' => 'ICMS BC',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'required' => false,
+            'attr' => [
+                'class' => 'crsr-money'
+            ]
+        ]);
+
+
+
+        $builder->add('pisValor', MoneyType::class, [
+            'label' => 'PIS Valor',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'required' => false,
+            'attr' => [
+                'class' => 'crsr-money'
+            ]
+        ]);
+
+        $builder->add('pisAliquota', NumberType::class, [
+            'label' => 'PIS Aliq',
+            'scale' => 2,
+            'help' => 'Em %',
+            'grouping' => 'true',
+            'required' => false,
+            'attr' => [
+                'class' => 'crsr-dec2'
+            ]
+        ]);
+
+        $builder->add('pisValorBc', MoneyType::class, [
+            'label' => 'PIS BC',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'required' => false,
+            'attr' => [
+                'class' => 'crsr-money'
+            ]
+        ]);
+
+
+        $builder->add('cofinsValor', MoneyType::class, [
+            'label' => 'COFINS Valor',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'required' => false,
+            'attr' => [
+                'class' => 'crsr-money'
+            ]
+        ]);
+
+        $builder->add('cofinsAliquota', NumberType::class, [
+            'label' => 'COFINS Aliq',
+            'scale' => 2,
+            'help' => 'Em %',
+            'grouping' => 'true',
+            'required' => false,
+            'attr' => [
+                'class' => 'crsr-dec2'
+            ]
+        ]);
+
+        $builder->add('cofinsValorBc', MoneyType::class, [
+            'label' => 'COFINS BC',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'required' => false,
+            'attr' => [
+                'class' => 'crsr-money'
+            ]
+        ]);
+
+
+
+
 
         $builder->add('valor_unit', MoneyType::class, [
             'label' => 'Valor Unit',

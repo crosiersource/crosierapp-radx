@@ -25,11 +25,100 @@
 
             <div class="card-body">
 
-                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
                 {{ form_start(form) }}
 
-                {{ form_widget(form) }}
+                {{ form_widget(form._token) }}
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form.codigo) }}
+                    </div>
+                    <div class="col-sm-12 col-md-9">
+                        {{ form_row(form.descricao) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form.qtde) }}
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form.unidade) }}
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form.cfop) }}
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form.ncm) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-4">
+                        {{ form_row(form.cest) }}
+                    </div>
+                    <div class="col-sm-12 col-md-4">
+                        {{ form_row(form.cst) }}
+                    </div>
+                    <div class="col-sm-12 col-md-4">
+                        {{ form_row(form.csosn) }}
+                    </div>
+                </div>
+
+                <fieldset class="border p-2 mb-3">
+                    <legend class="w-auto p-2">ICMS</legend>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-3">
+                            {{ form_row(form.icmsValor) }}
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            {{ form_row(form.icmsModBC) }}
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            {{ form_row(form.icmsAliquota) }}
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            {{ form_row(form.icmsValorBc) }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-2 mb-3">
+                    <legend class="w-auto p-2">PIS</legend>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4">
+                            {{ form_row(form.pisValor) }}
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            {{ form_row(form.pisAliquota) }}
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            {{ form_row(form.pisValorBc) }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-2 mb-3">
+                    <legend class="w-auto p-2">COFINS</legend>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4">
+                            {{ form_row(form.cofinsValor) }}
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            {{ form_row(form.cofinsAliquota) }}
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            {{ form_row(form.cofinsValorBc) }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="d-none">
+                    {# Necessário para renderizar os demais campos do jsonData #}
+                    {{ form_widget(form) }}
+                </div>
 
                 <div class="row">
                     <div class="col text-right">

@@ -161,8 +161,12 @@ class EmissaoNFeController extends FormListController
             }
 
         }
-
-        $permiteFaturamento = $this->notaFiscalBusiness->permiteFaturamento($notaFiscal);
+        try {
+            $permiteFaturamento = false;
+            $permiteFaturamento = $this->notaFiscalBusiness->permiteFaturamento($notaFiscal, true);
+        } catch (ViewException $e) {
+            $this->addFlash('info', $e->getMessage());
+        }
         $permiteSalvar = $this->notaFiscalBusiness->permiteSalvar($notaFiscal);
         $permiteReimpressao = $this->notaFiscalBusiness->permiteReimpressao($notaFiscal);
         $permiteReimpressaoCancelamento = $this->notaFiscalBusiness->permiteReimpressaoCancelamento($notaFiscal);
@@ -193,8 +197,11 @@ class EmissaoNFeController extends FormListController
     {
         try {
             $this->notaFiscalBusiness->faturarNFe($notaFiscal);
-        } catch (\Exception $e) {
-            $this->addFlash('error', $e->getMessage());
+        } catch (\Throwable $e) {
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+            $this->addFlash('error', 'Erro ao faturar. Verifique o histórico.');
         }
         $route = $request->get('rtr') ?? 'fis_emissaonfe_form';
         return $this->redirectToRoute($route, ['id' => $notaFiscal->getId()]);
@@ -428,7 +435,6 @@ class EmissaoNFeController extends FormListController
         if (!$item) {
             $item = new NotaFiscalItem();
             $item->setNotaFiscal($notaFiscal);
-            $item->setCsosn(103);
         }
 
         if (!$item->getOrdem()) {
@@ -449,14 +455,17 @@ class EmissaoNFeController extends FormListController
                     'id' => $notaFiscal->getId(),
                     '_fragment' => 'itens'
                 ]);
+            } else {
+                $errors = $form->getErrors(true, true);
+                foreach ($errors as /** @var \Symfony\Component\Form\FormError $error */ $error) {
+                    $this->addFlash('error', $error->getMessage() . ' - ' . $error->getOrigin()->getName());
+                }
             }
-            // else
-            $form->getErrors(true, false);
         }
-        return $this->doRender('/Fiscal/emissaoNFe/formItem.html.twig', array(
+        return $this->doRender('/Fiscal/emissaoNFe/formItem.html.twig', [
             'form' => $form->createView(),
             'notaFiscal' => $notaFiscal
-        ));
+        ]);
     }
 
     /**
