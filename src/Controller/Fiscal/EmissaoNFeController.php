@@ -173,7 +173,7 @@ class EmissaoNFeController extends FormListController
         $permiteCancelamento = $this->notaFiscalBusiness->permiteCancelamento($notaFiscal);
         $permiteCartaCorrecao = $this->notaFiscalBusiness->permiteCartaCorrecao($notaFiscal);
 
-        return $this->doRender('/Fiscal/emissaoNFe/form.html.twig', [
+        $params = [
             'form' => $form->createView(),
             'notaFiscal' => $notaFiscal,
             'permiteSalvar' => $permiteSalvar,
@@ -183,7 +183,17 @@ class EmissaoNFeController extends FormListController
             'permiteReimpressaoCancelamento' => $permiteReimpressaoCancelamento,
             'permiteCartaCorrecao' => $permiteCartaCorrecao,
             'itemCopiado' => $session->has('fis_emissaonfe_copiarNotaFiscalItem') ? $session->get('fis_emissaonfe_copiarNotaFiscalItem') : null,
-        ]);
+        ];
+
+        if ($notaFiscal->getId()) {
+            $venda = $this->notaFiscalBusiness->findVendaByNotaFiscal($notaFiscal);
+            if ($venda) {
+                $params['venda'] = $venda;
+                $params['venda_form_route'] = ($venda->jsonData['canal'] ?? '') === 'ECOMMERCE' ? 'ven_venda_ecommerceForm' : 'ven_venda_form_dados';
+            }
+        }
+
+        return $this->doRender('/Fiscal/emissaoNFe/form.html.twig', $params);
     }
 
     /**
