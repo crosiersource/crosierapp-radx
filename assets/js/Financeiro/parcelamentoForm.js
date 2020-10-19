@@ -309,7 +309,6 @@ $(document).ready(function () {
             ajax: {
                 delay: 250,
                 url: function (params) {
-                    console.log(params);
                     return Routing.generate('bse_pessoa_findByNome') + '/' + params.term;
                 },
                 dataType: 'json',

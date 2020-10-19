@@ -40,7 +40,6 @@ $(document).ready(function () {
 
     $('.btnEditEndereco').click(function () {
         let dados = $(this).data();
-        console.log(dados);
 
         $endereco_i.val('');
         $endereco_tipo.val('').trigger('change');

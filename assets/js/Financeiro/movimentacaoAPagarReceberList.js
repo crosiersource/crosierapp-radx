@@ -13,11 +13,6 @@ import 'daterangepicker';
 
 $(document).ready(function () {
 
-    // console.log(Moment().format('DD'));
-    // console.log(Moment().date(1).format('YYYY-MM-DD'));
-    // console.log(Moment().add(1, 'month').format('YYYY-MM-DD'));
-    // console.log(Moment().add(1, 'month').date(1).format('YYYY-MM-DD'));
-
     let $filterCarteira = $('#filterCarteira');
     let $formPesquisar = $('#formPesquisar');
     let $btnHoje = $('#btnHoje');
@@ -74,7 +69,6 @@ $(document).ready(function () {
             "alwaysShowCalendars": true
         },
         function (start, end, label) {
-            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
             $formPesquisar.submit();
         }
     ).on('apply.daterangepicker', function (ev, picker) {

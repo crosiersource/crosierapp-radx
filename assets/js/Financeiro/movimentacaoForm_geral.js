@@ -168,11 +168,9 @@ $(document).ready(function () {
         // Mostra só os correspondentes ao tipoLancto
         camposVisiveis.forEach(function (campo) {
             if (campo.prop('nodeName') === 'DIV') { // para os casos das divCampos...
-                console.log(campo.prop('id') + ' é DIV');
                 campo.css('display', '');
             } else {
                 campo.closest('.form-group.row').css('display', '');
-                console.log(campo.prop('id') + ' não é DIV');
             }
         });
 
@@ -270,8 +268,6 @@ $(document).ready(function () {
             ).done(function (results) {
                 results.unshift({"id": '', "text": ''});
                 carteiraData = results;
-                console.log('getCarteiraData');
-                console.dir(carteiraData);
             });
         }
         return carteiraData;
@@ -448,15 +444,11 @@ $(document).ready(function () {
                 ajax: {
                     delay: 750,
                     url: function (params) {
-                        console.log('route: ' + $sacado.data('route-url'));
-                        console.log(params.term);
                         let uri = $sacado.data('route-url') + params.term;
-                        console.log(uri);
                         return uri;
                     },
                     dataType: 'json',
                     processResults: function (data) {
-                        console.dir(data);
                         let dataNew = $.map(data.results, function (obj) {
                             obj.text = obj['nome'];
                             return obj;
@@ -481,10 +473,7 @@ $(document).ready(function () {
                 ajax: {
                     delay: 750,
                     url: function (params) {
-                        console.log('route: ' + $cedente.data('route-url'));
-                        console.log(params.term);
                         let uri = $cedente.data('route-url') + params.term;
-                        console.log(uri);
                         return uri;
                     },
                     dataType: 'json',

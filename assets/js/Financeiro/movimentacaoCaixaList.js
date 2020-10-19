@@ -40,7 +40,6 @@ $(document).ready(function () {
     });
 
     $btnHoje.on('click', function () {
-        console.log('hoje');
         let dt = Moment().format('DD/MM/YYYY');
         $dtMoviment.val(dt);
         $formPesquisar.submit();

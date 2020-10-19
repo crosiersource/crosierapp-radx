@@ -122,6 +122,12 @@ $(document).ready(function () {
         $precoVenda.val(precoVenda);
 
         resValorTotal();
+    }).on('select2:close', function () {
+        let o = $item_produto.select2('data')[0];
+        // se não selecionou nenhum produto, volta para o campo de qtde
+        if (typeof o === 'undefined') {
+            $qtde.focus();
+        }
     }).select2('open');
 
 

@@ -57,15 +57,11 @@ $(document).ready(function () {
                 ajax: {
                     delay: 750,
                     url: function (params) {
-                        console.log('route: ' + $sacado.data('route-url'));
-                        console.log(params.term);
                         let uri = $sacado.data('route-url') + params.term;
-                        console.log(uri);
                         return uri;
                     },
                     dataType: 'json',
                     processResults: function (data) {
-                        console.dir(data);
                         let dataNew = $.map(data.results, function (obj) {
                             obj.text = obj['nome'];
                             return obj;
@@ -90,15 +86,11 @@ $(document).ready(function () {
                 ajax: {
                     delay: 750,
                     url: function (params) {
-                        console.log('route: ' + $cedente.data('route-url'));
-                        console.log(params.term);
                         let uri = $cedente.data('route-url') + params.term;
-                        console.log(uri);
                         return uri;
                     },
                     dataType: 'json',
                     processResults: function (data) {
-                        console.dir(data);
                         let dataNew = $.map(data.results, function (obj) {
                             obj.text = obj['nome'];
                             return obj;
