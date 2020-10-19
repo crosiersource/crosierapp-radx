@@ -54,18 +54,24 @@ $(document).ready(function () {
 
     let datatable = $datatable.DataTable(defaultParams);
 
-    datatable.on('init.dt', function(e, settings, json){
+    datatable.on('init.dt', function (e, settings, json) {
         datatable.on('order.dt', function () {
 
             // Atenção: as colunas devem estar na mesma ordem que o array no Controller
             let order = datatable.order();
-            $filter_order.val(JSON.stringify(order));
 
-            $form.submit();
+            // para ignorar os cliques na coluna do checkbox
+            if ((typeof order !== 'undefined') &&
+                (typeof order[0] !== 'undefined') &&
+                (typeof order[0][0] !== 'undefined') &&
+                order[0][0] !== 0) {
+                $filter_order.val(JSON.stringify(order));
+                $form.submit();
+            }
+
+
         });
     });
-
-
 
 
     $filter_dtIntegrEcommerce.daterangepicker(
@@ -211,7 +217,7 @@ $(document).ready(function () {
      */
     function build_filterAno(onSelect = false) {
         $filter_ano.empty().trigger("change");
-        if ($filter_montadora.select2('data')[0]['id']) {
+        if ((typeof $filter_montadora.select2('data') !== 'undefined') && $filter_montadora.select2('data')[0]?.id) {
             if (onSelect) {
                 $filter_montadora.select2('data')[0].anos.forEach((v, i) => v.selected = false);
             }
@@ -237,7 +243,7 @@ $(document).ready(function () {
      */
     function build_filterModelo(onSelect = false) {
         $filter_modelo.empty().trigger("change");
-        if ($filter_ano.select2('data')[0]['id']) {
+        if ($filter_ano.select2('data') && $filter_ano.select2('data')[0]['id']) {
             if (onSelect) {
                 $filter_ano.select2('data')[0].modelos.forEach((v, i) => v.selected = false);
             }
@@ -259,6 +265,14 @@ $(document).ready(function () {
     build_filterMontadora();
     build_filterAno();
     build_filterModelo();
+
+
+    let $selTodasMovs = $('#selTodasMovs');
+
+    $selTodasMovs.click(function (event) {
+        $('.movSel').not(this).prop('checked', this.checked);
+        event.stopPropagation();
+    });
 
 
 });

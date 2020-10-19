@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
@@ -176,7 +177,7 @@ class ProdutoController extends FormListController
         $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
         $params['jsonMetadata'] = json_decode($repoProduto->getJsonMetadata(), true);
 
-        $fnHandleRequestOnValid = function(Request $request, Produto $produto) {
+        $fnHandleRequestOnValid = function (Request $request, Produto $produto) {
             $produto->jsonData['ecommerce_desatualizado'] = 1;
         };
 
@@ -869,7 +870,7 @@ class ProdutoController extends FormListController
             $produto->jsonData['preco_custo'] = $preco->precoCusto;
             if ($preco->lista->descricao === 'VAREJO') {
                 $produto->jsonData['preco_varejo'] = $preco->precoPrazo;
-             } else if ($preco->lista->descricao === 'ATACADO') {
+            } else if ($preco->lista->descricao === 'ATACADO') {
                 $produto->jsonData['preco_atacado'] = $preco->precoPrazo;
             }
 
@@ -952,6 +953,29 @@ class ProdutoController extends FormListController
                 $this->addFlash('error', $e->getMessage());
             }
             return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId()]);
+        }
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/stashAdd/", name="est_produto_stashAdd")
+     *
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return JsonResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function stashAdd(Request $request, SessionInterface $session): JsonResponse
+    {
+        try {
+            $produtosIds = $request->get('ids');
+            $produtoStash = $session->get('produtos.stash') ?? [];
+            $session->set('produto.stash', array_unique(array_merge($produtoStash, $produtosIds), SORT_REGULAR));
+            return new JsonResponse(['result' => 'OK']);
+        } catch (\Exception $e) {
+            return new JsonResponse(['result' => 'ERR']);
         }
     }
 

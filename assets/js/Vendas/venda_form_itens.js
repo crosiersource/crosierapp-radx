@@ -78,7 +78,7 @@ $(document).ready(function () {
 
 
     $item_produto.select2({
-        minimumInputLength: 4,
+        minimumInputLength: 3,
         width: '100%',
         dropdownAutoWidth: true,
         placeholder: '...',

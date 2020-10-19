@@ -35,6 +35,7 @@ use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Doctrine\DBAL\Connection;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
@@ -219,12 +220,11 @@ class VendaController extends FormListController
     /**
      *
      * @Route("/ven/venda/form/itens/{id}", name="ven_venda_form_itens", requirements={"id"="\d+"})
-     * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function vendaFormItens(Request $request, Venda $venda)
+    public function vendaFormItens(Venda $venda)
     {
         $params = [
             'listRoute' => 'ven_venda_listVendasEcommerce',
@@ -369,12 +369,11 @@ class VendaController extends FormListController
     /**
      *
      * @Route("/ven/venda/form/pagto/{id}", name="ven_venda_form_pagto", requirements={"id"="\d+"})
-     * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function vendaFormPagto(Request $request, Venda $venda)
+    public function vendaFormPagto(Venda $venda)
     {
         if ($venda->itens->count() < 1) {
             $this->addFlash('warn', 'Nenhum item adicionado na compra');
@@ -482,12 +481,11 @@ class VendaController extends FormListController
     /**
      *
      * @Route("/ven/venda/form/resumo/{id}", name="ven_venda_form_resumo", requirements={"id"="\d+"})
-     * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function vendaFormResumo(Request $request, Venda $venda = null)
+    public function vendaFormResumo(Venda $venda = null)
     {
         $params = [
             'listRoute' => 'ven_venda_listVendasEcommerce',
@@ -541,7 +539,7 @@ class VendaController extends FormListController
         }
 
         $fnHandleRequestOnValid = function (Request $request, $venda) use ($integradorBusinessFactory): void {
-            $this->integrarVendaParaECommerce($request, $venda, $integradorBusinessFactory);
+            $this->integrarVendaParaECommerce($venda, $integradorBusinessFactory);
         };
 
         return $this->doForm($request, $venda, $params, false, $fnHandleRequestOnValid);
@@ -575,12 +573,11 @@ class VendaController extends FormListController
      *
      * @Route("/est/venda/integrarVendaParaECommerce/{venda}", name="est_venda_integrarVendaParaECommerce")
      *
-     * @param Request $request
      * @param Venda|null $venda
      * @param IntegradorECommerceFactory $integradorBusinessFactory
      * @IsGranted("ROLE_VENDAS_ADMIN", statusCode=403)
      */
-    public function integrarVendaParaECommerce(Request $request, Venda $venda, IntegradorECommerceFactory $integradorBusinessFactory)
+    public function integrarVendaParaECommerce(Venda $venda, IntegradorECommerceFactory $integradorBusinessFactory)
     {
         try {
             $integrador = $integradorBusinessFactory->getIntegrador();
@@ -732,7 +729,9 @@ class VendaController extends FormListController
         } else {
             $dtsVenda = DateTimeUtils::parseConcatDates($filter['dtsVenda']);
         }
-        $vendedoresNoPeriodo = $this->getRepository()->findVendedoresComVendasNoPeriodo_select2js($dtsVenda['i'], $dtsVenda['f']);
+        /** @var VendaRepository $repoVenda */
+        $repoVenda = $this->getRepository();
+        $vendedoresNoPeriodo = $repoVenda->findVendedoresComVendasNoPeriodo_select2js($dtsVenda['i'], $dtsVenda['f']);
         $params['vendedores'] = json_encode($vendedoresNoPeriodo);
 
         $params['ecomm_info_integra'] = $repoAppConfig->findByChave('ecomm_info_integra');
@@ -814,8 +813,6 @@ class VendaController extends FormListController
             try {
                 $this->entityHandler->getDoctrine()->getConnection()->delete('ven_venda_pagto', ['id' => $pagto->getId()]);
                 $this->addFlash('success', 'Registro deletado com sucesso.');
-            } catch (ViewException $e) {
-                $this->addFlash('error', $e->getMessage());
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Erro ao deletar registro.');
             }
