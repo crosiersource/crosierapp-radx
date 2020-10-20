@@ -223,7 +223,7 @@ class ProdutoType extends AbstractType
                 /** @var Produto $produto */
                 $produto = $event->getData();
                 if ($produto->getId()) {
-                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM est_produto WHERE id = :id', ['id' => $produto->getId()])['json_data'] ?? '{}', true);
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssociative('SELECT json_data FROM est_produto WHERE id = :id', ['id' => $produto->getId()])['json_data'] ?? '{}', true);
                     $produto->jsonData = array_merge($jsonDataOrig, $produto->jsonData);
                     $event->setData($produto);
                 }
