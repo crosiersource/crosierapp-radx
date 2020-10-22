@@ -66,7 +66,7 @@ class VendaType extends AbstractType
                     'class' => 'crsr-datetime'
                 ],
                 'required' => true,
-                'disabled' => $disabled || !($this->security->isGranted('ROLE_ESTOQUE_ADMIN'))
+                'disabled' => $disabled
             ]);
 
             $builder->add('status', TextType::class, [
