@@ -1128,7 +1128,7 @@ class VendaController extends FormListController
      * @return JsonResponse
      * @throws \Exception
      *
-     * @IsGranted("ROLE_CRM", statusCode=403)
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
     public function findClienteByStr(Request $request): JsonResponse
     {
@@ -1166,7 +1166,7 @@ class VendaController extends FormListController
      * @param Venda $venda
      * @return RedirectResponse
      *
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
     public function clonar(Request $request, Venda $venda): RedirectResponse
     {
