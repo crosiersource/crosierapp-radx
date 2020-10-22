@@ -232,6 +232,7 @@ class VendaController extends FormListController
             'formView' => 'Vendas/venda_form_dados.html.twig',
             'formRoute' => 'ven_venda_form_dados',
             'formPageTitle' => 'Venda',
+            'formRouteParams' => ['id' => $venda->getId()],
             'e' => $venda,
         ];
         return $this->doRender('Vendas/venda_form_itens.html.twig', $params);
