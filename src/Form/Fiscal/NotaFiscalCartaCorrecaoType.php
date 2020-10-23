@@ -22,6 +22,7 @@ class NotaFiscalCartaCorrecaoType extends AbstractType
 
         $builder->add('cartaCorrecao', TextareaType::class, array(
             'label' => 'Mensagem',
+            'attr' => ['class' => 'notuppercase'],
             'required' => true
         ));
 

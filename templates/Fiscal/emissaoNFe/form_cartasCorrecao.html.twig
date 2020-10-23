@@ -31,7 +31,6 @@
                             <th scope="col">Sequência</th>
                             <th scope="col">Mensagem</th>
                             <th scope="col">Data/Hora</th>
-                            <th scope="col">Retorno</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
@@ -42,20 +41,24 @@
                                 <td>{{ item.seq }}</td>
                                 <td>{{ item.cartaCorrecao }}</td>
                                 <td>{{ item.dtCartaCorrecao|date('d/m/Y H:i:s') }}</td>
-                                <td>{{ item.msgRetorno }}</td>
-                                <td class="text-right">
-                                    {% if not item.msgRetorno %}
-                                        <button type="button" class="btn btn-danger"
+                                <td class="text-right text-nowrap">
+
+                                    {% if (not item.msgRetorno) and (item.seq == notaFiscal.cartasCorrecao.count) %}
+                                        <button type="button" class="btn btn-sm btn-block btn-danger"
                                                 data-url="{{ url('fis_emissaonfe_reenviarCartaCorrecao', {'cartaCorrecao': item.id}) }}"
                                                 data-target="#confirmationModal" data-toggle="modal">
                                             <i class="fas fa-cog" aria-hidden="true"></i> Reenviar
                                         </button>
                                     {% endif %}
-                                    <button type="button" class="btn btn-info"
-                                            data-url="{{ url('fis_emissaonfe_reimprimirCartaCorrecao', {'cartaCorrecao': item.id}) }}"
-                                            data-target="#confirmationModal" data-toggle="modal">
-                                        <i class="fas fa-print" aria-hidden="true"></i> Reimprimir
-                                    </button>
+
+                                    {% if item.msgRetorno and (item.seq == notaFiscal.cartasCorrecao.count) %}
+                                        <a role="button" value="Imprimir" class="btn btn-sm btn-block btn-outline-primary ml-1"
+                                           href="{{ url('fis_emissaonfe_reimprimirCartaCorrecao', {'cartaCorrecao': item.id}) }}"
+                                           target="_blank">
+                                            <i class="fas fa-print" aria-hidden="true"></i> Imprimir
+                                        </a>
+                                    {% endif %}
+
                                 </td>
                             </tr>
                         {% endfor %}

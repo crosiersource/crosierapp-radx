@@ -133,7 +133,7 @@
                             </button>
                         {% endif %}
 
-                        {% if notaFiscal.id and venda %}
+                        {% if notaFiscal.id and venda|default(false) %}
                             <a role="button" value="Venda" class="btn btn-outline-success ml-1"
                                     href="{{ url(venda_form_route, {id: venda.id}) }}">
                                 <i class="fas fa-shopping-cart"></i> Venda
