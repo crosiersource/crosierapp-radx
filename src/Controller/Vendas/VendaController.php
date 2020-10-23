@@ -880,11 +880,15 @@ class VendaController extends FormListController
         $sugestoes = array_combine($sugestoes, $sugestoes);
         $params['canais'] = json_encode(Select2JsUtils::arrayToSelect2Data($sugestoes, null, '...'));
 
-        $status = $jsonMetadata['status']['opcoes'] ?? [];
-        $params['statuss'] = json_encode(Select2JsUtils::arrayToSelect2Data(array_combine($status, $status)));
         $statusECommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
-        $params['statusECommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusECommerce));
+        $arrStatusECommerce = [];
+        foreach ($statusECommerce as $s) {
+            $arrStatusECommerce[] = $s;
+        }
+        $params['statusECommerce'] = implode(',', $arrStatusECommerce);
 
+        $coresStatus = json_decode($repoAppConfig->findByChave('ecomm_info.status.json'), true);
+        $params['coresStatus'] = $coresStatus;
 
         $filter = $request->get('filter');
 
@@ -897,14 +901,14 @@ class VendaController extends FormListController
 
         $params['ecomm_info_integra'] = $repoAppConfig->findByChave('ecomm_info_integra');
 
-        $params['orders'] = ['dtVenda' => 'ASC'];
+        $params['orders'] = ['dtVenda' => 'DESC'];
 
         $fnGetFilterDatas = function (array $params) {
             return [
                 new FilterData(['dtVenda'], 'BETWEEN_DATE_CONCAT', 'dtsVenda', $params),
                 new FilterData(['canal'], 'EQ', 'canal', $params, null, true),
-                new FilterData(['status'], 'EQ', 'status', $params),
-                new FilterData(['statusECommerce'], 'EQ', 'statusECommerce', $params, null, true),
+                new FilterData(['status'], 'IN', 'status', $params),
+                new FilterData(['ecommerce_status_descricao'], 'IN', 'statusECommerce', $params, null, true),
                 new FilterData(['vendedor_codigo'], 'EQ', 'vendedor', $params, null, true),
             ];
         };

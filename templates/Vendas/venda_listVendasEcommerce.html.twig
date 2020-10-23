@@ -40,10 +40,10 @@
                     <div class="col-md-5 col-sm-12">
                         <div class="form-group">
                             <label for="filter_statusECommerce" class="required">Status E-commerce</label>
-                            <select id="filter_statusECommerce" name="filter[statusECommerce]"
-                                    data-options="{{ statusECommerce }}"
-                                    class="form-control autoSelect2"
-                                    data-val="{{ filter['statusECommerce']|default('') }}">
+                            <select id="filter_statusECommerce" name="filter[statusECommerce][]"
+                                    data-tagsoptions="{{ statusECommerce }}" data-tags="true" data-token-separators=","
+                                    class="form-control autoSelect2" multiple
+                                    data-val="{{ filter['statusECommerce']|default('')|join(',') }}">
                             </select>
                         </div>
                     </div>
@@ -101,7 +101,13 @@
                                 <td>{{ venda.id|strpad(9) }}</td>
                                 <td>{{ venda.cliente.documento|default('')|mascararCnpjCpf }}
                                     - {{ venda.cliente.nome }}</td>
-                                <td class="text-center">{{ venda.jsonData.ecommerce_status_descricao|default('') }}</td>
+                                <td class="text-center">
+                                    <span class="badge badge-primary"
+                                          style="background-color: {{ coresStatus.status[venda.jsonData.ecommerce_status_descricao|default('Não finalizado')].cor|default('') }}">
+                                        {{ venda.jsonData.ecommerce_status_descricao|default('') }}
+                                    </span>
+
+                                </td>
                                 <td>{{ venda.jsonData.infoPagtos|default('') }}</td>
                                 <td class="text-center">{{ venda.dtVenda|date('d/m/Y H:i:s') }}</td>
                                 <td class="text-right">
