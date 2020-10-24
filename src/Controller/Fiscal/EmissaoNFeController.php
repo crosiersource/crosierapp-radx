@@ -311,7 +311,7 @@ class EmissaoNFeController extends FormListController
                 ),
             );
 
-            $response = file_get_contents($_SERVER['CROSIER_LOGO_FISCAL'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
+            $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
 
             $logo = 'data://text/plain;base64,' . base64_encode($response);
             $daevento->monta($logo);
@@ -424,7 +424,20 @@ class EmissaoNFeController extends FormListController
             $danfe = new Danfe($xml);
             $danfe->debugMode(false);
             $danfe->creditsIntegratorFooter('');
-            $danfe->monta();
+
+
+            $arrContextOptions = array(
+                "ssl" => array(
+                    "verify_peer" => false,
+                    "verify_peer_name" => false,
+                ),
+            );
+
+            $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
+
+            $logo = 'data://text/plain;base64,' . base64_encode($response);
+
+            $danfe->monta($logo);
             $pdf = $danfe->render();
             //o pdf porde ser exibido como view no browser
             //salvo em arquivo
@@ -474,7 +487,7 @@ class EmissaoNFeController extends FormListController
                 ),
             );
 
-            $response = file_get_contents($_SERVER['CROSIER_LOGO_FISCAL'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
+            $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
 
             $logo = 'data://text/plain;base64,' . base64_encode($response);
             $daevento->monta($logo);
