@@ -56,7 +56,7 @@ class NotaFiscalItemType extends AbstractType
             'required' => false,
         ]);
 
-        $builder->add('cst', IntegerType::class, [
+        $builder->add('cst', TextType::class, [
             'label' => 'CST',
             'required' => false,
         ]);
