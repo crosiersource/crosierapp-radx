@@ -433,6 +433,8 @@ class EmissaoNFeController extends FormListController
                 ),
             );
 
+            $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
+
             $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
 
             $logo = 'data://text/plain;base64,' . base64_encode($response);
