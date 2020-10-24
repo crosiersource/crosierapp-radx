@@ -93,12 +93,12 @@
                                     </td>
                                     <td>
                                         <b>{{ item.carteira.getDescricaoMontada() }}</b><br/>
-                                        {{ item.categoria.descricaoMontada }}<br/>
-                                        {{ item.modo.descricaoMontada }}
+                                        {{ item.categoria.getDescricaoMontada() }}<br/>
+                                        {{ item.modo.getDescricaoMontada() }}
                                     </td>
                                     <td>
                                         <div style="float: left">
-                                            <b>{{ item.descricaoMontada|raw }}</b>
+                                            <b>{{ item.getDescricaoMontada()|raw }}</b>
                                             {% if item.cedenteInfo %}
                                                 <br/>{{ item.cedenteInfo }}
                                             {% endif %}

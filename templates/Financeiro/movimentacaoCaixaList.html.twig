@@ -113,7 +113,7 @@
                             <td>{{ loop.index }}</td>
                             <td>{{ item.id }}</td>
                             <td>
-                                {{ item.categoria.descricaoMontada }}<br/>
+                                {{ item.categoria.getDescricaoMontada() }}<br/>
                                 {{ "%02d"|format(item.modo.codigo) }} - {{ item.modo.descricao|default('') }}
                             </td>
                             <td>

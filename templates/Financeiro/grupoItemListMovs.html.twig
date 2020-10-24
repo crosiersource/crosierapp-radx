@@ -61,7 +61,7 @@
                         <tr style="color: {{ item.categoria.codigo[0:1] == '1' ? 'blue' : 'red' }}">
                             <td>{{ item.id }}</td>
                             <td>
-                                {{ item.categoria.descricaoMontada }}
+                                {{ item.categoria.getDescricaoMontada() }}
                             </td>
                             <td>
                                 <div style="float: left">

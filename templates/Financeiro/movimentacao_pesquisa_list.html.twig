@@ -260,8 +260,8 @@
                                 <span class="badge badge-pill badge-light">{{ loop.index }}</span>
                             </td>
                             <td>
-                                {{ item.categoria.descricaoMontada }}<br/>
-                                {{ item.modo.descricaoMontada }}<br/>
+                                {{ item.categoria.getDescricaoMontada() }}<br/>
+                                {{ item.modo.getDescricaoMontada() }}<br/>
                                 <b>{{ item.carteira.getDescricaoMontada() }}</b><br/>
                             </td>
                             <td>

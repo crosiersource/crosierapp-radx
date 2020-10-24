@@ -83,8 +83,8 @@
                             <span class="badge badge-secondary">{{ loop.index }}</span>
                         </td>
                         <td>
-                            {{ item.categoria.descricaoMontada }}<br/>
-                            {{ item.modo.descricaoMontada }}<br />
+                            {{ item.categoria.getDescricaoMontada() }}<br/>
+                            {{ item.modo.getDescricaoMontada() }}<br />
                             {{ item.carteira.getDescricaoMontada() }}
                         </td>
                         <td>
