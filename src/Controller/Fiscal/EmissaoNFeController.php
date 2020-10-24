@@ -233,6 +233,8 @@ class EmissaoNFeController extends FormListController
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
         }
 
+        $this->notaFiscalBusiness->consultarStatus($notaFiscal);
+
         $dadosEmitente = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
         if ($dadosEmitente['cnpj'] !== $notaFiscal->getDocumentoEmitente()) {
             $this->addFlash('error', 'Emitente da nota diferente do selecionado');
@@ -270,14 +272,55 @@ class EmissaoNFeController extends FormListController
 
     /**
      *
-     * @Route("/fis/emissaonfe/reimprimirCancelamento/{notaFiscal}", name="fis_emissaonfe_reimprimirCancelamento")
+     * @Route("/fis/emissaonfe/imprimirCancelamento/{notaFiscal}", name="fis_emissaonfe_imprimirCancelamento")
      * @param NotaFiscal $notaFiscal
      * @return RedirectResponse
      */
-    public function reimprimirCancelamento(NotaFiscal $notaFiscal): RedirectResponse
+    public function imprimirCancelamento(NotaFiscal $notaFiscal): RedirectResponse
     {
-        $this->notaFiscalBusiness->imprimirCancelamento($notaFiscal);
-        return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
+        try {
+
+            $conn = $this->getEntityHandler()->getDoctrine()->getConnection();
+            $evento = $conn->fetchAssociative('SELECT xml FROM fis_nf_evento WHERE desc_evento = \'CANCELAMENTO\' AND nota_fiscal_id = :notaFiscalId', ['notaFiscalId' => $notaFiscal->getId()]);
+
+            $xml = $evento['xml'];
+
+            $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
+
+            $dadosEmitente = [
+                'razao' => $nfeConfigsEmUso['razaosocial'],
+                'logradouro' => $nfeConfigsEmUso['enderEmit_xLgr'],
+                'numero' => $nfeConfigsEmUso['enderEmit_nro'],
+                'complemento' => '',
+                'bairro' => $nfeConfigsEmUso['enderEmit_xBairro'],
+                'CEP' => $nfeConfigsEmUso['enderEmit_cep'],
+                'municipio' => $nfeConfigsEmUso['enderEmit_xMun'],
+                'UF' => $nfeConfigsEmUso['enderEmit_UF'],
+                'telefone' => $nfeConfigsEmUso['telefone'],
+                'email' => ''
+            ];
+
+            $daevento = new Daevento($xml, $dadosEmitente);
+            $daevento->debugMode(true);
+            $daevento->creditsIntegratorFooter('WEBNFe Sistemas - http://www.webenf.com.br');
+
+            $arrContextOptions = array(
+                "ssl" => array(
+                    "verify_peer" => false,
+                    "verify_peer_name" => false,
+                ),
+            );
+
+            $response = file_get_contents($_SERVER['CROSIER_LOGO_FISCAL'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
+
+            $logo = 'data://text/plain;base64,' . base64_encode($response);
+            $daevento->monta($logo);
+            $pdf = $daevento->render($logo);
+            header('Content-Type: application/pdf');
+            echo $pdf;
+        } catch (\Throwable $e) {
+            echo 'Ocorreu um erro durante o processamento :' . $e->getMessage();
+        }
     }
 
     /**
@@ -396,11 +439,11 @@ class EmissaoNFeController extends FormListController
 
     /**
      *
-     * @Route("/fis/emissaonfe/reimprimirCartaCorrecao/{cartaCorrecao}", name="fis_emissaonfe_reimprimirCartaCorrecao")
+     * @Route("/fis/emissaonfe/imprimirCartaCorrecao/{cartaCorrecao}", name="fis_emissaonfe_imprimirCartaCorrecao")
      * @param NotaFiscalCartaCorrecao $cartaCorrecao
      * @return void
      */
-    public function reimprimirCartaCorrecao(NotaFiscalCartaCorrecao $cartaCorrecao): void
+    public function imprimirCartaCorrecao(NotaFiscalCartaCorrecao $cartaCorrecao): void
     {
         try {
             $xml = $cartaCorrecao->getMsgRetorno();
@@ -424,16 +467,16 @@ class EmissaoNFeController extends FormListController
             $daevento->debugMode(true);
             $daevento->creditsIntegratorFooter('WEBNFe Sistemas - http://www.webenf.com.br');
 
-            $arrContextOptions=array(
-                "ssl"=>array(
-                    "verify_peer"=>false,
-                    "verify_peer_name"=>false,
+            $arrContextOptions = array(
+                "ssl" => array(
+                    "verify_peer" => false,
+                    "verify_peer_name" => false,
                 ),
             );
 
-            $response = file_get_contents($_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
+            $response = file_get_contents($_SERVER['CROSIER_LOGO_FISCAL'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
 
-            $logo = 'data://text/plain;base64,'. base64_encode($response);
+            $logo = 'data://text/plain;base64,' . base64_encode($response);
             $daevento->monta($logo);
             $pdf = $daevento->render($logo);
             header('Content-Type: application/pdf');

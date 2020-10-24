@@ -97,8 +97,8 @@
 
                         {% if permiteReimpressao %}
                             <a role="button" value="Imprimir" class="btn btn-outline-primary ml-1"
-                                    href="{{ url('fis_emissaonfe_imprimir', {notaFiscal: notaFiscal.id}) }}"
-                                    target="_blank">
+                               href="{{ url('fis_emissaonfe_imprimir', {notaFiscal: notaFiscal.id}) }}"
+                               target="_blank">
                                 <i class="fas fa-print" aria-hidden="true"></i> Imprimir
                             </a>
 
@@ -117,11 +117,17 @@
                             </button>
                         {% endif %}
 
-                        {% if permiteCancelamento or permiteReimpressaoCancelamento %}
+                        {% if permiteCancelamento %}
                             <button type="button" id="Cancelar" class="btn btn-warning ml-1"
                                     onclick="window.location.assign('{{ url('fis_emissaonfe_cancelarForm', {notaFiscal: notaFiscal.id}) }}')">
                                 <i class="fas fa-ban" aria-hidden="true"></i> Cancelar
                             </button>
+                        {% elseif permiteReimpressaoCancelamento %}
+                            <a role="button" value="Imprimir Cancelamento" class="btn btn-outline-secondary ml-1"
+                               href="{{ url('fis_emissaonfe_imprimirCancelamento', {notaFiscal: notaFiscal.id}) }}"
+                               target="_blank">
+                                <i class="fas fa-ban" aria-hidden="true"></i> Imprimir Cancelamento
+                            </a>
                         {% endif %}
 
                         {% if notaFiscal.id %}
@@ -135,7 +141,7 @@
 
                         {% if notaFiscal.id and venda|default(false) %}
                             <a role="button" value="Venda" class="btn btn-outline-success ml-1"
-                                    href="{{ url(venda_form_route, {id: venda.id}) }}">
+                               href="{{ url(venda_form_route, {id: venda.id}) }}">
                                 <i class="fas fa-shopping-cart"></i> Venda
                             </a>
                         {% endif %}

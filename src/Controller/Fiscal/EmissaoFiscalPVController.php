@@ -161,12 +161,12 @@ class EmissaoFiscalPVController extends BaseController
 
     /**
      *
-     * @Route("/fis/emissaofiscalpv/reimprimirCancelamento/{notaFiscal}/{venda}", name="fis_emissaofiscalpv_reimprimirCancelamento")
+     * @Route("/fis/emissaofiscalpv/imprimirCancelamento/{notaFiscal}/{venda}", name="fis_emissaofiscalpv_imprimirCancelamento")
      * @param NotaFiscal $notaFiscal
      * @param Venda $venda
      * @return RedirectResponse
      */
-    public function reimprimirCancelamento(NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
+    public function imprimirCancelamento(NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
     {
         $this->notaFiscalBusiness->imprimirCancelamento($notaFiscal);
         return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
