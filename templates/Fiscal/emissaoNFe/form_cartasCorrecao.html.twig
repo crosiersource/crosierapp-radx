@@ -53,7 +53,7 @@
 
                                     {% if item.msgRetorno and (item.seq == notaFiscal.cartasCorrecao.count) %}
                                         <a role="button" value="Imprimir" class="btn btn-sm btn-block btn-outline-primary ml-1"
-                                           href="{{ url('fis_emissaonfe_reimprimirCartaCorrecao', {'cartaCorrecao': item.id}) }}"
+                                           href="{{ url('fis_emissaonfe_imprimirCartaCorrecao', {'cartaCorrecao': item.id}) }}"
                                            target="_blank">
                                             <i class="fas fa-print" aria-hidden="true"></i> Imprimir
                                         </a>
