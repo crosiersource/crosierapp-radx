@@ -434,10 +434,12 @@ class EmissaoNFeController extends FormListController
             );
 
             $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
+            $logo = null;
+            if ($notaFiscal->getDocumentoEmitente() === $nfeConfigsEmUso['cnpj']) {
+                $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
+                $logo = 'data://text/plain;base64,' . base64_encode($response);
+            }
 
-            $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
-
-            $logo = 'data://text/plain;base64,' . base64_encode($response);
 
             $danfe->monta($logo);
             $pdf = $danfe->render();
@@ -447,7 +449,7 @@ class EmissaoNFeController extends FormListController
             //ou ainda gravado na base de dados
             header('Content-Type: application/pdf');
             echo $pdf;
-        } catch (\InvalidArgumentException $e) {
+        } catch (\Throwable $e) {
             echo 'Ocorreu um erro durante o processamento :' . $e->getMessage();
         }
     }
