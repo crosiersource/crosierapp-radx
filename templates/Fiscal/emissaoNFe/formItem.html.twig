@@ -41,16 +41,32 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-12 col-md-3">
+                    <div class="col-sm-12 col-md-2">
                         {{ form_row(form.qtde) }}
                     </div>
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form.valor_unit) }}
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form.valor_desconto) }}
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form.sub_total) }}
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form.valor_total) }}
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-sm-12 col-md-3">
                         {{ form_row(form.unidade) }}
                     </div>
-                    <div class="col-sm-12 col-md-3">
+
+                    <div class="col-sm-12 col-md-4">
                         {{ form_row(form.cfop) }}
                     </div>
-                    <div class="col-sm-12 col-md-3">
+                    <div class="col-sm-12 col-md-5">
                         {{ form_row(form.ncm) }}
                     </div>
                 </div>
@@ -115,10 +131,6 @@
                     </div>
                 </fieldset>
 
-                <div class="d-none">
-                    {# Necessário para renderizar os demais campos do jsonData #}
-                    {{ form_widget(form) }}
-                </div>
 
                 <div class="row">
                     <div class="col text-right">
@@ -130,7 +142,7 @@
                 </div>
 
 
-                {{ form_end(form, {'render_rest': false}) }}
+                {{ form_end(form, {'render_rest': true}) }}
 
 
             </div>
