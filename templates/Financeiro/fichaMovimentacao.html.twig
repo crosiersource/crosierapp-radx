@@ -64,7 +64,7 @@
                     <tr>
                         <td style="height: 1.5cm; width: 15%"><strong>Descri&ccedil;&atilde;o:</strong></td>
                         <td style="background-color: lightgrey">
-                            {{ e.descricaoMontada|raw }}
+                            {{ e.getDescricaoMontada()|raw }}
                             {% if e.cedenteInfo is defined %}
                                 <br/> {{ e.cedenteInfo }}
                             {% endif %}
@@ -92,7 +92,7 @@
                     </tr>
                     <tr>
                         <td><strong>Banco:</strong></td>
-                        <td>{{ e.documentoBanco.descricaoMontada|default('') }}</td>
+                        <td>{{ e.documentoBanco.getDescricaoMontada()|default('') }}</td>
                     </tr>
                     </tbody>
                 </table>

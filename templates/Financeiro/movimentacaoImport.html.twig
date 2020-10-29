@@ -173,10 +173,10 @@
                                     </td>
                                     <td>
                                         <b><span style="{{ (item.categoria.codigo == 195 or item.categoria.codigo == 295) ? 'background-color: yellow' : ''  }}">{{ item.categoria.getDescricaoMontada() }}</span></b><br/>
-                                        <span style="{{ (item.modo.codigo == 99 ) ? 'background-color: yellow' : ''  }}">{{ item.modo.descricaoMontada|default('') }}</span>
+                                        <span style="{{ (item.modo.codigo == 99 ) ? 'background-color: yellow' : ''  }}">{{ item.modo.getDescricaoMontada()|default('') }}</span>
                                     </td>
                                     <td>
-                                        {{ item.descricaoMontada|raw }}
+                                        {{ item.getDescricaoMontada()|raw }}
                                         {% if item.categoria.codigo in [195,295] %}
                                             <br /><span class="badge badge-pill badge-warning" style="width: 120px">
                                             <i class="fas fa-exclamation-circle"></i> A CONFERIR</span>

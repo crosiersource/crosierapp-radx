@@ -118,7 +118,7 @@
                             </td>
                             <td>
                                 <div style="float: left">
-                                    {{ item.descricaoMontada|raw }}
+                                    {{ item.getDescricaoMontada()|raw }}
 
                                     {% if item.bandeiraCartao.id is defined %}
                                         {% if (item.cadeia.movimentacoes is not defined) or item.cadeia.movimentacoes|length < 3 %}

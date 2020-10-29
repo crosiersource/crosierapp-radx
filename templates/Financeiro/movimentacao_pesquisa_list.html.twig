@@ -266,7 +266,7 @@
                             </td>
                             <td>
                                 <div style="float: left">
-                                    <b>{{ item.descricaoMontada|raw }}</b>
+                                    <b>{{ item.getDescricaoMontada()|raw }}</b>
                                     {% if item.cedenteInfo %}
                                         <br/>{{ item.cedenteInfo }}
                                     {% endif %}

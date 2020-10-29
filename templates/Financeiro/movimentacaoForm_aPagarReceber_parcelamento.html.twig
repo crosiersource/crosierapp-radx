@@ -163,7 +163,7 @@
                                             <span class="badge badge-secondary">{{ loop.index }}</span>
                                         </td>
                                         <td>
-                                            {{ item.descricaoMontada|raw }}
+                                            {{ item.getDescricaoMontada()|raw }}
                                         </td>
                                         <td>
                                             <input type="text" name="parcelas[{{ loop.index0 }}][documentoNum]"

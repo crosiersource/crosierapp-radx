@@ -118,7 +118,7 @@
                         <table>
                             <tr>
                                 <td>
-                                    <b>{{ item.descricaoMontada|raw }}</b>
+                                    <b>{{ item.getDescricaoMontada()|raw }}</b>
                                     {% if item.cedenteInfo %}
                                         <br/><i>{{ item.cedenteInfo }}</i>
                                     {% endif %}
