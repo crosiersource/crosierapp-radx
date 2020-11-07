@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-3">
                         <div class="form-group">
                             <label class="col-form-label form-control-label">PV</label>
                             {% set codVenda = venda.jsonData['pv']|default('') != '' ? venda.jsonData['pv'] : venda.id  %}
@@ -44,7 +44,7 @@
                                    value="{{ venda.dtVenda|date("d/m/Y") }}">
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="form-group">
                             <label class="col-form-label form-control-label">Vendedor</label>
                             <input type="text" class="form-control" readonly="readonly"
