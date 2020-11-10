@@ -26,7 +26,6 @@ CREATE TABLE `fis_msg_retorno_rf`
     CONSTRAINT `FK_fis_msg_retorno_rf_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
     CONSTRAINT `FK_fis_msg_retorno_rf_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_fis_msg_retorno_rf_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
-
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
@@ -289,8 +288,7 @@ CREATE TABLE `fis_nf_venda`
     KEY `K_fis_nf_venda_user_updated` (`user_updated_id`),
     CONSTRAINT `FK_fis_nf_venda_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
     CONSTRAINT `FK_fis_nf_venda_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_fis_nf_venda_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
-
+    CONSTRAINT `FK_fis_nf_venda_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci
@@ -325,8 +323,7 @@ CREATE TABLE `fis_nf_historico`
     KEY `K_fis_nf_historico_user_updated` (`user_updated_id`),
     CONSTRAINT `FK_fis_nf_historico_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_fis_nf_historico_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `FK_fis_nf_historico_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
-
+    CONSTRAINT `FK_fis_nf_historico_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci

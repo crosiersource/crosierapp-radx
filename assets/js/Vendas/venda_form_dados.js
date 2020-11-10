@@ -2,6 +2,8 @@
 
 import $ from "jquery";
 
+import 'bootstrap';
+
 import Numeral from 'numeral';
 
 import 'print-js';
@@ -30,10 +32,14 @@ $(document).ready(function () {
     let $cliente = $('#clienteId');
     let $cliente_documento = $('#venda_jsonData_cliente_documento');
     let $cliente_nome = $('#cliente_nome');
+    let $s2PesquisarCliente = $('#s2PesquisarCliente');
     let $cliente_fone = $('#venda_jsonData_cliente_fone');
     let $cliente_email = $('#venda_jsonData_cliente_email');
 
     let $spanClienteNome = $('#spanClienteNome');
+
+    let $pesquisarClienteModal = $('#pesquisarClienteModal');
+
 
     // cache para não buscar toda hora
     $cliente_documento.data('val', $cliente_documento.val());
@@ -65,65 +71,42 @@ $(document).ready(function () {
     });
 
 
-    // $cliente_nome.select2({
-    //     minimumInputLength: 4,
-    //     width: '100%',
-    //     dropdownAutoWidth: true,
-    //     placeholder: '...',
-    //     allowClear: true,
-    //     tags: true,
-    //     createTag: function (params) {
-    //         let term = $.trim(params.term);
-    //
-    //         if (term === '') {
-    //             return null;
-    //         }
-    //
-    //         return {
-    //             id: term,
-    //             text: term
-    //         }
-    //     },
-    //     ajax: {
-    //         delay: 750,
-    //         url: Routing.generate('ven_venda_findClienteByStr'),
-    //         dataType: 'json',
-    //         processResults: function (data) {
-    //             let mapped = $.map(data.results, function (obj) {
-    //                 obj.id = obj.text;
-    //                 return obj;
-    //             });
-    //             return {
-    //                 results: mapped
-    //             };
-    //         },
-    //     }
-    // }).on('select2:select', function () {
-    //     let o = $cliente_nome.select2('data')[0];
-    //
-    //     if (o?.documento) {
-    //         // só retorna documento se achou o cliente na base
-    //         $cliente_documento.val(o?.documento);
-    //         $cliente.val(o?.id);
-    //     } else {
-    //         // Para deixar sempre em UPPERCASE
-    //         $cliente_nome.empty().trigger("change");
-    //         $cliente_nome.append(new Option(o.text.toUpperCase(), o.text.toUpperCase(), false, false)).trigger('change');
-    //         if (!$cliente.val()) {
-    //             $cliente_documento.val('');
-    //             $cliente.val('');
-    //         }
-    //     }
-    //     $cliente_fone.val(o?.json_data?.fone1 ?? '');
-    //     $cliente_email.val(o?.json_data?.email ?? '');
-    //
-    //     CrosierMasks.maskDecs();
-    // });
-    //
-    // if ($cliente_nome.data('val')) {
-    //     let val = $cliente_nome.data('val');
-    //     $cliente_nome.append(new Option(val, val, false, false)).trigger('change');
-    // }
+    $s2PesquisarCliente.select2({
+        minimumInputLength: 3,
+        width: '100%',
+        dropdownAutoWidth: true,
+        placeholder: '...',
+        allowClear: true,
+        dropdownParent: $pesquisarClienteModal,
+        ajax: {
+            delay: 750,
+            url: Routing.generate('ven_venda_findClienteByStr'),
+            dataType: 'json',
+            processResults: function (data) {
+                let mapped = $.map(data.results, function (obj) {
+                    obj.id = obj.text;
+                    return obj;
+                });
+                return {
+                    results: mapped
+                };
+            },
+        }
+    }).on('select2:select', function () {
+        let o = $s2PesquisarCliente.select2('data')[0];
+
+        if (o?.documento) {
+            // só retorna documento se achou o cliente na base
+            $cliente_documento.val(o?.documento);
+            $cliente_nome.val(o?.text);
+            $cliente.val(o?.id);
+            $cliente_fone.val(o?.json_data?.fone1 ?? '');
+            $cliente_email.val(o?.json_data?.email ?? '');
+            CrosierMasks.maskDecs();
+            $pesquisarClienteModal.modal('hide');
+        }
+    });
+
 
     let k = hotkeys.noConflict();
     k('ctrl+1', function (event, handler) {
@@ -142,6 +125,16 @@ $(document).ready(function () {
         event.preventDefault();
         $('#aResumo')[0].click();
     });
+    k('ctrl+p', function (event, handler) {
+        event.preventDefault();
+        //$('#btnPesquisarCliente')[0].click();
+        $pesquisarClienteModal.modal('show');
+        
+    });
+
+    $pesquisarClienteModal.on('shown.bs.modal', function (e) {
+        $s2PesquisarCliente.select2('open');
+    })
 
 
     /**

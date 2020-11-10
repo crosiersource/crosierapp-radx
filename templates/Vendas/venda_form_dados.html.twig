@@ -88,10 +88,21 @@
                     </div>
                     <div class="col-md-4 col-sm-12">
                         <div class="form-group">
-                            <label for="venda_jsonData_cliente_nome">Nome/Razão Social</label>
+                            <label for="cliente_nome">Nome/Razão Social</label>
                             {# Atenção: ver a RTA no venda_form_dados.js #}
-                            <input type="text" class="form-control" name="cliente_nome" {{ e.status != 'PV ABERTO' ? 'disabled' : '' }}
-                                   id="cliente_nome" value="{{ e.jsonData.cliente_nome|default('') }}">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="cliente_nome" {{ e.status != 'PV ABERTO' ? 'disabled' : '' }}
+                                       id="cliente_nome" value="{{ e.jsonData.cliente_nome|default('') }}">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPesquisarCliente"
+                                            title="Pesquisar cliente" data-target="#pesquisarClienteModal" data-toggle="modal">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+
+
+                            </div>
+
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-12">
@@ -121,6 +132,41 @@
                 {{ form_end(form, {'render_rest': false}) }}
 
 
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="modal fade" id="pesquisarClienteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-body">
+
+                    <h5 class="modal-header">Pesquisar cliente...</h5>
+
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="form-group">
+
+                                <select id="s2PesquisarCliente" class="form-control">
+                                </select>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger"
+                            id="btnCancelarPesquisa" data-dismiss="modal">
+                        <i class="fa fa-ban" aria-hidden="true"></i> Cancelar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
