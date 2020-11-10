@@ -31,6 +31,11 @@ $(document).ready(function () {
     let $planoPagto_carteira_destino = $('#pagto_carteira_destino');
     let $planoPagto_numParcelas = $('#pagto_numParcelas');
 
+    let $venda_valorTotal = $('#venda_valorTotal');
+
+    let $valorPagto = $('#pagto_valorPagto');
+    let $valorPagto_help = $('#pagto_valorPagto_help');
+
     $planoPagto.select2({
         width: '100%',
         dropdownAutoWidth: true,
@@ -90,6 +95,26 @@ $(document).ready(function () {
         $('#aResumo')[0].click();
     });
 
+
+
+    function calcular() {
+        let totalSel = parseFloat('0.0');
+
+        let totalAPagar = parseFloat(Numeral($venda_valorTotal.val()).value());
+        let totalDinheiro = parseFloat(Numeral($valorPagto.val()).value());
+
+        let troco = parseFloat((totalDinheiro - totalAPagar).toFixed(2));
+
+        if (troco < 0) {
+            $valorPagto_help.html('Falta: <i>R$ ' + Numeral(troco).format('0.0,[00]') + '</i>');
+        } else {
+            $valorPagto_help.html('Troco: <b>R$ ' + Numeral(troco).format('0.0,[00]') + '</b>');
+        }
+    }
+
+    $valorPagto.on('keyup', function() {
+        calcular();
+    });
 
 });
 

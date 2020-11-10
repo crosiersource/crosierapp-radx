@@ -5,6 +5,7 @@ namespace App\Controller\Fiscal;
 use App\Form\Fiscal\NotaFiscalType;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
@@ -245,6 +246,35 @@ class EmissaoFiscalPVController extends BaseController
         $json = $serializer->serialize($dados, 'json');
 
         return new Response($json);
+    }
+
+
+    /**
+     *
+     * @Route("/fis/emissaofiscalpv/corrigirNCMs/{venda}", name="fis_emissaofiscalpv_corrigirNCMs")
+     * @param Venda $venda
+     * @return Response
+     */
+    public function corrigirNCMs(Venda $venda): Response
+    {
+        /** @var NotaFiscal $notaFiscal */
+        try {
+            $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+            if (!$notaFiscal) {
+                $this->addFlash('error', 'Nota fiscal não encontrada para a venda. Impossível corrigir NCMs');
+            } else {
+                try {
+                    $this->notaFiscalBusiness->corrigirNCMs($notaFiscal);
+                    $this->addFlash('success', 'NCMs corrigidos com sucesso');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Ocorreu um erro ao corrigir NCMs');
+                }
+            }
+        } catch (ViewException $e) {
+            $this->addFlash('error', 'Ocorreu um erro ao corrigir NCMs');
+        }
+        return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
+
     }
 
 

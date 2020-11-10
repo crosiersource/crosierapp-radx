@@ -307,8 +307,6 @@ class VendaController extends FormListController
             $vendaItem = [];
 
 
-
-
             $vendaItem['produto_id'] = $produtoId;
             $vendaItem['venda_id'] = $venda->getId();
 
@@ -338,7 +336,7 @@ class VendaController extends FormListController
             $vendaItem['unidade_id'] = $unidadeId;
 
             $vendaItem['devolucao'] = $devolucao;
-            $vendaItem['qtde'] = bcmul( ($vendaItem['devolucao'] ? -1 : 1) * abs($qtde) , 1, $unidade->casasDecimais);
+            $vendaItem['qtde'] = bcmul(($vendaItem['devolucao'] ? -1 : 1) * abs($qtde), 1, $unidade->casasDecimais);
 
             $vendaItem['subtotal'] = DecimalUtils::roundUp(bcmul($vendaItem['qtde'], $vendaItem['preco_venda'], 4));
             $vendaItem['desconto'] = ($vendaItem['devolucao'] ? -1 : 1) * abs($desconto);
@@ -444,6 +442,9 @@ class VendaController extends FormListController
             $vendaPagto['venda_id'] = $venda->getId();
             $vendaPagto['plano_pagto_id'] = $pagto['planoPagto'];
             $vendaPagto['valor_pagto'] = abs(DecimalUtils::parseStr($pagto['valorPagto']));
+            if ($vendaPagto['valor_pagto'] > $venda->valorTotal) {
+                $vendaPagto['valor_pagto'] = $venda->valorTotal;
+            }
             $vendaPagto['json_data'] = json_encode([
                 'carteira_id' => $pagto['carteira'],
                 'carteira_destino_id' => $pagto['carteira_destino'] ?? null,
