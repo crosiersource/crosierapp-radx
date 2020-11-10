@@ -388,6 +388,8 @@ class VendaController extends FormListController
             'e' => $venda,
         ];
 
+        $this->vendaBusiness->recalcularTotais($venda->getId());
+
         $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
         $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
         $params['pagtos_diferenca'] = '0.00';

@@ -148,5 +148,8 @@ $(document).ready(function () {
      */
     $('input[type=text]#venda_jsonData_cliente_nome').remove();
 
+
+    $cliente_documento.focus();
+
 });
 
