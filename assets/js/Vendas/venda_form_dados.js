@@ -104,7 +104,7 @@ $(document).ready(function () {
             $cliente_fone.val(o?.json_data?.fone1 ?? '');
             $cliente_email.val(o?.json_data?.email ?? '');
             CrosierMasks.maskDecs();
-            // $pesquisarClienteModal.modal('hide');
+            $pesquisarClienteModal.modal('hide');
             $btnCancelarPesquisa.click();
         }
     });
