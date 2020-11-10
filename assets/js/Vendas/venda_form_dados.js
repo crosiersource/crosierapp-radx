@@ -39,6 +39,7 @@ $(document).ready(function () {
     let $spanClienteNome = $('#spanClienteNome');
 
     let $pesquisarClienteModal = $('#pesquisarClienteModal');
+    let $btnCancelarPesquisa = $('#btnCancelarPesquisa');
 
 
     // cache para não buscar toda hora
@@ -103,7 +104,8 @@ $(document).ready(function () {
             $cliente_fone.val(o?.json_data?.fone1 ?? '');
             $cliente_email.val(o?.json_data?.email ?? '');
             CrosierMasks.maskDecs();
-            $pesquisarClienteModal.modal('hide');
+            // $pesquisarClienteModal.modal('hide');
+            $btnCancelarPesquisa.click();
         }
     });
 
