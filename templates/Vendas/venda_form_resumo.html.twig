@@ -20,7 +20,7 @@
                     <div class="col-8">
                         <h3>Pré-Venda</h3>
                         {% if (e.id|default(false)) %}
-                            <h6>{{ e.id|strpad(9) }}</h6>
+                            <h6>{{ e.id|strpad(9) }} - {{ e.jsonData.cliente_nome|default('') }}</h6>
                         {% endif %}
                     </div>
                     <div class="col-4 text-right">

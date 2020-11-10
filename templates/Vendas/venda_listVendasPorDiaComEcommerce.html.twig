@@ -143,11 +143,11 @@
                                 </td>
                                 <td>
                                     <div class="float-left">
-                                        {{ venda.jsonData.vendedor_nome|default('') }}
+                                        {{ venda.vendedor.nome|default('') }}
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    {{ venda.jsonData.canal == 'LOJA FÍSICA' ? (venda.status|default('') ~ '<br/>')|raw : '' }}
+                                    {{ (venda.status|default('') ~ '<br/>')|raw }}
                                     {{ venda.jsonData.ecommerce_status|default('') }}
                                 </td>
                                 <td class="text-right">
