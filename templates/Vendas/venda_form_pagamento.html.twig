@@ -103,6 +103,7 @@
                                                        class="crsr-money form-control"
                                                        value="{{ pagtos_diferenca|number_format(2,',','.') }}">
                                             </div>
+                                            <small id="pagto_valorPagto_help" class="form-text text-muted text-right"></small>
                                         </div>
                                     </div>
 
@@ -236,6 +237,7 @@
                                     <input type="text" id="venda_desconto" disabled
                                            value="{{ e.desconto|number_format(2,',','.') }}"
                                            readonly="readonly" class="crsr-money form-control disabled">
+
                                 </div>
                             </div>
                         </div>
