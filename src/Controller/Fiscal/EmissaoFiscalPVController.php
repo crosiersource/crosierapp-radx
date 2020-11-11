@@ -80,7 +80,7 @@ class EmissaoFiscalPVController extends BaseController
      * @param Request $request
      * @param Venda $venda
      * @return RedirectResponse|Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      */
     public function form(Request $request, Venda $venda)
     {
@@ -181,7 +181,7 @@ class EmissaoFiscalPVController extends BaseController
      * @param NotaFiscal $notaFiscal
      * @param Venda $venda
      * @return RedirectResponse|Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      */
     public function cancelarForm(Request $request, NotaFiscal $notaFiscal, Venda $venda)
     {
@@ -220,7 +220,7 @@ class EmissaoFiscalPVController extends BaseController
      * @param NotaFiscal $notaFiscal
      * @param Venda $venda
      * @return RedirectResponse
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      */
     public function consultarStatus(NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
     {
@@ -234,7 +234,7 @@ class EmissaoFiscalPVController extends BaseController
      * @param string $cnpj
      * @param string $uf
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      */
     public function consultarCNPJ(string $cnpj, string $uf): Response
     {
