@@ -2,9 +2,10 @@
 
 namespace App\Controller\Estoque;
 
-use App\Business\ECommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
@@ -67,53 +68,53 @@ class DeptoController extends BaseController
      * @Route("/est/deptoGrupoSubgrupo/form", name="est_deptoGrupoSubgrupo_form")
      * @param Request $request
      * @return RedirectResponse|Response
-     * @throws \Exception
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
     public function form(Request $request)
     {
-        /** @var DeptoRepository $repoDepto */
-        $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
-        $deptos = $repoDepto->findAll(['codigo' => 'ASC']);
         $parameters = [];
 
-        /** @var Connection $conn */
-        $conn = $this->getDoctrine()->getConnection();
-        $stmt_qtdePorSubgrupo = $conn->prepare('SELECT count(*) as qt FROM est_produto WHERE subgrupo_id = :subgrupoId');
-
-        /** @var Depto $depto */
-        foreach ($deptos as $depto) {
-            foreach ($depto->grupos as $grupo) {
-                foreach ($grupo->subgrupos as $subgrupo) {
-                    $stmt_qtdePorSubgrupo->bindValue('subgrupoId', $subgrupo->getId());
-                    $stmt_qtdePorSubgrupo->execute();
-                    $rs_qtdePorSubgrupo = $stmt_qtdePorSubgrupo->fetchAll();
-                    $subgrupo->qtdeTotalProdutos = $rs_qtdePorSubgrupo[0]['qt'] ?? 0;
-                }
-            }
-        }
-
-        $parameters['deptos'] = $deptos;
-
-        /** @var GrupoRepository $repoGrupo */
-        $repoGrupo = $this->getDoctrine()->getRepository(Grupo::class);
-
-        if ($request->get('grupoId')) {
-            /** @var Grupo $grupo */
-            $grupo = $repoGrupo->find($request->get('grupoId'));
-            $parameters['grupoSelected'] = $grupo;
-            $parameters['deptoSelected'] = $grupo->depto;
-        } else if ($request->get('deptoId')) {
+        try {
+            /** @var DeptoRepository $repoDepto */
+            $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
+            $deptos = $repoDepto->findAll(['codigo' => 'ASC']);
+            /** @var Connection $conn */
+            $conn = $this->getDoctrine()->getConnection();
+            $stmt_qtdePorSubgrupo = $conn->prepare('SELECT count(*) as qt FROM est_produto WHERE subgrupo_id = :subgrupoId');
             /** @var Depto $depto */
-            $depto = $repoDepto->find($request->get('deptoId'));
-            $parameters['deptoSelected'] = $depto;
-            if ($depto->grupos) {
-                /** @var Grupo $grupo */
-                $grupo = $depto->grupos->first();
-                if ($grupo) {
-                    $parameters['grupoSelected'] = $grupo;
+            foreach ($deptos as $depto) {
+                foreach ($depto->grupos as $grupo) {
+                    foreach ($grupo->subgrupos as $subgrupo) {
+                        $stmt_qtdePorSubgrupo->bindValue('subgrupoId', $subgrupo->getId());
+                        $stmt_qtdePorSubgrupo->execute();
+                        $rs_qtdePorSubgrupo = $stmt_qtdePorSubgrupo->fetchAllAssociative();
+                        $subgrupo->qtdeTotalProdutos = $rs_qtdePorSubgrupo[0]['qt'] ?? 0;
+                    }
                 }
             }
+            $parameters['deptos'] = $deptos;
+            /** @var GrupoRepository $repoGrupo */
+            $repoGrupo = $this->getDoctrine()->getRepository(Grupo::class);
+            if ($request->get('grupoId')) {
+                /** @var Grupo $grupo */
+                $grupo = $repoGrupo->find($request->get('grupoId'));
+                $parameters['grupoSelected'] = $grupo;
+                $parameters['deptoSelected'] = $grupo->depto;
+            } else if ($request->get('deptoId')) {
+                /** @var Depto $depto */
+                $depto = $repoDepto->find($request->get('deptoId'));
+                $parameters['deptoSelected'] = $depto;
+                if ($depto->grupos) {
+                    /** @var Grupo $grupo */
+                    $grupo = $depto->grupos->first();
+                    if ($grupo) {
+                        $parameters['grupoSelected'] = $grupo;
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            $msg = ExceptionUtils::treatException($e);
+            $this->addFlash('error', $msg);
         }
 
         return $this->doRender('Estoque/deptoGrupoSubgrupo.html.twig', $parameters);
@@ -312,38 +313,39 @@ class DeptoController extends BaseController
      *
      * @Route("/est/deptoGrupoSubgrupo/corrigir", name="est_deptoGrupoSubgrupo_corrigir")
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
     public function corrigirDeptosGruposSubgrupos(): Response
     {
-        // corrige os subgrupos
-        $conn = $this->deptoEntityHandler->getDoctrine()->getConnection();
 
-        $subgrupos = $conn->fetchAll('SELECT s.id as subgrupo_id, s.codigo as subgrupo_codigo, s.nome as subgrupo_nome, g.id as grupo_id, g.codigo as grupo_codigo, g.nome as grupo_nome, d.id as depto_id, d.codigo as depto_codigo, d.nome as depto_nome FROM est_subgrupo s, est_grupo g, est_depto d WHERE s.grupo_id = g.id AND g.depto_id = d.id');
-
-        foreach ($subgrupos as $s) {
-            $conn->update('est_subgrupo',
-                [
-                    'json_data' => json_encode([
-                        'depto_id' => $s['depto_id'],
-                        'depto_codigo' => $s['depto_codigo'],
-                        'depto_nome' => $s['depto_nome'],
-                        'grupo_id' => $s['grupo_id'],
-                        'grupo_codigo' => $s['grupo_codigo'],
-                        'grupo_nome' => $s['grupo_nome'],
-                    ])
-                ], ['id' => $s['subgrupo_id']]);
-            $conn->update('est_grupo',
-                [
-                    'json_data' => json_encode([
-                        'depto_id' => $s['depto_id'],
-                        'depto_codigo' => $s['depto_codigo'],
-                        'depto_nome' => $s['depto_nome'],
-                    ])
-                ], ['id' => $s['grupo_id']]);
+        try {// corrige os subgrupos
+            $conn = $this->deptoEntityHandler->getDoctrine()->getConnection();
+            $subgrupos = $conn->fetchAllAssociative('SELECT s.id as subgrupo_id, s.codigo as subgrupo_codigo, s.nome as subgrupo_nome, g.id as grupo_id, g.codigo as grupo_codigo, g.nome as grupo_nome, d.id as depto_id, d.codigo as depto_codigo, d.nome as depto_nome FROM est_subgrupo s, est_grupo g, est_depto d WHERE s.grupo_id = g.id AND g.depto_id = d.id');
+            foreach ($subgrupos as $s) {
+                $conn->update('est_subgrupo',
+                    [
+                        'json_data' => json_encode([
+                            'depto_id' => $s['depto_id'],
+                            'depto_codigo' => $s['depto_codigo'],
+                            'depto_nome' => $s['depto_nome'],
+                            'grupo_id' => $s['grupo_id'],
+                            'grupo_codigo' => $s['grupo_codigo'],
+                            'grupo_nome' => $s['grupo_nome'],
+                        ])
+                    ], ['id' => $s['subgrupo_id']]);
+                $conn->update('est_grupo',
+                    [
+                        'json_data' => json_encode([
+                            'depto_id' => $s['depto_id'],
+                            'depto_codigo' => $s['depto_codigo'],
+                            'depto_nome' => $s['depto_nome'],
+                        ])
+                    ], ['id' => $s['grupo_id']]);
+            }
+            return new Response('OK');
+        } catch (\Throwable $e) {
+            return new Response('ERRO');
         }
-        return new Response('OK');
 
     }
 

@@ -121,6 +121,7 @@
 
                             <tr>
                                 <td>
+                                    <span class="badge badge-pill badge-info">{{ loop.index }}</span>
                                     {{ venda.id|strpad(9) }}
                                 </td>
                                 <td>
@@ -129,15 +130,15 @@
                                         - {{ venda.cliente.nome|default('') }}
                                     </div>
                                     <div class="text-right">
-                                        {% if venda.jsonData.canal|default('') == 'LOJA FÍSICA' %}
-                                            <span class="badge badge-pill badge-info">
-                                            <i class="fas fa-store"></i> {{ venda.jsonData.vendedor|default('') }}
-                                        </span>
-                                        {% else %}
+                                        {% if venda.jsonData.canal|default('') == 'ECOMMERCE' %}
                                             <span class="badge badge-pill badge-success">
                                                 <i class="fas fa-bezier-curve"></i> {{ venda.jsonData.canal|default('') }}
                                             </span>
                                             <br><span style="font-size: small">E-commerce Id: <b>{{ venda.jsonData.ecommerce_idPedido|default(0)|strpad(9) }}</b></span>
+                                        {% else %}
+                                            <span class="badge badge-pill badge-info">
+                                                <i class="fas fa-store"></i> {{ venda.jsonData.vendedor|default('') }}
+                                            </span>
                                         {% endif %}
                                     </div>
                                 </td>
