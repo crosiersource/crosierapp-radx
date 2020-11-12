@@ -84,7 +84,6 @@ class EmissaoFiscalPVController extends BaseController
      */
     public function form(Request $request, Venda $venda)
     {
-        /** @var NotaFiscal $notaFiscal */
         $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
         $notaFiscalId = null;
         if (!$notaFiscal) {
