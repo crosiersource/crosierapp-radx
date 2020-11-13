@@ -605,6 +605,8 @@ INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, 
 VALUES (403, 756, 'BANCO COOPERATIVO DO BRASIL - BANCOOB (SICOOB)', _binary '', '2015-02-24 10:08:58', '2015-02-24 10:08:58', 0, 1, 1, 1);
 INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
 VALUES (404, 999, 'INDEFINIDO', _binary '\0', '2015-03-19 12:29:16', '2015-03-19 12:29:16', 0, 1, 1, 1);
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (NULL, 197, 'STONE PAGAMENTOS S.A.', true, '2015-03-19 12:29:16', '2015-03-19 12:29:16', 0, 1, 1, 1);
 
 
 TRUNCATE TABLE fin_operadora_cartao;
