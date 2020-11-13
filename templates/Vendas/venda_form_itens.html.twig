@@ -211,11 +211,11 @@
                                 </tr>
                                 </thead>
 
-                                <tbody>
+                                <tbody id="tbodySortableItens">
                                 {% for item in e.itens %}
-                                    <tr>
-                                        <td data-vendaitemid="{{ item.id }}"
-                                            title="{{ item.id }}">{{ loop.index }}</td>
+                                    <tr data-id="{{ item.id|strpad(9) }}">
+                                        <td id="ordem" data-vendaitemid="{{ item.id }}"
+                                            title="{{ item.id }}">{{ item.ordem }}</td>
                                         <td>
                                             <div class="float-left">
                                             {{ item.produto.codigo|default(0)|strpad(13) }}

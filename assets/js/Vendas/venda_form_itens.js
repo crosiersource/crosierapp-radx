@@ -15,6 +15,8 @@ import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
 import routes from '../../static/fos_js_routes.json';
 import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
 import hotkeys from 'hotkeys-js';
+import Sortable from "sortablejs";
+import toastrr from "toastr";
 
 $.fn.select2.defaults.set("theme", "bootstrap");
 $.fn.select2.defaults.set("language", "pt-BR");
@@ -219,6 +221,43 @@ $(document).ready(function () {
     }
 
 
+
+    function createSortableItens() {
+        if ($('#tbodySortableItens').length) {
+            Sortable.create(tbodySortableItens,
+                {
+                    animation: 150,
+                    onEnd:
+                        function (/**Event*/evt) {
+                            let ids = '';
+                            $('#tbodySortableItens > tr').each(function () {
+                                ids += $(this).data('id') + ',';
+                            });
+
+                            $.ajax({
+                                    dataType: "json",
+                                    data: {'ids': ids},
+                                    url: Routing.generate('ven_venda_saveOrdemItens'),
+                                    type: 'POST'
+                                }
+                            ).done(function (data) {
+                                if (data.result === 'OK') {
+                                    toastrr.success('Itens ordenados com sucesso');
+
+                                    $.each(data.ids, function (id, ordem) {
+                                        $('#tbodySortableItens > tr[data-id="' + id + '"] > td[id="ordem"]').html(ordem);
+                                    });
+
+                                } else {
+                                    toastrr.error('Erro ao ordenar itens');
+                                }
+                            });
+                        }
+                });
+        }
+    }
+
+
     let k = hotkeys.noConflict();
     k('ctrl+1', function (event, handler) {
         event.preventDefault();
@@ -236,6 +275,9 @@ $(document).ready(function () {
         event.preventDefault();
         $('#aResumo')[0].click();
     });
+
+
+    createSortableItens();
 
 
 });

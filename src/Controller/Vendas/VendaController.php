@@ -227,6 +227,12 @@ class VendaController extends FormListController
      */
     public function vendaFormItens(Venda $venda)
     {
+        $itens = $venda->itens->toArray();
+        usort($itens, function (VendaItem $a, VendaItem $b) {
+            return $a->ordem > $b->ordem;
+        });
+        $venda->itens = $itens;
+
         $params = [
             'listRoute' => 'ven_venda_listVendasEcommerce',
             'typeClass' => VendaType::class,
@@ -236,12 +242,29 @@ class VendaController extends FormListController
             'formRouteParams' => ['id' => $venda->getId()],
             'e' => $venda,
         ];
-        $itens = $venda->itens->toArray();
-        usort($itens, function (VendaItem $a, VendaItem $b) {
-            return $a->getId() > $b->getId();
-        });
-        $venda->itens = $itens;
+
         return $this->doRender('Vendas/venda_form_itens.html.twig', $params);
+    }
+
+
+    /**
+     *
+     * @Route("/ven/venda/saveOrdemItens", name="ven_venda_saveOrdemItens")
+     * @param Request $request
+     * @return RedirectResponse|Response
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function saveOrdemItens(Request $request)
+    {
+        try {
+            $ids = $request->get('ids');
+            $idsArr = explode(',', $ids);
+            $ordens = $this->vendaItemEntityHandler->salvarOrdens($idsArr);
+            $r = ['result' => 'OK', 'ids' => $ordens];
+            return new JsonResponse($r);
+        } catch (ViewException $e) {
+            return new JsonResponse(['result' => 'FALHA']);
+        }
     }
 
     /**
