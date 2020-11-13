@@ -236,6 +236,11 @@ class VendaController extends FormListController
             'formRouteParams' => ['id' => $venda->getId()],
             'e' => $venda,
         ];
+        $itens = $venda->itens->toArray();
+        usort($itens, function (VendaItem $a, VendaItem $b) {
+            return $a->getId() > $b->getId();
+        });
+        $venda->itens = $itens;
         return $this->doRender('Vendas/venda_form_itens.html.twig', $params);
     }
 

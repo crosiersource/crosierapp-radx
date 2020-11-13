@@ -37,6 +37,8 @@ $(document).ready(function () {
     let $valorTotal = $('#item_valorTotal');
     let $devolucao = $('#item_devolucao');
 
+    let $canal = $('#venda_canal');
+
 
     function resValorTotal() {
         let produto = $item_produto.select2('data')[0];

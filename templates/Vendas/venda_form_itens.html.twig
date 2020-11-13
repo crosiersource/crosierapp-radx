@@ -68,6 +68,7 @@
                         {% if e.status == 'PV ABERTO' %}
                             <form method="POST" action="{{ url('ven_venda_saveItem', {'venda': e.id}) }}" id="formItem">
 
+                                <input type="hidden" id="venda_canal" value="{{ e.jsonData.canal|default('VAREJO') }}">
 
                                 <div class="row">
 
