@@ -30,3 +30,75 @@ CREATE TABLE `crm_cliente`
 
 
 INSERT INTO crm_cliente(id, nome, documento, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id) value (null, 'CONSUMIDOR NÃO IDENTIFICADO', '99999999999', now(), now(), 0, 1, 1, 1);
+
+
+INSERT INTO cfg_app_config(id, chave, app_uuid, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, is_json, valor)
+VALUES (null, 'crm_cliente_json_metadata', '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 1, 1, 1, 1,
+'{
+  "campos": {
+    "nome_fantasia": {
+      "label": "Nome Fantasia",
+      "tipo": "string"
+    },
+    "tipo_pessoa": {
+      "label": "",
+      "tipo": "select",
+      "sugestoes": [
+        "PF",
+        "PJ"
+      ]
+    },
+    "dt_nascimento": {
+      "label": "Dt Nascimento",
+      "tipo": "date"
+    },
+    "rg": {
+      "label": "RG",
+      "tipo": "string"
+    },
+    "inscricao_estadual": {
+      "label": "IE",
+      "tipo": "string"
+    },
+    "sexo": {
+      "label": "Sexo",
+      "tipo": "select",
+      "sugestoes": [
+        "M",
+        "F"
+      ]
+    },
+    "canal": {
+      "label": "Canal",
+      "tipo": "select",
+      "class": "s2allownew",
+      "sugestoes": [
+        "ECOMMERCE",
+        "LOJA FÍSICA"
+      ]
+    },
+    "email": {
+      "label": "E-mail",
+      "tipo": "email"
+    },
+    "fone1": {
+      "label": "Fone (1)",
+      "tipo": "fone"
+    },
+    "fone2": {
+      "label": "Fone (2)",
+      "tipo": "fone"
+    }
+  },
+  "abas": {
+    "Dados": [],
+    "Endereços": [],
+    "E-commerce": []
+  },
+  "enderecoTipos": {
+    "FATURAMENTO": "FATURAMENTO",
+    "COMERCIAL": "COMERCIAL",
+    "ENTREGA": "ENTREGA",
+    "RESIDENCIAL": "RESIDENCIAL"
+  }
+}');
