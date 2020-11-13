@@ -758,6 +758,7 @@ class VendaController extends FormListController
             $dias = [];
             $i = -1;
             /** @var Venda $venda */
+            $total = 0.0;
             foreach ($dados as $venda) {
                 if ($venda->dtVenda->format('d/m/Y') !== $dia) {
                     $i++;
@@ -767,8 +768,10 @@ class VendaController extends FormListController
                 }
                 $dias[$i]['vendas'][] = $venda;
                 $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
+                $total = bcadd($total, $venda->valorTotal, 2);
             }
-            $dados = $dias;
+            $dados['dias'] = $dias;
+            $dados['total'] = $total;
         };
 
         return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);

@@ -111,7 +111,7 @@
 
                     <tbody>
 
-                    {% for dia in dados %}
+                    {% for dia in dados.dias %}
                         <tr class="table-primary">
                             <th scope="row" colspan="99">
                                 <h5>{{ dia.dtVenda|date('d/m/Y') }}</h5>
@@ -190,6 +190,15 @@
                             </td>
                         </tr>
                     {% endfor %}
+
+                    <tr class="table-secondary">
+                        <th scope="row" colspan="4" class="text-right">
+                            Total (R$):
+                        </th>
+                        <td class="text-right">{{ dados.total|number_format(2,',','.') }}</td>
+                        <td class="text-right">
+                        </td>
+                    </tr>
 
                     </tbody>
 
