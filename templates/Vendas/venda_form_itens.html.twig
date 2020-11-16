@@ -159,7 +159,7 @@
                                                     <span class="input-group-text">R$</span>
                                                 </div>
                                                 <input type="text" id="item_desconto" name="item[desconto]"
-                                                       class="crsr-money form-control">
+                                                       class="crsr-money form-control" data-allow-negative="true">
                                             </div>
                                         </div>
                                     </div>
@@ -312,7 +312,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">R$ </span>
                                     </div>
-                                    <input type="text" id="venda_desconto" disabled
+                                    <input type="text" id="venda_desconto" disabled="disabled"
                                            value="{{ e.desconto|number_format(2,',','.') }}"
                                            readonly="readonly" class="crsr-money form-control disabled">
                                 </div>

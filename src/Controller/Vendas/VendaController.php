@@ -291,7 +291,7 @@ class VendaController extends FormListController
             $conn = $this->entityHandler->getDoctrine()->getConnection();
 
             $qtde = abs(DecimalUtils::parseStr($item['qtde']));
-            $desconto = abs(DecimalUtils::parseStr($item['desconto'] ?: '0,00'));
+            $desconto = DecimalUtils::parseStr($item['desconto'] ?: '0,00');
             $devolucao = ($item['devolucao'] ?? 0) ? 1 : 0;
 
             if ($item['id'] ?? false) {
@@ -367,7 +367,7 @@ class VendaController extends FormListController
             $vendaItem['qtde'] = bcmul(($vendaItem['devolucao'] ? -1 : 1) * abs($qtde), 1, $unidade->casasDecimais);
 
             $vendaItem['subtotal'] = DecimalUtils::roundUp(bcmul($vendaItem['qtde'], $vendaItem['preco_venda'], 4));
-            $vendaItem['desconto'] = ($vendaItem['devolucao'] ? -1 : 1) * abs($desconto);
+            $vendaItem['desconto'] = ($vendaItem['devolucao'] ? -1 : 1) * $desconto;
             $vendaItem['total'] = bcsub($vendaItem['subtotal'], $vendaItem['desconto'], 2);
 
 
