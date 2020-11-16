@@ -55,11 +55,16 @@ $(document).ready(function () {
             } else if (qtde && produto.qtde_min_para_atacado > 0) {
                 lista = parseFloat(qtde) < parseFloat(produto.qtde_min_para_atacado) ? 'VAREJO' : 'ATACADO';
             }
-            // let preco_prazo = produto.precos[unidade][lista]['preco_prazo'];
-            let preco_prazo = $precoVenda.val().replace('.', '').replace(',', '.');
+            let preco_prazo = produto.precos[unidade][lista]['preco_prazo'];
+            // let preco_prazo = $precoVenda.val().replace('.', '').replace(',', '.');
             let valorUnit = parseFloat(preco_prazo);
             $precoVenda.val(valorUnit.toFixed(2).replace('.', ','));
-            $('#item_precoVenda_help').html('* ' + lista + ' (Mín: ' + produto.qtde_min_para_atacado + ')');
+            if (lista === 'ATACADO') {
+                $('#item_precoVenda_help').html('* ' + lista);
+                if (produto.qtde_min_para_atacado > 0) {
+                    $('#item_precoVenda_help').html('* ' + lista + ' (Mín: ' + produto.qtde_min_para_atacado + ')');
+                }
+            }
 
             let subTotal = (qtde * valorUnit);
 
