@@ -179,7 +179,7 @@ $(document).ready(function () {
 
         $devolucao.prop('checked', dados.itemDevolucao === 1);
 
-        $obs.val(dados.obs);
+        $obs.val(dados.itemObs);
 
         $qtde.focus();
 
