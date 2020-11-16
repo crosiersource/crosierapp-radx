@@ -2,6 +2,14 @@
 
 import $ from "jquery";
 
+import Moment from 'moment';
+
+Moment.locale('pt-BR');
+
+
+import 'daterangepicker';
+
+
 import 'bootstrap';
 
 import Numeral from 'numeral';
@@ -35,6 +43,8 @@ $(document).ready(function () {
     let $s2PesquisarCliente = $('#s2PesquisarCliente');
     let $cliente_fone = $('#venda_jsonData_cliente_fone');
     let $cliente_email = $('#venda_jsonData_cliente_email');
+
+    let $dtVenda = $('#venda_dtVenda');
 
     let $spanClienteNome = $('#spanClienteNome');
 
@@ -131,12 +141,55 @@ $(document).ready(function () {
         event.preventDefault();
         //$('#btnPesquisarCliente')[0].click();
         $pesquisarClienteModal.modal('show');
-        
+
     });
 
     $pesquisarClienteModal.on('shown.bs.modal', function (e) {
         $s2PesquisarCliente.select2('open');
-    })
+    });
+
+
+    $dtVenda.daterangepicker({
+        timePicker: false,
+        autoUpdateInput: true,
+        autoApply: true,
+        singleDatePicker: true,
+        showDropdowns: true,
+        timePicker24Hour: true,
+        locale: {
+            format: 'DD/MM/YYYY HH:mm',
+            "separator": " - ",
+            "applyLabel": "Aplicar",
+            "cancelLabel": "Cancelar",
+            "fromLabel": "De",
+            "toLabel": "Até",
+            "customRangeLabel": "Custom",
+            "daysOfWeek": [
+                "Dom",
+                "Seg",
+                "Ter",
+                "Qua",
+                "Qui",
+                "Sex",
+                "Sáb"
+            ],
+            "monthNames": [
+                "Janeiro",
+                "Fevereiro",
+                "Março",
+                "Abril",
+                "Maio",
+                "Junho",
+                "Julho",
+                "Agosto",
+                "Setembro",
+                "Outubro",
+                "Novembro",
+                "Dezembro"
+            ],
+            "firstDay": 0
+        },
+    });
 
 
     /**

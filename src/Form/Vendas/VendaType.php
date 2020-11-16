@@ -61,9 +61,10 @@ class VendaType extends AbstractType
                 'label' => 'Dt Venda',
                 'widget' => 'single_text',
                 'html5' => false,
-                'format' => 'dd/MM/yyyy HH:mm:ss',
+                'format' => 'dd/MM/yyyy HH:mm',
                 'attr' => [
-                    'class' => 'crsr-datetime'
+                    'class' => 'crsr-datetime-hm',
+                    'autocomplete' => 'false'
                 ],
                 'required' => true,
                 'disabled' => $disabled
