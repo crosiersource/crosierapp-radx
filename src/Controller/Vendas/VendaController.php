@@ -827,6 +827,7 @@ class VendaController extends FormListController
             try {
                 $this->vendaItemEntityHandler->delete($item);
                 $this->vendaBusiness->recalcularTotais($item->venda->getId());
+                $this->getEntityHandler()->corrigirOrdens($item->venda);
                 $this->addFlash('success', 'Registro deletado com sucesso.');
             } catch (ViewException $e) {
                 $this->addFlash('error', $e->getMessage());
