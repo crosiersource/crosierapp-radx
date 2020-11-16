@@ -257,7 +257,7 @@
                                                         data-item-qtde="{{ item.qtde|default('') }}"
                                                         data-item-preco-venda="{{ item.precoVenda|default('') }}"
                                                         data-item-desconto="{{ item.desconto|number_format(2,',','.') }}"
-                                                        data-item-obs="{{ item.obs|default('') }}">
+                                                        data-item-obs="{{ item.jsonData.obs|default('') }}">
                                                     <i class="fas fa-wrench" aria-hidden="true"></i>
                                                 </button>
 
