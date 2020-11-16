@@ -108,8 +108,6 @@
                                         </div>
                                     </div>
 
-
-
                                     <div class="col-md-2 col-sm-12">
                                         <div class="form-group text-right">
                                             <label for="item_devolucao"> </label>
@@ -123,9 +121,19 @@
                                             </div>
                                         </div>
                                     </div>
-
-
                                 </div>
+
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_obs">Obs.:</label>
+                                            <input type="text" id="item_obs" name="item[obs]" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <div class="row">
 
 
@@ -218,8 +226,11 @@
                                             title="{{ item.id }}">{{ item.ordem }}</td>
                                         <td>
                                             <div class="float-left">
-                                            {{ item.produto.codigo|default(0)|strpad(13) }}
-                                            - {{ item.descricao }}
+                                                {{ item.produto.codigo|default(0)|strpad(13) }}
+                                                - {{ item.descricao }}
+                                                {% if item.jsonData.obs|default(false) %}
+                                                    <br><small class="text-muted">{{ item.jsonData.obs }}</small>
+                                                {% endif %}
                                             </div>
                                             <div class="float-right">
                                                 <a href="{{ url('est_produto_form', {'id':item.produto.id}) }}" target="_blank">
@@ -245,7 +256,8 @@
                                                         data-item-devolucao="{{ item.devolucao|default('') }}"
                                                         data-item-qtde="{{ item.qtde|default('') }}"
                                                         data-item-preco-venda="{{ item.precoVenda|default('') }}"
-                                                        data-item-desconto="{{ item.desconto|number_format(2,',','.') }}">
+                                                        data-item-desconto="{{ item.desconto|number_format(2,',','.') }}"
+                                                        data-item-obs="{{ item.obs|default('') }}">
                                                     <i class="fas fa-wrench" aria-hidden="true"></i>
                                                 </button>
 

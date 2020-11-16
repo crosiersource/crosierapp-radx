@@ -370,11 +370,16 @@ class VendaController extends FormListController
             $vendaItem['desconto'] = ($vendaItem['devolucao'] ? -1 : 1) * abs($desconto);
             $vendaItem['total'] = bcsub($vendaItem['subtotal'], $vendaItem['desconto'], 2);
 
+
             $vendaItem['updated'] = (new \DateTime())->format('Y-m-d H:i:s');
             $vendaItem['inserted'] = (new \DateTime())->format('Y-m-d H:i:s');
             $vendaItem['estabelecimento_id'] = 1;
             $vendaItem['user_inserted_id'] = 1;
             $vendaItem['user_updated_id'] = 1;
+
+            $vendaItem_jsonData['obs'] = strtoupper($item['obs'] ?? '');
+
+            $vendaItem['json_data'] = json_encode($vendaItem_jsonData);
 
             if ($item['id'] ?? false) {
                 $conn->update('ven_venda_item', $vendaItem, ['id' => $item['id']]);

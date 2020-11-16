@@ -38,6 +38,7 @@ $(document).ready(function () {
     let $desconto = $('#item_desconto');
     let $valorTotal = $('#item_valorTotal');
     let $devolucao = $('#item_devolucao');
+    let $obs = $('#item_obs');
 
     let $canal = $('#venda_canal');
 
@@ -178,6 +179,8 @@ $(document).ready(function () {
 
         $devolucao.prop('checked', dados.itemDevolucao === 1);
 
+        $obs.val(dados.obs);
+
         $qtde.focus();
 
 
@@ -226,7 +229,6 @@ $(document).ready(function () {
     if ($item_produto.hasClass('focusOnReady')) {
         $item_produto.select2('focus');
     }
-
 
 
     function createSortableItens() {
