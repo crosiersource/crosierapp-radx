@@ -1,11 +1,11 @@
 <?php
 
 
-namespace App\Tests\src\Repository;
+namespace App\Tests\Business;
 
 
-use App\Business\Estoque\CalculoPreco;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Estoque\CalculoPreco;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**

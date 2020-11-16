@@ -164,10 +164,10 @@
                             <td>{{ e.jsonData.fornecedor_nomeFantasia|default('') != '' ? e.jsonData.fornecedor_nomeFantasia : e.jsonData.fornecedor_nome|default('') }}</td>
                             <td class="text-right">
                                     Preço Varejo:
-                                    <b>R$ {{ e.jsonData.preco_varejo|default(0)|number_format(2,',','.') }}</b><br/>
+                                    <b>R$ {{ e.precosPorLista['VAREJO']|default(0)|number_format(2,',','.') }}</b><br/>
                                     Preço Atacado <span
                                             class="badge badge-secondary"> Mín: {{ e.jsonData.qtde_min_para_atacado|default(0) }}</span>:
-                                    R$ {{ e.jsonData.preco_atacado|default(0)|number_format(2,',','.') }}
+                                    R$ {{ e.precosPorLista['ATACADO']|default(0)|number_format(2,',','.') }}
                             </td>
 
                             <td class="text-right">

@@ -50,7 +50,7 @@ $(document).ready(function () {
             let qtde = $qtde.val().replace('.', '').replace(',', '.');
 
             let lista = 'VAREJO';
-            if (qtde && produto.qtde_min_para_atacado > 0) {
+            if ($canal.val() == 'ATACADO' || (qtde && produto.qtde_min_para_atacado > 0)) {
                 lista = parseFloat(qtde) < parseFloat(produto.qtde_min_para_atacado) ? 'VAREJO' : 'ATACADO';
             }
             // let preco_prazo = produto.precos[unidade][lista]['preco_prazo'];
