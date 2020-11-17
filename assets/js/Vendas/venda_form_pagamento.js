@@ -41,14 +41,33 @@ $(document).ready(function () {
         dropdownAutoWidth: true,
         placeholder: '...',
         allowClear: true,
-        tags: true,
         data: $planoPagto.data('options')
     }).on('select2:select', function () {
         let o = $planoPagto.select2('data')[0];
 
-
         $planoPagto_carteira_destino.prop('disabled', true);
         $planoPagto_carteira_destino.empty().trigger("change");
+
+
+        if (o?.carteiras) {
+
+            $.map(o.carteiras, function (obj) {
+                obj.text = String(obj['codigo']).padStart(2, '0') + ' - ' + obj['descricao'];
+                return obj;
+            });
+
+            $planoPagto_carteira.select2({
+                width: '100%',
+                dropdownAutoWidth: true,
+                placeholder: '...',
+                allowClear: true,
+                tags: true,
+                data: o.carteiras
+            });
+
+            $planoPagto_carteira.prop('disabled', false);
+        }
+
         if (o?.carteirasDestino) {
 
             $.map(o.carteirasDestino, function (obj) {

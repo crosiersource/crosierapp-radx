@@ -65,6 +65,27 @@
                                         {{ mov.valorTotal|number_format(2,',','.') }}
                                     </td>
                                     <td class="text-right">
+                                        {% if mov.status == 'ABERTA' %}
+                                            <a class="btn btn-sm btn-outline-danger"
+                                               href="{{ url('movimentacao_form_pagto', {'id':mov.id, 'reftoback': true}) }}"
+                                               role="button" title="Registro de Pagamento">
+                                                <i class="fas fa-dollar-sign"></i>
+                                            </a>
+                                        {% endif %}
+
+
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                                onclick="window.location.href='{{ url('movimentacao_edit', {id: mov.id}) }}'">
+                                            <i class="fas fa-wrench" aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                                data-url="{{ url('movimentacao_delete', {id: mov.id}) }}"
+                                                data-token="{{ csrf_token('delete') }}"
+                                                data-target="#confirmationModal" data-toggle="modal">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                        <br/>
+                                        <span class="badge badge-secondary">{{ mov.updated|date('d/m/Y H:i:s') }}</span>
                                     </td>
                                 </tr>
                             {% endfor %}

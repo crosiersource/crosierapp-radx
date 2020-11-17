@@ -438,8 +438,6 @@ class VendaController extends FormListController
             $pagto->carteira = $repoCarteira->find($carteiraId);
         }
 
-        $carteirasCaixa = $repoCarteira->findByFiltersSimpl([['caixa', 'EQ', true]], ['descricao' => 'ASC']);
-        $params['carteirasCaixa'] = json_encode(Select2JsUtils::toSelect2Data($carteirasCaixa, '%s', ['descricaoMontada']));
 
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
