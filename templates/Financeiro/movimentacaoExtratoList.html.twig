@@ -104,7 +104,7 @@
                                     <span class="badge badge-pill badge-light">{{ loop.index }}</span>
                                 </td>
                                 <td>
-                                    <b><span style="{{ (item.categoria.codigo == 195 or item.categoria.codigo == 295) ? 'background-color: yellow' : ''  }}">{{ item.categoria.getDescricaoMontada() }}</span></b><br/>
+                                    <b><span style="{{ (item.categoria.codigo == 195 or item.categoria.codigo == 295) ? 'background-color: yellow' : '' }}">{{ item.categoria.getDescricaoMontada() }}</span></b><br/>
                                     {{ item.modo.getDescricaoMontada() }}
                                 </td>
                                 <td>
@@ -172,7 +172,7 @@
 
 
                                     <a role="button" class="btn btn-sm btn-primary" title="Editar registro"
-                                            href="{{ url('movimentacao_edit', {id: item.id, 'reftoback': true}) }}">
+                                       href="{{ url('movimentacao_edit', {id: item.id, 'reftoback': true}) }}">
                                         <i class="fas fa-wrench" aria-hidden="true"></i>
                                     </a>
                                     <button type="button" class="btn btn-sm btn-danger"
@@ -246,6 +246,29 @@
                                 R$ {{ totaisExtratoCartao.totalGeral|number_format(2,',','.') }}</td>
                             <td colspan="2"></td>
                         </tr>
+
+                    {% else %}
+
+                        <tr>
+                            <th scope="row" colspan="4" class="text-right">Entradas:</th>
+                            <td class="text-right" style="background-color: dodgerblue">
+                                {{ totaisExtrato.totalEntradas|number_format(2,',','.') }} %
+                            </td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" colspan="4" class="text-right">Saídas:</th>
+                            <td class="text-right" style="background-color: indianred">
+                                R$ {{ totaisExtrato.totalSaidas|number_format(2,',','.') }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr style="background-color: lightblue">
+                            <th scope="row" colspan="4" class="text-right">Total Geral:</th>
+                            <td class="text-right">
+                                R$ {{ totaisExtrato.totalGeral|number_format(2,',','.') }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+
                     {% endif %}
 
                     </tbody>

@@ -131,6 +131,8 @@ class MovimentacaoExtratoController extends FormListController
 
         if ($carteira->getOperadoraCartao()) {
             $parameters['totaisExtratoCartao'] = $repo->findTotaisExtratoCartoes($carteira, $dtIni, $dtFim);
+        } else {
+            $parameters['totaisExtrato'] = $repo->findTotaisExtrato($carteira, $dtIni, $dtFim);
         }
 
         return $this->doRender('Financeiro/movimentacaoExtratoList.html.twig', $parameters);
