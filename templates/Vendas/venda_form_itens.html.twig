@@ -77,7 +77,7 @@
                                             <label for="item_qtde">Qtde</label>
                                             <div class="input-group">
                                                 <input type="text" id="item_qtde" name="item[qtde]" required
-                                                       class="crsr-dec3 form-control" value="1">
+                                                       class="{{ classPadraoQtde }} form-control" value="1">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text"
                                                           id="item_unidade_append_label">...</span>
@@ -86,7 +86,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-10">
                                         <div class="form-group">
                                             <label for="item_produto">Produto</label>
                                             <input type="hidden" id="item_id" name="item[id]">
@@ -95,6 +95,11 @@
                                             </select>
                                         </div>
                                     </div>
+
+                                </div>
+
+
+                                <div class="row">
 
                                     <div class="col-md-3 col-sm-12">
                                         <div class="form-group">
@@ -121,11 +126,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-
-                                <div class="row">
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-7">
                                         <div class="form-group">
                                             <label for="item_obs">Obs.:</label>
                                             <input type="text" id="item_obs" name="item[obs]" class="form-control">

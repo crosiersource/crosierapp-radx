@@ -243,6 +243,8 @@ class VendaController extends FormListController
             'e' => $venda,
         ];
 
+        $params['classPadraoQtde'] = 'crsr-dec2';
+
         return $this->doRender('Vendas/venda_form_itens.html.twig', $params);
     }
 
@@ -297,11 +299,11 @@ class VendaController extends FormListController
             if ($item['id'] ?? false) {
                 /** @var VendaItem $vendaItem_ */
                 $vendaItem_ = $this->getDoctrine()->getRepository(VendaItem::class)->find((int)$item['id']);
-                $produtoId = $vendaItem_->produto->getId();
-                $unidadeId = $vendaItem_->unidade->getId();
+                $produtoId = (int)$vendaItem_->produto->getId();
+                $unidadeId = (int)$vendaItem_->unidade->getId();
             } else {
                 $produtoId = (int)$item['produto'];
-                $unidadeId = $item['unidade'] ?? null;
+                $unidadeId = (int)($item['unidade'] ?? 0);
             }
 
             $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
@@ -986,6 +988,7 @@ class VendaController extends FormListController
     {
         try {
             $str = $request->get('term');
+            $str = str_replace(' ', '%', $str);
 
             $conn = $this->entityHandler->getDoctrine()->getConnection();
 
@@ -1084,6 +1087,10 @@ class VendaController extends FormListController
         $stmtUnidades = $conn->prepare($sqlUnidades);
 
 
+        $sqlSaldo = 'SELECT sum(qtde) as qt FROM est_produto_saldo WHERE produto_id = :produtoId';
+        $stmtSaldo = $conn->prepare($sqlSaldo);
+
+
         // Melhora a disposição do array para facilitar o acesso no javascript
         function handlePrecos(Connection $conn, array $rsUnidades)
         {
@@ -1124,10 +1131,24 @@ class VendaController extends FormListController
             $stmtUnidades->execute();
             $rUnidades = $stmtUnidades->fetchAllAssociative();
 
+            $stmtSaldo->bindValue('produtoId', $r['id']);
+            $stmtSaldo->execute();
+            $rSaldo = $stmtSaldo->fetchAssociative();
+            $saldo = DecimalUtils::formatFloat((string)($rSaldo['qt'] + 0));
+            $text = '...' . substr($codigo, -5) . ' <b>' . $r['nome'] . '</b> (Em estoque: ' . $saldo . ') ';
+            $precos = handlePrecos($conn, $rUnidades);
+            foreach ($precos as $unidade => $preco) {
+                $text .= '(' . $unidade . ') ' .
+                    'Varejo: ' .
+                    number_format($preco['VAREJO']['preco_prazo'], 2, ',', '.') . ', ' .
+                    'Atacado: ' .
+                    number_format($preco['ATACADO']['preco_prazo'], 2, ',', '.') . ' / ';
+            }
+            $text = substr($text, 0, -3);
 
             $results[] = [
                 'id' => $r['id'],
-                'text' => $codigo . ' - ' . $r['nome'] . '(' . $r['unidade_label'] . ')',
+                'text' => $text,
                 'codigo' => $codigo,
                 'preco_venda' => $r['precoVenda'],
                 'qtde_min_para_atacado' => $r['qtde_min_para_atacado'],
@@ -1135,7 +1156,7 @@ class VendaController extends FormListController
                 'unidade_label' => $r['unidade_label'],
                 'unidade_casas_decimais' => $r['unidade_casas_decimais'],
                 'unidades' => $rUnidades,
-                'precos' => handlePrecos($conn, $rUnidades)
+                'precos' => $precos
             ];
         }
 

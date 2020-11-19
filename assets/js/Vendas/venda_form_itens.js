@@ -95,6 +95,12 @@ $(document).ready(function () {
         dropdownAutoWidth: true,
         placeholder: '...',
         allowClear: true,
+        templateResult: function(data) {
+            return data.text;
+        },
+        escapeMarkup: function(markup) {
+            return markup;
+        },
         ajax: {
             delay: 750,
             url: Routing.generate('ven_venda_findProdutosByCodigoOuNomeJson'),
