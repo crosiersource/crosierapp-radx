@@ -36,6 +36,7 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
+use Decimal\Decimal;
 use Doctrine\DBAL\Connection;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
@@ -329,6 +330,10 @@ class VendaController extends FormListController
 
                         $itemNaVenda->desconto = $desconto;
                         $this->vendaItemEntityHandler->save($itemNaVenda);
+
+                        $this->vendaBusiness->recalcularTotais($venda->getId());
+                        $this->getDoctrine()->getManager()->refresh($venda);
+
                         return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
                     }
                 }
@@ -390,6 +395,7 @@ class VendaController extends FormListController
             }
 
             $this->vendaBusiness->recalcularTotais($venda->getId());
+            $this->getDoctrine()->getManager()->refresh($venda);
 
         } catch (\Throwable $e) {
             $this->addFlash('error', 'Erro ao inserir item');
@@ -399,6 +405,7 @@ class VendaController extends FormListController
         }
         return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
     }
+
 
 
     /**

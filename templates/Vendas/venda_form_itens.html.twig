@@ -284,6 +284,9 @@
                 </div>
 
 
+
+
+
                 <div class="row">
                     <div class="col-md-6 col-sm-12">
                     </div>
@@ -298,6 +301,7 @@
                                     <input type="text" id="venda_subtotal" disabled
                                            value="{{ e.subtotal|number_format(2,',','.') }}"
                                            readonly="readonly" class="crsr-money form-control disabled">
+
                                 </div>
                             </div>
                         </div>
@@ -314,9 +318,10 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">R$ </span>
                                     </div>
-                                    <input type="text" id="venda_desconto" disabled="disabled"
+                                    <input type="text" id="venda_desconto" name="venda_desconto"
+                                           readonly="readonly" disabled="disabled"
                                            value="{{ e.desconto|number_format(2,',','.') }}"
-                                           readonly="readonly" class="crsr-money form-control disabled">
+                                           class="crsr-money form-control disabled">
                                 </div>
                             </div>
                         </div>
