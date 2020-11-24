@@ -88,7 +88,7 @@ class NotaFiscalItemType extends AbstractType
         ]);
 
         $builder->add('icmsModBC', TextType::class, [
-            'label' => 'Unidade',
+            'label' => 'ICMS Mód BC',
             'required' => false
         ]);
 

@@ -1136,5 +1136,25 @@ class EmissaoNFeController extends FormListController
         return new Response(implode('<br>', $r));
     }
 
+    /**
+     * @Route("/fis/notaFiscal/setJsonData/{notaFiscal}", name="fis_notaFiscal_setJsonData")
+     * @param Request $request
+     * @param NotaFiscal $notaFiscal
+     * @return RedirectResponse
+     * @throws ViewException
+     */
+    public function setJsonData(Request $request, NotaFiscal $notaFiscal): Response
+    {
+        $jsonData = $request->get('jsonData');
+
+        foreach ($jsonData as $k => $jd) {
+            $notaFiscal->jsonData[$k] = $jd;
+        }
+
+        $this->entityHandler->save($notaFiscal);
+
+        return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
+    }
+
 
 }
