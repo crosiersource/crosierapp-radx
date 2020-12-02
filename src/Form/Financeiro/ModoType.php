@@ -21,68 +21,67 @@ class ModoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('codigo', IntegerType::class, array(
+        $builder->add('codigo', IntegerType::class, [
             'label' => 'Código'
-        ));
+        ]);
 
-        $builder->add('descricao', TextType::class, array(
+        $builder->add('descricao', TextType::class, [
             'label' => 'Descrição'
-        ));
+        ]);
 
-        $builder->add('modoDeTransfPropria', ChoiceType::class, array(
+        $builder->add('modoDeTransfPropria', ChoiceType::class, [
             'label' => 'Transf Própria',
-            'choices' => array(
+            'choices' => [
                 'Sim' => true,
                 'Não' => false
-            )
-        ));
+            ]
+        ]);
 
-
-        $builder->add('modoDeMovimentAgrup', ChoiceType::class, array(
+        $builder->add('modoDeMovimentAgrup', ChoiceType::class, [
             'label' => 'Moviment Agrup',
-            'choices' => array(
+            'choices' => [
                 'Sim' => true,
                 'Não' => false
-            )
-        ));
+            ]
+        ]);
 
-        $builder->add('modoDeCartao', ChoiceType::class, array(
+        $builder->add('modoDeCartao', ChoiceType::class, [
             'label' => 'Cartão',
-            'choices' => array(
+            'choices' => [
                 'Sim' => true,
                 'Não' => false
-            )
-        ));
+            ]
+        ]);
 
-        $builder->add('modoDeCheque', ChoiceType::class, array(
+        $builder->add('modoDeCheque', ChoiceType::class, [
             'label' => 'Cheque',
-            'choices' => array(
+            'choices' => [
                 'Sim' => true,
                 'Não' => false
-            )
-        ));
+            ]
+        ]);
 
-        $builder->add('modoDeTransfCaixa', ChoiceType::class, array(
+        $builder->add('modoDeTransfCaixa', ChoiceType::class, [
             'label' => 'Transf Caixa',
-            'choices' => array(
+            'choices' => [
                 'Sim' => true,
                 'Não' => false
-            )
-        ));
+            ]
+        ]);
 
-        $builder->add('modoComBancoOrigem', ChoiceType::class, array(
+        $builder->add('modoComBancoOrigem', ChoiceType::class, [
             'label' => 'Com Banco Origem',
-            'choices' => array(
+            'choices' => [
                 'Sim' => true,
                 'Não' => false
-            )
-        ));
+            ]
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Modo::class
-        ));
+        ]);
     }
 }

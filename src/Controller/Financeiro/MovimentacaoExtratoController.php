@@ -91,11 +91,11 @@ class MovimentacaoExtratoController extends FormListController
         $i = -1;
         /** @var Movimentacao $movimentacao */
         foreach ($dados as $movimentacao) {
-            if ($movimentacao->getDtUtil() && $movimentacao->getDtUtil()->format('d/m/Y') !== $dia) {
+            if ($movimentacao->dtUtil && $movimentacao->dtUtil->format('d/m/Y') !== $dia) {
                 $i++;
-                $dia = $movimentacao->getDtUtil()->format('d/m/Y');
-                $dias[$i]['dtUtil'] = $movimentacao->getDtUtil();
-                $dias[$i]['saldos'] = $this->business->calcularSaldos($movimentacao->getDtUtil(), $carteira);
+                $dia = $movimentacao->dtUtil->format('d/m/Y');
+                $dias[$i]['dtUtil'] = $movimentacao->dtUtil;
+                $dias[$i]['saldos'] = $this->business->calcularSaldos($movimentacao->dtUtil, $carteira);
             }
             $dias[$i]['movs'][] = $movimentacao;
         }
@@ -106,7 +106,7 @@ class MovimentacaoExtratoController extends FormListController
         /** @var DiaUtilRepository $repoDiaUtil */
         $repoDiaUtil = $this->getDoctrine()->getRepository(DiaUtil::class);
 
-        $diaUtilFinanceiro = $carteira->getCaixa() ? false : true;
+        $diaUtilFinanceiro = $carteira->caixa ? false : true;
         $prox = $repoDiaUtil->incPeriodo($dtIni, $dtFim, true, true, $diaUtilFinanceiro);
         $ante = $repoDiaUtil->incPeriodo($dtIni, $dtFim, false, true, $diaUtilFinanceiro);
         $parameters['antePeriodoI'] = $ante['dtIni'];
@@ -116,8 +116,8 @@ class MovimentacaoExtratoController extends FormListController
         $parameters['dtFim'] = $dtFim->format('d/m/Y');
 
         $parameters['carteira']['id'] = $carteira->getId();
-        $parameters['carteira']['operadoraCartao'] = $carteira->getOperadoraCartao();
-        $parameters['carteira']['cheque'] = $carteira->getCheque();
+        $parameters['carteira']['operadoraCartao'] = $carteira->operadoraCartao;
+        $parameters['carteira']['cheque'] = $carteira->cheque;
         $parameters['carteira']['options'] = $this->business->getFilterCarteiraOptions($filterDatas);
 
         $parameters['page_title'] = 'Extrato de Movimentações';
@@ -129,7 +129,7 @@ class MovimentacaoExtratoController extends FormListController
         ];
         $this->storedViewInfoBusiness->store('movimentacao_extrato', $sviParams);
 
-        if ($carteira->getOperadoraCartao()) {
+        if ($carteira->operadoraCartao) {
             $parameters['totaisExtratoCartao'] = $repo->findTotaisExtratoCartoes($carteira, $dtIni, $dtFim);
         } else {
             $parameters['totaisExtrato'] = $repo->findTotaisExtrato($carteira, $dtIni, $dtFim);

@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class RegistroConferenciaType extends AbstractType
 {
 
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
     public function __construct(EntityManagerInterface $doctrine)
     {
@@ -32,43 +32,43 @@ class RegistroConferenciaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $builder->add('descricao', TextType::class, array(
+        $builder->add('descricao', TextType::class, [
             'label' => 'Descrição'
-        ));
+        ]);
 
-        $builder->add('dtRegistro', DateType::class, array(
+        $builder->add('dtRegistro', DateType::class, [
             'label' => 'Dt Registro',
             'widget' => 'single_text',
             'html5' => false,
             'format' => 'dd/MM/yyyy',
-            'attr' => array('class' => 'crsr-date')
-        ));
+            'attr' => ['class' => 'crsr-date']
+        ]);
 
         $repoCarteira = $this->doctrine->getRepository(Carteira::class);
         $carteiras = $repoCarteira->findAll();
-        $builder->add('carteira', EntityType::class, array(
+        $builder->add('carteira', EntityType::class, [
             'class' => Carteira::class,
             'choices' => $carteiras,
             'choice_label' => function (Carteira $carteira) {
-                return $carteira->getCodigo() . " - " . $carteira->getDescricao();
+                return $carteira->getCodigo() . " - " . $carteira->descricao;
             }
-        ));
+        ]);
 
         $builder->add('valor', MoneyType::class, array(
             'label' => 'Valor',
             'currency' => 'BRL',
             'grouping' => 'true',
             'required' => false,
-            'attr' => array(
+            'attr' => [
                 'class' => 'crsr-money'
-            )
+            ]
         ));
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => RegistroConferencia::class
-        ));
+        ]);
     }
 }

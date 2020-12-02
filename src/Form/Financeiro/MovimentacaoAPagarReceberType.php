@@ -2,33 +2,28 @@
 
 namespace App\Form\Financeiro;
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
-use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\ChoiceTypeUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class MovimentacaoAReceberType.
+ * Class MovimentacaoAPagarReceberType.
  *
- * Form para lançamento de contas a receber.
+ * Form para lançamento de contas a pagar.
  *
  * @package App\Form\Financeiro
  * @author Carlos Eduardo Pauluk
  */
-class MovimentacaoAReceberType extends AbstractType
+class MovimentacaoAPagarReceberType extends AbstractType
 {
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    /** @var MovimentacaoTypeBuilder */
-    private $movimentacaoTypeBuilder;
+    private MovimentacaoTypeBuilder $movimentacaoTypeBuilder;
+
 
     /**
      * @required
@@ -48,46 +43,40 @@ class MovimentacaoAReceberType extends AbstractType
         $this->movimentacaoTypeBuilder = $movimentacaoTypeBuilder;
     }
 
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var Movimentacao $movimentacao */
             $movimentacao = $event->getData();
             $form = $event->getForm();
 
-            $choices = [];
+            $options = [];
+            $options['sacado'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
+            $options['cedente'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
 
-            /** @var PessoaRepository $repoPessoa */
-            $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
-
-            $filiaisR = $repoPessoa->findByFiltersSimpl([['categ.descricao', 'LIKE', 'FILIAL PROP']]);
-            if ($filiaisR) {
-                $filiais = ChoiceTypeUtils::toChoiceTypeChoices($filiaisR, '%08d %s', ['id', 'nome']);
-                $choices['cedente'] = $filiais;
-            }
-
-            $this->movimentacaoTypeBuilder->build($form, $movimentacao, $choices);
-
+            $this->movimentacaoTypeBuilder->build($form, $movimentacao, $options);
         });
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) {
                 $form = $event->getForm();
-                $sacado = $event->getData()['sacado'] ?: null;
-                $choices = [$sacado];
-                $form->remove('sacado');
-                $form->add('sacado', ChoiceType::class, array(
-                    'label' => 'Sacado',
-                    'required' => false,
-                    'choices' => $choices
 
-                ));
+                $choices = [];
+
+                if ($event->getData()['cedente']) {
+                    $cedente = $event->getData()['cedente'];
+                    $choices['cedente']['choices'] = [$cedente => $cedente];
+                }
+
+                if ($event->getData()['sacado']) {
+                    $sacado = $event->getData()['sacado'];
+                    $choices['sacado']['choices'] = [$sacado => $sacado];
+                }
+
+                $this->movimentacaoTypeBuilder->build($form, null, $choices);
             }
         );
-
 
     }
 
@@ -99,8 +88,8 @@ class MovimentacaoAReceberType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Movimentacao::class
-        ));
+        ]);
     }
 }

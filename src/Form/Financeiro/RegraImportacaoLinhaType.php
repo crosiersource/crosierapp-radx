@@ -70,7 +70,7 @@ class RegraImportacaoLinhaType extends AbstractType
             'choices' => $this->doctrine->getRepository(Carteira::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => function (?Carteira $carteira) {
                 if ($carteira) {
-                    return $carteira->getCodigo() . ' - ' . $carteira->getDescricao();
+                    return $carteira->getCodigo() . ' - ' . $carteira->descricao;
                 }
                 return null;
             },
@@ -84,7 +84,7 @@ class RegraImportacaoLinhaType extends AbstractType
             'choices' => $this->doctrine->getRepository(Carteira::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => function (?Carteira $carteira) {
                 if ($carteira) {
-                    return $carteira->getCodigo() . ' - ' . $carteira->getDescricao();
+                    return $carteira->getCodigo() . ' - ' . $carteira->descricao;
                 }
                 return null;
             },
@@ -96,7 +96,7 @@ class RegraImportacaoLinhaType extends AbstractType
             'class' => CentroCusto::class,
             'choices' => $this->doctrine->getRepository(CentroCusto::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => function (CentroCusto $centroCusto) {
-                return $centroCusto->getDescricao();
+                return $centroCusto->descricao;
             },
             'attr' => ['class' => 'autoSelect2']
         ]);
@@ -105,7 +105,7 @@ class RegraImportacaoLinhaType extends AbstractType
             'class' => Modo::class,
             'choices' => $this->doctrine->getRepository(Modo::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => function (Modo $modo) {
-                return $modo->getCodigo() . ' - ' . $modo->getDescricao();
+                return $modo->getCodigo() . ' - ' . $modo->descricao;
             },
             'attr' => ['class' => 'autoSelect2']
         ]);
@@ -146,7 +146,7 @@ class RegraImportacaoLinhaType extends AbstractType
             'class' => Banco::class,
             'choices' => $this->doctrine->getRepository(Banco::class)->findAll(),
             'choice_label' => function (Banco $banco) {
-                return sprintf('%03d', $banco->getCodigoBanco()) . ' - ' . $banco->getNome();
+                return sprintf('%03d', $banco->getCodigoBanco()) . ' - ' . $banco->nome;
             },
             'attr' => ['class' => 'autoSelect2']
         ]);
@@ -160,12 +160,6 @@ class RegraImportacaoLinhaType extends AbstractType
             'label' => 'Cheque - Conta',
             'required' => false
         ]);
-//
-//        $builder->add('chequeNumCheque', TextType::class, [
-//            'label' => 'Cheque - Número',
-//            'required' => false
-//        ]);
-
 
     }
 
@@ -174,8 +168,8 @@ class RegraImportacaoLinhaType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => RegraImportacaoLinha::class
-        ));
+        ]);
     }
 }

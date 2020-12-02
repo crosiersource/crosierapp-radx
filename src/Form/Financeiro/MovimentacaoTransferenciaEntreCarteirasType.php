@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class MovimentacaoAPagarType.
+ * Class MovimentacaoAPagarReceberType.
  *
  * Form para lançamento de contas a pagar.
  *
@@ -22,11 +22,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MovimentacaoTransferenciaEntreCarteirasType extends AbstractType
 {
-    /** @var EntityManagerInterface */
-    private $doctrine;
 
-    /** @var MovimentacaoTypeBuilder */
-    private $movimentacaoTypeBuilder;
+    private EntityManagerInterface $doctrine;
+
+    private MovimentacaoTypeBuilder $movimentacaoTypeBuilder;
 
     /**
      * @required
@@ -75,8 +74,8 @@ class MovimentacaoTransferenciaEntreCarteirasType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Movimentacao::class
-        ));
+        ]);
     }
 }

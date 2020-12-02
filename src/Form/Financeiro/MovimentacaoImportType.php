@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class MovimentacaoType.
+ * Class MovimentacaoGeralType.
  *
  * Form para Movimentações contendo todos os campos.
  *
@@ -21,11 +21,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MovimentacaoImportType extends AbstractType
 {
-    /** @var EntityManagerInterface */
-    private $doctrine;
 
-    /** @var MovimentacaoTypeBuilder */
-    private $movimentacaoTypeBuilder;
+    private EntityManagerInterface $doctrine;
+
+    private MovimentacaoTypeBuilder $movimentacaoTypeBuilder;
 
 
     /**
@@ -65,19 +64,19 @@ class MovimentacaoImportType extends AbstractType
 
                 $cedente = $event->getData()['cedente'] ?: null;
                 $form->remove('cedente');
-                $form->add('cedente', ChoiceType::class, array(
+                $form->add('cedente', ChoiceType::class, [
                     'label' => 'Cedente',
                     'required' => false,
                     'choices' => [$cedente]
-                ));
+                ]);
 
                 $sacado = $event->getData()['sacado'] ?: null;
                 $form->remove('sacado');
-                $form->add('sacado', ChoiceType::class, array(
+                $form->add('sacado', ChoiceType::class, [
                     'label' => 'Sacado',
                     'required' => false,
                     'choices' => [$sacado]
-                ));
+                ]);
             }
         );
     }
@@ -85,8 +84,8 @@ class MovimentacaoImportType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Movimentacao::class
-        ));
+        ]);
     }
 }

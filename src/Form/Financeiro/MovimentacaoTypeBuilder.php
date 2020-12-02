@@ -2,9 +2,8 @@
 
 namespace App\Form\Financeiro;
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Banco;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\BandeiraCartao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
@@ -27,7 +26,6 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -41,9 +39,9 @@ class MovimentacaoTypeBuilder
 
     private EntityManagerInterface $doctrine;
 
-    private Security $security;
+    public MovimentacaoBusiness $movimentacaoBusiness;
 
-    private UrlGeneratorInterface $router;
+    private Security $security;
 
 
     /**
@@ -57,6 +55,16 @@ class MovimentacaoTypeBuilder
 
     /**
      * @required
+     * @param MovimentacaoBusiness $movimentacaoBusiness
+     */
+    public function setMovimentacaoBusiness(MovimentacaoBusiness $movimentacaoBusiness): void
+    {
+        $this->movimentacaoBusiness = $movimentacaoBusiness;
+    }
+
+
+    /**
+     * @required
      * @param Security $security
      */
     public function setSecurity(Security $security): void
@@ -65,22 +73,12 @@ class MovimentacaoTypeBuilder
     }
 
     /**
-     * @required
-     * @param UrlGeneratorInterface $router
-     */
-    public function setRouter(UrlGeneratorInterface $router): void
-    {
-        $this->router = $router;
-    }
-
-
-    /**
      * @param FormInterface $form
      * @param Movimentacao|null $movimentacao
-     * @param array $choices
+     * @param array $options
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
-    public function build(FormInterface $form, ?Movimentacao $movimentacao = null, array $choices = [])
+    public function build(FormInterface $form, ?Movimentacao $movimentacao = null, array $options = [])
     {
         // $builder = $event->getForm();
         if (!$movimentacao) {
@@ -96,31 +94,46 @@ class MovimentacaoTypeBuilder
         $form->add('tipoLancto', EntityType::class, [
             'label' => 'Tipo Lancto',
             'class' => TipoLancto::class,
-            'empty_data' => $movimentacao->getTipoLancto(),
+            'empty_data' => $movimentacao->tipoLancto,
             'placeholder' => '...',
             'choices' => $this->doctrine->getRepository(TipoLancto::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => 'descricaoMontada',
             'required' => true,
             'attr' => [
                 'class' => 'autoSelect2',
-                'data-val' => $movimentacao->getTipoLancto() ? $movimentacao->getTipoLancto()->getId() : null
+                'data-val' => $movimentacao->tipoLancto ? $movimentacao->tipoLancto->getId() : null
             ]
         ]);
 
         /** @var CategoriaRepository $repoCategoria */
         $repoCategoria = $this->doctrine->getRepository(Categoria::class);
-        $categorias = $repoCategoria->findAll(['codigoOrd' => 'ASC']);
+        $rsCategorias = $repoCategoria->findAll(['codigoOrd' => 'ASC']);
+        $categoriaChoices = [];
+        $categoriaChoicesAttr = [];
+        foreach ($rsCategorias as $categoria) {
+            $categoriaChoices[$categoria->getId()] = $categoria;
+            $arr = [
+                'data-codigo' => $categoria->codigo,
+                'data-codigo-super' => $categoria->codigoSuper,
+                'selected' => $movimentacao->categoria && $movimentacao->categoria->getId() === $categoria->getId(),
+            ];
+            if ($categoria->getSubCategs()->count() > 0) {
+                $arr['disabled'] = 'disabled';
+            }
+            $categoriaChoicesAttr[$categoria->getId()] = $arr;
+        }
+
 
         $form->add('categoria', EntityType::class, [
             'label' => 'Categoria',
             'class' => Categoria::class,
             'choice_label' => 'descricaoMontadaTree',
-            'choices' => $categorias,
-            'data' => $movimentacao->getCategoria(),
-            'empty_data' => $movimentacao->getCategoria(),
+            'choices' => $categoriaChoices,
+            'choice_attr' => $categoriaChoicesAttr,
+            'data' => $movimentacao->categoria,
+            'empty_data' => $movimentacao->categoria,
             'attr' => [
-                'data-val' => (null !== $movimentacao and null !== $movimentacao->getCategoria() and null !== $movimentacao->getCategoria()->getId()) ? $movimentacao->getCategoria()->getId() : '',
-                'class' => 'autoSelect2'
+                'data-val' => (null !== $movimentacao and null !== $movimentacao->categoria and null !== $movimentacao->categoria->getId()) ? $movimentacao->categoria->getId() : '',
             ],
             'required' => false
         ]);
@@ -133,7 +146,7 @@ class MovimentacaoTypeBuilder
             ],
         ]);
 
-        $form->add('uuid', TextType::class, [
+        $form->add('UUID', TextType::class, [
             'label' => 'UUID',
             'disabled' => true,
             'required' => false
@@ -147,7 +160,7 @@ class MovimentacaoTypeBuilder
             'choices' => $this->doctrine->getRepository(Banco::class)
                 ->findAll(WhereBuilder::buildOrderBy('codigoBanco')),
             'choice_label' => function (Banco $banco) {
-                return sprintf('%03d', $banco->getCodigoBanco()) . ' - ' . $banco->getNome();
+                return sprintf('%03d', $banco->getCodigoBanco()) . ' - ' . $banco->nome;
             },
             'required' => false,
             'placeholder' => '...',
@@ -161,51 +174,48 @@ class MovimentacaoTypeBuilder
             ]
         );
 
-        /** @var PessoaRepository $repoPessoa */
-        $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
-        /** @var Pessoa $pessoa */
-        $pessoa = null;
 
-        $sacadoChoices = null;
-        if (!isset($choices['sacado'])) {
-            $choices['sacado'] = $movimentacao->getSacado() ? [$movimentacao->getSacado() => $movimentacao->getSacado()] : null;
+        if (isset($options['sacado'])) {
+            // no formato: "CPF/CNPJ - NOME"
+            $choices = $options['sacado']['choices'] ?? null;
+            $sacado = $movimentacao->sacado ?? null;
+            if (!$sacado && !$movimentacao->getId()) {
+                $sacado = $choices ? current($choices) : null;
+            }
+            $form->add('sacado', ChoiceType::class, [
+                'label' => 'Sacado',
+                'help' => 'Quem paga o valor do título',
+                'required' => false,
+                'choices' => $choices,
+                'data' => $sacado,
+                'attr' =>
+                    [
+//                        'data-val' => $sacado,
+                        'disabled' => $choices === null
+                    ]
+            ]);
         }
-        if (isset($choices['sacado'])) {
-            $pessoa = $repoPessoa->find(current($choices['sacado']));
-            $sacadoChoices = [$pessoa->getNomeMontadoComDocumento() => $pessoa->getId()];
-        }
-        $form->add('sacado', ChoiceType::class, [
-            'label' => 'Sacado',
-            'required' => false,
-            'choices' => $sacadoChoices ?? null,
-            'data' => $pessoa && $pessoa->getId() ? $pessoa->getId() : null,
-            'attr' => isset($choices['sacado']) ? ['class' => 'autoSelect2'] : [
-                'data-route-url' => '/base/pessoa/findByStr/',
-                'data-text-format' => '%(nomeMontadoComDocumento)s',
-                'data-val' => $movimentacao && $movimentacao->getSacado() ? $movimentacao->getSacado() : '',
-                'class' => 'autoSelect2'
-            ]
-        ]);
 
-        $cedenteChoices = null;
-        if (!isset($choices['cedente'])) {
-            $choices['cedente'] = $movimentacao->getCedente() ? [$movimentacao->getCedente() => $movimentacao->getCedente()] : null;
+        if (isset($options['cedente'])) {
+            // no formato: "CPF/CNPJ - NOME"
+            $choices = $options['cedente']['choices'] ?? null;
+            $cedente = $movimentacao->cedente ?? null;
+            if (!$cedente && !$movimentacao->getId()) {
+                $cedente = $choices ? current($choices) : null;
+            }
+            $form->add('cedente', ChoiceType::class, [
+                'label' => 'Cedente',
+                'help' => 'Quem recebe o valor do título',
+                'required' => false,
+                'choices' => $choices,
+                'data' => $cedente,
+                'attr' =>
+                    [
+//                        'data-val' => $cedente,
+                        'disabled' => $choices === null
+                    ]
+            ]);
         }
-        if (isset($choices['cedente'])) {
-            /** @var Pessoa $pessoa */
-            $pessoa = $repoPessoa->find(current($choices['cedente']));
-            $cedenteChoices = [$pessoa->getNomeMontadoComDocumento() => $pessoa->getId()];
-        }
-        $form->add('cedente', ChoiceType::class, [
-            'label' => 'Cedente',
-            'required' => false,
-            'choices' => $cedenteChoices ?? null,
-            'attr' => [
-                'data-route-url' => '/base/pessoa/findByStr/',
-                'data-text-format' => '%(nomeMontadoComDocumento)s',
-                'class' => 'autoSelect2'
-            ]
-        ]);
 
 
         // Adiciono este por default, sabendo que será alterado no beforeSave
@@ -219,8 +229,10 @@ class MovimentacaoTypeBuilder
         $repoCarteira = $this->doctrine->getRepository(Carteira::class);
 
         $carteiraChoices =
-            $choices['carteiras'] ??
+            $options['carteiras'] ??
             $repoCarteira->findByFiltersSimpl([['atual', 'EQ', true]], ['e.codigo' => 'ASC'], 0, -1);
+
+
         $form->add('carteira', EntityType::class, [
             'label' => 'Carteira',
             'class' => Carteira::class,
@@ -236,7 +248,7 @@ class MovimentacaoTypeBuilder
 
         // só é obrigatório nos casos de tipoLancto 60 "TRANSFERÊNCIA ENTRE CARTEIRAS" e 61 "TRANSFERÊNCIA DE ENTRADA DE CAIXA"
         $carteiraDestinoChoices =
-            $choices['carteirasDestino'] ??
+            $options['carteirasDestino'] ??
             $repoCarteira->findByFiltersSimpl([['atual', 'EQ', true]], ['e.codigo' => 'ASC'], 0, -1);
         $form->add('carteiraDestino', EntityType::class, [
             'label' => 'Destino',
@@ -244,7 +256,7 @@ class MovimentacaoTypeBuilder
             'choice_label' => 'descricaoMontada',
             'choices' => $carteiraDestinoChoices,
             'attr' => [
-                'data-val' => (null !== $movimentacao and null !== $movimentacao->getCarteiraDestino()) ? $movimentacao->getCarteiraDestino()->getId() : '',
+                'data-val' => (null !== $movimentacao and null !== $movimentacao->carteiraDestino) ? $movimentacao->carteiraDestino->getId() : '',
                 'class' => 'autoSelect2'
             ],
             'required' => false
@@ -256,18 +268,18 @@ class MovimentacaoTypeBuilder
             'class' => GrupoItem::class,
             'choice_label' => 'descricao',
             'choices' => null,
-            'data' => (null !== $movimentacao and null !== $movimentacao->getGrupoItem()) ? $movimentacao->getGrupoItem() : null,
+            'data' => (null !== $movimentacao and null !== $movimentacao->grupoItem) ? $movimentacao->grupoItem : null,
             'required' => false,
             'disabled' => true
         ]);
 
 
-        $modoChoices = $choices['modos'] ?? $this->doctrine->getRepository(Modo::class)->findAll(['codigo' => 'ASC']);
+        $modoChoices = $options['modos'] ?? $this->doctrine->getRepository(Modo::class)->findAll(['codigo' => 'ASC']);
 
         $form->add('modo', EntityType::class, [
             'label' => 'Modo',
             'class' => Modo::class,
-            'data' => $movimentacao->getModo(),
+            'data' => $movimentacao->modo,
             'placeholder' => '...',
             'choices' => $modoChoices,
             'empty_data' => 0,
@@ -275,7 +287,7 @@ class MovimentacaoTypeBuilder
                 return $modo ? $modo->getDescricaoMontada() : null;
             },
             'required' => false,
-            'attr' => ['class' => 'autoSelect2']
+            'attr' => ['class' => 'autoSelect2 focusOnReady']
         ]);
 
         $form->add('bandeiraCartao', EntityType::class, [
@@ -283,7 +295,7 @@ class MovimentacaoTypeBuilder
             'class' => BandeiraCartao::class,
             'choices' => $this->doctrine->getRepository(BandeiraCartao::class)->findAll(WhereBuilder::buildOrderBy('descricao')),
             'choice_label' => function (?BandeiraCartao $bandeiraCartao) {
-                return $bandeiraCartao ? $bandeiraCartao->getDescricao() : '';
+                return $bandeiraCartao ? $bandeiraCartao->descricao : '';
             },
             'required' => false,
             'attr' => ['class' => 'autoSelect2']
@@ -294,7 +306,7 @@ class MovimentacaoTypeBuilder
             'class' => OperadoraCartao::class,
             'choices' => $this->doctrine->getRepository(OperadoraCartao::class)->findAll(WhereBuilder::buildOrderBy('descricao')),
             'choice_label' => function (?OperadoraCartao $operadoraCartao) {
-                return $operadoraCartao ? $operadoraCartao->getDescricao() : '';
+                return $operadoraCartao ? $operadoraCartao->descricao : '';
             },
             'required' => false,
             'attr' => ['class' => 'autoSelect2']
@@ -303,8 +315,8 @@ class MovimentacaoTypeBuilder
         $form->add('centroCusto', EntityType::class, [
             'label' => 'Centro de Custo',
             'class' => CentroCusto::class,
-            'data' => $movimentacao->getCentroCusto(),
-            'empty_data' => $movimentacao->getCentroCusto(),
+            'data' => $movimentacao->centroCusto,
+            'empty_data' => $movimentacao->centroCusto,
             'choices' => $this->doctrine->getRepository(CentroCusto::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => 'descricaoMontada',
             'required' => false,
@@ -411,7 +423,7 @@ class MovimentacaoTypeBuilder
             'choices' => $this->doctrine->getRepository(Banco::class)
                 ->findAll(WhereBuilder::buildOrderBy('codigoBanco')),
             'choice_label' => function (Banco $banco) {
-                return sprintf('%03d', $banco->getCodigoBanco()) . ' - ' . $banco->getNome();
+                return sprintf('%03d', $banco->getCodigoBanco()) . ' - ' . $banco->nome;
             },
             'required' => false,
             'attr' => ['class' => 'autoSelect2']
@@ -493,7 +505,6 @@ class MovimentacaoTypeBuilder
             ],
             'attr' => ['class' => 'autoSelect2']
         ]);
-
 
     }
 

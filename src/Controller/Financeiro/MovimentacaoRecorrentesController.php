@@ -2,7 +2,7 @@
 
 namespace App\Controller\Financeiro;
 
-use App\Form\Financeiro\MovimentacaoType;
+use App\Form\Financeiro\MovimentacaoGeralType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
@@ -184,7 +184,7 @@ class MovimentacaoRecorrentesController extends FormListController
         $movimentacao->setRecorrente(true);
 
         $params = [
-            'typeClass' => MovimentacaoType::class,
+            'typeClass' => MovimentacaoGeralType::class,
             'formView' => 'Financeiro/movimentacaoForm_recorrente.html.twig',
             'formRoute' => 'movimentacaoForm_ini',
             'formRouteEdit' => 'movimentacao_edit',

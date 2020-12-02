@@ -101,8 +101,8 @@
                                 <td>
                                     <div style="float: left">
                                         <b>{{ item.getDescricaoMontada()|raw }}</b>
-                                        {% if item.cedenteInfo %}
-                                            <br/>{{ item.cedenteInfo }}
+                                        {% if item.cedente %}
+                                            <br/>{{ item.cedente }}
                                         {% endif %}
                                         <br><span class="badge badge-pill badge-info">Recorrente (dia {{ item.recorrDia }})</span>
                                     </div>

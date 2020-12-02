@@ -45,8 +45,8 @@ function getDatatablesColumns() {
             render: function (data, type, row) {
 
                 let sLeft = "<b>" + data.descricaoMontada + "</b>";
-                if (data.cedenteInfo) {
-                    sLeft += '<br />' + data.cedenteInfo;
+                if (data.cedente) {
+                    sLeft += '<br />' + data.cedente;
                 }
 
                 let sRight = '';

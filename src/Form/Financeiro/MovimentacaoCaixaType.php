@@ -33,8 +33,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MovimentacaoCaixaType extends AbstractType
 {
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
     /**
      * @required
@@ -61,8 +60,8 @@ class MovimentacaoCaixaType extends AbstractType
 
             $disabled = false;
             // Não permitir edição de 60 - TRANSFERÊNCIA ENTRE CARTEIRAS ou 61 - TRANSFERÊNCIA DE ENTRADA DE CAIXA
-            if ($movimentacao->getId() && $movimentacao->getTipoLancto() &&
-                in_array($movimentacao->getTipoLancto()->getCodigo(), [60, 61], true)) {
+            if ($movimentacao->getId() && $movimentacao->tipoLancto &&
+                in_array($movimentacao->tipoLancto->getCodigo(), [60, 61], true)) {
                 $disabled = true;
             }
 
@@ -84,12 +83,12 @@ class MovimentacaoCaixaType extends AbstractType
             $form->add('tipoLancto', EntityType::class, [
                 'label' => 'Tipo Lancto',
                 'class' => TipoLancto::class,
-                'empty_data' => $movimentacao->getTipoLancto(),
+                'empty_data' => $movimentacao->tipoLancto,
                 'choices' => $tiposLanctos,
                 'choice_label' => 'descricaoMontada',
                 'required' => true,
                 'attr' => [
-                    'data-val' => $movimentacao->getTipoLancto() ? $movimentacao->getTipoLancto()->getId() : null
+                    'data-val' => $movimentacao->tipoLancto ? $movimentacao->tipoLancto->getId() : null
                 ],
                 'disabled' => $movimentacao->getId() ? true : false
             ]);
@@ -99,10 +98,10 @@ class MovimentacaoCaixaType extends AbstractType
                 'class' => Categoria::class,
                 'choice_label' => 'descricaoMontadaTree',
                 'choices' => null,
-                'data' => $movimentacao->getCategoria(),
-                'empty_data' => $movimentacao->getCategoria(),
+                'data' => $movimentacao->categoria,
+                'empty_data' => $movimentacao->categoria,
                 'attr' => [
-                    'data-val' => (null !== $movimentacao and null !== $movimentacao->getCategoria() and null !== $movimentacao->getCategoria()->getId()) ? $movimentacao->getCategoria()->getId() : '',
+                    'data-val' => (null !== $movimentacao and null !== $movimentacao->categoria and null !== $movimentacao->categoria->getId()) ? $movimentacao->categoria->getId() : '',
                     'class' => ''
                 ],
                 'required' => false,
@@ -123,9 +122,9 @@ class MovimentacaoCaixaType extends AbstractType
 
             // Para que o campo select seja montado já com o valor selecionado (no $('#movimentacao_carteira').val())
             $attr = [];
-            if (null !== $movimentacao and null !== $movimentacao->getCarteira() and null !== $movimentacao->getCarteira()->getId()) {
-                $attr['data-val'] = $movimentacao->getCarteira()->getId();
-                $attr['data-caixa'] = $movimentacao->getCarteira()->getCaixa() ? 'true' : 'false';
+            if (null !== $movimentacao and null !== $movimentacao->carteira and null !== $movimentacao->carteira->getId()) {
+                $attr['data-val'] = $movimentacao->carteira->getId();
+                $attr['data-caixa'] = $movimentacao->carteira->caixa ? 'true' : 'false';
             }
             $form->add('carteira', EntityType::class, [
                 'label' => 'Carteira',
@@ -147,7 +146,7 @@ class MovimentacaoCaixaType extends AbstractType
                 'choice_label' => 'descricaoMontada',
                 'choices' => null,
                 'attr' => [
-                    'data-val' => (null !== $movimentacao and null !== $movimentacao->getCarteiraDestino()) ? $movimentacao->getCarteiraDestino()->getId() : '',
+                    'data-val' => (null !== $movimentacao and null !== $movimentacao->carteiraDestino) ? $movimentacao->carteiraDestino->getId() : '',
                 ],
                 'required' => false,
                 'disabled' => $disabled
@@ -166,9 +165,9 @@ class MovimentacaoCaixaType extends AbstractType
             $form->add('modo', EntityType::class, [
                 'label' => 'Modo',
                 'class' => Modo::class,
-                'data' => $movimentacao->getModo(),
+                'data' => $movimentacao->modo,
                 'placeholder' => '...',
-                'empty_data' => $movimentacao->getModo(),
+                'empty_data' => $movimentacao->modo,
                 'choices' => $modos,
                 'choice_label' => function (?Modo $modo) {
                     return $modo ? $modo->getDescricaoMontada() : null;
@@ -182,7 +181,7 @@ class MovimentacaoCaixaType extends AbstractType
                 'class' => BandeiraCartao::class,
                 'choices' => $this->doctrine->getRepository(BandeiraCartao::class)->findAll(WhereBuilder::buildOrderBy('descricao')),
                 'choice_label' => function (?BandeiraCartao $bandeiraCartao) {
-                    return $bandeiraCartao ? $bandeiraCartao->getDescricao() : '';
+                    return $bandeiraCartao ? $bandeiraCartao->descricao : '';
                 },
                 'required' => false,
                 'attr' => ['class' => 'autoSelect2'],
@@ -194,7 +193,7 @@ class MovimentacaoCaixaType extends AbstractType
                 'class' => OperadoraCartao::class,
                 'choices' => $this->doctrine->getRepository(OperadoraCartao::class)->findAll(WhereBuilder::buildOrderBy('descricao')),
                 'choice_label' => function (?OperadoraCartao $operadoraCartao) {
-                    return $operadoraCartao ? $operadoraCartao->getDescricao() : '';
+                    return $operadoraCartao ? $operadoraCartao->descricao : '';
                 },
                 'required' => false,
                 'attr' => ['class' => 'autoSelect2'],
@@ -242,7 +241,7 @@ class MovimentacaoCaixaType extends AbstractType
                 'choices' => $this->doctrine->getRepository(Banco::class)
                     ->findAll(WhereBuilder::buildOrderBy('codigoBanco')),
                 'choice_label' => function (Banco $banco) {
-                    return sprintf("%03d", $banco->getCodigoBanco()) . " - " . $banco->getNome();
+                    return sprintf("%03d", $banco->getCodigoBanco()) . " - " . $banco->nome;
                 },
                 'required' => false,
                 'attr' => ['class' => 'autoSelect2'],
@@ -280,8 +279,8 @@ class MovimentacaoCaixaType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Movimentacao::class
-        ));
+        ]);
     }
 }

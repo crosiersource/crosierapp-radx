@@ -21,26 +21,26 @@ class BancoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('codigoBanco', IntegerType::class, array(
+        $builder->add('codigoBanco', IntegerType::class, [
             'label' => 'Código'
-        ));
+        ]);
 
-        $builder->add('nome', TextType::class, array(
+        $builder->add('nome', TextType::class, [
             'label' => 'Descrição'
-        ));
+        ]);
 
-        $builder->add('utilizado', ChoiceType::class, array(
-            'choices' => array(
+        $builder->add('utilizado', ChoiceType::class, [
+            'choices' => [
                 'Sim' => true,
                 'Não' => false
-            )
-        ));
+            ]
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Banco::class
-        ));
+        ]);
     }
 }

@@ -22,11 +22,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MovimentacaoAlterarEmLoteType extends AbstractType
 {
-    /** @var EntityManagerInterface */
-    private $doctrine;
 
-    /** @var MovimentacaoTypeBuilder */
-    private $movimentacaoTypeBuilder;
+    private EntityManagerInterface $doctrine;
+
+    private MovimentacaoTypeBuilder $movimentacaoTypeBuilder;
 
 
     /**
@@ -86,15 +85,15 @@ class MovimentacaoAlterarEmLoteType extends AbstractType
                 'attr' => ['class' => 'autoSelect2']
             ]);
 
-            $form->add('quitado', ChoiceType::class, array(
+            $form->add('quitado', ChoiceType::class, [
                 'label' => 'Quitado',
                 'placeholder' => '',
-                'choices' => array(
+                'choices' => [
                     'Sim' => true,
                     'Não' => false
-                ),
+                ],
                 'required' => false
-            ));
+            ]);
 
 
         });
@@ -106,19 +105,19 @@ class MovimentacaoAlterarEmLoteType extends AbstractType
 
                 $cedente = $event->getData()['cedente'] ?: null;
                 $form->remove('cedente');
-                $form->add('cedente', ChoiceType::class, array(
+                $form->add('cedente', ChoiceType::class, [
                     'label' => 'Cedente',
                     'required' => false,
                     'choices' => [$cedente]
-                ));
+                ]);
 
                 $sacado = $event->getData()['sacado'] ?: null;
                 $form->remove('sacado');
-                $form->add('sacado', ChoiceType::class, array(
+                $form->add('sacado', ChoiceType::class, [
                     'label' => 'Sacado',
                     'required' => false,
                     'choices' => [$sacado]
-                ));
+                ]);
             }
         );
     }
@@ -126,8 +125,8 @@ class MovimentacaoAlterarEmLoteType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Movimentacao::class
-        ));
+        ]);
     }
 }

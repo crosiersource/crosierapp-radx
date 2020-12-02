@@ -3,12 +3,12 @@
 namespace App\Controller\Financeiro;
 
 use App\Form\Financeiro\CarteiraType;
-use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\CarteiraEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -110,7 +110,7 @@ class CarteiraController extends FormListController
      */
     public function delete(Request $request, Carteira $carteira): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $carteira);
+        return $this->doDelete($request, $carteira, []);
     }
 
 
@@ -149,11 +149,11 @@ class CarteiraController extends FormListController
             $r['id'] = $item->getId();
             $r['text'] = $item->getDescricaoMontada();
             // Adiciono estes campos para no casos de movimentacaoForm, onde os campos do cheque devem ser preenchidos no onChange da carteira
-            $r['bancoId'] = $item->getBanco() ? $item->getBanco()->getId() : null;
-            $r['agencia'] = $item->getAgencia();
-            $r['conta'] = $item->getConta();
-            $r['cheque'] = $item->getCheque();
-            $r['caixa'] = $item->getCaixa();
+            $r['bancoId'] = $item->banco ? $item->banco->getId() : null;
+            $r['agencia'] = $item->agencia;
+            $r['conta'] = $item->conta;
+            $r['cheque'] = $item->cheque;
+            $r['caixa'] = $item->caixa;
             $rs[] = $r;
         }
 

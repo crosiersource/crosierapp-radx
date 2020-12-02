@@ -20,20 +20,20 @@ class CentroCustoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('codigo', IntegerType::class, array(
+        $builder->add('codigo', IntegerType::class, [
             'label' => 'Código'
-        ));
+        ]);
 
-        $builder->add('descricao', TextType::class, array(
+        $builder->add('descricao', TextType::class, [
             'label' => 'Descrição'
-        ));
+        ]);
 
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => CentroCusto::class
-        ));
+        ]);
     }
 }

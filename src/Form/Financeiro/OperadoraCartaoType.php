@@ -20,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class OperadoraCartaoType extends AbstractType
 {
 
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
     public function __construct(EntityManagerInterface $doctrine)
     {
@@ -29,6 +29,7 @@ class OperadoraCartaoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
         $builder->add('descricao', TextType::class, array(
             'label' => 'Descrição',
             'attr' => ['class' => 'focusOnReady'],
@@ -36,22 +37,21 @@ class OperadoraCartaoType extends AbstractType
 
         $repoCarteira = $this->doctrine->getRepository(Carteira::class);
         $carteiras = $repoCarteira->findAll();
-        $builder->add('carteira', EntityType::class, array(
+        $builder->add('carteira', EntityType::class, [
             'class' => Carteira::class,
             'choices' => $carteiras,
             'choice_label' => function (Carteira $carteira) {
-                return $carteira->getCodigo() . " - " . $carteira->getDescricao();
+                return $carteira->getCodigo() . " - " . $carteira->descricao;
             },
             'attr' => ['class' => 'autoSelect2']
-        ));
-
+        ]);
 
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => OperadoraCartao::class
-        ));
+        ]);
     }
 }

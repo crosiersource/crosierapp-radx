@@ -12,22 +12,19 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class MovimentacaoType.
+ * Class MovimentacaoGeralType.
  *
  * Form para Movimentações contendo todos os campos.
  *
  * @package App\Form\Financeiro
  * @author Carlos Eduardo Pauluk
  */
-class MovimentacaoType extends AbstractType
+class MovimentacaoGeralType extends AbstractType
 {
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    /** @var MovimentacaoTypeBuilder */
-    private $movimentacaoTypeBuilder;
-
+    private MovimentacaoTypeBuilder $movimentacaoTypeBuilder;
 
     /**
      * @required
@@ -55,9 +52,11 @@ class MovimentacaoType extends AbstractType
             $movimentacao = $event->getData();
             $form = $event->getForm();
 
-            $form->remove('cedente');
-            $form->remove('sacado');
-            $this->movimentacaoTypeBuilder->build($form, $movimentacao);
+            $options = [];
+            $options['sacado'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
+            $options['cedente'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
+
+            $this->movimentacaoTypeBuilder->build($form, $movimentacao, $options);
         });
 
         $builder->addEventListener(
@@ -67,19 +66,19 @@ class MovimentacaoType extends AbstractType
 
                 $cedente = isset($event->getData()['cedente']) && $event->getData()['cedente'] ? $event->getData()['cedente'] : null;
                 $form->remove('cedente');
-                $form->add('cedente', ChoiceType::class, array(
+                $form->add('cedente', ChoiceType::class, [
                     'label' => 'Cedente',
                     'required' => false,
                     'choices' => [$cedente]
-                ));
+                ]);
 
                 $sacado = isset($event->getData()['sacado']) && $event->getData()['sacado'] ? $event->getData()['sacado'] : null;
                 $form->remove('sacado');
-                $form->add('sacado', ChoiceType::class, array(
+                $form->add('sacado', ChoiceType::class, [
                     'label' => 'Sacado',
                     'required' => false,
                     'choices' => [$sacado]
-                ));
+                ]);
             }
         );
     }
@@ -87,8 +86,8 @@ class MovimentacaoType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Movimentacao::class
-        ));
+        ]);
     }
 }

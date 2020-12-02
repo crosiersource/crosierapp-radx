@@ -46,7 +46,7 @@ CREATE TABLE `fin_banco`
 
     `codigo_banco`       int(11)      NOT NULL,
     `nome`               varchar(200) NOT NULL,
-    `utilizado`          tinyint(1)       NOT NULL,
+    `utilizado`          tinyint(1)   NOT NULL,
 
     `inserted`           datetime     NOT NULL,
     `updated`            datetime     NOT NULL,
@@ -112,8 +112,8 @@ DROP TABLE IF EXISTS `fin_cadeia`;
 CREATE TABLE `fin_cadeia`
 (
     `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
-    `fechada`            tinyint(1)     NOT NULL,
-    `vinculante`         tinyint(1)     NOT NULL,
+    `fechada`            tinyint(1) NOT NULL,
+    `vinculante`         tinyint(1) NOT NULL,
 
     `inserted`           datetime   NOT NULL,
     `updated`            datetime   NOT NULL,
@@ -149,15 +149,15 @@ CREATE TABLE `fin_carteira`
     `agencia`             varchar(30),
     `conta`               varchar(30),
 
-    `abertas`             tinyint(1)      NOT NULL,
-    `caixa`               tinyint(1)      NOT NULL,
-    `cheque`              tinyint(1)      NOT NULL,
-    `concreta`            tinyint(1)      NOT NULL,
+    `abertas`             tinyint(1)  NOT NULL,
+    `caixa`               tinyint(1)  NOT NULL,
+    `cheque`              tinyint(1)  NOT NULL,
+    `concreta`            tinyint(1)  NOT NULL,
     `dt_consolidado`      date        NOT NULL,
     `limite`              decimal(15, 2),
     `operadora_cartao_id` bigint(20),
 
-    `atual`               tinyint(1)      NOT NULL,
+    `atual`               tinyint(1)  NOT NULL,
 
 
     `inserted`            datetime    NOT NULL,
@@ -199,10 +199,10 @@ CREATE TABLE `fin_categoria`
     `descricao`                 varchar(200) NOT NULL,
     `pai_id`                    bigint(20),
 
-    `centro_custo_dif`          tinyint(1)       NOT NULL,
+    `centro_custo_dif`          tinyint(1)   NOT NULL,
     `codigo_super`              bigint(20)   NOT NULL,
     `descricao_padrao_moviment` varchar(200),
-    `totalizavel`               tinyint(1)       NOT NULL,
+    `totalizavel`               tinyint(1)   NOT NULL,
     `descricao_alternativa`     varchar(200),
     `roles_acess`               varchar(2000),
     `codigo_ord`                bigint(20),
@@ -274,7 +274,7 @@ CREATE TABLE `fin_grupo`
 (
     `id`                  bigint(20)  NOT NULL AUTO_INCREMENT,
     `descricao`           varchar(40) NOT NULL,
-    `ativo`               tinyint(1)      NOT NULL,
+    `ativo`               tinyint(1)  NOT NULL,
     `dia_inicio`          int(11)     NOT NULL,
     `dia_vencto`          int(11)     NOT NULL,
     `carteira_pagante_id` bigint(20)  NOT NULL,
@@ -315,7 +315,7 @@ CREATE TABLE `fin_grupo_item`
     `id`                      bigint(20)  NOT NULL AUTO_INCREMENT,
     `descricao`               varchar(40) NOT NULL,
     `dt_vencto`               date        NOT NULL,
-    `fechado`                 tinyint(1)      NOT NULL,
+    `fechado`                 tinyint(1)  NOT NULL,
     `valor_informado`         double,
     `anterior_id`             bigint(20),
     `carteira_pagante_id`     bigint(20)  NOT NULL,
@@ -395,12 +395,12 @@ CREATE TABLE `fin_modo`
     `id`                 bigint(20)  NOT NULL AUTO_INCREMENT,
     `codigo`             int(11)     NOT NULL,
     `descricao`          varchar(40) NOT NULL,
-    `com_banco_origem`   tinyint(1)      NOT NULL,
-    `moviment_agrup`     tinyint(1)      NOT NULL,
-    `transf_caixa`       tinyint(1)      NOT NULL,
-    `transf_propria`     tinyint(1)      NOT NULL,
-    `modo_cartao`        tinyint(1)      NOT NULL,
-    `modo_cheque`        tinyint(1)      NOT NULL,
+    `com_banco_origem`   tinyint(1)  NOT NULL,
+    `moviment_agrup`     tinyint(1)  NOT NULL,
+    `transf_caixa`       tinyint(1)  NOT NULL,
+    `transf_propria`     tinyint(1)  NOT NULL,
+    `modo_cartao`        tinyint(1)  NOT NULL,
+    `modo_cheque`        tinyint(1)  NOT NULL,
 
     `inserted`           datetime    NOT NULL,
     `updated`            datetime    NOT NULL,
@@ -434,7 +434,7 @@ CREATE TABLE `fin_fatura`
     `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
 
     `dt_fatura`          datetime   NOT NULL,
-    `fechada`            tinyint(1)     NOT NULL,
+    `fechada`            tinyint(1) NOT NULL,
     `json_data`          json,
 
     `inserted`           datetime   NOT NULL,
@@ -471,14 +471,10 @@ CREATE TABLE `fin_movimentacao`
     `documento_banco_id`  bigint(20),
     `documento_num`       varchar(200),
 
-    `pessoa_sacado_id`    bigint(20),
-    `pessoa_sacado_info`  varchar(400),
-    `pessoa_cedente_id`   bigint(20),
-    `pessoa_cedente_info` varchar(400),
+    `sacado_documento`    varchar(14),
+    `cedente_documento`   varchar(14),
 
-    `fis_nf_id`           bigint(20),
-
-    `quitado`             tinyint(1)                       NOT NULL,
+    `quitado`             tinyint(1)                   NOT NULL,
 
     `tipo_lancto_id`      bigint(20)                   NOT NULL,
     `carteira_id`         bigint(20)                   NOT NULL,
@@ -505,7 +501,7 @@ CREATE TABLE `fin_movimentacao`
     `bandeira_cartao_id`  bigint(20),
     `plano_pagto_cartao`  varchar(50),
 
-    `recorrente`          tinyint(1)                       NOT NULL,
+    `recorrente`          tinyint(1)                   NOT NULL,
     `recorr_dia`          int(11),
     `recorr_frequencia`   varchar(50),
     `recorr_tipo_repet`   varchar(50),
@@ -517,11 +513,12 @@ CREATE TABLE `fin_movimentacao`
     `valor_total`         decimal(15, 2)               NOT NULL,
 
     `cadeia_id`           bigint(20),
-    `parcelamento`        tinyint(1)                       NOT NULL DEFAULT FALSE,
+    `parcelamento`        tinyint(1)                   NOT NULL DEFAULT FALSE,
     `cadeia_ordem`        int(11),
     `cadeia_qtde`         int(11),
 
     `obs`                 varchar(5000),
+    `json_data`           json,
 
     `inserted`            datetime                     NOT NULL,
     `updated`             datetime                     NOT NULL,
@@ -540,30 +537,37 @@ CREATE TABLE `fin_movimentacao`
 
     KEY `K_fin_movimentacao_banco` (`documento_banco_id`),
     CONSTRAINT `FK_fin_movimentacao_banco` FOREIGN KEY (`documento_banco_id`) REFERENCES `fin_banco` (`id`),
-    KEY `K_fin_movimentacao_pessoa_sacado` (`pessoa_sacado_id`),
-    CONSTRAINT `FK_fin_movimentacao_pessoa_sacado` FOREIGN KEY (`pessoa_sacado_id`) REFERENCES `bse_pessoa` (`id`),
-    KEY `K_fin_movimentacao_pessoa_cedente` (`pessoa_cedente_id`),
-    CONSTRAINT `FK_fin_movimentacao_pessoa_cedente` FOREIGN KEY (`pessoa_cedente_id`) REFERENCES `bse_pessoa` (`id`),
+
     KEY `K_fin_movimentacao_tipo_lancto` (`tipo_lancto_id`),
     CONSTRAINT `FK_fin_movimentacao_tipo_lancto` FOREIGN KEY (`tipo_lancto_id`) REFERENCES `fin_tipo_lancto` (`id`),
+
     KEY `K_fin_movimentacao_bandeira_cartao` (`bandeira_cartao_id`),
     CONSTRAINT `FK_fin_movimentacao_bandeira_cartao` FOREIGN KEY (`bandeira_cartao_id`) REFERENCES `fin_bandeira_cartao` (`id`),
+
     KEY `K_fin_movimentacao_cadeia` (`cadeia_id`),
     CONSTRAINT `FK_fin_movimentacao_cadeia` FOREIGN KEY (`cadeia_id`) REFERENCES `fin_cadeia` (`id`),
+
     KEY `K_fin_movimentacao_carteira` (`carteira_id`),
     CONSTRAINT `FK_fin_movimentacao_carteira` FOREIGN KEY (`carteira_id`) REFERENCES `fin_carteira` (`id`),
+
     KEY `K_fin_movimentacao_carteira_destino` (`carteira_destino_id`),
     CONSTRAINT `FK_fin_movimentacao_carteira_destino` FOREIGN KEY (`carteira_destino_id`) REFERENCES `fin_carteira` (`id`),
+
     KEY `K_fin_movimentacao_categoria` (`categoria_id`),
     CONSTRAINT `FK_fin_movimentacao_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `fin_categoria` (`id`),
+
     KEY `K_fin_movimentacao_centrocusto` (`centrocusto_id`),
     CONSTRAINT `FK_fin_movimentacao_centrocusto` FOREIGN KEY (`centrocusto_id`) REFERENCES `fin_centrocusto` (`id`),
+
     KEY `K_fin_movimentacao_cheque_banco` (`cheque_banco_id`),
     CONSTRAINT `FK_fin_movimentacao_cheque_banco` FOREIGN KEY (`cheque_banco_id`) REFERENCES `fin_banco` (`id`),
+
     KEY `K_fin_movimentacao_grupo_item` (`grupo_item_id`),
     CONSTRAINT `FK_fin_movimentacao_grupo_item` FOREIGN KEY (`grupo_item_id`) REFERENCES `fin_grupo_item` (`id`),
+
     KEY `K_fin_movimentacao_modo` (`modo_id`),
     CONSTRAINT `FK_fin_movimentacao_modo` FOREIGN KEY (`modo_id`) REFERENCES `fin_modo` (`id`),
+
     KEY `K_fin_movimentacao_operadora_cartao` (`operadora_cartao_id`),
     CONSTRAINT `FK_fin_movimentacao_operadora_cartao` FOREIGN KEY (`operadora_cartao_id`) REFERENCES `fin_operadora_cartao` (`id`),
 

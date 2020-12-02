@@ -31,30 +31,30 @@ class BandeiraCartaoType extends AbstractType
     {
 
 
-        $builder->add('descricao', TextType::class, array(
+        $builder->add('descricao', TextType::class, [
             'label' => 'Descrição'
-        ));
+        ]);
 
-        $builder->add('labels', TextType::class, array(
+        $builder->add('labels', TextType::class, [
             'label' => 'Labels'
-        ));
+        ]);
 
         $repoModo = $this->doctrine->getRepository(Modo::class);
         $modos = $repoModo->findAll();
 
-        $builder->add('modo', EntityType::class, array(
+        $builder->add('modo', EntityType::class, [
             'class' => Modo::class,
             'choices' => $modos,
             'choice_label' => function (Modo $modo) {
-                return $modo->getCodigo() . " - " . $modo->getDescricao();
+                return $modo->getCodigo() . " - " . $modo->descricao;
             }
-        ));
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => BandeiraCartao::class
-        ));
+        ]);
     }
 }

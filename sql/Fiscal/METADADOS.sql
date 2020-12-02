@@ -83,7 +83,6 @@ CREATE TABLE `fis_nf`
     `fone_emitente`            varchar(50),
     `tipo`                     varchar(30),
     `serie`                    int(11),
-    `pessoa_destinatario_id`   bigint(20),
     `documento_destinatario`   varchar(14),
     `xnome_destinatario`       varchar(255),
     `inscr_est`                varchar(30),
@@ -97,7 +96,6 @@ CREATE TABLE `fis_nf`
     `fone_destinatario`        varchar(50),
     `ambiente`                 varchar(4),
     `info_compl`               varchar(3000),
-    `pessoa_cadastro`          varchar(30),
     `total_descontos`          decimal(15, 2) DEFAULT '0.00',
     `subtotal`                 decimal(15, 2),
     `transp_documento`         varchar(14),
@@ -142,7 +140,6 @@ CREATE TABLE `fis_nf`
     `cstat`                    int(11),
     `xmotivo`                  varchar(255),
     `manifest_dest`            varchar(255),
-    `transp_pessoa_id`         bigint(20),
     `dt_manifest_dest`         datetime,
     `entrada_saida`            enum ('E','S') NOT NULL,
 

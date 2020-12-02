@@ -65,8 +65,8 @@
                         <td style="height: 1.5cm; width: 15%"><strong>Descri&ccedil;&atilde;o:</strong></td>
                         <td style="background-color: lightgrey">
                             {{ e.getDescricaoMontada()|raw }}
-                            {% if e.cedenteInfo is defined %}
-                                <br/> {{ e.cedenteInfo }}
+                            {% if e.cedente is defined %}
+                                <br/> {{ e.cedente }}
                             {% endif %}
                         </td>
                     </tr>

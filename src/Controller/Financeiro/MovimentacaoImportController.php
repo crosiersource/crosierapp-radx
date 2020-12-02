@@ -3,7 +3,7 @@
 namespace App\Controller\Financeiro;
 
 use App\Form\Financeiro\MovimentacaoAlterarEmLoteType;
-use App\Form\Financeiro\MovimentacaoType;
+use App\Form\Financeiro\MovimentacaoGeralType;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
@@ -352,7 +352,7 @@ class MovimentacaoImportController extends BaseController
         }
 
         $formData = null;
-        $form = $this->createForm(MovimentacaoType::class, $movimentacao);
+        $form = $this->createForm(MovimentacaoGeralType::class, $movimentacao);
 
         $form->handleRequest($request);
 

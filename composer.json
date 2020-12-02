@@ -54,7 +54,6 @@
     "symfony/web-link": "5.1.*",
     "symfony/webpack-encore-bundle": "^1.0",
     "symfony/yaml": "5.1.*",
-    "twig/extensions": "^1.5",
     "crosiersource/crosierlib-base": "@dev",
     "crosiersource/crosierlib-radx": "@dev",
     "symfony/web-profiler-bundle": "5.1.*",

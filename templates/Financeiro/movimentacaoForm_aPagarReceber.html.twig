@@ -11,7 +11,7 @@
 
                 <div class="row">
                     <div class="col-8">
-                        <h3>Movimentacao a Pagar/Receber</h3>
+                        <h3 id="formPageTitle">{{ formPageTitle }}</h3>
                     </div>
                     <div class="col-4 text-right">
 
@@ -37,26 +37,29 @@
 
                 {{ form_row(form._token) }}
 
-                <div class="d-none">
-                    {{ form_row(form.id) }}
-                </div>
 
                 <div class="row">
-                    <div class="col-md-4 col-sm-12">
-                        {{ form_row(form.modo) }}
+                    <div class="col-md-2 col-sm-12">
+                        {{ form_row(form.id) }}
                     </div>
 
-                    <div class="col-md-8 col-sm-12">
-                        {{ form_row(form.carteira) }}
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-8 col-sm-12">
+                    <div class="col-md-10 col-sm-12">
                         {{ form_row(form.categoria) }}
                     </div>
 
-                    <div class="col-md-4 col-sm-12">
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.carteira) }}
+                    </div>
+
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.modo) }}
+                    </div>
+
+                    <div class="col-md-3 col-sm-12">
                         {{ form_row(form.centroCusto) }}
                     </div>
                 </div>
@@ -81,7 +84,6 @@
                         {{ form_row(form.documentoNum) }}
                     </div>
                 </div>
-
 
 
                 <div class="row">

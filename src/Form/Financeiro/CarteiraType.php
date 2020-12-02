@@ -84,7 +84,7 @@ class CarteiraType extends AbstractType
             'required' => false,
             // uses the User.username property as the visible option string
             'choice_label' => function (Banco $banco) {
-                return $banco->getCodigoBanco() . ' - ' . $banco->getNome();
+                return $banco->getCodigoBanco() . ' - ' . $banco->nome;
             },
             'attr' => ['class' => 'autoSelect2']
         ]);
@@ -130,8 +130,8 @@ class CarteiraType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Carteira::class
-        ));
+        ]);
     }
 }

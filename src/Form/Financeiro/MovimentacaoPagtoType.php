@@ -4,7 +4,6 @@ namespace App\Form\Financeiro;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
-use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\ChoiceTypeUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,7 +14,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class MovimentacaoAPagarType.
+ * Class MovimentacaoAPagarReceberType.
  *
  * Form para lançamento de contas a pagar.
  *
@@ -24,11 +23,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MovimentacaoPagtoType extends AbstractType
 {
-    /** @var EntityManagerInterface */
-    private $doctrine;
 
-    /** @var MovimentacaoTypeBuilder */
-    private $movimentacaoTypeBuilder;
+    private EntityManagerInterface $doctrine;
+
+    private MovimentacaoTypeBuilder $movimentacaoTypeBuilder;
 
 
     /**
@@ -57,22 +55,17 @@ class MovimentacaoPagtoType extends AbstractType
             $movimentacao = $event->getData();
             $form = $event->getForm();
 
-            $choices = [];
+            $options = [];
 
             $repoCarteira = $this->doctrine->getRepository(Carteira::class);
             $carteiras = $repoCarteira->findBy(['concreta' => true, 'atual' => true], ['codigo' => 'ASC']);
 
-            $choices['carteiras'] = $carteiras;
+            $options['carteiras'] = $carteiras;
 
-            /** @var PessoaRepository $repoPessoa */
-            $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
+            $options['sacado'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
+            $options['cedente'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
 
-            $filiaisR = $repoPessoa->findByFiltersSimpl([['categ.descricao', 'LIKE', 'FILIAL PROP']]);
-            if ($filiaisR) {
-                $filiais = ChoiceTypeUtils::toChoiceTypeChoices($filiaisR, '%08d %s', ['id', 'nome']);
-                $choices['sacado'] = $filiais;
-            }
-            $this->movimentacaoTypeBuilder->build($form, $movimentacao, $choices);
+            $this->movimentacaoTypeBuilder->build($form, $movimentacao, $options);
         });
 
         $builder->addEventListener(
@@ -82,12 +75,12 @@ class MovimentacaoPagtoType extends AbstractType
 
                 $choices = [];
 
-                if ($event->getData()['cedente']) {
+                if ($event->getData()['cedente'] ?? null) {
                     $cedente = (int)$event->getData()['cedente'];
                     $choices['cedente'] = [$cedente => $cedente];
                 }
 
-                if ($event->getData()['sacado']) {
+                if ($event->getData()['sacado'] ?? null) {
                     $sacado = (int)$event->getData()['sacado'];
                     $choices['sacado'] = [$sacado => $sacado];
                 }
@@ -107,8 +100,8 @@ class MovimentacaoPagtoType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Movimentacao::class
-        ));
+        ]);
     }
 }

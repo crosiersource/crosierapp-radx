@@ -13,13 +13,103 @@ import 'daterangepicker';
 
 $(document).ready(function () {
 
+    let $sacado = $('#movimentacao_sacado');
+    let $cedente = $('#movimentacao_cedente');
+
+    let $categoria = $('#movimentacao_categoria');
 
     let $valor = $("#movimentacao_valor");
     let $descontos = $("#movimentacao_descontos");
     let $acrescimos = $("#movimentacao_acrescimos");
     let $valorTotal = $("#movimentacao_valorTotal");
 
-    let $filter_dts = $('#filter_dts').daterangepicker(
+
+    let filiais;
+
+    $.getJSON(Routing.generate('fin_movimentacao_filiais'), function (data) {
+        filiais = data;
+    });
+
+
+    $categoria.select2({
+            placeholder: "Selecione...",
+            width: '100%',
+            matcher: function (params, data) {
+                // If there are no search terms, return all of the data
+                if ($.trim(params.term) === '') {
+                    return data;
+                }
+
+                // Do not display the item if there is no 'text' property
+                if (typeof data.text === 'undefined') {
+                    return null;
+                }
+
+                // `params.term` should be the term that is used for searching
+                // `data.text` is the text that is displayed for the data object
+                if (data.text.replace(/\./g, '').toUpperCase().indexOf(params.term.toUpperCase()) > -1) {
+                    // You can return modified objects from here
+                    // This includes matching the `children` how you want in nested data sets
+                    return data;
+                }
+
+                // Return `null` if the term should not be displayed
+                return null;
+            }
+        }
+    ).on('select2:select', function () {
+        handleSacadoCedente();
+    });
+
+
+    /**
+     * Se a categoria for de "1 - ENTRADAS", o cedente é uma das filiais.
+     * Se a categoria for de "2 - SAÍDAS", uma das filiais é o sacado.
+     */
+    function handleSacadoCedente() {
+
+        let categoria = $categoria.select2('data')[0];
+
+        let $campoComFiliais;
+        let $campoComBusca;
+
+        if (categoria.element.dataset.codigoSuper === '1') {
+            $campoComFiliais = $cedente;
+            $campoComBusca = $sacado;
+        } else if (categoria.element.dataset.codigoSuper === '2') {
+            $campoComFiliais = $sacado;
+            $campoComBusca = $cedente;
+        } else {
+            alert('Erro ao configurar sacado/cedente (' + categoria.element.dataset.codigoSuper + ')');
+        }
+
+        $campoComFiliais.select2({
+            placeholder: "Selecione...",
+            width: '100%',
+            data: filiais
+        });
+
+        $campoComBusca.select2({
+            placeholder: "Selecione...",
+            width: '100%',
+            dropdownAutoWidth: true,
+            allowClear: true,
+            minimumInputLength: 2,
+            ajax: {
+                delay: 750,
+                url: function (params) {
+                    return Routing.generate('fin_movimentacao_findSacadoOuCedente') + '?term=' + params.term;
+                },
+                dataType: 'json'
+            }
+        });
+
+        $sacado.prop('disabled', false);
+        $cedente.prop('disabled', false);
+    }
+
+
+    $('#filter_dts').daterangepicker(
         {
             opens: 'left',
             autoApply: true,
@@ -89,6 +179,7 @@ $(document).ready(function () {
         resValorTotal()
     });
 
+    handleSacadoCedente();
 
 
 });

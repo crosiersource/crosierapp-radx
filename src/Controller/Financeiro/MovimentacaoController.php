@@ -3,10 +3,11 @@
 namespace App\Controller\Financeiro;
 
 use App\Form\Financeiro\MovimentacaoAlterarEmLoteType;
+use App\Form\Financeiro\MovimentacaoAPagarReceberType;
 use App\Form\Financeiro\MovimentacaoChequeProprioType;
 use App\Form\Financeiro\MovimentacaoPagtoType;
 use App\Form\Financeiro\MovimentacaoTransferenciaEntreCarteirasType;
-use App\Form\Financeiro\MovimentacaoType;
+use App\Form\Financeiro\MovimentacaoGeralType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -17,6 +18,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\BandeiraCartao;
@@ -38,17 +40,14 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\ModoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\OperadoraCartaoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 /**
- * Class MovimentacaoController.
- *
- * @package App\Controller\Financeiro
  * @author Carlos Eduardo Pauluk
  */
 class MovimentacaoController extends FormListController
@@ -160,7 +159,6 @@ class MovimentacaoController extends FormListController
      * Constrói os valores para os campos de filtros.
      *
      * @return array
-     * @throws ViewException
      */
     protected function getFilterChoices(): array
     {
@@ -214,7 +212,7 @@ class MovimentacaoController extends FormListController
      */
     public function listCadeia(Cadeia $cadeia): Response
     {
-        $total = $this->business->somarMovimentacoes($cadeia->getMovimentacoes());
+        $total = $this->business->somarMovimentacoes($cadeia->movimentacoes);
         return $this->doRender('Financeiro/movimentacaoList_cadeia.html.twig', ['cadeia' => $cadeia, 'total' => $total]);
     }
 
@@ -268,7 +266,6 @@ class MovimentacaoController extends FormListController
      *
      * @Route("/fin/movimentacao/list/alterarLote/", name="movimentacao_list_alterarLote")
      * @param Request $request
-     * @param $UUID
      * @return RedirectResponse|Response
      * @throws \Exception
      *
@@ -342,22 +339,60 @@ class MovimentacaoController extends FormListController
     /**
      *
      * @Route("/fin/movimentacao/edit/{id}", name="movimentacao_edit", requirements={"id"="\d+"})
-     * @param UrlMatcherInterface $urlMatcher
-     * @param Request $request
      * @param Movimentacao $movimentacao
      * @return RedirectResponse
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
-    public function edit(UrlMatcherInterface $urlMatcher, Request $request, Movimentacao $movimentacao): RedirectResponse
+    public function edit(Movimentacao $movimentacao): RedirectResponse
     {
-        $url = $movimentacao->getTipoLancto()->url;
-        $matcher = $urlMatcher->match($url);
-        $params = ['id' => $movimentacao->getId(), 'reftoback' => $request->get('reftoback')];
-//        if (strpos($movimentacao->getTipoLancto()->getDescricao(), 'PARCELAMENTO') !== FALSE) {
-//            $params[] = ['parcelamento' => true];
-//        }
-        return $this->redirectToRoute($matcher['_route'], $params, 307);
+        $url = $this->business->getEditingURL($movimentacao) . $movimentacao->getId();
+        return $this->redirect($url);
+    }
+
+
+    /**
+     * @Route("/fin/movimentacao/form/realizada/{id}", name="fin_movimentacao_form_realizada", defaults={"id"=null}, requirements={"movimentacao"="\d+"})
+     * @param Request $request
+     * @param Movimentacao|null $movimentacao
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function formRealizada(Request $request, Movimentacao $movimentacao = null)
+    {
+        $parcelamento = false;
+        if ($movimentacao) {
+            $parcelamento = $movimentacao->parcelamento;
+        } else if ($request->get('parcelamento')) {
+            $parcelamento = true;
+        }
+        if (!$movimentacao) {
+            $movimentacao = new Movimentacao();
+            $movimentacao->carteira = ($this->getDoctrine()->getRepository(Carteira::class)->findOneBy(['codigo' => 99]));
+
+            $tipoLanctoCodigo = $parcelamento ? 21 : 20;
+            $movimentacao->tipoLancto = ($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => $tipoLanctoCodigo]));
+            $movimentacao->status = 'REALIZADA';
+
+        }
+
+        $params = [
+            'typeClass' => MovimentacaoAPagarReceberType::class,
+            'formRoute' => 'fin_movimentacao_form_realizada',
+            'formPageTitle' => 'Movimentação Realizada',
+        ];
+
+        $params['formView'] = 'Financeiro/movimentacaoForm_realizada.html.twig';
+
+        if (!$movimentacao->getId() && $parcelamento) {
+            $params['formView'] = 'Financeiro/movimentacaoForm_realizada_parcelamento.html.twig';
+            return $this->handleParcelamento($request, $movimentacao, $params);
+        }
+        // else
+
+        return $this->doForm($request, $movimentacao, $params);
     }
 
     /**
@@ -374,12 +409,53 @@ class MovimentacaoController extends FormListController
     public function formGeral(Request $request, Movimentacao $movimentacao = null)
     {
         $params = [
-            'typeClass' => MovimentacaoType::class,
+            'typeClass' => MovimentacaoGeralType::class,
             'formView' => 'Financeiro/movimentacaoForm_geral.html.twig',
             'formRoute' => 'movimentacaoForm_ini',
             'formRouteEdit' => 'movimentacao_edit',
             'formPageTitle' => 'Movimentação'
         ];
+
+        return $this->doForm($request, $movimentacao, $params);
+    }
+
+    /**
+     * @Route("/fin/movimentacao/form/aPagarReceber/{id}", name="fin_movimentacao_form_aPagarReceber", defaults={"id"=null}, requirements={"movimentacao"="\d+"})
+     * @param Request $request
+     * @param Movimentacao|null $movimentacao
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function formPagarReceber(Request $request, Movimentacao $movimentacao = null)
+    {
+        $parcelamento = false;
+        if ($movimentacao) {
+            $parcelamento = $movimentacao->parcelamento;
+        } else if ($request->get('parcelamento')) {
+            $parcelamento = true;
+        }
+        if (!$movimentacao) {
+            $movimentacao = new Movimentacao();
+            $movimentacao->carteira = ($this->getDoctrine()->getRepository(Carteira::class)->findOneBy(['codigo' => 99]));
+            $tipoLanctoCodigo = 10;
+            $movimentacao->tipoLancto = ($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => $tipoLanctoCodigo]));
+            $movimentacao->status = 'ABERTA';
+        }
+
+        $params = [
+            'typeClass' => MovimentacaoAPagarReceberType::class,
+            'formRoute' => 'fin_movimentacao_form_aPagarReceber',
+            'formPageTitle' => 'Movimentação a Pagar/Receber',
+            'formView' => 'Financeiro/movimentacaoForm_aPagarReceber.html.twig'
+        ];
+
+        if (!$movimentacao->getId() && $parcelamento) {
+            $params['formView'] = 'Financeiro/movimentacaoForm_aPagar_parcelamento.html.twig';
+            return $this->handleParcelamento($request, $movimentacao, $params);
+        }
+        // else
 
         return $this->doForm($request, $movimentacao, $params);
     }
@@ -399,15 +475,15 @@ class MovimentacaoController extends FormListController
     {
         $parcelamento = false;
         if ($movimentacao) {
-            $parcelamento = $movimentacao->getParcelamento();
+            $parcelamento = $movimentacao->parcelamento;
         } else if ($request->get('parcelamento')) {
             $parcelamento = true;
         }
 
         if (!$movimentacao) {
             $movimentacao = new Movimentacao();
-            $movimentacao->setTipoLancto($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 40]));
-            $movimentacao->setModo($this->getDoctrine()->getRepository(Modo::class)->findOneBy(['codigo' => 3]));
+            $movimentacao->tipoLancto = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 40]);
+            $movimentacao->modo = $this->getDoctrine()->getRepository(Modo::class)->findOneBy(['codigo' => 3]);
         }
 
         $params = [
@@ -489,6 +565,71 @@ class MovimentacaoController extends FormListController
         return $this->doRender($params['formView'], $params);
     }
 
+
+    /**
+     * @param Request $request
+     * @param Movimentacao $movimentacao
+     * @param array $params
+     * @return Response
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function handleParcelamento_(Request $request, Movimentacao $movimentacao, array $params = []): Response
+    {
+        $form = $this->createForm($params['typeClass'], $movimentacao);
+
+        $form->handleRequest($request);
+
+        $params['qtdeParcelas'] = $request->get('qtdeParcelas');
+        $params['dtPrimeiroVencto'] = $request->get('dtPrimeiroVencto');
+        $params['valor'] = $request->get('valor');
+        $params['tipoValor'] = $request->get('tipoValor');
+
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $qtdeParcelas = $request->get('qtdeParcelas');
+                $dtPrimeiroVencto = DateTimeUtils::parseDateStr($request->get('dtPrimeiroVencto'));
+                $valor = DecimalUtils::parseStr($request->get('valor'));
+                $tipoValor = $request->get('tipoValor');
+                $parcelas = $request->get('parcelas');
+
+                if ($qtdeParcelas === null || !$dtPrimeiroVencto || !$valor === null || !$tipoValor) {
+                    $this->addFlash('error', 'Informe os dados do parcelamento');
+                } else {
+
+                    $movimentacao = $form->getData();
+                    $this->business->gerarParcelas($movimentacao, $qtdeParcelas, $valor, $dtPrimeiroVencto, $tipoValor === 'TOTAL', $parcelas);
+                    if ($request->get('btnSalvar')) {
+                        try {
+                            $this->entityHandler->saveAll($movimentacao->getCadeia()->getMovimentacoes(), true);
+                            $this->addFlash('success', 'Registro salvo com sucesso!');
+                            $this->afterSave($movimentacao);
+                            return $this->redirectTo($request, $movimentacao, $params['formRoute']);
+                        } catch (\Exception $e) {
+                            $msg = ExceptionUtils::treatException($e);
+                            $this->addFlash('error', $msg);
+                            $this->addFlash('error', 'Erro ao salvar!');
+                        }
+                    }
+                }
+            } else {
+                $errors = $form->getErrors(true, true);
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
+        }
+
+
+        $this->handleReferer($request, $params);
+
+        // Pode ou não ter vindo algo no $params. Independentemente disto, só adiciono form e foi-se.
+        $params['form'] = $form->createView();
+        $params['e'] = $movimentacao;
+        return $this->doRender($params['formView'], $params);
+    }
+
     /**
      * Form para movimentações do tipoLancto 42.
      *
@@ -504,15 +645,15 @@ class MovimentacaoController extends FormListController
     {
         $parcelamento = false;
         if ($movimentacao) {
-            $parcelamento = $movimentacao->getParcelamento();
+            $parcelamento = $movimentacao->parcelamento;
         } else if ($request->get('parcelamento')) {
             $parcelamento = true;
         }
 
         if (!$movimentacao) {
             $movimentacao = new Movimentacao();
-            $movimentacao->setTipoLancto($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 50]));
-            $movimentacao->setModo($this->getDoctrine()->getRepository(Modo::class)->findOneBy(['codigo' => 3]));
+            $movimentacao->tipoLancto = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 50]);
+            $movimentacao->modo = $this->getDoctrine()->getRepository(Modo::class)->findOneBy(['codigo' => 3]);
         }
 
         $params['formRoute'] = 'movimentacao_form_chequeTerceiros';
@@ -544,8 +685,8 @@ class MovimentacaoController extends FormListController
     {
         if (!$movimentacao) {
             $movimentacao = new Movimentacao();
-            $movimentacao->setTipoLancto($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 60]));
-            $movimentacao->setCategoria($this->getDoctrine()->getRepository(Categoria::class)->findOneBy(['codigo' => 299]));
+            $movimentacao->tipoLancto = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 60]);
+            $movimentacao->categoria = $this->getDoctrine()->getRepository(Categoria::class)->findOneBy(['codigo' => 299]);
         }
 
         $params['typeClass'] = MovimentacaoTransferenciaEntreCarteirasType::class;
@@ -570,7 +711,7 @@ class MovimentacaoController extends FormListController
     public function formTransferenciaEntradaCaixa(Request $request, Movimentacao $movimentacao = null)
     {
         $params['formView'] = 'Financeiro/movimentacaoForm_transferenciaEntradaCaixa.html.twig';
-        $params['typeClass'] = MovimentacaoType::class;
+        $params['typeClass'] = MovimentacaoGeralType::class;
         $params['formRoute'] = 'movimentacao_form_transferenciaEntradaCaixa';
         return $this->doForm($request, $movimentacao, $params);
     }
@@ -596,18 +737,18 @@ class MovimentacaoController extends FormListController
                 if ($movimentacao) {
                     $this->entityHandler->refindAll($movimentacao);
                     $movimentacao->setId(null);
-                    $movimentacao->setCadeia(null);
-                    $movimentacao->setValor(null);
-                    $movimentacao->setDescontos(null);
-                    $movimentacao->setAcrescimos(null);
-                    $movimentacao->setValorTotal(null);
-                    $movimentacao->setDtUtil(null);
-                    $movimentacao->setDtMoviment(null);
-                    $movimentacao->setDtPagto(null);
-                    $movimentacao->setDtVencto(null);
-                    $movimentacao->setDtVenctoEfetiva(null);
-                    $movimentacao->setCadeiaOrdem(null);
-                    $movimentacao->setCadeiaQtde(null);
+                    $movimentacao->cadeia = null;
+                    $movimentacao->valor = null;
+                    $movimentacao->descontos = null;
+                    $movimentacao->acrescimos = null;
+                    $movimentacao->valorTotal = null;
+                    $movimentacao->dtUtil = null;
+                    $movimentacao->dtMoviment = null;
+                    $movimentacao->dtPagto = null;
+                    $movimentacao->dtVencto = null;
+                    $movimentacao->dtVenctoEfetiva = null;
+                    $movimentacao->cadeiaOrdem = null;
+                    $movimentacao->cadeiaQtde = null;
                     $movimentacao->setUserInsertedId(null);
                     $movimentacao->setUserUpdatedId(null);
                     $movimentacao->setInserted(null);
@@ -619,7 +760,7 @@ class MovimentacaoController extends FormListController
 
         $parcelamento = false;
         if ($movimentacao) {
-            $parcelamento = $movimentacao->getParcelamento();
+            $parcelamento = $movimentacao->parcelamento;
         } else if ($request->get('parcelamento')) {
             $parcelamento = true;
         }
@@ -629,11 +770,11 @@ class MovimentacaoController extends FormListController
         }
 
         $tipoLancto = $parcelamento ? 71 : 70;
-        $movimentacao->setTipoLancto($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => $tipoLancto]));
-        $movimentacao->setCarteira($this->getDoctrine()->getRepository(Carteira::class)->findOneBy(['codigo' => 7]));
-        $movimentacao->setModo($this->getDoctrine()->getRepository(Modo::class)->findOneBy(['codigo' => 50]));
+        $movimentacao->tipoLancto = ($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => $tipoLancto]));
+        $movimentacao->carteira = ($this->getDoctrine()->getRepository(Carteira::class)->findOneBy(['codigo' => 7]));
+        $movimentacao->modo = ($this->getDoctrine()->getRepository(Modo::class)->findOneBy(['codigo' => 50]));
 
-        $params['typeClass'] = MovimentacaoType::class; // ???
+        $params['typeClass'] = MovimentacaoGeralType::class; // ???
         $params['formView'] = 'Financeiro/movimentacaoForm_grupo.html.twig';
         $params['formPageTitle'] = 'Movimentação de Grupo';
 
@@ -642,7 +783,7 @@ class MovimentacaoController extends FormListController
         }
 
         $params['formView'] = $parcelamento ? 'Financeiro/movimentacaoForm_grupo_parcelamento.html.twig' : 'Financeiro/movimentacaoForm_grupo.html.twig';
-        $params['typeClass'] = MovimentacaoType::class;
+        $params['typeClass'] = MovimentacaoGeralType::class;
         $params['formRoute'] = 'movimentacao_form_grupo';
 
         $r = $this->doForm($request, $movimentacao, $params);
@@ -668,14 +809,12 @@ class MovimentacaoController extends FormListController
     public function formEstorno(Request $request, Movimentacao $movimentacao = null)
     {
         $params['formView'] = 'Financeiro/movimentacaoForm_estorno.html.twig';
-        $params['typeClass'] = MovimentacaoType::class;
+        $params['typeClass'] = MovimentacaoGeralType::class;
         $params['formRoute'] = 'movimentacao_form_estorno';
         return $this->doForm($request, $movimentacao, $params);
     }
 
     /**
-     * Form para movimentações do tipoLancto 80.
-     *
      * @Route("/fin/movimentacao/form/pagto/{id}", name="movimentacao_form_pagto", requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
@@ -686,46 +825,13 @@ class MovimentacaoController extends FormListController
      */
     public function formPagto(Request $request, Movimentacao $movimentacao)
     {
-        /** @var CarteiraRepository $repoCarteira */
-        $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
+        $params = [
+            'typeClass' => MovimentacaoPagtoType::class,
+            'formRoute' => 'fin_movimentacao_form_pagto',
+            'formView' => 'Financeiro/movimentacaoForm_pagto.html.twig'
+        ];
 
-        if ($request->get('filter')) {
-            $params['movsPesquisarLanctos'] = $this->handleFormPagtoPesquisarLanctos($request);
-
-            $params['filter'] = $request->get('filter');
-
-        } else {
-            $carteiraIndefinida = $repoCarteira->findOneBy(['codigo' => 99]);
-            $params['filter']['carteiras'] = [$carteiraIndefinida->getId()];
-            if ($movimentacao && $movimentacao->getCarteira()->getCodigo() !== 99) {
-                $params['filter']['carteiras'][] = $movimentacao->getCarteira()->getId();
-            }
-            $dtIni = (clone $movimentacao->getDtVencto())->sub(new \DateInterval('P5D'))->format('d/m/Y');
-            $dtFim = (clone $movimentacao->getDtVencto())->add(new \DateInterval('P5D'))->format('d/m/Y');
-            $params['filter']['dts'] = $dtIni . ' - ' . $dtFim;
-
-            $params['filter']['valor']['i'] = number_format($movimentacao->getValorTotal(), 2, ',', '.');
-            $params['filter']['valor']['f'] = number_format((float)bcmul($movimentacao->getValorTotal(), 1.3, 2), 2, ',', '.');
-        }
-        $carteirasOptions = $repoCarteira->findAll(['codigo' => 'ASC']);
-
-        $params['carteirasOptions'] = json_encode(
-            Select2JsUtils::toSelect2DataFn($carteirasOptions, function ($e) {
-                /** @var TipoLancto $e */
-                return $e->getDescricaoMontada();
-            }, $params['filter']['carteiras'] ?? null));
-
-        $params['formRoute'] = 'movimentacao_form_pagto';
-        $params['formView'] = 'Financeiro/movimentacaoForm_pagto.html.twig';
-        $params['typeClass'] = MovimentacaoPagtoType::class;
-
-        // se a ação for do btnPesquisarLanctos, não submete o form
-        $preventSubmit = $request->get('btnPesquisarLanctos') ? true : false;
-        if ($preventSubmit) {
-            $params['_fragment'] = 'pesquisarLanctos';
-        }
-
-        return $this->doForm($request, $movimentacao, $params, $preventSubmit);
+        return $this->doForm($request, $movimentacao, $params);
     }
 
 
@@ -881,6 +987,43 @@ class MovimentacaoController extends FormListController
         };
 
         return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);
+    }
+
+
+    /**
+     *
+     * @Route("/fin/movimentacao/filiais/", name="fin_movimentacao_filiais")
+     * @return Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function filiais(): Response
+    {
+        return new JsonResponse($this->business->getSelect2jsFiliais());
+    }
+
+    /**
+     *
+     * @Route("/fin/movimentacao/findSacadoOuCedente/", name="fin_movimentacao_findSacadoOuCedente")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function findSacadoOuCedente(Request $request): Response
+    {
+        $term = $request->get('term');
+        /** @var MovimentacaoRepository $repoMovimentacao */
+        $repoMovimentacao = $this->getDoctrine()->getRepository(Movimentacao::class);
+
+        $rs = $repoMovimentacao->findSacadoOuCedente($term);
+        $fn = function ($e) {
+            return StringUtils::mascararCnpjCpf($e['documento']) . ' - ' . $e['nome'];
+        };
+        $s2js = Select2JsUtils::toSelect2DataFn($rs, $fn, [], $fn);
+        return new JsonResponse(['results' => $s2js]);
     }
 
 }

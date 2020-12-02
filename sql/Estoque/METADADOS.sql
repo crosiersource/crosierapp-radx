@@ -185,7 +185,7 @@ CREATE TABLE `est_produto`
     `grupo_id`           bigint(20)   NOT NULL,
     `subgrupo_id`        bigint(20)   NOT NULL,
     `fornecedor_id`      bigint(20)   NOT NULL,
-    `unidade_padrao_id` bigint(20) NOT NULL,
+    `unidade_padrao_id`  bigint(20)   NOT NULL,
     `nome`               varchar(255) NOT NULL,
     `status`             enum ('ATIVO','INATIVO'),
     `obs`                varchar(5000),
@@ -703,3 +703,57 @@ CREATE TABLE `est_entrada_item`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_swedish_ci;
 
+
+
+INSERT INTO cfg_app_config(id, chave, app_uuid, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, is_json, valor)
+VALUES (null, 'est_fornecedor_json_metadata', '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 1, 1, 1, 1,
+        '{
+          "campos": {
+            "nome_fantasia": {
+              "label": "Nome Fantasia",
+              "tipo": "string"
+            },
+            "tipo_pessoa": {
+              "label": "",
+              "tipo": "select",
+              "sugestoes": [
+                "PF",
+                "PJ"
+              ]
+            },
+            "filial_prop": {
+              "label": "",
+              "tipo": "select",
+              "sugestoes": [
+                "S",
+                "N"
+              ]
+            },
+            "inscricao_estadual": {
+              "label": "IE",
+              "tipo": "string"
+            },
+            "email": {
+              "label": "E-mail",
+              "tipo": "email"
+            },
+            "fone1": {
+              "label": "Fone (1)",
+              "tipo": "fone"
+            },
+            "fone2": {
+              "label": "Fone (2)",
+              "tipo": "fone"
+            }
+          },
+          "abas": {
+            "Dados": [],
+            "Endereços": [],
+          },
+          "enderecoTipos": {
+            "FATURAMENTO": "FATURAMENTO",
+            "COMERCIAL": "COMERCIAL",
+            "ENTREGA": "ENTREGA",
+            "RESIDENCIAL": "RESIDENCIAL"
+          }
+        }');

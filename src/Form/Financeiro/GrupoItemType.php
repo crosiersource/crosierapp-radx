@@ -25,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class GrupoItemType extends AbstractType
 {
 
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
     public function __construct(EntityManagerInterface $doctrine)
     {
@@ -35,59 +35,58 @@ class GrupoItemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-
-        $builder->add('descricao', TextType::class, array(
+        $builder->add('descricao', TextType::class, [
             'label' => 'Descrição'
-        ));
+        ]);
 
-        $builder->add('dtVencto', DateType::class, array(
+        $builder->add('dtVencto', DateType::class, [
             'widget' => 'single_text',
             'html5' => false,
             'format' => 'dd/MM/yyyy',
             'label' => 'Dt Vencto',
-            'attr' => array(
+            'attr' => [
                 'class' => 'crsr-date'
-            )
-        ));
+            ]
+        ]);
 
-        $builder->add('valorInformado', MoneyType::class, array(
+        $builder->add('valorInformado', MoneyType::class, [
             'label' => 'Valor',
             'currency' => 'BRL',
             'grouping' => 'true',
             'required' => false,
-            'attr' => array(
+            'attr' => [
                 'class' => 'crsr-money'
-            )
-        ));
+            ]
+        ]);
 
-        $builder->add('carteiraPagante', EntityType::class, array(
+        $builder->add('carteiraPagante', EntityType::class, [
             'label' => 'Carteira',
             'class' => Carteira::class,
             'choices' => $this->doctrine->getRepository(Carteira::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => function (Carteira $carteira) {
                 return $carteira->getDescricaoMontada();
             }
-        ));
+        ]);
 
-        $builder->add('movimentacaoPagante', IntegerType::class, array(
+        $builder->add('movimentacaoPagante', IntegerType::class, [
             'label' => 'Movimentação Pagante',
             'required' => false
-        ));
+        ]);
 
 
-        $builder->add('fechado', ChoiceType::class, array(
-            'choices' => array(
+        $builder->add('fechado', ChoiceType::class, [
+            'choices' => [
                 'Sim' => true,
                 'Não' => false
-            )
-        ));
+            ]
+        ]);
 
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => GrupoItem::class
-        ));
+        ]);
     }
 }

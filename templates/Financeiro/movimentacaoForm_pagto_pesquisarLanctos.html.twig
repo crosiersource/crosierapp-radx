@@ -85,7 +85,7 @@
                         <td>
                             {{ item.categoria.getDescricaoMontada() }}<br/>
                             {{ item.modo.getDescricaoMontada() }}<br />
-                            {{ item.carteira.getDescricaoMontada() }}
+                            {{ item.carteira.id|default('nao') }}
                         </td>
                         <td>
                             <div style="float: left">
