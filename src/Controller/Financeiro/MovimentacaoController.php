@@ -432,6 +432,9 @@ class MovimentacaoController extends FormListController
     {
         $parcelamento = false;
         if ($movimentacao) {
+            if ($movimentacao->dtPagto) {
+                return $this->edit($movimentacao);
+            }
             $parcelamento = $movimentacao->parcelamento;
         } else if ($request->get('parcelamento')) {
             $parcelamento = true;
