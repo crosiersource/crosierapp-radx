@@ -439,7 +439,7 @@ class MovimentacaoController extends FormListController
         if (!$movimentacao) {
             $movimentacao = new Movimentacao();
             $movimentacao->carteira = ($this->getDoctrine()->getRepository(Carteira::class)->findOneBy(['codigo' => 99]));
-            $tipoLanctoCodigo = 10;
+            $tipoLanctoCodigo = 20;
             $movimentacao->tipoLancto = ($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => $tipoLanctoCodigo]));
             $movimentacao->status = 'ABERTA';
         }
