@@ -5,9 +5,9 @@ namespace App\Controller\Financeiro;
 use App\Form\Financeiro\MovimentacaoAlterarEmLoteType;
 use App\Form\Financeiro\MovimentacaoAPagarReceberType;
 use App\Form\Financeiro\MovimentacaoChequeProprioType;
+use App\Form\Financeiro\MovimentacaoGeralType;
 use App\Form\Financeiro\MovimentacaoPagtoType;
 use App\Form\Financeiro\MovimentacaoTransferenciaEntreCarteirasType;
-use App\Form\Financeiro\MovimentacaoGeralType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -533,11 +533,12 @@ class MovimentacaoController extends FormListController
                     $tipoValor = $request->get('tipoValor');
                     $parcelas = $request->get('parcelas');
 
+                    /** @var Movimentacao $movimentacao */
                     $movimentacao = $form->getData();
                     $this->business->gerarParcelas($movimentacao, $qtdeParcelas, $valor, $dtPrimeiroVencto, $tipoValor === 'TOTAL', $parcelas);
                     if ($request->get('btnSalvar')) {
                         try {
-                            $this->entityHandler->saveAll($movimentacao->getCadeia()->getMovimentacoes(), true);
+                            $this->entityHandler->saveAll($movimentacao->cadeia->movimentacoes, true);
                             $this->addFlash('success', 'Registro salvo com sucesso!');
                             $this->afterSave($movimentacao);
                             return $this->redirectTo($request, $movimentacao, $params['formRoute']);
@@ -602,7 +603,7 @@ class MovimentacaoController extends FormListController
                     $this->business->gerarParcelas($movimentacao, $qtdeParcelas, $valor, $dtPrimeiroVencto, $tipoValor === 'TOTAL', $parcelas);
                     if ($request->get('btnSalvar')) {
                         try {
-                            $this->entityHandler->saveAll($movimentacao->getCadeia()->getMovimentacoes(), true);
+                            $this->entityHandler->saveAll($movimentacao->cadeia->movimentacoes, true);
                             $this->addFlash('success', 'Registro salvo com sucesso!');
                             $this->afterSave($movimentacao);
                             return $this->redirectTo($request, $movimentacao, $params['formRoute']);
@@ -1024,6 +1025,30 @@ class MovimentacaoController extends FormListController
         };
         $s2js = Select2JsUtils::toSelect2DataFn($rs, $fn, [], $fn);
         return new JsonResponse(['results' => $s2js]);
+    }
+
+
+    /**
+     * @Route("/fin/movimentacao/clonar/{id}", name="fin_movimentacao_clonar", requirements={"movimentacao"="\d+"})
+     * @param Request $request
+     * @param Movimentacao|null $movimentacao
+     * @return RedirectResponse
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function clonar(Request $request, Movimentacao $movimentacao = null)
+    {
+        try {
+            if (!$this->isCsrfTokenValid('fin_movimentacao_clonar', $request->get('token'))) {
+                throw new ViewException('Token inválido');
+            }
+            /** @var Movimentacao $nova */
+            $nova = $this->getEntityHandler()->doClone($movimentacao);
+            $this->addFlash('success', 'Movimentação clonada com sucesso');
+            return $this->edit($nova);
+        } catch (ViewException $e) {
+            $this->addFlash('error', 'Ocorreu um erro ao clonar a movimentação');
+            return $this->edit($movimentacao);
+        }
     }
 
 }

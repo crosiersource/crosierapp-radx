@@ -102,10 +102,10 @@ class MovimentacaoAPagarReceberListController extends BaseController
         $i = -1;
         /** @var Movimentacao $movimentacao */
         foreach ($dados as $movimentacao) {
-            if ($movimentacao->getDtVenctoEfetiva() && $movimentacao->getDtVenctoEfetiva()->format('d/m/Y') !== $dia) {
+            if ($movimentacao->dtVenctoEfetiva && $movimentacao->dtVenctoEfetiva->format('d/m/Y') !== $dia) {
                 $i++;
-                $dia = $movimentacao->getDtVenctoEfetiva()->format('d/m/Y');
-                $dias[$i]['dtVenctoEfetiva'] = $movimentacao->getDtVenctoEfetiva();
+                $dia = $movimentacao->dtVenctoEfetiva->format('d/m/Y');
+                $dias[$i]['dtVenctoEfetiva'] = $movimentacao->dtVenctoEfetiva;
             }
             $dias[$i]['movs'][] = $movimentacao;
         }

@@ -179,7 +179,9 @@ class MovimentacaoTypeBuilder
             // no formato: "CPF/CNPJ - NOME"
             $choices = $options['sacado']['choices'] ?? null;
             $sacado = $movimentacao->sacado ?? null;
-            if (!$sacado && !$movimentacao->getId()) {
+            if ($sacado) {
+                $choices = [$sacado => $sacado];
+            } else if (!$sacado && !$movimentacao->getId()) {
                 $sacado = $choices ? current($choices) : null;
             }
             $form->add('sacado', ChoiceType::class, [
@@ -200,7 +202,9 @@ class MovimentacaoTypeBuilder
             // no formato: "CPF/CNPJ - NOME"
             $choices = $options['cedente']['choices'] ?? null;
             $cedente = $movimentacao->cedente ?? null;
-            if (!$cedente && !$movimentacao->getId()) {
+            if ($cedente) {
+                $choices = [$cedente => $cedente];
+            } else if (!$cedente && !$movimentacao->getId()) {
                 $cedente = $choices ? current($choices) : null;
             }
             $form->add('cedente', ChoiceType::class, [

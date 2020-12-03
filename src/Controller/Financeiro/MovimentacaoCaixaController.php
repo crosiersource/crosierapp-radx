@@ -70,7 +70,7 @@ class MovimentacaoCaixaController extends FormListController
      *
      * @Route("/fin/movimentacao/caixa", name="movimentacao_caixa")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
@@ -134,26 +134,26 @@ class MovimentacaoCaixaController extends FormListController
         $movsDeMesmaCadeia = [];
         /** @var Movimentacao $mov */
         foreach ($listMovs as $mov) {
-            if ($mov->getModo()->getCodigo() === 10 && $mov->getCategoria()->getCodigo() === 101) {
+            if ($mov->modo->codigo === 10 && $mov->categoria->codigo === 101) {
                 // CARTÕES DE DÉBITO
                 $listCartoesDebito[] = $mov;
                 $movsDeMesmaCadeia = array_merge($movsDeMesmaCadeia, $mov->getOutrasMovimentacoesDaCadeia());
 
-            } else if ($mov->getModo()->getCodigo() === 1 && $mov->getCategoria()->getCodigo() === 101 && !$mov->getCadeia()) {
+            } else if ($mov->modo->codigo === 1 && $mov->categoria->codigo === 101 && !$mov->cadeia) {
                 // ENTRADAS EM DINHEIRO
                 $listEntradasEmDinheiro[] = $mov;
 
-            } else if ($mov->getCategoria()->getCodigoSuper() === 2 && $mov->getCategoria()->getCodigo() !== 299 && $mov->getCategoria()->getCodigo() !== 251) {
+            } else if ($mov->categoria->codigoSuper === 2 && $mov->categoria->codigo !== 299 && $mov->categoria->codigo !== 251) {
                 // DESPESAS
                 // tudo o que for categoria 2XXXX mas não 2.99
                 $listDespesas[] = $mov;
 
-            } else if ($mov->getCategoria()->getCodigo() === 299 && $mov->getModo()->getCodigo() === 01 && $mov->getCadeia() && $mov->getCadeia()->getMovimentacoes()->count() === 2) {
+            } else if ($mov->categoria->codigo === 299 && $mov->modo->getCodigo() === 01 && $mov->cadeia && $mov->cadeia->movimentacoes->count() === 2) {
                 // RETIRADAS
                 // tudo o que for categoria 2.99
                 $listRetiradas[] = $mov;
                 $movsDeMesmaCadeia = array_merge($movsDeMesmaCadeia, $mov->getOutrasMovimentacoesDaCadeia());
-            } else if ($mov->getCategoria()->getCodigo() === 101 && $mov->getModo()->getCodigo() === 01 && $mov->getCadeia() && $mov->getCadeia()->getMovimentacoes()->count() === 3) {
+            } else if ($mov->categoria->codigo === 101 && $mov->modo->getCodigo() === 01 && $mov->cadeia && $mov->cadeia->movimentacoes->count() === 3) {
                 // RETIRADAS
                 // tudo o que for categoria 2.99
                 $listOutrasEntradasEmDinheiro[] = $mov;
@@ -238,7 +238,7 @@ class MovimentacaoCaixaController extends FormListController
      *
      * @Route("/fin/movimentacao/caixa/consolidarDebitos", name="movimentacao_caixa_consolidarDebitos")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
@@ -278,7 +278,7 @@ class MovimentacaoCaixaController extends FormListController
      * @Route("/fin/movimentacao/form/caixa/{id}", name="movimentacao_form_caixa", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
@@ -304,18 +304,17 @@ class MovimentacaoCaixaController extends FormListController
             $movimentacao = new Movimentacao();
 
             if ($movimentacaoSalva) {
-                $movimentacao->setTipoLancto($movimentacaoSalva->getTipoLancto());
-                $movimentacao->setCategoria($movimentacaoSalva->getCategoria());
-                $movimentacao->setModo($movimentacaoSalva->getModo());
-                $movimentacao->setModo($movimentacaoSalva->getModo());
-                $movimentacao->setCarteira($movimentacaoSalva->getCarteira());
-                $movimentacao->setCarteiraDestino($movimentacaoSalva->getCarteiraDestino());
-                $movimentacao->setOperadoraCartao($movimentacaoSalva->getOperadoraCartao());
-                $movimentacao->setBandeiraCartao($movimentacaoSalva->getBandeiraCartao());
-                $movimentacao->setDtMoviment($movimentacaoSalva->getDtMoviment());
-                $movimentacao->setDescricao($movimentacaoSalva->getDescricao());
-                $movimentacao->setValor($movimentacaoSalva->getValor());
-                $movimentacao->setObs($movimentacaoSalva->getObs());
+                $movimentacao->tipoLancto = $movimentacaoSalva->tipoLancto;
+                $movimentacao->categoria = $movimentacaoSalva->categoria;
+                $movimentacao->modo = $movimentacaoSalva->modo;
+                $movimentacao->carteira = $movimentacaoSalva->carteira;
+                $movimentacao->carteiraDestino = $movimentacaoSalva->carteiraDestino;
+                $movimentacao->operadoraCartao = $movimentacaoSalva->operadoraCartao;
+                $movimentacao->bandeiraCartao = $movimentacaoSalva->bandeiraCartao;
+                $movimentacao->dtMoviment = clone $movimentacaoSalva->dtMoviment;
+                $movimentacao->descricao = $movimentacaoSalva->descricao;
+                $movimentacao->valor = $movimentacaoSalva->valor;
+                $movimentacao->obs = $movimentacaoSalva->obs;
             }
 
 
@@ -324,20 +323,20 @@ class MovimentacaoCaixaController extends FormListController
                 /** @var Carteira $carteira */
                 $carteira = $this->getDoctrine()->getRepository(Carteira::class)->find($request->get('carteira'));
                 if ($carteira) {
-                    $movimentacao->setCarteira($carteira);
+                    $movimentacao->carteira = $carteira;
                 }
             }
 
             /** @var Modo $emEspecie */
             $emEspecie = $this->getDoctrine()->getRepository(Modo::class)->findOneBy(['codigo' => 1]);
-            $movimentacao->setModo($emEspecie);
+            $movimentacao->modo = $emEspecie;
 
             /** @var Categoria $vendasInternas */
             $vendasInternas = $this->getDoctrine()->getRepository(Categoria::class)->findOneBy(['codigo' => 101]);
-            $movimentacao->setCategoria($vendasInternas);
+            $movimentacao->categoria = $vendasInternas;
 
             if ($dtMoviment = $request->get('dtMoviment')) {
-                $movimentacao->setDtMoviment(DateTimeUtils::parseDateStr($dtMoviment));
+                $movimentacao->dtMoviment = DateTimeUtils::parseDateStr($dtMoviment);
             }
 
         }
@@ -361,11 +360,11 @@ class MovimentacaoCaixaController extends FormListController
         /** @var Movimentacao $movimentacao */
         $movimentacao = clone $entityId;
         $movimentacao->setId(null);
-        $movimentacao->setUUID(null);
-        $movimentacao->setValor(null);
-        $movimentacao->setDescontos(null);
-        $movimentacao->setAcrescimos(null);
-        $movimentacao->setValorTotal(null);
+        $movimentacao->UUID = null;
+        $movimentacao->valor = null;
+        $movimentacao->descontos = null;
+        $movimentacao->acrescimos = null;
+        $movimentacao->valorTotal = null;
         $sviParams = $this->storedViewInfoBusiness->retrieve('movimentacao_form_caixa') ?? [];
 
         $sviParams['ultimaMovimentacaoSalva'] = $this->entityIdUtils->serialize($movimentacao);
@@ -384,7 +383,7 @@ class MovimentacaoCaixaController extends FormListController
      */
     public function delete(Movimentacao $movimentacao): RedirectResponse
     {
-        $dtMoviment = clone $movimentacao->getDtMoviment();
+        $dtMoviment = clone $movimentacao->dtMoviment;
         $this->entityHandler->delete($movimentacao);
         return $this->redirectToRoute('movimentacao_caixa', ['dtMoviment' => $dtMoviment->format('Y-m-d')]);
     }

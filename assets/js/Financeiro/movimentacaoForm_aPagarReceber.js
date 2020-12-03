@@ -50,6 +50,7 @@ $(document).ready(function () {
 
     $.getJSON(Routing.generate('fin_movimentacao_filiais'), function (data) {
         filiais = data;
+        handleSacadoCedente();
     });
 
     $categoria.select2({
@@ -193,7 +194,7 @@ $(document).ready(function () {
 
     $categoria.select2('focus');
 
-    handleSacadoCedente();
+
 
 
 });
