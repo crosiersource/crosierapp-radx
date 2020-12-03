@@ -87,9 +87,7 @@
                                 {% set i=i+1 %}
                                 <tr>
                                     <td>
-                                        {{ item.id }}
-                                        <br/>
-                                        <span class="badge badge-pill badge-light">{{ i }}</span>
+                                        {{ item.id|strpad(9) }}
                                     </td>
                                     <td>
                                         <b>{{ item.carteira.getDescricaoMontada() }}</b><br/>

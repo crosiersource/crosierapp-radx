@@ -95,6 +95,7 @@ $(document).ready(function () {
         let $campoComFiliais;
         let $campoComBusca;
 
+        if (!categoria.id) return;
         if (categoria.element.dataset.codigoSuper === '1') {
             $campoComFiliais = $cedente;
             $campoComBusca = $sacado;
