@@ -160,7 +160,7 @@ $(document).ready(function () {
     // Para poder verificar se mudou a dtVencto antes de chamar
     let dtVenctoSaved = null;
     $dtVenctoEfetiva.on('focus', function () {
-        if (dtVenctoSaved.toString() !== $dtVencto.val().toString()) {
+        if (dtVenctoSaved !== $dtVencto.val()) {
             let route = '/base/diaUtil/findDiaUtil/?financeiro=true&dt=' + encodeURIComponent($dtVencto.val());
             dtVenctoSaved = $dtVencto.val();
             $.ajax(
