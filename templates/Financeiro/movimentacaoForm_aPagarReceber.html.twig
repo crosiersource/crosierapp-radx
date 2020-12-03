@@ -30,6 +30,11 @@
                                             data-target="#confirmationModal" data-toggle="modal">
                                         <i class="far fa-clone"></i> Clonar
                                     </button>
+                                    <a class="dropdown-item"
+                                       href="{{ url('movimentacao_form_pagto', {'id':e.id, 'reftoback': true}) }}"
+                                       role="button" title="Registro pagamento">
+                                        <i class="fas fa-dollar-sign"></i> Registrar pagamento
+                                    </a>
                                     <button type="button" class="dropdown-item"
                                             data-url="{{ url('movimentacao_delete', {id: e.id}) }}"
                                             data-token="{{ csrf_token('delete') }}"
