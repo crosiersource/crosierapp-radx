@@ -154,11 +154,11 @@ class MovimentacaoCaixaTransacaoCartaoType extends AbstractType
             'choices' => $categoriaChoices,
             'choice_attr' => $categoriaChoicesAttr,
             'data' => $movimentacao->categoria,
-            'empty_data' => $movimentacao->categoria,
             'attr' => [
                 'class' => 'autoSelect2 focusOnReady'
             ],
-            'required' => false
+            'required' => false,
+            'disabled' => $disabled
         ]);
 
         $form->add('descricao', TextType::class, [
