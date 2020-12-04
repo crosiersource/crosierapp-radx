@@ -38,24 +38,11 @@ VALUES (null, 50, 'MOVIMENTAÇÕES AGRUPADAS', null, null, null, true, false, fa
 
 TRUNCATE TABLE fin_tipo_lancto;
 
-REPLACE INTO `fin_tipo_lancto` (`id`, `codigo`, `descricao`, `obs`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`, `url`, `icon`)
-VALUES (10, 10, 'Movimentação de Caixa', 'Lançar uma movimentação em um caixa', '2019-05-29 18:06:06', '2019-05-29 18:06:06', 0, 1, 1, 1, '/fin/movimentacao/form/caixa/', 'fas fa-hand-holding-usd'),
-       (20, 20, 'Conta a Pagar/Receber', 'Lançar uma conta a pagar ou receber', '2019-05-29 18:06:06', '2019-05-29 18:06:06', 0, 1, 1, 1, '/fin/movimentacao/form/aPagarReceber/', 'fas fa-file-invoice-dollar'),
-       (21, 21, 'Parcelamento a Pagar/Receber', 'Lançar um parcelamento de contas a pagar ou receber', '2019-06-06 16:38:45', '2019-06-06 16:38:45', 0, 1, 1, 1, '/fin/movimentacao/form/aPagarReceber/?parcelamento=true', 'fas fa-file-invoice-dollar'),
-       (40, 40, 'Cheque Próprio', 'Lançar uma movimentação de cheque de conta própria', '2019-05-29 18:06:06', '2019-05-29 18:06:06', 0, 1, 1, 1, '/fin/movimentacao/form/chequeProprio/', 'fas fa-money-check'),
-       (41, 41, 'Parcelamento com Cheques Próprios', 'Lançar um parcelamento com cheques de conta própria', '2019-06-06 16:39:19', '2019-06-06 16:39:19', 0, 1, 1, 1, '/fin/movimentacao/form/chequeProprio/?parcelamento=true?parcelamento=true', 'fas fa-money-check'),
-       (50, 50, 'Cheque de Terceiros', 'Lançar uma movimentação de cheque de terceiros', '2019-06-06 16:40:08', '2019-06-06 16:40:08', 0, 1, 1, 1, '/fin/movimentacao/form/chequeTerceiros/', 'fas fa-money-check'),
-       (51, 51, 'Parcelamento com Cheques de Terceiros', 'Lançar um parcelamento com cheques de terceiros', '2019-06-06 16:39:35', '2019-06-06 16:39:35', 0, 1, 1, 1, '/fin/movimentacao/form/chequeTerceiros/?parcelamento=true?parcelamento=true', 'fas fa-money-check'),
-       (60, 60, 'Transferência entre Carteiras', 'Lançar uma transferências entre carteiras próprias', '2019-05-29 18:06:06', '2019-05-29 18:06:06', 0, 1, 1, 1, '/fin/movimentacao/form/transferenciaEntreCarteiras/',
-        'fas fa-exchange-alt'),
-       (61, 61, 'Transferência de Entrada de Caixa', 'Lançar uma transferência de entrada de caixa', '2019-06-05 14:14:14', '2019-06-05 14:14:14', 0, 1, 1, 1,
-        '/fin/movimentacao/form/transferenciaEntradaCaixa/',
-        'fas fa-exchange-alt'),
-       (70, 70, 'Movimentação de Grupo', 'Lançar uma movimentação dentro de um grupo', '2019-05-29 18:06:06', '2019-05-29 18:06:06', 0, 1, 1, 1, '/fin/movimentacao/form/grupo/', 'far fa-object-group'),
-       (71, 71, 'Parcelamento de Movimentação de Grupo', 'Lançar um parcelamento de movimentação dentro de grupos', '2019-06-06 16:40:59', '2019-06-06 16:40:59', 0, 1, 1, 1, '/fin/movimentacao/form/grupo/',
-        'far fa-object-group'),
-       (80, 80, 'Estornar Movimentação', 'Lançar um estorno de movimentação', '2019-05-29 18:06:07', '2019-05-29 18:06:07', 0, 1, 1, 1, '/fin/movimentacao/form/estorno/', 'fas fa-eraser'),
-       (90, 90, 'Movimentação Recorrente', 'Lançar uma movimentação recorrente', '2019-06-05 15:46:54', '2019-06-05 15:46:54', 0, 1, 1, 1, '/fin/movimentacao/form/recorrente/', 'fas fa-redo-alt');
+REPLACE INTO `fin_tipo_lancto` (`id`, `codigo`, `descricao`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (20, 20, 'MOVIMENTAÇÃO NORMAL', now(), now(), 0, 1, 1, 1),
+       (60, 60, 'TRANSFERÊNCIA ENTRE CARTEIRAS', now(), now(), 0, 1, 1, 1),
+       (61, 61, 'TRANSFERÊNCIA DE ENTRADA DE CAIXA', now(), now(), 0, 1, 1, 1),
+       (62, 62, 'FATURA TRANSACIONAL', now(), now(), 0, 1, 1, 1);
 
 TRUNCATE TABLE fin_categoria;
 
@@ -79,14 +66,38 @@ INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_cust
                              `inserted`,
                              `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
 VALUES (5, 150, 'OUTROS RECEBIMENTOS', 1, _binary '\0', 1, NULL, _binary '', NULL, NULL, 150000000000, '2015-02-11 18:19:48', '2015-02-11 18:20:20', 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
+                             `inserted`,
+                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (191, 191, 'ENTRADA EM TRANSAÇÃO', 1, false, 1, '', false, '', '', 191000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
+                             `inserted`,
+                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (192, 192, 'CRÉDITO EM TRANSAÇÃO', 1, false, 1, '', false, '', '', 192000000000, now(), now(), 0, 1, 1, 1);
+
+
 INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
                              `inserted`,
                              `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
 VALUES (6, 199, 'TRANSFERÊNCIA DE CONTA', 1, _binary '\0', 1, '', _binary '\0', '', '', 199000000000, '2015-02-11 18:19:56', '2018-10-11 17:56:52', 0, 1, 1, 1);
+
 INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
                              `inserted`,
                              `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
 VALUES (7, 299, 'TRANSFERÊNCIA PARA CONTA', 2, _binary '\0', 2, '', _binary '\0', '', '', 299000000000, '2015-02-11 18:20:02', '2019-01-02 11:37:58', 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
+                             `inserted`,
+                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (291, 291, 'SAÍDA PARA TRANSAÇÃO', 2, false, 2, '', false, '', '', 291000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
+                             `inserted`,
+                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (292, 292, 'QUITAMENTO EM TRANSAÇÃO', 2, false, 2, '', false, '', '', 292000000000, now(), now(), 0, 1, 1, 1);
+
 INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
                              `inserted`,
                              `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)

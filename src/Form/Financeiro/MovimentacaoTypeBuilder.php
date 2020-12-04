@@ -14,8 +14,14 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\BancoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\BandeiraCartaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CentroCustoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\ModoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\OperadoraCartaoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\TipoLanctoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -91,12 +97,15 @@ class MovimentacaoTypeBuilder
             'required' => false
         ]);
 
+        /** @var TipoLanctoRepository $repoTipoLancto */
+        $repoTipoLancto = $this->doctrine->getRepository(TipoLancto::class);
+
         $form->add('tipoLancto', EntityType::class, [
             'label' => 'Tipo Lancto',
             'class' => TipoLancto::class,
             'empty_data' => $movimentacao->tipoLancto,
             'placeholder' => '...',
-            'choices' => $this->doctrine->getRepository(TipoLancto::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
+            'choices' => $repoTipoLancto->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => 'descricaoMontada',
             'required' => true,
             'attr' => [
@@ -152,13 +161,14 @@ class MovimentacaoTypeBuilder
             'required' => false
         ]);
 
+        /** @var BancoRepository $repoBanco */
+        $repoBanco = $this->doctrine->getRepository(Banco::class);
 
         $form->add('documentoBanco', EntityType::class, [
             'label' => 'Banco (Documento)',
             'help' => 'Banco emissor do boleto',
             'class' => Banco::class,
-            'choices' => $this->doctrine->getRepository(Banco::class)
-                ->findAll(WhereBuilder::buildOrderBy('codigoBanco')),
+            'choices' => $repoBanco->findAll(WhereBuilder::buildOrderBy('codigoBanco')),
             'choice_label' => function (Banco $banco) {
                 return sprintf('%03d', $banco->getCodigoBanco()) . ' - ' . $banco->nome;
             },
@@ -277,8 +287,9 @@ class MovimentacaoTypeBuilder
             'disabled' => true
         ]);
 
-
-        $modoChoices = $options['modos'] ?? $this->doctrine->getRepository(Modo::class)->findAll(['codigo' => 'ASC']);
+        /** @var ModoRepository $repoModo */
+        $repoModo = $this->doctrine->getRepository(Modo::class);
+        $modoChoices = $options['modos'] ?? $repoModo->findAll(['codigo' => 'ASC']);
 
         $form->add('modo', EntityType::class, [
             'label' => 'Modo',
@@ -294,10 +305,13 @@ class MovimentacaoTypeBuilder
             'attr' => ['class' => 'autoSelect2 focusOnReady']
         ]);
 
+        /** @var BandeiraCartaoRepository $repoBandeira */
+        $repoBandeira = $this->doctrine->getRepository(BandeiraCartao::class);
+
         $form->add('bandeiraCartao', EntityType::class, [
             'label' => 'Bandeira',
             'class' => BandeiraCartao::class,
-            'choices' => $this->doctrine->getRepository(BandeiraCartao::class)->findAll(WhereBuilder::buildOrderBy('descricao')),
+            'choices' => $repoBandeira->findAll(WhereBuilder::buildOrderBy('descricao')),
             'choice_label' => function (?BandeiraCartao $bandeiraCartao) {
                 return $bandeiraCartao ? $bandeiraCartao->descricao : '';
             },
@@ -305,10 +319,13 @@ class MovimentacaoTypeBuilder
             'attr' => ['class' => 'autoSelect2']
         ]);
 
+        /** @var OperadoraCartaoRepository $repoOperadora */
+        $repoOperadora = $this->doctrine->getRepository(OperadoraCartao::class);
+
         $form->add('operadoraCartao', EntityType::class, [
             'label' => 'Operadora',
             'class' => OperadoraCartao::class,
-            'choices' => $this->doctrine->getRepository(OperadoraCartao::class)->findAll(WhereBuilder::buildOrderBy('descricao')),
+            'choices' => $repoOperadora->findAll(WhereBuilder::buildOrderBy('descricao')),
             'choice_label' => function (?OperadoraCartao $operadoraCartao) {
                 return $operadoraCartao ? $operadoraCartao->descricao : '';
             },
@@ -316,12 +333,15 @@ class MovimentacaoTypeBuilder
             'attr' => ['class' => 'autoSelect2']
         ]);
 
+        /** @var CentroCustoRepository $repoCentroCusto */
+        $repoCentroCusto = $this->doctrine->getRepository(CentroCusto::class);
+
         $form->add('centroCusto', EntityType::class, [
             'label' => 'Centro de Custo',
             'class' => CentroCusto::class,
             'data' => $movimentacao->centroCusto,
             'empty_data' => $movimentacao->centroCusto,
-            'choices' => $this->doctrine->getRepository(CentroCusto::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
+            'choices' => $repoCentroCusto->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => 'descricaoMontada',
             'required' => false,
             'attr' => ['class' => 'autoSelect2']
@@ -424,8 +444,7 @@ class MovimentacaoTypeBuilder
         $form->add('chequeBanco', EntityType::class, [
             'label' => 'Banco',
             'class' => Banco::class,
-            'choices' => $this->doctrine->getRepository(Banco::class)
-                ->findAll(WhereBuilder::buildOrderBy('codigoBanco')),
+            'choices' => $repoBanco->findAll(WhereBuilder::buildOrderBy('codigoBanco')),
             'choice_label' => function (Banco $banco) {
                 return sprintf('%03d', $banco->getCodigoBanco()) . ' - ' . $banco->nome;
             },

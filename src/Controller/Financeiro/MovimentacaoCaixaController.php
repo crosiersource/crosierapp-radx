@@ -2,6 +2,7 @@
 
 namespace App\Controller\Financeiro;
 
+use App\Form\Financeiro\MovimentacaoCaixaTransacaoCartaoType;
 use App\Form\Financeiro\MovimentacaoCaixaType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
@@ -16,8 +17,11 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\TipoLanctoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -346,6 +350,57 @@ class MovimentacaoCaixaController extends FormListController
             'formView' => 'Financeiro/movimentacaoForm_caixa.html.twig',
             'formRoute' => 'movimentacao_form_caixa',
             'formPageTitle' => 'Movimentação de Caixa'
+        ];
+
+        return $this->doForm($request, $movimentacao, $params);
+    }
+
+
+    /**
+     *
+     * @Route("/fin/movimentacao/form/caixa/transacaoCartao/{id}", name="movimentacao_form_caixa_transacaoCartao", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @param Request $request
+     * @param Movimentacao|null $movimentacao
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function formTransacaoCartao(Request $request, Movimentacao $movimentacao = null)
+    {
+        if (!$movimentacao) {
+            // Form para novo registro
+            $movimentacao = new Movimentacao();
+
+            /** @var TipoLanctoRepository $repoTipoLancto */
+            $repoTipoLancto = $this->getDoctrine()->getRepository(TipoLancto::class);
+            $tipoLancto_faturaTransacional = $repoTipoLancto->find(62);
+            $movimentacao->tipoLancto = $tipoLancto_faturaTransacional;
+
+            // Pode passar a carteira
+            if ($request->get('carteira')) {
+                /** @var Carteira $carteira */
+                $carteira = $this->getDoctrine()->getRepository(Carteira::class)->find($request->get('carteira'));
+                if ($carteira) {
+                    $movimentacao->carteira = $carteira;
+                }
+            }
+
+            if ($dtMoviment = $request->get('dtMoviment')) {
+                $movimentacao->dtMoviment = DateTimeUtils::parseDateStr($dtMoviment);
+            }
+
+            /** @var CategoriaRepository $repoCategoria */
+            $repoCategoria = $this->getDoctrine()->getRepository(Categoria::class);
+            $categoria_vendaInterna = $repoCategoria->findOneByFiltersSimpl([['codigo', 'EQ', 101]]);
+            $movimentacao->categoria = $categoria_vendaInterna;
+
+        }
+
+        $params = [
+            'typeClass' => MovimentacaoCaixaTransacaoCartaoType::class,
+            'formView' => 'Financeiro/movimentacaoForm_caixa_transacaoCartao.html.twig',
+            'formRoute' => 'movimentacao_form_caixa_transacaoCartao',
         ];
 
         return $this->doForm($request, $movimentacao, $params);

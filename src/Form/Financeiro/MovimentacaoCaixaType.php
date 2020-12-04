@@ -25,9 +25,6 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class MovimentacaoCaixaType.
- *
- * @package App\Form\Financeiro
  * @author Carlos Eduardo Pauluk
  */
 class MovimentacaoCaixaType extends AbstractType
@@ -75,7 +72,7 @@ class MovimentacaoCaixaType extends AbstractType
             $repoTipoLancto = $this->doctrine->getRepository(TipoLancto::class);
             $tiposLanctos =
                 [
-                    $repoTipoLancto->find(10),
+                    $repoTipoLancto->find(20),
                     $repoTipoLancto->find(60),
                     $repoTipoLancto->find(61)
                 ];
@@ -114,11 +111,6 @@ class MovimentacaoCaixaType extends AbstractType
                 'disabled' => $disabled
             ]);
 
-            $form->add('uuid', TextType::class, [
-                'label' => 'UUID',
-                'disabled' => true,
-                'required' => false
-            ]);
 
             // Para que o campo select seja montado já com o valor selecionado (no $('#movimentacao_carteira').val())
             $attr = [];

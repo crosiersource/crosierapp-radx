@@ -91,83 +91,85 @@
                         <td class="text-right"></td>
                     </tr>
 
-                    {% for list in lists if list.ents|length > 0 %}
+                    {% for list in lists %}
+                        {% if list.ents|length > 0 %}
 
-                    <tr>
-                        <th colspan="99" scope="col"><h3>{{ list.titulo }}</h3></th>
-                    </tr>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Id</th>
-                        <th scope="col">Categoria<br/>Modo</th>
-                        <th scope="col">Descrição</th>
-                        <th scope="col">Dt Vencto<br/>Dt Pagto</th>
-                        <th scope="col">Valor Total</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    {% for item in list.ents %}
-                        <tr style="color: {{ item.categoria.codigo[0:1] == '1' ? 'blue' : 'red' }}">
-                            <td>{{ loop.index }}</td>
-                            <td>{{ item.id }}</td>
-                            <td>
-                                {{ item.categoria.getDescricaoMontada() }}<br/>
-                                {{ "%02d"|format(item.modo.codigo) }} - {{ item.modo.descricao|default('') }}
-                            </td>
-                            <td>
-                                <div style="float: left">
-                                    {{ item.getDescricaoMontada()|raw }}
-
-                                    {% if item.bandeiraCartao.id is defined %}
-                                        {% if (item.cadeia.movimentacoes is not defined) or item.cadeia.movimentacoes|length < 3 %}
-                                            <br/><span class="badge badge-pill badge-warning">Falta consolidar</span>
-                                        {% else %}
-                                            <br/><span class="badge badge-pill badge-success">Consolidada</span>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-
-                                {% if item.cadeia %}
-                                    <div class="text-right">
-                                        <a href="{{ url('movimentacao_listCadeia', {cadeia: item.cadeia.id}) }}"
-                                           class="btn btn-sm btn-outline-secondary" role="button" target="_blank"
-                                           aria-pressed="true">
-                                            <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                {% endif %}
-                            </td>
-                            <td>{{ item.dtMoviment|date('d/m/Y') }}</td>
-                            <td class="text-right">{{ item.valorTotal|number_format(2,',','.') }}</td>
-                            <td class="text-right">
-
-                                <a href="{{ url('movimentacao_form_caixa', {carteira: item.carteira.id, id: item.id, 'reftoback': true}) }}"
-                                   class="btn btn-sm btn-primary" role="button"
-                                   aria-pressed="true">
-                                    <i class="fas fa-wrench" aria-hidden="true"></i>
-                                </a>
-
-                                <button type="button" class="btn btn-sm btn-danger"
-                                        data-url="{{ url('movimentacao_caixa_delete', {movimentacao: item.id}) }}"
-                                        data-token="{{ csrf_token('delete') }}"
-                                        data-target="#confirmationModal" data-toggle="modal">
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                </button>
-
-                                <br/>
-                                <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
-                            </td>
+                        <tr>
+                            <th colspan="99" scope="col"><h3>{{ list.titulo }}</h3></th>
                         </tr>
-                    {% endfor %}
-                    <tr style="background-color: lightgrey; line-height: 30px">
-                        <th scope="row" colspan="6" class="text-right">
-                            Total ({{ list.titulo }}): R$ {{ list.total|number_format(2,',','.') }}
-                        </th>
-                        <td class="text-right"></td>
-                    </tr>
-                    </tbody>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">Categoria<br/>Modo</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Dt Vencto<br/>Dt Pagto</th>
+                            <th scope="col">Valor Total</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for item in list.ents %}
+                            <tr style="color: {{ item.categoria.codigo[0:1] == '1' ? 'blue' : 'red' }}">
+                                <td>{{ loop.index }}</td>
+                                <td>{{ item.id }}</td>
+                                <td>
+                                    {{ item.categoria.getDescricaoMontada() }}<br/>
+                                    {{ "%02d"|format(item.modo.codigo) }} - {{ item.modo.descricao|default('') }}
+                                </td>
+                                <td>
+                                    <div style="float: left">
+                                        {{ item.getDescricaoMontada()|raw }}
+
+                                        {% if item.bandeiraCartao.id is defined %}
+                                            {% if (item.cadeia.movimentacoes is not defined) or item.cadeia.movimentacoes|length < 3 %}
+                                                <br/><span class="badge badge-pill badge-warning">Falta consolidar</span>
+                                            {% else %}
+                                                <br/><span class="badge badge-pill badge-success">Consolidada</span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+
+                                    {% if item.cadeia %}
+                                        <div class="text-right">
+                                            <a href="{{ url('movimentacao_listCadeia', {cadeia: item.cadeia.id}) }}"
+                                               class="btn btn-sm btn-outline-secondary" role="button" target="_blank"
+                                               aria-pressed="true">
+                                                <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.dtMoviment|date('d/m/Y') }}</td>
+                                <td class="text-right">{{ item.valorTotal|number_format(2,',','.') }}</td>
+                                <td class="text-right">
+
+                                    <a href="{{ url('movimentacao_form_caixa', {carteira: item.carteira.id, id: item.id, 'reftoback': true}) }}"
+                                       class="btn btn-sm btn-primary" role="button"
+                                       aria-pressed="true">
+                                        <i class="fas fa-wrench" aria-hidden="true"></i>
+                                    </a>
+
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            data-url="{{ url('movimentacao_caixa_delete', {movimentacao: item.id}) }}"
+                                            data-token="{{ csrf_token('delete') }}"
+                                            data-target="#confirmationModal" data-toggle="modal">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+
+                                    <br/>
+                                    <span class="badge badge-secondary">{{ item.updated|date('d/m/Y H:i:s') }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr style="background-color: lightgrey; line-height: 30px">
+                            <th scope="row" colspan="6" class="text-right">
+                                Total ({{ list.titulo }}): R$ {{ list.total|number_format(2,',','.') }}
+                            </th>
+                            <td class="text-right"></td>
+                        </tr>
+                        </tbody>
+                        {% endif %}
                     {% endfor %}
 
 

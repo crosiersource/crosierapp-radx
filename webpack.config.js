@@ -79,6 +79,7 @@ Encore
     .addEntry('Financeiro/movimentacaoForm_geral', './assets/js/Financeiro/movimentacaoForm_geral.js')
     .addEntry('Financeiro/movimentacaoForm_transferenciaEntreCarteiras', './assets/js/Financeiro/movimentacaoForm_transferenciaEntreCarteiras.js')
     .addEntry('Financeiro/movimentacaoForm_caixa', './assets/js/Financeiro/movimentacaoForm_caixa.js')
+    .addEntry('Financeiro/movimentacaoForm_caixa_transacaoCartao', './assets/js/Financeiro/movimentacaoForm_caixa_transacaoCartao.js')
     .addEntry('Financeiro/movimentacaoForm_chequeProprio', './assets/js/Financeiro/movimentacaoForm_chequeProprio.js')
     .addEntry('Financeiro/movimentacaoForm_chequeProprio_parcelamento', './assets/js/Financeiro/movimentacaoForm_chequeProprio_parcelamento.js')
     .addEntry('Financeiro/movimentacaoForm_aPagarReceber', './assets/js/Financeiro/movimentacaoForm_aPagarReceber.js')

@@ -73,7 +73,7 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Carteira<br/>Categoria</th>
-                            <th scope="col">Descrição<br/><small>Cedente</small></th>
+                            <th scope="col">Descrição<br/><small>Sacado/Cedente</small></th>
                             <th scope="col">Dt Vencto</th>
                             <th scope="col">Valor Total</th>
                             <th scope="col"></th>
@@ -96,8 +96,11 @@
                                     <td>
                                         <div style="float: left">
                                             <b>{{ item.getDescricaoMontada()|raw }}</b>
-                                            {% if item.cedente %}
+                                            {% if item.categoria.codigoSuper == 2 and item.cedente %}
                                                 <br/><small>{{ item.cedente }}</small>
+                                            {% endif %}
+                                            {% if item.categoria.codigoSuper == 1 and item.sacado %}
+                                                <br/><small>{{ item.sacado }}</small>
                                             {% endif %}
                                         </div>
 
