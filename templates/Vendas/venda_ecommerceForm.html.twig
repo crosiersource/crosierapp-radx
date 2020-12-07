@@ -250,6 +250,27 @@
                             </div>
                         </div>
 
+                        {% if e.jsonData.ecommerce_entrega_frete_calculado|default(false) %}
+                            <div class="row">
+                                <div class="col-md-8 col-sm-12">
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group row">
+                                        <label class="col-form-label col-sm-4" for="totalComFrete">Total + Frete</label>
+                                        <div class="col-sm-8">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">R$ </span>
+                                                </div>
+                                                <input type="text" id="totalComFrete" class="crsr-money form-control disabled" disabled="disabled"
+                                                       value="{{ (e.valorTotal + e.jsonData.ecommerce_entrega_frete_calculado)|default(0)|number_format(2,',','.') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
                     </div>
                 </div>
 
