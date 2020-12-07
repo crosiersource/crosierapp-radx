@@ -39,6 +39,7 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CentroCustoReposito
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\ModoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\OperadoraCartaoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\TipoLanctoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -325,6 +326,7 @@ class MovimentacaoController extends FormListController
      */
     public function ini(Request $request)
     {
+        /** @var TipoLanctoRepository $repoTipoLancto */
         $repoTipoLancto = $this->getDoctrine()->getRepository(TipoLancto::class);
         if ($request->get('tipoLancto')) {
             $tipoLancto = $repoTipoLancto->find($request->get('tipoLancto'));
@@ -849,7 +851,7 @@ class MovimentacaoController extends FormListController
         $params = $request->request->all();
 
         $dtIni = DateTimeUtils::parseDateStr(substr($params['filter']['dts'], 0, 10));
-        $dtIni->setTime(0, 0, 0, 0);
+        $dtIni->setTime(0, 0);
         $dtFim = DateTimeUtils::parseDateStr(substr($params['filter']['dts'], 13, 10));
         $dtFim->setTime(23, 59, 59, 99999);
 
@@ -1038,7 +1040,7 @@ class MovimentacaoController extends FormListController
      * @return RedirectResponse
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
-    public function clonar(Request $request, Movimentacao $movimentacao = null)
+    public function clonar(Request $request, Movimentacao $movimentacao = null): RedirectResponse
     {
         try {
             if (!$this->isCsrfTokenValid('fin_movimentacao_clonar', $request->get('token'))) {

@@ -46,333 +46,87 @@ VALUES (20, 20, 'MOVIMENTAÇÃO NORMAL', now(), now(), 0, 1, 1, 1),
 
 TRUNCATE TABLE fin_categoria;
 
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (1, 1, 'ENTRADAS', NULL, _binary '\0', 1, NULL, _binary '', NULL, NULL, 100000000000, '2015-02-11 18:16:34', '2015-02-11 18:16:36', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (2, 2, 'SAÍDAS', NULL, _binary '\0', 2, NULL, _binary '', NULL, NULL, 200000000000, '2015-02-11 18:16:47', '2015-02-11 18:16:49', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (3, 101, 'RECEB. VENDAS INTERNAS', 1, _binary '\0', 1, '', _binary '', '', '', 101000000000, '2015-02-11 18:19:35', '2018-12-28 15:25:36', 3, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (4, 102, 'RECEB. VENDAS EXTERNAS', 1, _binary '\0', 1, NULL, _binary '', NULL, NULL, 102000000000, '2015-02-11 18:19:40', '2015-02-12 14:58:04', 1, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (5, 150, 'OUTROS RECEBIMENTOS', 1, _binary '\0', 1, NULL, _binary '', NULL, NULL, 150000000000, '2015-02-11 18:19:48', '2015-02-11 18:20:20', 1, 1, 1, 1);
-
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (191, 191, 'ENTRADA EM TRANSAÇÃO', 1, false, 1, '', false, '', '', 191000000000, now(), now(), 0, 1, 1, 1);
-
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (192, 192, 'CRÉDITO EM TRANSAÇÃO', 1, false, 1, '', false, '', '', 192000000000, now(), now(), 0, 1, 1, 1);
-
-
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (6, 199, 'TRANSFERÊNCIA DE CONTA', 1, _binary '\0', 1, '', _binary '\0', '', '', 199000000000, '2015-02-11 18:19:56', '2018-10-11 17:56:52', 0, 1, 1, 1);
-
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (7, 299, 'TRANSFERÊNCIA PARA CONTA', 2, _binary '\0', 2, '', _binary '\0', '', '', 299000000000, '2015-02-11 18:20:02', '2019-01-02 11:37:58', 0, 1, 1, 1);
-
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (291, 291, 'SAÍDA PARA TRANSAÇÃO', 2, false, 2, '', false, '', '', 291000000000, now(), now(), 0, 1, 1, 1);
-
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (292, 292, 'QUITAMENTO EM TRANSAÇÃO', 2, false, 2, '', false, '', '', 292000000000, now(), now(), 0, 1, 1, 1);
-
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (8, 104, 'VENDAS LICITAÇÕES', 1, _binary '\0', 1, NULL, _binary '', NULL, NULL, 104000000000, '2015-02-11 18:20:26', '2015-03-06 15:31:41', 3, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (9, 201, 'CUSTOS FIXOS', 2, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201000000000, '2015-02-11 18:20:50', '2015-02-11 18:20:50', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (10, 202, 'CUSTOS VARIÁVEIS', 2, _binary '\0', 2, NULL, _binary '', NULL, NULL, 202000000000, '2015-02-11 18:21:06', '2015-02-11 18:21:06', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (12, 201001, 'LUZ', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201001000000, '2015-02-11 18:21:48', '2015-02-11 18:21:48', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (13, 201002, 'TELEFONE FIXO / INTERNET', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201002000000, '2015-02-11 18:21:53', '2015-03-18 19:22:34', 1, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (14, 201003, 'TELEFONE CELULAR', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201003000000, '2015-02-11 18:21:59', '2015-02-11 18:21:59', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (15, 201004, 'ÁGUA', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201004000000, '2015-02-11 18:22:07', '2015-02-11 18:22:07', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (16, 201005, 'SEGUROS', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201005000000, '2015-02-11 18:22:14', '2015-02-11 18:22:14', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (17, 201006, 'MATERIAIS DE EXPEDIENTE', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201006000000, '2015-02-11 18:22:20', '2015-02-11 18:22:20', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (18, 201007, 'COMBUSTÍVEIS E DESP. VIAGENS', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201007000000, '2015-02-11 18:22:32', '2015-02-11 18:22:32', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (19, 201008, 'MARKETING/PUBLICIDADE', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201008000000, '2015-02-11 18:22:41', '2015-02-11 18:22:41', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (20, 201009, 'FRETES', 9, _binary '\0', 2, 'PAGTO DE FRETE', _binary '', NULL, NULL, 201009000000, '2015-02-11 18:22:50', '2015-09-09 18:24:33', 1, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (21, 201010, 'EMBALAGENS', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201010000000, '2015-02-11 18:22:55', '2015-02-11 18:22:55', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (22, 201011, 'TAXAS, ENCARGOS, DESP. BANCÁRIAS', 9, _binary '\0', 2, '', _binary '', '', '', 201011000000, '2015-02-11 18:23:06', '2018-10-11 17:56:50', 1, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (23, 201012, 'IRFF', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201012000000, '2015-02-11 18:23:18', '2015-02-11 18:23:23', 1, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (24, 201013, 'TAXAS E IMPOSTOS DIVERSOS', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201013000000, '2015-02-11 18:23:34', '2015-02-11 18:23:34', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (25, 201014, 'ACIPG/CDL', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201014000000, '2015-02-11 18:23:40', '2015-02-11 18:23:40', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (26, 201015, 'DESP. LICITAÇÕES', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201015000000, '2015-02-11 18:23:47', '2015-02-11 18:23:47', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (27, 201099, 'CUSTOS DIVERSOS', 9, _binary '\0', 2, '', _binary '', '', '', 201099000000, '2015-02-11 18:23:57', '2018-11-02 00:45:32', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (28, 201100, 'DEPTO. PESSOAL', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100000000, '2015-02-11 18:24:15', '2015-02-11 18:24:15', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (29, 201100001, 'FOLHA DE PAGAMENTO', 28, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100001000, '2015-02-11 18:24:27', '2015-02-11 18:24:27', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (30, 201100002, 'INSS', 28, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100002000, '2015-02-11 18:24:39', '2015-02-11 18:24:39', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (31, 201100003, 'FGTS', 28, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100003000, '2015-02-11 18:24:50', '2015-02-11 18:24:50', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (32, 201100004, 'VALE TRANSPORTE', 28, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100004000, '2015-02-11 18:24:58', '2015-02-11 18:24:58', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (33, 201100005, 'SINDICATO', 28, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100005000, '2015-02-11 18:25:05', '2015-02-11 18:25:05', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (34, 201100006, 'HONORÁRIOS CONTÁBEIS', 28, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100006000, '2015-02-11 18:25:17', '2015-02-11 18:25:17', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (35, 202001, 'CUSTOS DE MERCADORIAS', 10, _binary '\0', 2, 'PAGTO A FORNECEDOR', _binary '', '', '', 202001000000, '2015-02-11 18:25:26', '2018-10-11 17:56:55', 1, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (36, 202002, 'IMPOSTO SUPER-SIMPLES', 10, _binary '\0', 2, NULL, _binary '', NULL, NULL, 202002000000, '2015-02-11 18:25:36', '2015-02-11 18:25:36', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (37, 202003, 'SAÍDA DIRECIONADA', 10, _binary '', 2, '', _binary '', '', 'ROLE_FINANCEIRO_PROPRIET', 202003000000, '2015-02-11 18:25:44', '2015-10-20 12:18:10', 3, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (38, 290, 'PAGTO. GRUPO MOVIMENT.', 2, _binary '\0', 2, NULL, _binary '\0', NULL, NULL, 290000000000, '2015-02-12 16:31:02', '2015-03-02 09:52:18', 1, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (39, 203, 'EMPRÉSTIMOS', 2, _binary '\0', 2, NULL, _binary '', NULL, NULL, 203000000000, '2015-02-24 08:44:03', '2015-03-02 09:52:08', 1, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (40, 201100999, 'ENCARGOS SOCIAIS (GERAIS)', 28, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100999000, '2015-02-24 08:47:11', '2015-02-24 08:47:11', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (41, 201100007, 'MÃO-DE-OBRA', 28, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100007000, '2015-02-24 08:48:51', '2015-02-24 08:48:51', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (42, 201100008, 'CONVÊNIOS', 28, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201100008000, '2015-02-24 08:49:54', '2015-02-24 08:49:54', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (43, 151, 'ENTRADA - AJUSTE DE CAIXA', 1, _binary '\0', 1, NULL, _binary '', NULL, NULL, 151000000000, '2015-03-02 09:49:24', '2015-03-02 09:49:24', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (44, 251, 'SAÍDA - AJUSTE DE CAIXA', 2, _binary '\0', 2, NULL, _binary '', NULL, NULL, 251000000000, '2015-03-02 09:52:35', '2015-03-02 09:52:35', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (45, 103, 'ENTRADA - EMPRÉSTIMO', 1, _binary '\0', 1, NULL, _binary '', NULL, NULL, 103000000000, '2015-03-06 15:31:56', '2015-03-06 15:31:56', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (46, 203001, 'PAGTO. JUROS/TAXAS', 39, _binary '\0', 2, NULL, _binary '', NULL, NULL, 203001000000, '2015-03-06 15:32:28', '2015-03-06 15:32:28', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (47, 203002, 'PAGTO. CAPITAL', 39, _binary '\0', 2, NULL, _binary '', NULL, NULL, 203002000000, '2015-03-06 15:32:35', '2015-03-06 15:32:35', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (48, 260, 'PAGTO TERCEIROS', 2, _binary '\0', 2, NULL, _binary '', NULL, NULL, 260000000000, '2015-03-13 12:05:22', '2015-03-13 12:05:22', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (49, 202004, 'TAXA ADMIN. CREDIÁRIO', 10, _binary '\0', 2, NULL, _binary '', NULL, NULL, 202004000000, '2015-03-19 15:59:32', '2015-03-19 15:59:32', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (50, 201016, 'MÁQUINAS E EQUIPAMENTOS', 9, _binary '\0', 2, NULL, _binary '', NULL, NULL, 201016000000, '2015-03-27 10:27:00', '2015-03-27 10:27:00', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (51, 202005, 'CUSTO FINANCEIRO CARTÕES', 10, _binary '\0', 2, NULL, _binary '', NULL, NULL, 202005000000, '2015-04-29 17:58:09', '2015-04-29 17:58:09', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (52, 180, 'ENTRADAS PESSOAIS', 1, _binary '', 1, '', _binary '', '', 'ROLE_FINANCEIRO_PROPRIET', 180000000000, '2015-04-30 16:40:36', '2015-10-20 12:18:28', 2, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (53, 280, 'SAÍDAS PESSOAIS', 2, _binary '', 2, '', _binary '', '', 'ROLE_FINANCEIRO_PROPRIET', 280000000000, '2015-04-30 16:40:45', '2015-10-20 12:18:42', 2, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (54, 160, 'RECEBIMENTOS PARA TERCEIROS', 1, _binary '\0', 1, NULL, _binary '', NULL, NULL, 160000000000, '2015-05-09 15:10:18', '2015-05-09 15:10:18', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (55, 203003, 'PAGTO. GIRO RÁPIDO', 39, _binary '\0', 2, NULL, _binary '', NULL, NULL, 203003000000, '2015-06-09 18:20:45', '2015-06-10 09:16:12', 2, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (56, 103001, 'ENTRADA GIRO RÁPIDO', 45, _binary '\0', 1, NULL, _binary '', NULL, NULL, 103001000000, '2015-06-10 09:17:17', '2015-06-10 09:17:17', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (57, 103002, 'ENTRADA CAPITAL DE GIRO', 45, _binary '\0', 1, NULL, _binary '', NULL, NULL, 103002000000, '2015-06-10 09:17:50', '2015-08-17 22:20:51', 1, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (58, 202005001, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 51, _binary '\0', 2, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', _binary '', NULL, NULL, 202005001000, '2015-06-10 09:48:20', '2015-07-16 09:52:06', 1,
-        1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (59, 202005002, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 51, _binary '\0', 2, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', _binary '', NULL, NULL, 202005002000, '2015-06-10 09:48:31', '2015-07-16 09:52:11', 1, 1,
-        1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (60, 270, 'MOVIMENTAÇÃO ESTORNADA (SAINDO)', 2, _binary '\0', 2, NULL, _binary '', NULL, NULL, 270000000000, '2015-07-18 10:33:52', '2015-07-18 10:33:52', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (61, 202006, 'DOAÇÕES, AJUDAS, CONTRIBUIÇÕES', 10, _binary '\0', 2, NULL, _binary '', NULL, NULL, 202006000000, '2015-07-20 15:13:26', '2015-07-20 15:13:26', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (62, 189, 'ESTORNO DE SAÍDA DIRECIONADA', 1, _binary '', 1, '', _binary '\0', '', '', 189000000000, '2015-08-06 17:54:57', '2015-12-07 18:31:38', 2, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (63, 204, 'INVESTIMENTOS', 2, _binary '\0', 2, '', _binary '', '', '', 204000000000, '2015-12-23 11:27:45', '2015-12-23 11:27:45', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (64, 170, 'OUTRAS ENTRADAS', 1, _binary '\0', 1, '', _binary '\0', '', '', 170000000000, '2015-12-23 11:56:37', '2015-12-23 11:56:37', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (65, 201017, 'IPTU', 9, _binary '\0', 2, '', _binary '', '', '', 201017000000, '2016-01-06 15:40:05', '2016-01-06 15:40:05', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (66, 201018, 'MANUTENÇÕES EM VEÍCULOS', 9, _binary '\0', 2, '', _binary '\0', '', '', 201018000000, '2016-01-15 15:54:29', '2016-01-15 15:54:29', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (67, 252, 'AJUSTE COBRANÇA FATURA', 2, _binary '\0', 2, '', _binary '\0', '', '', 252000000000, '2016-02-06 15:29:19', '2016-02-06 15:29:19', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (68, 179, 'REAPRESENTAÇÃO DE CHEQUE (ENTRANDO)', 1, _binary '\0', 1, '', _binary '\0', '', '', 179000000000, '2016-03-21 17:18:02', '2016-03-21 17:18:02', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (69, 201019, 'ALUGUEL', 9, _binary '\0', 2, '%S', _binary '', '', '', 201019000000, '2016-05-11 18:04:35', '2016-05-11 18:04:35', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (70, 188, 'MOVIMENTAÇÃO ESTORNADA (ENTRANDO)', 1, _binary '\0', 1, '%s', _binary '', NULL, NULL, 188000000000, '2017-08-11 11:17:06', '2017-08-11 11:17:06', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (71, 279, 'REAPRESENTAÇÃO DE CHEQUE (SAINDO)', 2, _binary '\0', 2, NULL, _binary '', NULL, NULL, 279000000000, '2017-09-21 12:09:25', '2017-09-21 12:09:25', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (72, 195, 'ENTRADAS - A CONFERIR', 1, _binary '\0', 1, '', _binary '', '', NULL, 195000000000, '2017-10-05 09:21:22', '2017-10-05 09:21:22', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (74, 295, 'SAIDAS - A CONFERIR', 1, _binary '\0', 2, '', _binary '', '', NULL, 295000000000, '2017-10-05 09:21:39', '2017-10-05 09:21:39', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (75, 203002001, 'PAGTO. CAPITAL LONGO PRAZO', 47, _binary '\0', 2, NULL, _binary '', NULL, NULL, 203002001000, '2017-12-13 15:14:23', '2017-12-13 15:14:23', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (76, 203002002, 'PAGTO. CAPITAL CURTO PRAZO', 47, _binary '\0', 2, NULL, _binary '', NULL, NULL, 203002002000, '2017-12-13 15:16:13', '2017-12-13 15:16:13', 0, 1, 1, 1);
-INSERT INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
-                             `inserted`,
-                             `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (77, 203002003, 'PAGTO. DDPCG', 47, _binary '\0', 2, NULL, _binary '', NULL, NULL, 203002003000, '2017-12-13 15:16:26', '2017-12-13 15:16:26', 0, 1, 1, 1);
-
+REPLACE INTO `fin_categoria` (`id`, `codigo`, `descricao`, `pai_id`, `centro_custo_dif`, `codigo_super`, `descricao_padrao_moviment`, `totalizavel`, `descricao_alternativa`, `roles_acess`, `codigo_ord`,
+                              `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (1, 1, 'ENTRADAS', NULL, 0, 1, NULL, 0, NULL, NULL, 100000000000, '2015-02-11 18:16:34', '2015-02-11 18:16:36', 0, 1, 1, 1),
+       (2, 2, 'SAÍDAS', NULL, 0, 2, NULL, 0, NULL, NULL, 200000000000, '2015-02-11 18:16:47', '2015-02-11 18:16:49', 0, 1, 1, 1),
+       (101, 101, 'RECEB. VENDAS INTERNAS', 1, 0, 1, '', 0, '', '', 101000000000, '2015-02-11 18:19:35', '2018-12-28 15:25:36', 3, 1, 1, 1),
+       (102, 102, 'RECEB. VENDAS EXTERNAS', 1, 0, 1, NULL, 0, NULL, NULL, 102000000000, '2015-02-11 18:19:40', '2015-02-12 14:58:04', 1, 1, 1, 1),
+       (103, 103, 'ENTRADA - EMPRÉSTIMO', 1, 0, 1, NULL, 0, NULL, NULL, 103000000000, '2015-03-06 15:31:56', '2015-03-06 15:31:56', 0, 1, 1, 1),
+       (104, 104, 'VENDAS LICITAÇÕES', 1, 0, 1, NULL, 0, NULL, NULL, 104000000000, '2015-02-11 18:20:26', '2015-03-06 15:31:41', 3, 1, 1, 1),
+       (150, 150, 'OUTROS RECEBIMENTOS', 1, 0, 1, NULL, 0, NULL, NULL, 150000000000, '2015-02-11 18:19:48', '2015-02-11 18:20:20', 1, 1, 1, 1),
+       (151, 151, 'ENTRADA - AJUSTE DE CAIXA', 1, 0, 1, NULL, 0, NULL, NULL, 151000000000, '2015-03-02 09:49:24', '2015-03-02 09:49:24', 0, 1, 1, 1),
+       (160, 160, 'RECEBIMENTOS PARA TERCEIROS', 1, 0, 1, NULL, 0, NULL, NULL, 160000000000, '2015-05-09 15:10:18', '2015-05-09 15:10:18', 0, 1, 1, 1),
+       (170, 170, 'OUTRAS ENTRADAS', 1, 0, 1, '', 0, '', '', 170000000000, '2015-12-23 11:56:37', '2015-12-23 11:56:37', 0, 1, 1, 1),
+       (179, 179, 'REAPRESENTAÇÃO DE CHEQUE (ENTRANDO)', 1, 0, 1, '', 0, '', '', 179000000000, '2016-03-21 17:18:02', '2016-03-21 17:18:02', 0, 1, 1, 1),
+       (180, 180, 'ENTRADAS PESSOAIS', 1, 0, 1, '', 0, '', null, 180000000000, '2015-04-30 16:40:36', '2015-10-20 12:18:28', 2, 1, 1, 1),
+       (188, 188, 'MOVIMENTAÇÃO ESTORNADA (ENTRANDO)', 1, 0, 1, '%s', 0, NULL, NULL, 188000000000, '2017-08-11 11:17:06', '2017-08-11 11:17:06', 0, 1, 1, 1),
+       (189, 189, 'ESTORNO DE SAÍDA DIRECIONADA', 1, 0, 1, '', 0, '', '', 189000000000, '2015-08-06 17:54:57', '2015-12-07 18:31:38', 2, 1, 1, 1),
+       (191, 191, 'ENTRADA EM FATURA', 1, 0, 1, '', 0, '', '', 191000000000, '2020-12-04 14:39:34', '2020-12-04 14:39:34', 0, 1, 1, 1),
+       (192, 192, 'CRÉDITO EM FATURA', 1, 0, 1, '', 0, '', '', 192000000000, '2020-12-04 14:39:34', '2020-12-04 14:39:34', 0, 1, 1, 1),
+       (195, 195, 'ENTRADAS - A CONFERIR', 1, 0, 1, '', 0, '', NULL, 195000000000, '2017-10-05 09:21:22', '2017-10-05 09:21:22', 0, 1, 1, 1),
+       (199, 199, 'TRANSFERÊNCIA DE CONTA', 1, 0, 1, '', 0, '', '', 199000000000, '2015-02-11 18:19:56', '2018-10-11 17:56:52', 0, 1, 1, 1),
+       (201, 201, 'CUSTOS FIXOS', 2, 0, 2, NULL, 0, NULL, NULL, 201000000000, '2015-02-11 18:20:50', '2015-02-11 18:20:50', 0, 1, 1, 1),
+       (202, 202, 'CUSTOS VARIÁVEIS', 2, 0, 2, NULL, 0, NULL, NULL, 202000000000, '2015-02-11 18:21:06', '2015-02-11 18:21:06', 0, 1, 1, 1),
+       (203, 203, 'EMPRÉSTIMOS', 2, 0, 2, NULL, 0, NULL, NULL, 203000000000, '2015-02-24 08:44:03', '2015-03-02 09:52:08', 1, 1, 1, 1),
+       (204, 204, 'INVESTIMENTOS', 2, 0, 2, '', 0, '', '', 204000000000, '2015-12-23 11:27:45', '2015-12-23 11:27:45', 0, 1, 1, 1),
+       (251, 251, 'SAÍDA - AJUSTE DE CAIXA', 2, 0, 2, NULL, 0, NULL, NULL, 251000000000, '2015-03-02 09:52:35', '2015-03-02 09:52:35', 0, 1, 1, 1),
+       (252, 252, 'AJUSTE COBRANÇA FATURA', 2, 0, 2, '', 0, '', '', 252000000000, '2016-02-06 15:29:19', '2016-02-06 15:29:19', 0, 1, 1, 1),
+       (260, 260, 'PAGTO TERCEIROS', 2, 0, 2, NULL, 0, NULL, NULL, 260000000000, '2015-03-13 12:05:22', '2015-03-13 12:05:22', 0, 1, 1, 1),
+       (270, 270, 'MOVIMENTAÇÃO ESTORNADA (SAINDO)', 2, 0, 2, NULL, 0, NULL, NULL, 270000000000, '2015-07-18 10:33:52', '2015-07-18 10:33:52', 0, 1, 1, 1),
+       (279, 279, 'REAPRESENTAÇÃO DE CHEQUE (SAINDO)', 2, 0, 2, NULL, 0, NULL, NULL, 279000000000, '2017-09-21 12:09:25', '2017-09-21 12:09:25', 0, 1, 1, 1),
+       (280, 280, 'SAÍDAS PESSOAIS', 2, 0, 2, '', 0, '', 'ROLE_FINANCEIRO_PROPRIET', 280000000000, '2015-04-30 16:40:45', '2015-10-20 12:18:42', 2, 1, 1, 1),
+       (290, 290, 'PAGTO. GRUPO MOVIMENT.', 2, 0, 2, NULL, 0, NULL, NULL, 290000000000, '2015-02-12 16:31:02', '2015-03-02 09:52:18', 1, 1, 1, 1),
+       (291, 291, 'SAÍDA EM FATURA', 2, 0, 2, '', 0, '', '', 291000000000, '2020-12-04 14:39:45', '2020-12-04 14:39:45', 0, 1, 1, 1),
+       (292, 292, 'QUITAMENTO DE FATURA', 2, 0, 2, '', 0, '', '', 292000000000, '2020-12-04 14:39:45', '2020-12-04 14:39:45', 0, 1, 1, 1),
+       (295, 295, 'SAIDAS - A CONFERIR', 1, 0, 2, '', 0, '', NULL, 295000000000, '2017-10-05 09:21:39', '2017-10-05 09:21:39', 0, 1, 1, 1),
+       (299, 299, 'TRANSFERÊNCIA PARA CONTA', 2, 0, 2, '', 0, '', '', 299000000000, '2015-02-11 18:20:02', '2019-01-02 11:37:58', 0, 1, 1, 1),
+       (103001, 103001, 'ENTRADA GIRO RÁPIDO', 45, 0, 1, NULL, 0, NULL, NULL, 103001000000, '2015-06-10 09:17:17', '2015-06-10 09:17:17', 0, 1, 1, 1),
+       (103002, 103002, 'ENTRADA CAPITAL DE GIRO', 45, 0, 1, NULL, 0, NULL, NULL, 103002000000, '2015-06-10 09:17:50', '2015-08-17 22:20:51', 1, 1, 1, 1),
+       (201001, 201001, 'LUZ', 9, 0, 2, NULL, 0, NULL, NULL, 201001000000, '2015-02-11 18:21:48', '2015-02-11 18:21:48', 0, 1, 1, 1),
+       (201002, 201002, 'TELEFONE FIXO / INTERNET', 9, 0, 2, NULL, 0, NULL, NULL, 201002000000, '2015-02-11 18:21:53', '2015-03-18 19:22:34', 1, 1, 1, 1),
+       (201003, 201003, 'TELEFONE CELULAR', 9, 0, 2, NULL, 0, NULL, NULL, 201003000000, '2015-02-11 18:21:59', '2015-02-11 18:21:59', 0, 1, 1, 1),
+       (201004, 201004, 'ÁGUA', 9, 0, 2, NULL, 0, NULL, NULL, 201004000000, '2015-02-11 18:22:07', '2015-02-11 18:22:07', 0, 1, 1, 1),
+       (201005, 201005, 'SEGUROS', 9, 0, 2, NULL, 0, NULL, NULL, 201005000000, '2015-02-11 18:22:14', '2015-02-11 18:22:14', 0, 1, 1, 1),
+       (201006, 201006, 'MATERIAIS DE EXPEDIENTE', 9, 0, 2, NULL, 0, NULL, NULL, 201006000000, '2015-02-11 18:22:20', '2015-02-11 18:22:20', 0, 1, 1, 1),
+       (201007, 201007, 'COMBUSTÍVEIS E DESP. VIAGENS', 9, 0, 2, NULL, 0, NULL, NULL, 201007000000, '2015-02-11 18:22:32', '2015-02-11 18:22:32', 0, 1, 1, 1),
+       (201008, 201008, 'MARKETING/PUBLICIDADE', 9, 0, 2, NULL, 0, NULL, NULL, 201008000000, '2015-02-11 18:22:41', '2015-02-11 18:22:41', 0, 1, 1, 1),
+       (201009, 201009, 'FRETES', 9, 0, 2, 'PAGTO DE FRETE', 0, NULL, NULL, 201009000000, '2015-02-11 18:22:50', '2015-09-09 18:24:33', 1, 1, 1, 1),
+       (201010, 201010, 'EMBALAGENS', 9, 0, 2, NULL, 0, NULL, NULL, 201010000000, '2015-02-11 18:22:55', '2015-02-11 18:22:55', 0, 1, 1, 1),
+       (201011, 201011, 'TAXAS, ENCARGOS, DESP. BANCÁRIAS', 9, 0, 2, '', 0, '', '', 201011000000, '2015-02-11 18:23:06', '2018-10-11 17:56:50', 1, 1, 1, 1),
+       (201012, 201012, 'IRFF', 9, 0, 2, NULL, 0, NULL, NULL, 201012000000, '2015-02-11 18:23:18', '2015-02-11 18:23:23', 1, 1, 1, 1),
+       (201013, 201013, 'TAXAS E IMPOSTOS DIVERSOS', 9, 0, 2, NULL, 0, NULL, NULL, 201013000000, '2015-02-11 18:23:34', '2015-02-11 18:23:34', 0, 1, 1, 1),
+       (201014, 201014, 'ACIPG/CDL', 9, 0, 2, NULL, 0, NULL, NULL, 201014000000, '2015-02-11 18:23:40', '2015-02-11 18:23:40', 0, 1, 1, 1),
+       (201015, 201015, 'DESP. LICITAÇÕES', 9, 0, 2, NULL, 0, NULL, NULL, 201015000000, '2015-02-11 18:23:47', '2015-02-11 18:23:47', 0, 1, 1, 1),
+       (201016, 201016, 'MÁQUINAS E EQUIPAMENTOS', 9, 0, 2, NULL, 0, NULL, NULL, 201016000000, '2015-03-27 10:27:00', '2015-03-27 10:27:00', 0, 1, 1, 1),
+       (201017, 201017, 'IPTU', 9, 0, 2, '', 0, '', '', 201017000000, '2016-01-06 15:40:05', '2016-01-06 15:40:05', 0, 1, 1, 1),
+       (201018, 201018, 'MANUTENÇÕES EM VEÍCULOS', 9, 0, 2, '', 0, '', '', 201018000000, '2016-01-15 15:54:29', '2016-01-15 15:54:29', 0, 1, 1, 1),
+       (201019, 201019, 'ALUGUEL', 9, 0, 2, '%S', 0, '', '', 201019000000, '2016-05-11 18:04:35', '2016-05-11 18:04:35', 0, 1, 1, 1),
+       (201099, 201099, 'CUSTOS DIVERSOS', 9, 0, 2, '', 0, '', '', 201099000000, '2015-02-11 18:23:57', '2018-11-02 00:45:32', 0, 1, 1, 1),
+       (201100, 201100, 'DEPTO. PESSOAL', 9, 0, 2, NULL, 0, NULL, NULL, 201100000000, '2015-02-11 18:24:15', '2015-02-11 18:24:15', 0, 1, 1, 1),
+       (202001, 202001, 'CUSTOS DE MERCADORIAS', 10, 0, 2, 'PAGTO A FORNECEDOR', 0, '', '', 202001000000, '2015-02-11 18:25:26', '2018-10-11 17:56:55', 1, 1, 1, 1),
+       (202002, 202002, 'IMPOSTO SUPER-SIMPLES', 10, 0, 2, NULL, 0, NULL, NULL, 202002000000, '2015-02-11 18:25:36', '2015-02-11 18:25:36', 0, 1, 1, 1),
+       (202003, 202003, 'SAÍDA DIRECIONADA', 10, 0, 2, '', 0, '', 'ROLE_FINANCEIRO_PROPRIET', 202003000000, '2015-02-11 18:25:44', '2015-10-20 12:18:10', 3, 1, 1, 1),
+       (202004, 202004, 'TAXA ADMIN. CREDIÁRIO', 10, 0, 2, NULL, 0, NULL, NULL, 202004000000, '2015-03-19 15:59:32', '2015-03-19 15:59:32', 0, 1, 1, 1),
+       (202005, 202005, 'CUSTO FINANCEIRO CARTÕES', 10, 0, 2, NULL, 0, NULL, NULL, 202005000000, '2015-04-29 17:58:09', '2015-04-29 17:58:09', 0, 1, 1, 1),
+       (202006, 202006, 'DOAÇÕES, AJUDAS, CONTRIBUIÇÕES', 10, 0, 2, NULL, 0, NULL, NULL, 202006000000, '2015-07-20 15:13:26', '2015-07-20 15:13:26', 0, 1, 1, 1),
+       (203001, 203001, 'PAGTO. JUROS/TAXAS', 39, 0, 2, NULL, 0, NULL, NULL, 203001000000, '2015-03-06 15:32:28', '2015-03-06 15:32:28', 0, 1, 1, 1),
+       (203002, 203002, 'PAGTO. CAPITAL', 39, 0, 2, NULL, 0, NULL, NULL, 203002000000, '2015-03-06 15:32:35', '2015-03-06 15:32:35', 0, 1, 1, 1),
+       (203003, 203003, 'PAGTO. GIRO RÁPIDO', 39, 0, 2, NULL, 0, NULL, NULL, 203003000000, '2015-06-09 18:20:45', '2015-06-10 09:16:12', 2, 1, 1, 1),
+       (201100001, 201100001, 'FOLHA DE PAGAMENTO', 28, 0, 2, NULL, 0, NULL, NULL, 201100001000, '2015-02-11 18:24:27', '2015-02-11 18:24:27', 0, 1, 1, 1),
+       (201100002, 201100002, 'INSS', 28, 0, 2, NULL, 0, NULL, NULL, 201100002000, '2015-02-11 18:24:39', '2015-02-11 18:24:39', 0, 1, 1, 1),
+       (201100003, 201100003, 'FGTS', 28, 0, 2, NULL, 0, NULL, NULL, 201100003000, '2015-02-11 18:24:50', '2015-02-11 18:24:50', 0, 1, 1, 1),
+       (201100004, 201100004, 'VALE TRANSPORTE', 28, 0, 2, NULL, 0, NULL, NULL, 201100004000, '2015-02-11 18:24:58', '2015-02-11 18:24:58', 0, 1, 1, 1),
+       (201100005, 201100005, 'SINDICATO', 28, 0, 2, NULL, 0, NULL, NULL, 201100005000, '2015-02-11 18:25:05', '2015-02-11 18:25:05', 0, 1, 1, 1),
+       (201100006, 201100006, 'HONORÁRIOS CONTÁBEIS', 28, 0, 2, NULL, 0, NULL, NULL, 201100006000, '2015-02-11 18:25:17', '2015-02-11 18:25:17', 0, 1, 1, 1),
+       (201100007, 201100007, 'MÃO-DE-OBRA', 28, 0, 2, NULL, 0, NULL, NULL, 201100007000, '2015-02-24 08:48:51', '2015-02-24 08:48:51', 0, 1, 1, 1),
+       (201100008, 201100008, 'CONVÊNIOS', 28, 0, 2, NULL, 0, NULL, NULL, 201100008000, '2015-02-24 08:49:54', '2015-02-24 08:49:54', 0, 1, 1, 1),
+       (201100999, 201100999, 'ENCARGOS SOCIAIS (GERAIS)', 28, 0, 2, NULL, 0, NULL, NULL, 201100999000, '2015-02-24 08:47:11', '2015-02-24 08:47:11', 0, 1, 1, 1),
+       (202005001, 202005001, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 51, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 0, NULL, NULL, 202005001000, '2015-06-10 09:48:20', '2015-07-16 09:52:06', 1, 1, 1, 1),
+       (202005002, 202005002, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 51, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 0, NULL, NULL, 202005002000, '2015-06-10 09:48:31', '2015-07-16 09:52:11', 1, 1, 1, 1),
+       (203002001, 203002001, 'PAGTO. CAPITAL LONGO PRAZO', 47, 0, 2, NULL, 0, NULL, NULL, 203002001000, '2017-12-13 15:14:23', '2017-12-13 15:14:23', 0, 1, 1, 1),
+       (203002002, 203002002, 'PAGTO. CAPITAL CURTO PRAZO', 47, 0, 2, NULL, 0, NULL, NULL, 203002002000, '2017-12-13 15:16:13', '2017-12-13 15:16:13', 0, 1, 1, 1),
+       (203002003, 203002003, 'PAGTO. DDPCG', 47, 0, 2, NULL, 0, NULL, NULL, 203002003000, '2017-12-13 15:16:26', '2017-12-13 15:16:26', 0, 1, 1, 1);
 
 
 TRUNCATE TABLE fin_modo;

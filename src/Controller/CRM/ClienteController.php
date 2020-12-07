@@ -95,7 +95,7 @@ class ClienteController extends FormListController
             $endereco['tipo'] = is_array($endereco['tipo'] ?? null) ? implode(',', $endereco['tipo']) : ($endereco['tipo'] ?? '');
 
             foreach ($endereco as $k => $v) {
-                $endereco[$k] = strtoupper($v);
+                $endereco[$k] = mb_strtoupper($v);
             }
             if ($endereco['i'] >= 0) {
                 $cliente->jsonData['enderecos'][$endereco['i']] = $endereco;
