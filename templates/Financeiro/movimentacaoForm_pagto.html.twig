@@ -23,12 +23,32 @@
                         </button>
 
                         {% if e.id %}
-                            <button type="button" class="btn btn-danger"
-                                    data-url="{{ url('movimentacao_delete', {id: e.id}) }}"
-                                    data-token="{{ csrf_token('delete') }}"
-                                    data-target="#confirmationModal" data-toggle="modal">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-block btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-cog" aria-hidden="true"></i> Opções
+                                </button>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                    <a class="dropdown-item" href="{{ url('movimentacao_form_recorrente', {'id': e.id}) }}">
+                                        <i class="fas fa-undo" aria-hidden="true"></i> Transformar em Recorrente
+                                    </a>
+
+                                    <button type="button" class="dropdown-item"
+                                            data-url="{{ url('fin_movimentacao_clonar', {id: e.id}) }}"
+                                            data-token="{{ csrf_token('fin_movimentacao_clonar') }}"
+                                            data-target="#confirmationModal" data-toggle="modal">
+                                        <i class="far fa-clone"></i> Clonar
+                                    </button>
+
+                                    <button type="button" class="dropdown-item"
+                                            data-url="{{ url('movimentacao_delete', {id: e.id}) }}"
+                                            data-token="{{ csrf_token('delete') }}"
+                                            data-target="#confirmationModal" data-toggle="modal">
+                                        <i class="fa fa-trash" aria-hidden="true"></i> Deletar
+                                    </button>
+                                </div>
+                            </div>
                         {% endif %}
 
                     </div>

@@ -15,6 +15,17 @@
                     </div>
                     <div class="col-2 text-right">
 
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                                title="Novo registro"
+                                onclick="window.location.href='{{ url('fin_movimentacao_form_aPagarReceber') }}'">
+                            <i class="fas fa-file" aria-hidden="true"></i>
+                        </button>
+
+                        <a role="button" class="btn btn-outline-secondary" href="{{ url('aPagarReceber_list') }}"
+                           title="Listar">
+                            <i class="fas fa-list"></i>
+                        </a>
+
                         {% if e.id %}
                             <div class="dropdown">
                                 <button class="btn btn-block btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
