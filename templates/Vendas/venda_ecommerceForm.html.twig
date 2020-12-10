@@ -154,6 +154,15 @@
                             </button>
                         {% endif %}
 
+                        {% if permiteFinalizarVenda|default(false) %}
+                            <button type="button" class="btn btn-success"
+                                    data-url="{{ url('ven_venda_finalizarPV', {'venda': e.id}) }}"
+                                    data-token="{{ csrf_token('ven_venda_finalizarPV') }}"
+                                    data-target="#confirmationModal" data-toggle="modal">
+                                <i class="far fa-check-circle"></i> Finalizar PV
+                            </button>
+                        {% endif %}
+
                     </div>
 
 

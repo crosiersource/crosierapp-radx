@@ -72,4 +72,24 @@ class IntegraSimplo7Controller extends BaseController
         return new Response('OK');
     }
 
+
+    /**
+     *
+     * @Route("/est/integraSimplo7/obterListaDeStatus/", name="est_integraSimplo7_obterListaDeStatus")
+     *
+     * @param IntegradorSimplo7 $integraSimplo7Business
+     * @return Response
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function obterListaDeStatus(IntegradorSimplo7 $integraSimplo7Business): Response
+    {
+        $status = $integraSimplo7Business->obterStatusPedidos();
+        $html = '';
+        foreach ($status as $s) {
+            $html .= $s['id'] . ': ' . $s['nome'] . '<br>';
+        }
+        return new Response($html);
+    }
+
 }

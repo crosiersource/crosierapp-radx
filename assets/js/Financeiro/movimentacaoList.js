@@ -45,12 +45,14 @@ function getDatatablesColumns() {
             render: function (data, type, row) {
 
                 let sLeft = "<b>" + data.descricaoMontada + "</b>";
-                if (data.cedente) {
-                    sLeft += '<br />' + data.cedente;
+                if (data.categoria.codigoSuper === 1 && data.sacado) {
+                    sLeft += '<br /><small>' + data.sacado + '</small>';
+                }
+                if (data.categoria.codigoSuper === 2 && data.cedente) {
+                    sLeft += '<br /><small>' + data.cedente + '</small>';
                 }
 
                 let sRight = '';
-
 
                 if (data.chequeNumCheque) {
                     sRight += '<span class="badge badge-pill badge-danger">Cheque</span><br /> ';

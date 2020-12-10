@@ -407,7 +407,6 @@ class VendaController extends FormListController
     }
 
 
-
     /**
      *
      * @Route("/ven/venda/form/pagto/{id}", name="ven_venda_form_pagto", requirements={"id"="\d+"})
@@ -432,7 +431,7 @@ class VendaController extends FormListController
 
         $this->vendaBusiness->recalcularTotais($venda->getId());
 
-        $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
+        $rsTotalPagtos = $this->getDoctrine()->getConnection()->fetchAllAssociative('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
         $params['pagtos_total'] = $rsTotalPagtos[0]['totalPagtos'] ?? 0.0;
         $params['pagtos_diferenca'] = '0.00';
         if ((float)$venda->valorTotal > (float)($rsTotalPagtos[0]['totalPagtos'] ?? 0.0)) {
@@ -443,10 +442,11 @@ class VendaController extends FormListController
         $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
         foreach ($venda->pagtos as $pagto) {
             // Para exibir na lista, por padrão pega a carteira_destino (caso seja null, então é movimentação direto no caixa)
-            $carteiraId = $pagto->jsonData['carteira_destino_id'] ?? $carteiraId = $pagto->jsonData['carteira_id'];
-            $pagto->carteira = $repoCarteira->find($carteiraId);
+            $carteiraId = $pagto->jsonData['carteira_destino_id'] ?? $pagto->jsonData['carteira_id'] ?? null;
+            if ($carteiraId) {
+                $pagto->carteira = $repoCarteira->find($carteiraId);
+            }
         }
-
 
 
         /** @var PlanoPagtoRepository $repoPlanoPagto */
@@ -499,7 +499,7 @@ class VendaController extends FormListController
             $vendaPagto['estabelecimento_id'] = 1;
             $vendaPagto['user_inserted_id'] = 1;
             $vendaPagto['user_updated_id'] = 1;
-            $conn = $this->entityHandler->getDoctrine()->getConnection();
+            $conn = $this->getDoctrine()->getConnection();
 
             $conn->insert('ven_venda_pagto', $vendaPagto);
 
@@ -511,7 +511,7 @@ class VendaController extends FormListController
             }
         }
 
-        $rsTotalPagtos = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
+        $rsTotalPagtos = $this->getDoctrine()->getConnection()->fetchAllAssociative('SELECT sum(valor_pagto) totalPagtos FROM ven_venda_pagto WHERE venda_id = :vendaId', ['vendaId' => $venda->getId()]);
         $pagtos_diferenca = (float)bcsub($venda->valorTotal, ($rsTotalPagtos[0]['totalPagtos'] ?? 0.0), 2);
         $permiteMaisPagtos = $pagtos_diferenca !== 0.0;
 
@@ -545,8 +545,10 @@ class VendaController extends FormListController
         $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
         foreach ($venda->pagtos as $pagto) {
             // Para exibir na lista, por padrão pega a carteira_destino (caso seja null, então é movimentação direto no caixa)
-            $carteiraId = $pagto->jsonData['carteira_destino_id'] ?? $carteiraId = $pagto->jsonData['carteira_id'];
-            $pagto->carteira = $repoCarteira->find($carteiraId);
+            $carteiraId = $pagto->jsonData['carteira_destino_id'] ?? $pagto->jsonData['carteira_id'] ?? null;
+            if ($carteiraId) {
+                $pagto->carteira = $repoCarteira->find($carteiraId);
+            }
         }
 
         return $this->doRender('Vendas/venda_form_resumo.html.twig', $params);
@@ -587,6 +589,8 @@ class VendaController extends FormListController
             $this->integrarVendaParaECommerce($venda, $integradorBusinessFactory);
         };
 
+        $params['permiteFinalizarVenda'] = $this->vendaBusiness->permiteFinalizarVenda($venda);
+
         return $this->doForm($request, $venda, $params, false, $fnHandleRequestOnValid);
     }
 
@@ -604,7 +608,11 @@ class VendaController extends FormListController
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
             try {
-                $this->vendaBusiness->finalizarPV($venda);
+                if ($venda->jsonData['canal'] === 'ECOMMERCE') {
+                    $this->vendaBusiness->finalizarPVECommerce($venda);
+                } else {
+                    $this->vendaBusiness->finalizarPV($venda);
+                }
                 $this->addFlash('success', 'PV finalizado com sucesso');
             } catch (ViewException $e) {
                 $this->addFlash('error', $e->getMessage());
@@ -861,7 +869,7 @@ class VendaController extends FormListController
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
             try {
-                $this->entityHandler->getDoctrine()->getConnection()->delete('ven_venda_pagto', ['id' => $pagto->getId()]);
+                $this->getDoctrine()->getConnection()->delete('ven_venda_pagto', ['id' => $pagto->getId()]);
                 $this->addFlash('success', 'Registro deletado com sucesso.');
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Erro ao deletar registro.');
@@ -997,7 +1005,7 @@ class VendaController extends FormListController
             $str = $request->get('term');
             $str = str_replace(' ', '%', $str);
 
-            $conn = $this->entityHandler->getDoctrine()->getConnection();
+            $conn = $this->getDoctrine()->getConnection();
 
             // Pesquisa o produto e seu preço já levando em consideração a unidade padrão
             $sql = 'SELECT prod.id, prod.codigo, prod.nome, prod.json_data->>"$.qtde_min_para_atacado" as qtde_min_para_atacado, ' .
@@ -1053,7 +1061,7 @@ class VendaController extends FormListController
                 'JOIN est_lista_preco lista ON preco.lista_id = lista.id ' .
                 'WHERE preco.atual AND lista.descricao = \'VAREJO\' AND prod.id = :id';
 
-            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative($sql,
+            $rs = $this->getDoctrine()->getConnection()->fetchAllAssociative($sql,
                 [
                     'id' => $id,
                 ]);
@@ -1083,7 +1091,7 @@ class VendaController extends FormListController
      */
     private function handleResultProdutoSelect2(array $rs): array
     {
-        $conn = $this->entityHandler->getDoctrine()->getConnection();
+        $conn = $this->getDoctrine()->getConnection();
 
         $results = [];
 
@@ -1206,7 +1214,7 @@ class VendaController extends FormListController
     {
         $str = $request->get('term') ?? '';
 
-        $rs = $this->entityHandler->getDoctrine()->getConnection()
+        $rs = $this->getDoctrine()->getConnection()
             ->fetchAllAssociative('SELECT id, documento, nome, json_data FROM crm_cliente WHERE documento = :documento OR nome LIKE :nome LIMIT 30',
                 [
                     'documento' => preg_replace("/[^0-9]/", "", $str),

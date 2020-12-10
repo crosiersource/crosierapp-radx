@@ -49,7 +49,8 @@ class CarteiraType extends AbstractType
                 'Sim' => true,
                 'Não' => false
             ],
-            'attr' => ['class' => 'autoSelect2']
+            'attr' => ['class' => 'autoSelect2'],
+            'help' => 'Somente carteiras concretas podem conter movimentações com status "REALIZADA"'
         ]);
 
         $builder->add('abertas', ChoiceType::class, [
@@ -57,7 +58,8 @@ class CarteiraType extends AbstractType
                 'Sim' => true,
                 'Não' => false
             ],
-            'attr' => ['class' => 'autoSelect2']
+            'attr' => ['class' => 'autoSelect2'],
+            'help' => 'Podem conter movimentação a pagar/receber (status "ABERTA")'
         ]);
 
         $builder->add('caixa', ChoiceType::class, [
@@ -65,7 +67,8 @@ class CarteiraType extends AbstractType
                 'Sim' => true,
                 'Não' => false
             ],
-            'attr' => ['class' => 'autoSelect2']
+            'attr' => ['class' => 'autoSelect2'],
+            'help' => 'As datas de vencimento, pagamento e movimentação coincidem'
         ]);
 
         $builder->add('cheque', ChoiceType::class, [

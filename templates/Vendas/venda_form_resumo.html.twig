@@ -118,14 +118,14 @@
                             <label for="venda_jsonData_cliente_fone">Fone</label>
                             <input type="text" id="venda_jsonData_cliente_fone"
                                    readonly="readonly"
-                                   class="telefone form-control disabled" value="{{ e.jsonData['cliente_fone'] }}">
+                                   class="telefone form-control disabled" value="{{ e.jsonData['cliente_fone']|default('') }}">
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-12">
                         <div class="form-group"><label for="venda_jsonData_cliente_email">E-mail</label>
                             <input type="text" id="venda_jsonData_cliente_email"
                                    readonly="readonly"
-                                   class="email form-control disabled" value="{{ e.jsonData['cliente_email'] }}">
+                                   class="email form-control disabled" value="{{ e.jsonData['cliente_email']|default('') }}">
                         </div>
                     </div>
                 </div>

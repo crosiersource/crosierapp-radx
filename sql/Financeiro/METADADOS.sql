@@ -471,8 +471,8 @@ CREATE TABLE `fin_movimentacao`
     `documento_banco_id`   bigint(20),
     `documento_num`        varchar(200),
 
-    `sacado_documento`     varchar(14),
-    `cedente_documento`    varchar(14),
+    `sacado`               varchar(500),
+    `cedente`              varchar(500),
 
     `quitado`              tinyint(1)                   NOT NULL,
 
