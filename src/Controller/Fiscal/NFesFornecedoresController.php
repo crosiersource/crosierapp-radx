@@ -86,12 +86,11 @@ class NFesFornecedoresController extends FormListController
     /**
      *
      * @Route("/fis/nfesFornecedores/form/{id}", name="nfesFornecedores_form", requirements={"id"="\d+"})
-     * @param Request $request
      * @param NotaFiscal|null $notaFiscal
      * @return RedirectResponse|Response
      * @throws \Exception
      */
-    public function form(Request $request, NotaFiscal $notaFiscal)
+    public function form(NotaFiscal $notaFiscal)
     {
         if ($notaFiscal->getXMLDecoded()->getName() === 'resNFe') {
             $notaFiscal->setResumo(true);
@@ -108,12 +107,11 @@ class NFesFornecedoresController extends FormListController
     /**
      *
      * @Route("/fis/nfesFornecedores/formResumo/{id}", name="nfesFornecedores_formResumo", requirements={"id"="\d+"})
-     * @param Request $request
      * @param NotaFiscal|null $notaFiscal
      * @return RedirectResponse|Response
      * @throws \Exception
      */
-    public function formResumo(Request $request, NotaFiscal $notaFiscal)
+    public function formResumo(NotaFiscal $notaFiscal)
     {
         return $this->doRender('/Fiscal/nfeFornecedores/formResumo.html.twig', ['notaFiscal' => $notaFiscal]);
     }
@@ -141,7 +139,7 @@ class NFesFornecedoresController extends FormListController
      * @return Response
      * @throws \Exception
      */
-    public function list(Request $request)
+    public function list(Request $request): Response
     {
         $nfeConfigs = $this->nfeUtils->getNFeConfigsEmUso();
         $empresa = StringUtils::mascararCnpjCpf($nfeConfigs['cnpj']) . ' - ' . $nfeConfigs['razaosocial'];
@@ -166,7 +164,7 @@ class NFesFornecedoresController extends FormListController
      * @return Response
      * @throws ViewException
      */
-    public function datatablesJsList(Request $request)
+    public function datatablesJsList(Request $request): Response
     {
         $rParams = $request->request->all();
         if (isset($rParams['formPesquisar'])) {

@@ -8,10 +8,8 @@ use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
-use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\DistDFe;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\DistDFeEntityHandler;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -28,22 +26,10 @@ class DistDFeController extends FormListController
     /** @var DistDFeEntityHandler */
     protected $entityHandler;
 
-    private SpedNFeBusiness $spedNFeBusiness;
-
     private NFeUtils $nfeUtils;
 
     private DistDFeBusiness $distDFeBusiness;
 
-    private ParameterBagInterface $params;
-
-    /**
-     * @required
-     * @param SpedNFeBusiness $spedNFeBusiness
-     */
-    public function setSpedNFeBusiness(SpedNFeBusiness $spedNFeBusiness): void
-    {
-        $this->spedNFeBusiness = $spedNFeBusiness;
-    }
 
     /**
      * @required
@@ -61,15 +47,6 @@ class DistDFeController extends FormListController
     public function setDistDFeBusiness(DistDFeBusiness $distDFeBusiness): void
     {
         $this->distDFeBusiness = $distDFeBusiness;
-    }
-
-    /**
-     * @param ParameterBagInterface $params
-     * @required
-     */
-    public function setParams(ParameterBagInterface $params): void
-    {
-        $this->params = $params;
     }
 
     /**

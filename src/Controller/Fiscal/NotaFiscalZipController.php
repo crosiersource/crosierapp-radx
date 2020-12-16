@@ -18,8 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class NotaFiscalZipController extends BaseController
 {
 
-    /** @var NotaFiscalBusiness */
-    private $notaFiscalBusiness;
+    private NotaFiscalBusiness $notaFiscalBusiness;
 
     /**
      * @required
@@ -34,11 +33,10 @@ class NotaFiscalZipController extends BaseController
     /**
      *
      * @Route("/fis/notaFiscalZip/ini/", name="fis_notaFiscalZip_ini")
-     * @param Request $request
      * @return Response
      * @throws \Exception
      */
-    public function ini(Request $request)
+    public function ini(): Response
     {
         $mesano = ((new \DateTime())->modify('last month'))->format('Y-m');
         $params = ['mesano' => $mesano];
@@ -51,7 +49,7 @@ class NotaFiscalZipController extends BaseController
      * @param Request $request
      * @return Response
      */
-    public function processar(Request $request)
+    public function processar(Request $request): Response
     {
         try {
             $mesano = $request->get('mesano');

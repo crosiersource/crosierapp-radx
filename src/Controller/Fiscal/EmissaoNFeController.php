@@ -6,9 +6,7 @@ use App\Form\Fiscal\NotaFiscalCartaCorrecaoType;
 use App\Form\Fiscal\NotaFiscalItemType;
 use App\Form\Fiscal\NotaFiscalType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
@@ -314,7 +312,7 @@ class EmissaoNFeController extends FormListController
             $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
 
             $logo = 'data://text/plain;base64,' . base64_encode($response);
-            $daevento->monta($logo);
+            // $daevento->monta($logo);
             $pdf = $daevento->render($logo);
             header('Content-Type: application/pdf');
             echo $pdf;
@@ -423,7 +421,7 @@ class EmissaoNFeController extends FormListController
             $xml = $notaFiscal->getXmlNota();
             $danfe = new Danfe($xml);
             $danfe->debugMode(false);
-            $danfe->creditsIntegratorFooter('');
+            $danfe->creditsIntegratorFooter('EKT Plus');
 
 
             $arrContextOptions = array(
@@ -441,8 +439,7 @@ class EmissaoNFeController extends FormListController
             }
 
 
-            $danfe->monta($logo);
-            $pdf = $danfe->render();
+            $pdf = $danfe->render($logo);
             //o pdf porde ser exibido como view no browser
             //salvo em arquivo
             //ou setado para download forçado no browser
@@ -494,7 +491,7 @@ class EmissaoNFeController extends FormListController
             $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
 
             $logo = 'data://text/plain;base64,' . base64_encode($response);
-            $daevento->monta($logo);
+            // $daevento->monta($logo);
             $pdf = $daevento->render($logo);
             header('Content-Type: application/pdf');
             echo $pdf;
@@ -662,11 +659,9 @@ class EmissaoNFeController extends FormListController
         /** @var NotaFiscalRepository $repoNotaFiscal */
         $repoNotaFiscal = $this->getDoctrine()->getRepository(NotaFiscal::class);
         $dadosPessoa = $repoNotaFiscal->findUltimosDadosPessoa($documento);
-        if ($dadosPessoa === []) {
-            /** @var PessoaRepository $repoPessoa */
-            $repoPessoa = $this->getDoctrine()->getRepository(Pessoa::class);
-            $dadosPessoa = $repoPessoa->findPessoaMaisCompletaPorDocumento($documento);
-        }
+        // if ($dadosPessoa === []) {
+            // TODO, corrigir
+        // }
         return new JsonResponse(['result' => 'OK', 'dados' => $dadosPessoa]);
     }
 

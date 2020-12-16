@@ -12,7 +12,6 @@ use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -223,7 +222,7 @@ class NFeUtilsController extends BaseController
                 );
             }
 
-            $rContribuintes = $conn->fetchAll('SELECT id, valor FROM cfg_app_config WHERE chave LIKE \'nfeConfigs\\_%\'');
+            $rContribuintes = $conn->fetchAllAssociative('SELECT id, valor FROM cfg_app_config WHERE chave LIKE \'nfeConfigs\\_%\'');
 
             $contribuintes = [];
             $idAtual = $this->nfeUtils->getNfeConfigsIdEmUso();
@@ -239,7 +238,7 @@ class NFeUtilsController extends BaseController
             $params['page_title'] = 'Selecionar Contribuinte';
 
             return $this->doRender('Fiscal/selecionarContribuinte.html.twig', $params);
-        } catch (DBALException | ViewException $e) {
+        } catch (\Throwable $e) {
             $msg = 'Erro ao alternarNfeConfigsIdEmUso';
             if ($e instanceof ViewException) {
                 $msg .= ' (' . $e->getMessage() . ')';
