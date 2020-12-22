@@ -978,6 +978,7 @@ class VendaController extends FormListController
             $dia = null;
             $dias = [];
             $i = -1;
+
             /** @var Venda $venda */
             foreach ($dados as $venda) {
                 if ($venda->dtVenda->format('d/m/Y') !== $dia) {
@@ -986,6 +987,10 @@ class VendaController extends FormListController
                     $dia = $venda->dtVenda->format('d/m/Y');
                     $dias[$i]['dtVenda'] = $venda->dtVenda;
                 }
+
+                // transient
+                $venda->notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+
                 $dias[$i]['vendas'][] = $venda;
                 $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
             }
