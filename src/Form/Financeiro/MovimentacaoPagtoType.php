@@ -75,12 +75,12 @@ class MovimentacaoPagtoType extends AbstractType
 
                 $choices = [];
 
-                if ($event->getData()['cedente']) {
+                if ($event->getData()['cedente'] ?? false) {
                     $cedente = $event->getData()['cedente'];
                     $choices['cedente']['choices'] = [$cedente => $cedente];
                 }
 
-                if ($event->getData()['sacado']) {
+                if ($event->getData()['sacado'] ?? false) {
                     $sacado = $event->getData()['sacado'];
                     $choices['sacado']['choices'] = [$sacado => $sacado];
                 }
