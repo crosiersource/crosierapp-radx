@@ -625,7 +625,7 @@ class EmissaoNFeController extends FormListController
     public function datatablesJsList(Request $request)
     {
         $rParams = $request->request->all();
-        parse_str($rParams['formPesquisar'], $formPesquisar);
+        parse_str($rParams['formPesquisar'] ?? null, $formPesquisar);
         // fixos
         $defaultFilters['filter']['documentoEmitente'] = preg_replace("/[^0-9]/", '', $this->nfeUtils->getNFeConfigsEmUso()['cnpj']);
         $defaultFilters['filter']['tipoNotaFiscal'] = 'NFE';
