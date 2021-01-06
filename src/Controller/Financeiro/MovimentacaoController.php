@@ -833,7 +833,7 @@ class MovimentacaoController extends FormListController
     {
         $params = [
             'typeClass' => MovimentacaoPagtoType::class,
-            'formRoute' => 'fin_movimentacao_form_pagto',
+            'formRoute' => 'movimentacao_form_pagto',
             'formView' => 'Financeiro/movimentacaoForm_pagto.html.twig'
         ];
 
