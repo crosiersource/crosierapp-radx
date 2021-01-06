@@ -197,6 +197,12 @@ $(document).ready(function () {
 
     $categoria.select2('focus');
 
+    $carteira.select2({
+        width: '100%',
+        dropdownAutoWidth: true,
+        placeholder: '...',
+        allowClear: true
+    });
 
 
 
