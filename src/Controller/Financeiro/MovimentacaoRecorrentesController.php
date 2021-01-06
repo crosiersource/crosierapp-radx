@@ -180,8 +180,8 @@ class MovimentacaoRecorrentesController extends FormListController
 
         /** @var TipoLancto $tipoLancto90 */
         $tipoLancto90 = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 90]);
-        $movimentacao->setTipoLancto($tipoLancto90);
-        $movimentacao->setRecorrente(true);
+        $movimentacao->tipoLancto = $tipoLancto90;
+        $movimentacao->recorrente = true;
 
         $params = [
             'typeClass' => MovimentacaoGeralType::class,
