@@ -457,7 +457,7 @@ class MovimentacaoController extends FormListController
         ];
 
         if (!$movimentacao->getId() && $parcelamento) {
-            $params['formView'] = 'Financeiro/movimentacaoForm_aPagar_parcelamento.html.twig';
+            $params['formView'] = 'Financeiro/movimentacaoForm_aPagarReceber_parcelamento.html.twig';
             return $this->handleParcelamento($request, $movimentacao, $params);
         }
         // else
