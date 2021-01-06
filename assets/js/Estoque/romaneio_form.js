@@ -16,6 +16,8 @@ import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources
 $.fn.select2.defaults.set("theme", "bootstrap");
 $.fn.select2.defaults.set("language", "pt-BR");
 
+import 'jquery-maskmoney/dist/jquery.maskMoney.js';
+
 Numeral.locale('pt-br');
 
 Routing.setRoutingData(routes);

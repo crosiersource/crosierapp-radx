@@ -7,6 +7,8 @@ import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources
 
 import Moment from 'moment';
 
+import 'jquery-maskmoney/dist/jquery.maskMoney.js';
+
 import 'select2/dist/css/select2.css';
 import 'select2';
 import 'select2/dist/js/i18n/pt-BR.js';

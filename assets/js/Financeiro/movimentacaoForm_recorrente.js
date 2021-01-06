@@ -5,6 +5,8 @@ import $ from "jquery";
 import routes from '../../static/fos_js_routes.json';
 import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
 
+import 'jquery-maskmoney/dist/jquery.maskMoney.js';
+
 import Moment from 'moment';
 
 
