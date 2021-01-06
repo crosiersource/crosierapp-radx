@@ -2,8 +2,6 @@
 
 namespace App\Form\Financeiro;
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use Doctrine\ORM\EntityManagerInterface;

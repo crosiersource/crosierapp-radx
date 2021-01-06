@@ -3,8 +3,10 @@
 namespace App\Form\Financeiro;
 
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\ChoiceTypeUtils;
+use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -60,10 +62,9 @@ class MovimentacaoChequeProprioType extends AbstractType
 
             $choices['carteiras'] = $carteirasDeCheques;
 
-            /** @var PessoaRepository $repoPessoa */
-            $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
-
-            $filiaisR = $repoPessoa->findByFiltersSimpl([['categ.descricao', 'LIKE', 'FILIAL PROP']]);
+            /** @var ClienteRepository $repoCliente */
+            $repoCliente = $this->doctrine->getRepository(Cliente::class);
+            $filiaisR = $repoCliente->findFiliaisProp();
             if ($filiaisR) {
                 $filiais = ChoiceTypeUtils::toChoiceTypeChoices($filiaisR, '%08d %s', ['id', 'nome']);
                 $choices['sacado'] = $filiais;
