@@ -68,7 +68,11 @@ class MovimentacaoChequeProprioType extends AbstractType
             if ($filiaisR) {
                 $filiais = ChoiceTypeUtils::toChoiceTypeChoices($filiaisR, '%08d %s', ['id', 'nome']);
                 $choices['sacado'] = $filiais;
+            } else {
+                // não deveria, deveria ter ao menos 1 cadastrado no crm_cliente com json_data.filial_prop = "S"
+                $choices['sacado'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
             }
+            $choices['cedente'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
             $this->movimentacaoTypeBuilder->build($form, $movimentacao, $choices);
         });
 
