@@ -229,7 +229,7 @@ class MovimentacaoController extends FormListController
     public function cadeiaDelete(Cadeia $cadeia): Response
     {
         try {
-            $this->cadeiaEntityHandler->deleteCadeiaETodasAsMovimentacoes($cadeia);
+            $this->getEntityHandler()->deleteCadeiaETodasAsMovimentacoes($cadeia);
         } catch (ViewException $e) {
             $this->addFlash('error', 'Erro ao deletar cadeia');
             $this->addFlash('error', $e->getMessage());
