@@ -83,12 +83,12 @@ class MovimentacaoChequeProprioType extends AbstractType
 
                 $choices = [];
 
-                if ($event->getData()['cedente']) {
+                if ($event->getData()['cedente'] ?? null) {
                     $cedente = (int)$event->getData()['cedente'];
                     $choices['cedente'] = [$cedente => $cedente];
                 }
 
-                if ($event->getData()['sacado']) {
+                if ($event->getData()['sacado'] ?? null) {
                     $sacado = (int)$event->getData()['sacado'];
                     $choices['sacado'] = [$sacado => $sacado];
                 }

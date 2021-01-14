@@ -64,12 +64,12 @@ class MovimentacaoAPagarReceberType extends AbstractType
 
                 $choices = [];
 
-                if ($event->getData()['cedente']) {
+                if ($event->getData()['cedente'] ?? null) {
                     $cedente = $event->getData()['cedente'];
                     $choices['cedente']['choices'] = [$cedente => $cedente];
                 }
 
-                if ($event->getData()['sacado']) {
+                if ($event->getData()['sacado'] ?? null) {
                     $sacado = $event->getData()['sacado'];
                     $choices['sacado']['choices'] = [$sacado => $sacado];
                 }
