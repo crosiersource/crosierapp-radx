@@ -204,6 +204,9 @@
     "phenx/php-svg-lib": {
         "version": "v0.3.3"
     },
+    "php": {
+      "version": "7.4"
+    },
     "php-http/guzzle6-adapter": {
         "version": "v1.1.1"
     },
