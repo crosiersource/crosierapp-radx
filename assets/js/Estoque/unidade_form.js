@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 
 import $ from "jquery";
 import JSONEditor from "jsoneditor";

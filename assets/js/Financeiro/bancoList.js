@@ -1,7 +1,4 @@
-'use strict';
-
-
-
+/* eslint-disable */
 
 let listId = "#bancoList";
 

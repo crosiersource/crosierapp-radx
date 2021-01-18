@@ -1,6 +1,4 @@
-'use strict';
-
-
+/* eslint-disable */
 
 let listId = "#centroCustoList";
 

@@ -1,4 +1,5 @@
-'use strict';
+/* eslint-disable */
+
 
 import Moment from 'moment';
 

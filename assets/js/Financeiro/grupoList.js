@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 
 
 import routes from '../../static/fos_js_routes.json';

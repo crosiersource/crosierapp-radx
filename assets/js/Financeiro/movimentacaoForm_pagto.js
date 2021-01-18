@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 
 /**
  * Script que é utilizado em telas de extratos.
