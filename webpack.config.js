@@ -101,13 +101,14 @@ Encore
     .addEntry('Vendas/venda_form_pagamento', './assets/js/Vendas/venda_form_pagamento.js')
     .addEntry('Vendas/venda_form_resumo', './assets/js/Vendas/venda_form_resumo.js')
 
+
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
-    // .enableSingleRuntimeChunk()
-    .disableSingleRuntimeChunk()
+    .enableSingleRuntimeChunk()
+    // .disableSingleRuntimeChunk()
 
     /*
      * FEATURE CONFIG
@@ -127,6 +128,38 @@ Encore
         config.useBuiltIns = 'usage';
         config.corejs = 3;
     })
+    .enableVueLoader(function (options) {
+        options.loaders = {
+            vue: {loader: 'babel-loader'}
+        };
+    }, {
+        version: 3,
+    })
+    .addAliases({
+        '@': path.resolve(__dirname, 'assets', 'js'),
+        styles: path.resolve(__dirname, 'assets', 'scss'),
+    })
+    .enableEslintLoader()
+    .configureCssLoader((config) => {
+        if (!Encore.isProduction() && config.modules) {
+            config.modules.localIdentName = '[name]_[local]_[hash:base64:5]';
+        }
+    })
+    .enableSassLoader()
+    .addLoader({
+        test: /\.js$/,
+        loader: 'babel-loader',
+        options: {
+            plugins: [require("@babel/plugin-proposal-optional-chaining")]
+        },
+        exclude: file => (
+            /node_modules/.test(file) &&
+            !/\.vue\.js/.test(file)
+        )
+    })
+
+
+;
 
 // enables Sass/SCSS support
 //.enableSassLoader()
@@ -144,7 +177,6 @@ Encore
 // uncomment if you use API Platform Admin (composer req api-admin)
 //.enableReactPreset()
 //.addEntry('admin', './assets/js/admin.js')
-;
+
 
 module.exports = Encore.getWebpackConfig();
-
