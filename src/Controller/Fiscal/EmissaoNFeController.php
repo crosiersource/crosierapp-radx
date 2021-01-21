@@ -431,11 +431,14 @@ class EmissaoNFeController extends FormListController
                 ),
             );
 
-            $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
             $logo = null;
-            if ($notaFiscal->getDocumentoEmitente() === $nfeConfigsEmUso['cnpj']) {
+            $nfeConfigsEmUso = null;
+            if ($notaFiscal->getDocumentoEmitente() && in_array($notaFiscal->getDocumentoEmitente(), $this->nfeUtils->getNFeConfigsCNPJs(), true)) {
+                $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
+
                 $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
                 $logo = 'data://text/plain;base64,' . base64_encode($response);
+                
             }
 
 
@@ -660,7 +663,7 @@ class EmissaoNFeController extends FormListController
         $repoNotaFiscal = $this->getDoctrine()->getRepository(NotaFiscal::class);
         $dadosPessoa = $repoNotaFiscal->findUltimosDadosPessoa($documento);
         // if ($dadosPessoa === []) {
-            // TODO, corrigir
+        // TODO, corrigir
         // }
         return new JsonResponse(['result' => 'OK', 'dados' => $dadosPessoa]);
     }
