@@ -17,7 +17,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 Encore
   .setOutputPath('public/build/')
   .setPublicPath('/build')
-  // .autoProvidejQuery()
+  .autoProvidejQuery()
   .addPlugin(new CopyWebpackPlugin({
     patterns: [
       {from: "./assets/static", to: "static"},
