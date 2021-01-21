@@ -32,23 +32,24 @@
                            aria-controls="home" aria-selected="true">Cabeçalho</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link NOTAFISCAL_TAB {{ notaFiscal.id|default('') != '' ? '' : 'disabled' }}" id="itens-tab" data-toggle="tab" href="#itens" role="tab"
-                           aria-controls="profile" aria-selected="false">Itens</a>
+                        <a class="nav-link NOTAFISCAL_TAB {{ notaFiscal.id|default('') != '' ? '' : 'disabled' }}" id="itens-tab" 
+                           data-toggle="tab" href="#itens" role="tab"
+                           aria-controls="itens" aria-selected="false">Itens</a>
                     </li>
                     <li class="nav-item" title="{{ notaFiscal.transpModalidadeFrete == 'SEM_FRETE' ? 'Modalidade: Sem frete' : '' }}">
                         <a class="nav-link {{ notaFiscal.transpModalidadeFrete == 'SEM_FRETE' ? 'disabled' : '' }} NOTAFISCAL_TAB" id="transporte-tab" data-toggle="tab" href="#transporte"
                            role="tab"
-                           aria-controls="contact" aria-selected="false">Transporte</a>
+                           aria-controls="transporte" aria-selected="false">Transporte</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link NOTAFISCAL_TAB" id="cartasCorrecao-tab" data-toggle="tab"
                            href="#cartasCorrecao" role="tab"
-                           aria-controls="contact" aria-selected="false">Cartas de Correção</a>
+                           aria-controls="cartasCorrecao" aria-selected="false">Cartas de Correção</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link NOTAFISCAL_TAB" id="historico-tab" data-toggle="tab" href="#historico"
                            role="tab"
-                           aria-controls="contact" aria-selected="false">Histórico</a>
+                           aria-controls="historico" aria-selected="false">Histórico</a>
                     </li>
                 </ul>
 
@@ -159,7 +160,6 @@
 
 
     </div>
-
 
 {% endblock %}
 

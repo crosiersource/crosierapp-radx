@@ -41,10 +41,10 @@
                             <th scope="col">Código</th>
                             <th scope="col">Descrição</th>
                             <th scope="col">Unidade</th>
-                            <th scope="col">NCM</th>
-                            <th scope="col">CFOP</th>
+                            <th scope="col">NCM<br>CFOP</th>
                             <th scope="col">Qtde</th>
                             <th scope="col">Vlr Unit</th>
+                            <th scope="col">Vlr Desc</th>
                             <th scope="col">Vlr Total</th>
                             <th scope="col"></th>
                         </tr>
@@ -57,10 +57,10 @@
                                 <td>{{ item.codigo }}</td>
                                 <td>{{ item.descricao }}</td>
                                 <td>{{ item.unidade }}</td>
-                                <td>{{ item.ncm }}</td>
-                                <td>{{ item.cfop }}</td>
+                                <td>{{ item.ncm }}<br>{{ item.cfop }}</td>
                                 <td class="text-right">{{ item.qtde|number_format(2,',','.') }}</td>
                                 <td class="text-right">{{ item.valorUnit|number_format(2,',','.') }}</td>
+                                <td class="text-right">{{ item.valorDesconto|number_format(2,',','.') }}</td>
                                 <td class="text-right">{{ item.valorTotal|number_format(2,',','.') }}</td>
                                 <td class="text-right text-nowrap">
 
@@ -93,9 +93,40 @@
                 </div>
 
 
-                {{ form_row(form.subtotal) }}
-                {{ form_row(form.totalDescontos) }}
-                {{ form_row(form.valorTotal) }}
+                <div class="row">
+                    <div class="col-7"></div>
+                    <div class="col-5">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4">Subtotal</label>
+                            <div class="col-sm-8">
+                                {{ form_widget(form.subtotal) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7"></div>
+                    <div class="col-5">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4">Descontos</label>
+                            <div class="col-sm-8">
+                                {{ form_widget(form.totalDescontos) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7"></div>
+                    <div class="col-5">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4">Valor Total</label>
+                            <div class="col-sm-8">
+                                {{ form_widget(form.valorTotal) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
 
             </div>
         </div>
