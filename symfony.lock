@@ -1,4 +1,18 @@
 {
+    "api-platform/core": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "a93061567140e386f107be75340ac2aee3f86cbf"
+        },
+        "files": [
+            "config/packages/api_platform.yaml",
+            "config/routes/api_platform.yaml",
+            "src/Entity/.gitignore"
+        ]
+    },
     "crosiersource/crosierlib-base": {
         "version": "dev-master"
     },
@@ -92,6 +106,9 @@
     },
     "ezyang/htmlpurifier": {
         "version": "v4.13.0"
+    },
+    "fig/link-util": {
+        "version": "1.1.1"
     },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.2"
@@ -205,7 +222,7 @@
         "version": "v0.3.3"
     },
     "php": {
-      "version": "7.4"
+        "version": "7.4"
     },
     "php-http/guzzle6-adapter": {
         "version": "v1.1.1"
@@ -738,5 +755,8 @@
     },
     "willdurand/jsonp-callback-validator": {
         "version": "v1.1.0"
+    },
+    "willdurand/negotiation": {
+        "version": "3.0.0"
     }
 }

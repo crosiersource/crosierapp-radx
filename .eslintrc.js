@@ -1,4 +1,5 @@
 module.exports = {
+  ignorePatterns: ["vendor/**/*"],
   root: true,
   env: {
     browser: true,
