@@ -11,8 +11,5 @@ charset = utf-8
 trim_trailing_whitespace = false
 insert_final_newline = false
 
-
-[*.{php,json,twig}]
-indent_style = space
+[*.{php,yaml,yml,json,twig}]
 indent_size = 4
-charset = utf-8

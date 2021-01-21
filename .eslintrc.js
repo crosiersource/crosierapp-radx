@@ -1,5 +1,4 @@
 module.exports = {
-  ignorePatterns: ["vendor/**/*"],
   root: true,
   env: {
     browser: true,
@@ -29,7 +28,6 @@ module.exports = {
       },
     ],
     "prettier/prettier": ["error", { singleQuote: false, endOfLine: "auto" }],
-    "max-len": ["error", { code: 140, comments: 140 }],
-    camelcase: [0],
+    "max-len": ["error", { code: 80, comments: 120 }],
   },
 };
