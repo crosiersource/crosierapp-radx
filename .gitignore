@@ -30,3 +30,5 @@ src/Entity/uppercaseFields.json
 /files/Fiscal/download_xmls/*
 
 /src/.preload.php
+
+.phpunit.result.cache
