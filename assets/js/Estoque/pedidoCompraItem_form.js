@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 
 
 import Numeral from 'numeral';

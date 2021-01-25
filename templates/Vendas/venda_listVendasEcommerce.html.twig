@@ -76,6 +76,7 @@
                     <tr>
                         <th scope="col">Id E-commerce</th>
                         <th scope="col">Id</th>
+                        <th scope="col">NF</th>
                         <th scope="col">Cliente</th>
                         <th scope="col">Status</th>
                         <th scope="col">Pagto</th>
@@ -99,6 +100,11 @@
                             <tr>
                                 <td>{{ venda.jsonData.ecommerce_idPedido|default('0')|strpad(9) }}</td>
                                 <td>{{ venda.id|strpad(9) }}</td>
+                                <td>
+                                    {% if venda.notaFiscal|default(false) %}
+                                        {{ venda.notaFiscal.numero|strpad(6) }}/{{ venda.notaFiscal.serie }}
+                                    {% endif %}
+                                </td>
                                 <td>{{ venda.cliente.documento|default('')|mascararCnpjCpf }}
                                     - {{ venda.cliente.nome }}</td>
                                 <td class="text-center">

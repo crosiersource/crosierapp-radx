@@ -6,9 +6,7 @@ use App\Form\Fiscal\NotaFiscalCartaCorrecaoType;
 use App\Form\Fiscal\NotaFiscalItemType;
 use App\Form\Fiscal\NotaFiscalType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
@@ -314,7 +312,7 @@ class EmissaoNFeController extends FormListController
             $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
 
             $logo = 'data://text/plain;base64,' . base64_encode($response);
-            $daevento->monta($logo);
+            // $daevento->monta($logo);
             $pdf = $daevento->render($logo);
             header('Content-Type: application/pdf');
             echo $pdf;
@@ -423,7 +421,7 @@ class EmissaoNFeController extends FormListController
             $xml = $notaFiscal->getXmlNota();
             $danfe = new Danfe($xml);
             $danfe->debugMode(false);
-            $danfe->creditsIntegratorFooter('');
+            $danfe->creditsIntegratorFooter('EKT Plus');
 
 
             $arrContextOptions = array(
@@ -433,16 +431,18 @@ class EmissaoNFeController extends FormListController
                 ),
             );
 
-            $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
             $logo = null;
-            if ($notaFiscal->getDocumentoEmitente() === $nfeConfigsEmUso['cnpj']) {
+            $nfeConfigsEmUso = null;
+            if ($notaFiscal->getDocumentoEmitente() && in_array($notaFiscal->getDocumentoEmitente(), $this->nfeUtils->getNFeConfigsCNPJs(), true)) {
+                $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
+
                 $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
                 $logo = 'data://text/plain;base64,' . base64_encode($response);
+                
             }
 
 
-            $danfe->monta($logo);
-            $pdf = $danfe->render();
+            $pdf = $danfe->render($logo);
             //o pdf porde ser exibido como view no browser
             //salvo em arquivo
             //ou setado para download forçado no browser
@@ -494,7 +494,7 @@ class EmissaoNFeController extends FormListController
             $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
 
             $logo = 'data://text/plain;base64,' . base64_encode($response);
-            $daevento->monta($logo);
+            // $daevento->monta($logo);
             $pdf = $daevento->render($logo);
             header('Content-Type: application/pdf');
             echo $pdf;
@@ -628,7 +628,7 @@ class EmissaoNFeController extends FormListController
     public function datatablesJsList(Request $request)
     {
         $rParams = $request->request->all();
-        parse_str($rParams['formPesquisar'], $formPesquisar);
+        parse_str($rParams['formPesquisar'] ?? null, $formPesquisar);
         // fixos
         $defaultFilters['filter']['documentoEmitente'] = preg_replace("/[^0-9]/", '', $this->nfeUtils->getNFeConfigsEmUso()['cnpj']);
         $defaultFilters['filter']['tipoNotaFiscal'] = 'NFE';
@@ -662,11 +662,9 @@ class EmissaoNFeController extends FormListController
         /** @var NotaFiscalRepository $repoNotaFiscal */
         $repoNotaFiscal = $this->getDoctrine()->getRepository(NotaFiscal::class);
         $dadosPessoa = $repoNotaFiscal->findUltimosDadosPessoa($documento);
-        if ($dadosPessoa === []) {
-            /** @var PessoaRepository $repoPessoa */
-            $repoPessoa = $this->getDoctrine()->getRepository(Pessoa::class);
-            $dadosPessoa = $repoPessoa->findPessoaMaisCompletaPorDocumento($documento);
-        }
+        // if ($dadosPessoa === []) {
+        // TODO, corrigir
+        // }
         return new JsonResponse(['result' => 'OK', 'dados' => $dadosPessoa]);
     }
 

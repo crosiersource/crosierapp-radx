@@ -1,9 +1,19 @@
-'use strict';
+/* eslint-disable */
 
 import $ from "jquery";
 
 import routes from '../../static/fos_js_routes.json';
 import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
+
+import 'jquery-maskmoney/dist/jquery.maskMoney.js';
+
+import 'select2/dist/css/select2.css';
+import 'select2';
+import 'select2/dist/js/i18n/pt-BR.js';
+import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
+
+$.fn.select2.defaults.set("theme", "bootstrap");
+$.fn.select2.defaults.set("language", "pt-BR");
 
 import Moment from 'moment';
 
@@ -43,15 +53,13 @@ $(document).ready(function () {
     let $cedente = $('#movimentacao_cedente');
 
 
-
     function resValorTotal() {
-        let valor =  Number($valor.val().replace('.','').replace(',','.'));
-        let descontos = Number($descontos.val().replace('.','').replace(',','.'));
-        let acrescimos = Number($acrescimos.val().replace('.','').replace(',','.'));
-        let valorTotal = (valor - descontos + acrescimos).toFixed(2).replace('.',',');
+        let valor = Number($valor.val().replace('.', '').replace(',', '.'));
+        let descontos = Number($descontos.val().replace('.', '').replace(',', '.'));
+        let acrescimos = Number($acrescimos.val().replace('.', '').replace(',', '.'));
+        let valorTotal = (valor - descontos + acrescimos).toFixed(2).replace('.', ',');
         $valorTotal.val(valorTotal).maskMoney('mask');
     }
-
 
 
     $valor.on('blur', function () {
@@ -157,6 +165,20 @@ $(document).ready(function () {
         if ($carteira.val()) {
             handleBancoAgenciaConta($carteira.val());
         }
+
+        $carteira.select2({
+            width: '100%',
+            dropdownAutoWidth: true,
+            placeholder: '...',
+            allowClear: true
+        });
+
+        $categoria.select2({
+            width: '100%',
+            dropdownAutoWidth: true,
+            placeholder: '...',
+            allowClear: true
+        });
     }
 
 

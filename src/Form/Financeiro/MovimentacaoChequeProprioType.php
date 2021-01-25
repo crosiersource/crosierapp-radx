@@ -2,11 +2,11 @@
 
 namespace App\Form\Financeiro;
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\ChoiceTypeUtils;
+use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -62,14 +62,17 @@ class MovimentacaoChequeProprioType extends AbstractType
 
             $choices['carteiras'] = $carteirasDeCheques;
 
-            /** @var PessoaRepository $repoPessoa */
-            $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
-
-            $filiaisR = $repoPessoa->findByFiltersSimpl([['categ.descricao', 'LIKE', 'FILIAL PROP']]);
+            /** @var ClienteRepository $repoCliente */
+            $repoCliente = $this->doctrine->getRepository(Cliente::class);
+            $filiaisR = $repoCliente->findFiliaisProp();
             if ($filiaisR) {
                 $filiais = ChoiceTypeUtils::toChoiceTypeChoices($filiaisR, '%08d %s', ['id', 'nome']);
                 $choices['sacado'] = $filiais;
+            } else {
+                // não deveria, deveria ter ao menos 1 cadastrado no crm_cliente com json_data.filial_prop = "S"
+                $choices['sacado'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
             }
+            $choices['cedente'] = 'default'; // só para passar pelo 'isset' (e setar o restante do campo no padrão)
             $this->movimentacaoTypeBuilder->build($form, $movimentacao, $choices);
         });
 
@@ -80,12 +83,12 @@ class MovimentacaoChequeProprioType extends AbstractType
 
                 $choices = [];
 
-                if ($event->getData()['cedente']) {
+                if ($event->getData()['cedente'] ?? null) {
                     $cedente = (int)$event->getData()['cedente'];
                     $choices['cedente'] = [$cedente => $cedente];
                 }
 
-                if ($event->getData()['sacado']) {
+                if ($event->getData()['sacado'] ?? null) {
                     $sacado = (int)$event->getData()['sacado'];
                     $choices['sacado'] = [$sacado => $sacado];
                 }

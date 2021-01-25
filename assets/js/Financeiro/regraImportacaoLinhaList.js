@@ -1,5 +1,4 @@
-'use strict';
-
+/* eslint-disable */
 
 let listId = "#regraImportacaoLinhaList";
 

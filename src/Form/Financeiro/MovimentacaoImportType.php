@@ -81,6 +81,11 @@ class MovimentacaoImportType extends AbstractType
         );
     }
 
+    public function getBlockPrefix()
+    {
+        return 'movimentacao';
+    }
+
 
     public function configureOptions(OptionsResolver $resolver)
     {

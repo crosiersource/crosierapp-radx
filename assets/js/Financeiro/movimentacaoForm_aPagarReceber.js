@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 
 import $ from "jquery";
 
@@ -6,6 +6,8 @@ import routes from '../../static/fos_js_routes.json';
 import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
 
 import Moment from 'moment';
+
+import 'jquery-maskmoney/dist/jquery.maskMoney.js';
 
 import 'select2/dist/css/select2.css';
 import 'select2';
@@ -195,6 +197,12 @@ $(document).ready(function () {
 
     $categoria.select2('focus');
 
+    $carteira.select2({
+        width: '100%',
+        dropdownAutoWidth: true,
+        placeholder: '...',
+        allowClear: true
+    });
 
 
 

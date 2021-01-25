@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Tests\Business;
+namespace Tests\Business;
 
 
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
@@ -17,26 +17,66 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class CalculoPrecoTest extends KernelTestCase
 {
 
-    public function test_calculoPreco(): void
+    private CalculoPreco $calculoPreco;
+
+    /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
+    protected function setUp(): void
     {
         self::bootKernel();
-        /** @var CalculoPreco $calculoPreco */
-        $calculoPreco = self::$container->get('test.App\Business\Estoque\CalculoPreco');
+        $this->calculoPreco = self::$container->get('CrosierSource\CrosierLibRadxBundle\Business\Estoque\CalculoPreco');
+        $this->assertInstanceOf(CalculoPreco::class, $this->calculoPreco);
+    }
 
-        $this->assertInstanceOf(CalculoPreco::class, $calculoPreco);
+    public function test_calculoPreco(): void
+    {
+        $preco1 = [
+            'prazo' => 75,
+            'margem' => 0.1215,
+            'custoOperacional' => 0.35,
+            'custoFinanceiro' => 0.15,
+            'precoCusto' => 39.36,
+        ];
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(82.9, $preco1['precoPrazo']);
+        $this->assertEquals(74.61, $preco1['precoVista']);
+
+
 
         $preco1 = [
             'prazo' => 75,
-            'margem' => 12.15,
-            'custoOperacional' => 35.00,
+            'margem' => 0.12,
+            'custoOperacional' => 0.35,
             'custoFinanceiro' => 0.15,
-            'precoCusto' => 39.36,
-
+            'precoCusto' => 24.70,
         ];
-        $calculoPreco->calcularPreco($preco1);
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.9, $preco1['precoPrazo']);
+        $this->assertEquals(46.71, $preco1['precoVista']);
 
-        $this->assertEquals(82.9, $preco1['precoPrazo']);
-        $this->assertEquals(74.61, $preco1['precoVista']);
+        $preco1['precoCusto'] = 24.69;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.8, $preco1['precoPrazo']);
+        $this->assertEquals(46.62, $preco1['precoVista']);
+
+        $preco1['precoCusto'] = 24.71;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.9, $preco1['precoPrazo']);
+        $this->assertEquals(46.71, $preco1['precoVista']);
+
+        $preco1['precoCusto'] = 24.72;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.9, $preco1['precoPrazo']);
+        $this->assertEquals(46.71, $preco1['precoVista']);
+
+        $preco1['precoCusto'] = 24.73;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.9, $preco1['precoPrazo']);
+        $this->assertEquals(46.71, $preco1['precoVista']);
+
+        $preco1['precoCusto'] = 24.74;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(52, $preco1['precoPrazo']);
+        $this->assertEquals(46.80, $preco1['precoVista']);
 
 
         $csvData = file_get_contents(__DIR__ . '/PRECOS_MARGENS_CERTAS.csv');
@@ -53,15 +93,16 @@ class CalculoPrecoTest extends KernelTestCase
 
             $preco1 = [
                 'prazo' => $campos[6],
-                'margem' => DecimalUtils::parseStr($campos[3]),
-                'custoOperacional' => DecimalUtils::parseStr($campos[4]),
+                'margem' => bcdiv(DecimalUtils::parseStr($campos[3]), 100, 4),
+                'custoOperacional' => bcdiv(DecimalUtils::parseStr($campos[4]), 100, 4),
                 'custoFinanceiro' => 0.15,
                 'precoCusto' => DecimalUtils::parseStr($campos[0]),
             ];
 
-            $calculoPreco->calcularPreco($preco1);
+            $this->calculoPreco->calcularPreco($preco1);
 
             $this->assertEquals(DecimalUtils::parseStr($campos[5]), $preco1['coeficiente']);
+            
             $this->assertEquals(DecimalUtils::parseStr($campos[2]), $preco1['precoPrazo']);
             $this->assertEquals(DecimalUtils::parseStr($campos[1]), $preco1['precoVista']);
         }
@@ -70,29 +111,23 @@ class CalculoPrecoTest extends KernelTestCase
 
     public function test_calculoMargem(): void
     {
-        self::bootKernel();
-        /** @var CalculoPreco $calculoPreco */
-        $calculoPreco = self::$container->get('test.App\Business\Estoque\CalculoPreco');
-
-        $this->assertInstanceOf(CalculoPreco::class, $calculoPreco);
-
         $preco1 = [
             'prazo' => 75,
             // 'margem' => 12.15,
-            'custoOperacional' => 35.00,
+            'custoOperacional' => 0.35,
             'custoFinanceiro' => 0.15,
             'precoCusto' => 39.36,
             'precoPrazo' => 82.9,
             'precoVista' => 74.61,
 
         ];
-        $calculoPreco->calcularMargem($preco1);
+        $this->calculoPreco->calcularMargem($preco1);
         $this->assertEquals(12.15, $preco1['margem']);
 
 
         $preco2 = [
             'prazo' => 0,
-            'custoOperacional' => 35,
+            'custoOperacional' => 0.35,
             'custoFinanceiro' => 0.15,
             'precoCusto' => 4.75,
             'precoPrazo' => 8.6,
@@ -100,7 +135,7 @@ class CalculoPrecoTest extends KernelTestCase
             'margem' => 0.02,
             'coeficiente' => 1.539,
         ];
-        $calculoPreco->calcularMargem($preco2);
+        $this->calculoPreco->calcularMargem($preco2);
         $this->assertEquals(12.15, $preco1['margem']);
 
         $csvData = file_get_contents(__DIR__ . '/PRECOS_MARGENS_CERTAS.csv');
@@ -118,14 +153,14 @@ class CalculoPrecoTest extends KernelTestCase
             $preco1 = [
                 'prazo' => $campos[6],
                 // 'margem' => DecimalUtils::parseStr($campos[3]),
-                'custoOperacional' => DecimalUtils::parseStr($campos[4]),
+                'custoOperacional' => bcdiv(DecimalUtils::parseStr($campos[4]), 100, 4),
                 'custoFinanceiro' => 0.15,
                 'precoCusto' => DecimalUtils::parseStr($campos[0]),
                 'precoPrazo' => DecimalUtils::parseStr($campos[2]),
                 'precoVista' => DecimalUtils::parseStr($campos[1])
             ];
 
-            $calculoPreco->calcularMargem($preco1);
+            $this->calculoPreco->calcularMargem($preco1);
 
             $diffRazao = (DecimalUtils::parseStr($campos[3]) / (float)$preco1['margem']);
             $diffRazaoInv = $diffRazao > 0 ? round(1 - $diffRazao, 2) : 0;
@@ -138,12 +173,6 @@ class CalculoPrecoTest extends KernelTestCase
 
     public function _test_calculoMargemGlobal(): void
     {
-        self::bootKernel();
-        /** @var CalculoPreco $calculoPreco */
-        $calculoPreco = self::$container->get('test.App\Business\Estoque\CalculoPreco');
-
-        $this->assertInstanceOf(CalculoPreco::class, $calculoPreco);
-
         $tentativas = 0;
         for ($precoCusto = 90.00; $precoCusto <= 100; $precoCusto += 0.01) {
             for ($prazo = 90; $prazo <= 90; $prazo += 15) {
@@ -151,15 +180,15 @@ class CalculoPrecoTest extends KernelTestCase
                     $preco = [
                         'prazo' => $prazo,
                         'margem' => $margem,
-                        'custoOperacional' => 35.00,
+                        'custoOperacional' => 0.35,
                         'custoFinanceiro' => 0.15,
                         'precoCusto' => $precoCusto,
 
                     ];
-                    $calculoPreco->calcularPreco($preco);
+                    $this->calculoPreco->calcularPreco($preco);
                     $margem = $preco['margem'];
 
-                    $calculoPreco->calcularMargem($preco);
+                    $this->calculoPreco->calcularMargem($preco);
 
                     if ($margem !== $preco['margem']) {
                         $diffRazao = $preco['margem'] > 0 ? bcdiv($margem, $preco['margem'], 4) : 0.0;

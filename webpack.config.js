@@ -1,39 +1,31 @@
-var Encore = require('@symfony/webpack-encore');
+/* eslint-disable */
+const Encore = require('@symfony/webpack-encore');
+const path = require('path');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
-    Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
+  Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
 
+// noinspection NpmUsedModulesInstalled
 const webpack = require('webpack');
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+// noinspection JSValidateTypes
 Encore
-    // directory where compiled assets will be stored
-    .setOutputPath('public/build/')
-    // public path used by the web server to access the output path
-    .setPublicPath('/build')
-    .autoProvidejQuery()
-    .addPlugin(new CopyWebpackPlugin([
-        // copies to {output}/static
-        {from: './assets/static', to: 'static'}
-    ]))
-    // o summmernote tem esta dependência, mas não é necessária
-    .addPlugin(new webpack.IgnorePlugin(/^codemirror$/))
-    // only needed for CDN's or sub-directory deploy
-    //.setManifestKeyPrefix('build/')
+  .setOutputPath('public/build/')
+  .setPublicPath('/build')
+  .autoProvidejQuery()
+  .addPlugin(new CopyWebpackPlugin({
+    patterns: [
+      {from: "./assets/static", to: "static"},
+    ],
+  }))
 
-    /*
-     * ENTRY CONFIG
-     *
-     * Add 1 entry for each "page" of your app
-     * (including one that's included on every page - e.g. "app")
-     *
-     * Each entry will result in one JavaScript file (e.g. app.js)
-     * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
-     */
+
+  // --------------------------------------------
     .addEntry('Estoque/produto_list', './assets/js/Estoque/produto_list.js')
     .addEntry('Estoque/produto_listSimpl', './assets/js/Estoque/produto_listSimpl.js')
     .addEntry('Estoque/produto_form', './assets/js/Estoque/produto_form.js')
@@ -79,11 +71,9 @@ Encore
     .addEntry('Financeiro/movimentacaoForm_geral', './assets/js/Financeiro/movimentacaoForm_geral.js')
     .addEntry('Financeiro/movimentacaoForm_transferenciaEntreCarteiras', './assets/js/Financeiro/movimentacaoForm_transferenciaEntreCarteiras.js')
     .addEntry('Financeiro/movimentacaoForm_caixa', './assets/js/Financeiro/movimentacaoForm_caixa.js')
-    .addEntry('Financeiro/movimentacaoForm_caixa_transacaoCartao', './assets/js/Financeiro/movimentacaoForm_caixa_transacaoCartao.js')
     .addEntry('Financeiro/movimentacaoForm_chequeProprio', './assets/js/Financeiro/movimentacaoForm_chequeProprio.js')
     .addEntry('Financeiro/movimentacaoForm_chequeProprio_parcelamento', './assets/js/Financeiro/movimentacaoForm_chequeProprio_parcelamento.js')
     .addEntry('Financeiro/movimentacaoForm_aPagarReceber', './assets/js/Financeiro/movimentacaoForm_aPagarReceber.js')
-    .addEntry('Financeiro/movimentacaoForm_aPagarReceber_parcelamento', './assets/js/Financeiro/movimentacaoForm_aPagarReceber_parcelamento.js')
     .addEntry('Financeiro/movimentacaoForm_pagto', './assets/js/Financeiro/movimentacaoForm_pagto.js')
     .addEntry('Financeiro/movimentacaoForm_grupo', './assets/js/Financeiro/movimentacaoForm_grupo.js')
     .addEntry('Financeiro/movimentacaoForm_recorrente', './assets/js/Financeiro/movimentacaoForm_recorrente.js')
@@ -101,51 +91,50 @@ Encore
     .addEntry('Vendas/venda_form_itens', './assets/js/Vendas/venda_form_itens.js')
     .addEntry('Vendas/venda_form_pagamento', './assets/js/Vendas/venda_form_pagamento.js')
     .addEntry('Vendas/venda_form_resumo', './assets/js/Vendas/venda_form_resumo.js')
+  // --------------------------------------------
 
-    // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
-    .splitEntryChunks()
+  .splitEntryChunks()
 
-    // will require an extra script tag for runtime.js
-    // but, you probably want this, unless you're building a single-page app
-    // .enableSingleRuntimeChunk()
-    .disableSingleRuntimeChunk()
+  // se deixar habilitado não funciona o datatables e o select2 (parece que começa a fazer 2 chamadas para montá-los no código)
+  .disableSingleRuntimeChunk()
 
-    /*
-     * FEATURE CONFIG
-     *
-     * Enable & configure other features below. For a full
-     * list of features, see:
-     * https://symfony.com/doc/current/frontend.html#adding-more-features
-     */
-    .cleanupOutputBeforeBuild()
-    .enableBuildNotifications()
-    .enableSourceMaps(!Encore.isProduction())
-    // enables hashed filenames (e.g. app.abc123.css)
-    .enableVersioning(Encore.isProduction())
-
-    // enables @babel/preset-env polyfills
-    .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
-        config.corejs = 3;
-    })
-
-// enables Sass/SCSS support
-//.enableSassLoader()
-
-// uncomment if you use TypeScript
-//.enableTypeScriptLoader()
-
-// uncomment to get integrity="..." attributes on your script & link tags
-// requires WebpackEncoreBundle 1.4 or higher
-//.enableIntegrityHashes(Encore.isProduction())
-
-// uncomment if you're having problems with a jQuery plugin
-//.autoProvidejQuery()
-
-// uncomment if you use API Platform Admin (composer req api-admin)
-//.enableReactPreset()
-//.addEntry('admin', './assets/js/admin.js')
+  .cleanupOutputBeforeBuild()
+  .enableBuildNotifications()
+  .enableSourceMaps(!Encore.isProduction())
+  .enableVersioning(Encore.isProduction())
+  .configureBabelPresetEnv((config) => {
+    config.useBuiltIns = 'usage';
+    config.corejs = 3;
+  })
+  .enableVueLoader(function (options) {
+    options.loaders = {
+      // vue: {loader: 'babel-loader'}
+    };
+  }, {version: 3})
+  .addAliases({
+    '@': path.resolve(__dirname, 'assets', 'js'),
+    styles: path.resolve(__dirname, 'assets', 'scss'),
+  })
+  .enableEslintLoader({
+    configFile: "./.eslintrc.js",
+  })
+  .configureCssLoader((config) => {
+    if (!Encore.isProduction() && config.modules) {
+      config.modules.localIdentName = '[name]_[local]_[hash:base64:5]';
+    }
+  })
+  .enableSassLoader()
+  .addLoader({
+    test: /\.js$/,
+    loader: 'babel-loader',
+    options: {
+      plugins: [require("@babel/plugin-proposal-optional-chaining")]
+    },
+    exclude: file => (
+      /node_modules/.test(file) &&
+      !/\.vue\.js/.test(file)
+    )
+  })
 ;
 
 module.exports = Encore.getWebpackConfig();
-

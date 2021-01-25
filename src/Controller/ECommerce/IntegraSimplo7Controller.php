@@ -5,11 +5,9 @@ namespace App\Controller\ECommerce;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorSimplo7;
-use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -90,6 +88,27 @@ class IntegraSimplo7Controller extends BaseController
             $html .= $s['id'] . ': ' . $s['nome'] . '<br>';
         }
         return new Response($html);
+    }
+
+
+    /**
+     *
+     * @Route("/est/integraSimplo7/gerarNFeParaVenda/{codVendaSimplo7}", name="est_integraSimplo7_gerarNFeParaVenda")
+     *
+     * @param IntegradorSimplo7 $integraSimplo7Business
+     * @param int $codVendaSimplo7
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function gerarNFeParaVenda(IntegradorSimplo7 $integraSimplo7Business, int $codVendaSimplo7): Response
+    {
+        try {
+            $nfId = $integraSimplo7Business->gerarNFeParaVenda($codVendaSimplo7);
+            return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $nfId]);
+        } catch (\Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+        return new Response('ERRO');
     }
 
 }

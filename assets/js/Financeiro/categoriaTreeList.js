@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 
 import Sortable from 'sortablejs';
 import $ from "jquery";
@@ -7,6 +7,7 @@ import routes from '../../static/fos_js_routes.json';
 import Routing from '../../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
 
 import toastrr from "toastr";
+
 
 Routing.setRoutingData(routes);
 

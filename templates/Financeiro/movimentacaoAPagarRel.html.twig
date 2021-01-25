@@ -102,7 +102,7 @@
             <tr>
                 <th colspan="4"
                     style="text-align: center; background-color: antiquewhite; font-size: 18px; line-height: 35px">
-                    {{ dia.dtVenctoEfetiva|localizeddate('none', 'none', app.request.locale, null, 'dd/MM/yyyy (EEEE)') }}
+                    {{ dia.dtVenctoEfetiva|format_datetime(pattern='dd/MM/yyyy (EEEE)') }}
                 </th>
             </tr>
             {% set strip = true %}

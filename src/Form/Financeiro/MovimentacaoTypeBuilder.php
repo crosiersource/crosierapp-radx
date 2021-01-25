@@ -254,9 +254,6 @@ class MovimentacaoTypeBuilder
                 return $carteira ? $carteira->getDescricaoMontada() : null;
             },
             'choices' => $carteiraChoices,
-            'attr' => [
-                'class' => 'autoSelect2'
-            ],
             'required' => false
         ]);
 
@@ -302,7 +299,7 @@ class MovimentacaoTypeBuilder
                 return $modo ? $modo->getDescricaoMontada() : null;
             },
             'required' => false,
-            'attr' => ['class' => 'autoSelect2 focusOnReady']
+            'attr' => ['class' => 'autoSelect2']
         ]);
 
         /** @var BandeiraCartaoRepository $repoBandeira */

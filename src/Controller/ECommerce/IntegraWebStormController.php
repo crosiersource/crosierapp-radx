@@ -97,9 +97,8 @@ class IntegraWebStormController extends BaseController
      *
      * @param Request $request
      * @param IntegradorWebStorm $integraWebStormBusiness
-     * @param \DateTime $dtVenda
+     * @param \DateTime|null $dtVenda
      * @return Response
-     * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
     public function obterVendas(Request $request, IntegradorWebStorm $integraWebStormBusiness, ?\DateTime $dtVenda = null): Response
@@ -120,6 +119,7 @@ class IntegraWebStormController extends BaseController
      * @param Venda|null $venda
      * @return Response
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     * @throws ViewException
      */
     public function integrarVendaParaECommerce(IntegradorWebStorm $integraWebStormBusiness, Venda $venda): Response
     {

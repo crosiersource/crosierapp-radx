@@ -239,15 +239,15 @@ class MovimentacaoImportController extends BaseController
         $unqs = [];
         /** @var Movimentacao $mov */
         foreach ($movsImportadas as $mov) {
-            if (!$mov->getUUID()) {
-                throw new ViewException('Movimentação sem UUID: ' . $mov->getDescricao());
+            if (!$mov->UUID) {
+                throw new ViewException('Movimentação sem UUID: ' . $mov->descricao);
             }
-            if (in_array($mov->getUUID(), $unqs, true)) {
-                throw new ViewException('Movimentação duplicada na sessão: ' . $mov->getDescricao());
+            if (in_array($mov->UUID, $unqs, true)) {
+                throw new ViewException('Movimentação duplicada na sessão: ' . $mov->descricao);
             }
-            $unqs[] = $mov->getUUID();
+            $unqs[] = $mov->UUID;
 
-            $sessionMovs[$mov->getUUID()] = $mov;
+            $sessionMovs[$mov->UUID] = $mov;
         }
 
         if (isset($r['err'])) {

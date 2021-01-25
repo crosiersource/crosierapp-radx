@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 
 import $ from "jquery";
 
@@ -63,7 +63,7 @@ $(document).ready(function () {
     // Campos que não são mostrados em tal tipoLancto
     let camposEscond = {
         // TRANSFERÊNCIA ENTRE CARTEIRAS
-        '10': [
+        '20': [
             $carteiraDestino,
         ],
         '60': [

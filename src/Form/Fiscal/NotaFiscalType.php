@@ -212,6 +212,11 @@ class NotaFiscalType extends AbstractType
                 'required' => false,
                 'disabled' => $disabled
             ]);
+            $builder->add('complementoDestinatario', TextType::class, [
+                'label' => 'Complemento',
+                'required' => false,
+                'disabled' => $disabled
+            ]);
             $builder->add('bairroDestinatario', TextType::class, [
                 'label' => 'Bairro',
                 'required' => false,

@@ -3,7 +3,6 @@
 namespace App\Controller\Fiscal;
 
 use App\Form\Fiscal\NotaFiscalType;
-use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
@@ -11,7 +10,6 @@ use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,10 +31,6 @@ class EmissaoFiscalPVController extends BaseController
 
     private NFeUtils $nfeUtils;
 
-    private CrosierEntityIdAPIClient $crosierEntityIdAPIClient;
-
-    private LoggerInterface $logger;
-
 
     /**
      * @required
@@ -56,23 +50,6 @@ class EmissaoFiscalPVController extends BaseController
         $this->nfeUtils = $nfeUtils;
     }
 
-    /**
-     * @required
-     * @param CrosierEntityIdAPIClient $crosierEntityIdAPIClient
-     */
-    public function setCrosierAPIClient(CrosierEntityIdAPIClient $crosierEntityIdAPIClient): void
-    {
-        $this->crosierEntityIdAPIClient = $crosierEntityIdAPIClient;
-    }
-
-    /**
-     * @required
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
-    }
 
     /**
      *
@@ -140,36 +117,6 @@ class EmissaoFiscalPVController extends BaseController
             'permiteReimpressaoCancelamento' => $permiteReimpressaoCancelamento,
             'dadosEmitente' => $dadosEmitente
         ]);
-    }
-
-    /**
-     *
-     * @Route("/fis/emissaofiscalpv/reimprimir/{notaFiscal}/{venda}", name="fis_emissaofiscalpv_reimprimir")
-     * @param NotaFiscal $notaFiscal
-     * @param Venda $venda
-     * @return RedirectResponse
-     */
-    public function reimprimir(NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
-    {
-        if (!$notaFiscal->getXmlNota()) {
-            $this->addFlash('error', 'XML não encontrado.');
-        } else {
-            $this->notaFiscalBusiness->imprimir($notaFiscal);
-        }
-        return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
-    }
-
-    /**
-     *
-     * @Route("/fis/emissaofiscalpv/imprimirCancelamento/{notaFiscal}/{venda}", name="fis_emissaofiscalpv_imprimirCancelamento")
-     * @param NotaFiscal $notaFiscal
-     * @param Venda $venda
-     * @return RedirectResponse
-     */
-    public function imprimirCancelamento(NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
-    {
-        $this->notaFiscalBusiness->imprimirCancelamento($notaFiscal);
-        return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
     }
 
     /**

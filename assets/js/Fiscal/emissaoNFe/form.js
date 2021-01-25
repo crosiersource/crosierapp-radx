@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable */
 
 import $ from 'jquery';
 
@@ -7,6 +7,7 @@ import Routing from '../../../../vendor/friendsofsymfony/jsrouting-bundle/Resour
 
 import 'print-js';
 
+import 'bootstrap';
 import toastrr from "toastr";
 import Moment from 'moment';
 

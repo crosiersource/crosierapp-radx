@@ -229,7 +229,7 @@ class MovimentacaoController extends FormListController
     public function cadeiaDelete(Cadeia $cadeia): Response
     {
         try {
-            $this->cadeiaEntityHandler->deleteCadeiaETodasAsMovimentacoes($cadeia);
+            $this->getEntityHandler()->deleteCadeiaETodasAsMovimentacoes($cadeia);
         } catch (ViewException $e) {
             $this->addFlash('error', 'Erro ao deletar cadeia');
             $this->addFlash('error', $e->getMessage());
@@ -457,7 +457,7 @@ class MovimentacaoController extends FormListController
         ];
 
         if (!$movimentacao->getId() && $parcelamento) {
-            $params['formView'] = 'Financeiro/movimentacaoForm_aPagar_parcelamento.html.twig';
+            $params['formView'] = 'Financeiro/movimentacaoForm_aPagarReceber_parcelamento.html.twig';
             return $this->handleParcelamento($request, $movimentacao, $params);
         }
         // else
@@ -833,7 +833,7 @@ class MovimentacaoController extends FormListController
     {
         $params = [
             'typeClass' => MovimentacaoPagtoType::class,
-            'formRoute' => 'fin_movimentacao_form_pagto',
+            'formRoute' => 'movimentacao_form_pagto',
             'formView' => 'Financeiro/movimentacaoForm_pagto.html.twig'
         ];
 
