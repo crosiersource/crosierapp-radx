@@ -895,7 +895,7 @@ class VendaController extends FormListController
      * @throws \Exception
      * @IsGranted("ROLE_VENDAS_ADMIN", statusCode=403)
      */
-    public function obterVendasECommerce(Request $request, IntegradorECommerceFactory $integradorBusinessFactory, ?\DateTime $dtVenda = null)
+    public function obterVendasECommerce(Request $request, IntegradorECommerceFactory $integradorBusinessFactory, ?\DateTime $dtVenda = null): Response
     {
         if (!$dtVenda) {
             $dtVenda = new \DateTime();
@@ -974,21 +974,33 @@ class VendaController extends FormListController
             ];
         };
 
-        $fnHandleDadosList = function (&$dados) {
+        $fnHandleDadosList = function (&$dados, $countByFilter, $filterDatas) {
             $dia = null;
             $dias = [];
             $i = -1;
-            /** @var Venda $venda */
-            foreach ($dados as $venda) {
-                if ($venda->dtVenda->format('d/m/Y') !== $dia) {
-                    $i++;
-                    $dias[$i]['totalDia'] = 0.0;
-                    $dia = $venda->dtVenda->format('d/m/Y');
-                    $dias[$i]['dtVenda'] = $venda->dtVenda;
+
+            /** @var FilterData $filterData */
+            foreach ($filterDatas as $filterData) {
+                if ($filterData->filterType === 'BETWEEN_DATE_CONCAT') {
+                    $serieDeDias = DateTimeUtils::getDatesList($filterData->val['i'], $filterData->val['f']);
+                    /** @var \DateTime $dia */
+                    foreach ($serieDeDias as $dia) {
+                        $i++;
+                        $dias[$i]['totalDia'] = 0.0;
+                        $dias[$i]['dtVenda'] = $dia;
+                        $dias[$i]['vendas'] = [];
+                        /** @var Venda $venda */
+                        foreach ($dados as $venda) {
+                            if ($venda->dtVenda->format('Ymd') === $dia->format('Ymd')) {
+                                $dias[$i]['vendas'][] = $venda;
+                                $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
+                            }
+                        }
+                    }
                 }
-                $dias[$i]['vendas'][] = $venda;
-                $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
             }
+
+
             $dados = $dias;
         };
 
