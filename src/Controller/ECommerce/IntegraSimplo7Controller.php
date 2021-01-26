@@ -116,17 +116,14 @@ class IntegraSimplo7Controller extends BaseController
      *
      * @Route("/est/integraSimplo7/atualizarPedidosMelhorEnvio/", name="est_integraSimplo7_atualizarPedidosMelhorEnvio")
      *
-     * @param Request $request
      * @param IntegradorSimplo7 $integraSimplo7Business
-     * @param \DateTime|null $dtVenda
      * @return Response
-     * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
     public function atualizarPedidosMelhorEnvio(IntegradorSimplo7 $integraSimplo7Business): Response
     {
-        $integraSimplo7Business->atualizarPedidosMelhorEnvio();
-        return new Response('OK');
+        $r = $integraSimplo7Business->atualizarPedidosMelhorEnvio();
+        return new Response(implode('<br>', $r));
     }
 
 }
