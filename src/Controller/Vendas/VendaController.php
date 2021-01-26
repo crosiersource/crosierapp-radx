@@ -974,7 +974,7 @@ class VendaController extends FormListController
             ];
         };
 
-        $fnHandleDadosList = function (&$dados, $countByFilter, $filterDatas) {
+        $fnHandleDadosList = function (&$dados, $countByFilter, ?array $filterDatas = []) {
             $dia = null;
             $dias = [];
             $i = -1;

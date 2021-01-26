@@ -47,16 +47,37 @@ class CalculoPrecoTest extends KernelTestCase
             'margem' => 0.12,
             'custoOperacional' => 0.35,
             'custoFinanceiro' => 0.15,
-            'precoCusto' => 24.70,
         ];
-        $this->calculoPreco->calcularPreco($preco1);
-        $this->assertEquals(51.9, $preco1['precoPrazo']);
-        $this->assertEquals(46.71, $preco1['precoVista']);
 
+        $preco1['precoCusto'] = 24.64;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.7, $preco1['precoPrazo']);
+        $this->assertEquals(46.53, $preco1['precoVista']);
+
+        $preco1['precoCusto'] = 24.65;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.8, $preco1['precoPrazo']);
+        $this->assertEquals(46.62, $preco1['precoVista']);
+        
+        $preco1['precoCusto'] = 24.67;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.8, $preco1['precoPrazo']);
+        $this->assertEquals(46.62, $preco1['precoVista']);
+        
+        $preco1['precoCusto'] = 24.68;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.8, $preco1['precoPrazo']);
+        $this->assertEquals(46.62, $preco1['precoVista']);
+        
         $preco1['precoCusto'] = 24.69;
         $this->calculoPreco->calcularPreco($preco1);
         $this->assertEquals(51.8, $preco1['precoPrazo']);
         $this->assertEquals(46.62, $preco1['precoVista']);
+
+        $preco1['precoCusto'] = 24.70;
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(51.9, $preco1['precoPrazo']);
+        $this->assertEquals(46.71, $preco1['precoVista']);
 
         $preco1['precoCusto'] = 24.71;
         $this->calculoPreco->calcularPreco($preco1);
@@ -83,6 +104,7 @@ class CalculoPrecoTest extends KernelTestCase
         $lines = explode(PHP_EOL, $csvData);
         array_shift($lines);
 
+        $i=1;
         foreach ($lines as $line) {
 
             $campos = explode(';', $line);
@@ -105,6 +127,7 @@ class CalculoPrecoTest extends KernelTestCase
             
             $this->assertEquals(DecimalUtils::parseStr($campos[2]), $preco1['precoPrazo']);
             $this->assertEquals(DecimalUtils::parseStr($campos[1]), $preco1['precoVista']);
+            echo $i++ . PHP_EOL;
         }
 
     }
