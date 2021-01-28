@@ -4,11 +4,11 @@ namespace App\Controller\Financeiro;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Fatura;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\FaturaEntityHandler;
-use Doctrine\DBAL\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +20,17 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class FaturaController extends FormListController
 {
+
+    private MovimentacaoBusiness $movimentacaoBusiness;
+
+    /**
+     * @required
+     * @param MovimentacaoBusiness $movimentacaoBusiness
+     */
+    public function setMovimentacaoBusiness(MovimentacaoBusiness $movimentacaoBusiness): void
+    {
+        $this->movimentacaoBusiness = $movimentacaoBusiness;
+    }
 
     /**
      * @required
@@ -33,13 +44,12 @@ class FaturaController extends FormListController
     /**
      *
      * @Route("/fin/fatura/visualizarFaturaVenda/{fatura}", name="fin_fatura_visualizarFaturaVenda", requirements={"fatura"="\d+"})
-     * @param Request $request
      * @param Fatura $fatura
      * @return RedirectResponse|Response
      *
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function visualizarFaturaVenda(Request $request, Fatura $fatura)
+    public function visualizarFaturaVenda(Fatura $fatura)
     {
         $params = [
             'e' => $fatura
@@ -47,13 +57,15 @@ class FaturaController extends FormListController
 
         try {
             $conn = $this->getEntityHandler()->getDoctrine()->getConnection();
-            $rsMovsIds = $conn->fetchAllAssociative('SELECT mov.id FROM fin_movimentacao mov, fin_categoria cat, fin_carteira carteira WHERE mov.carteira_id = carteira.id AND mov.categoria_id = cat.id AND fatura_id = :faturaId ORDER BY carteira.id, cat.codigo DESC', ['faturaId' => $fatura->getId()]);
+            $rsMovsIds = $conn->fetchAllAssociative('SELECT mov.id FROM fin_movimentacao mov, fin_categoria cat, fin_carteira carteira WHERE mov.carteira_id = carteira.id AND mov.categoria_id = cat.id AND fatura_id = :faturaId ORDER BY id', ['faturaId' => $fatura->getId()]);
             $movs = [];
             $repoMovimentacao = $this->getDoctrine()->getRepository(Movimentacao::class);
+
             foreach ($rsMovsIds as $rMovId) {
                 $movs[] = $repoMovimentacao->find($rMovId['id']);
             }
             $params['movs'] = $movs;
+            $params['total'] = $this->movimentacaoBusiness->somarMovimentacoes($movs);
             if ($fatura->jsonData['venda_id'] ?? false) {
                 $venda = $this->getDoctrine()->getRepository(Venda::class)->find($fatura->jsonData['venda_id']);
                 $params['venda'] = $venda;

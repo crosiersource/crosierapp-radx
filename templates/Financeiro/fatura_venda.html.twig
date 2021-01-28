@@ -52,10 +52,16 @@
                                     <td>
                                         {{ mov.carteira.getDescricaoMontada() }}<br>
                                         {{ mov.modo.getDescricaoMontada() }}<br/>
-                                        {{ mov.categoria.getDescricaoMontada() }}
+                                        <b>{{ mov.categoria.getDescricaoMontada() }}</b>
                                     </td>
                                     <td>
-                                        <b>{{ mov.descricao }}</b><br/>
+                                        <b>{{ mov.getDescricaoMontada()|raw }}</b>
+                                        {% if mov.categoria.codigoSuper == 2 and mov.cedente %}
+                                            <br/><small>{{ mov.cedente }}</small>
+                                        {% endif %}
+                                        {% if mov.categoria.codigoSuper == 1 and mov.sacado %}
+                                            <br/><small>{{ mov.sacado }}</small>
+                                        {% endif %}
                                     </td>
                                     <td>
                                         {{ mov.dtVencto|date('d/m/Y') }}
@@ -91,6 +97,15 @@
                             {% endfor %}
 
                             </tbody>
+
+                            <tfoot>
+
+                            <tr class="mt-3">
+                                <th scope="col">Total Fatura</th>
+                                <th scope="col" colspan="4" class="text-right">{{ total|number_format(2,',','.') }}</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </tfoot>
 
                         </table>
                     </form>

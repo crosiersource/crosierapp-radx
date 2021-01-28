@@ -104,7 +104,6 @@ class CalculoPrecoTest extends KernelTestCase
         $lines = explode(PHP_EOL, $csvData);
         array_shift($lines);
 
-        $i=1;
         foreach ($lines as $line) {
 
             $campos = explode(';', $line);
@@ -127,9 +126,59 @@ class CalculoPrecoTest extends KernelTestCase
             
             $this->assertEquals(DecimalUtils::parseStr($campos[2]), $preco1['precoPrazo']);
             $this->assertEquals(DecimalUtils::parseStr($campos[1]), $preco1['precoVista']);
-            echo $i++ . PHP_EOL;
         }
+    }
+    
+    public function test_calculoPrecoCustoIgualAoPrecoPrazo() {
+        // Quanto tem que ser a margem para o preço a prazo ser igual ao preço de custo com 35% de C.O. e 15% de C.F.
+        $preco1 = [
+            'prazo' => 0,
+            'custoOperacional' => 0.35,
+            'custoFinanceiro' => 0.15,
+            'precoCusto' => 0.01,
+            'precoPrazo' => 0.01,
+        ];
+        $this->calculoPreco->calcularMargem($preco1);
+        $this->assertEquals(-0.5264, $preco1['margem']);
 
+
+        $preco1 = [
+            'prazo' => 0,
+            'custoOperacional' => 0.35,
+            'custoFinanceiro' => 0.15,
+            'precoCusto' => 40.00,
+            'precoPrazo' => 40.00,
+        ];
+        $this->calculoPreco->calcularMargem($preco1);
+        $this->assertEquals(-0.5264, $preco1['margem']);
+
+
+        $preco1 = [
+            'prazo' => 0,
+            'margem' => -0.5264,
+            'custoOperacional' => 0.35,
+            'custoFinanceiro' => 0.15,
+            'precoCusto' => 40.00,
+        ];
+        $this->calculoPreco->calcularPreco($preco1);
+        $this->assertEquals(40.00, $preco1['precoPrazo']);
+        $this->assertEquals(36.00, $preco1['precoVista']);
+
+        // Conferindo a lógica acima de 1 centavo a 1.000,00
+        for ($i=1 ; $i<100000; $i++) {
+
+            $preco1 = [
+                'prazo' => 0,
+                'margem' => -0.5264,
+                'custoOperacional' => 0.35,
+                'custoFinanceiro' => 0.15,
+                'precoCusto' => bcdiv($i, 100.0, 2),
+            ];
+            $this->calculoPreco->calcularPreco($preco1);
+            $precoPrazoArredondado = DecimalUtils::round(bcdiv($i, 100.0, 2), 1);
+            $this->assertEquals($precoPrazoArredondado, $preco1['precoPrazo']);
+            $this->assertEquals(bcmul($precoPrazoArredondado, 0.9, 2), $preco1['precoVista']);
+        }
     }
 
     public function test_calculoMargem(): void
@@ -145,7 +194,7 @@ class CalculoPrecoTest extends KernelTestCase
 
         ];
         $this->calculoPreco->calcularMargem($preco1);
-        $this->assertEquals(12.15, $preco1['margem']);
+        $this->assertEquals(0.1215, $preco1['margem']);
 
 
         $preco2 = [
@@ -159,7 +208,7 @@ class CalculoPrecoTest extends KernelTestCase
             'coeficiente' => 1.539,
         ];
         $this->calculoPreco->calcularMargem($preco2);
-        $this->assertEquals(12.15, $preco1['margem']);
+        $this->assertEquals(0.1215, $preco1['margem']);
 
         $csvData = file_get_contents(__DIR__ . '/PRECOS_MARGENS_CERTAS.csv');
         $lines = explode(PHP_EOL, $csvData);

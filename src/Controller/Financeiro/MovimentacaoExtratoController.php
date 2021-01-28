@@ -91,6 +91,7 @@ class MovimentacaoExtratoController extends FormListController
         $i = -1;
         /** @var Movimentacao $movimentacao */
         foreach ($dados as $movimentacao) {
+            if (in_array($movimentacao->categoria->codigo, [191,291])) continue;
             if ($movimentacao->dtUtil && $movimentacao->dtUtil->format('d/m/Y') !== $dia) {
                 $i++;
                 $dia = $movimentacao->dtUtil->format('d/m/Y');

@@ -608,21 +608,12 @@ class VendaController extends FormListController
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
             try {
-                if ($venda->status === 'PV FINALIZADO') {
-                    throw new ViewException('PV já finalizado');
-                }
-
-                if ($venda->jsonData['canal'] === 'ECOMMERCE') {
-                    $this->vendaBusiness->finalizarPVECommerce($venda);
-                } else {
-                    $this->vendaBusiness->finalizarPV($venda);
-                }
+                $this->vendaBusiness->finalizarPV($venda);
                 $this->addFlash('success', 'PV finalizado com sucesso');
             } catch (ViewException $e) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
-
         return $this->redirectToRoute('ven_venda_form_resumo', ['id' => $venda->getId()]);
     }
 
