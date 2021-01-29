@@ -178,9 +178,8 @@ class MovimentacaoRecorrentesController extends FormListController
             $movimentacao = new Movimentacao();
         }
 
-        /** @var TipoLancto $tipoLancto90 */
-        $tipoLancto90 = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 90]);
-        $movimentacao->tipoLancto = $tipoLancto90;
+        $tipoLancto20 = $this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 20]);
+        $movimentacao->tipoLancto = $tipoLancto20;
         $movimentacao->recorrente = true;
 
         $params = [

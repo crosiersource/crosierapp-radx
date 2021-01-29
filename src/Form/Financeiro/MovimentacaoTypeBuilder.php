@@ -484,7 +484,7 @@ class MovimentacaoTypeBuilder
         ]);
 
         $form->add('recorrTipoRepet', ChoiceType::class, [
-            'label' => 'Tipo Repet',
+            'label' => 'Tipo Repetição',
             'choices' => [
                 'DIA FIXO' => 'DIA_FIXO',
                 'DIA ÚTIL' => 'DIA_UTIL'
