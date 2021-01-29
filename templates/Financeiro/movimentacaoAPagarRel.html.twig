@@ -71,8 +71,9 @@
     <table width="100%">
         <tbody>
         <tr>
-            <td style="vertical-align: top"><img src="https://www.casabonsucesso.com.br/img/LOGO_COMPLETO_300px.png"
-                                                 width="200px"/></td>
+            <td style="vertical-align: top">
+                <img src="{{ getEnv('CROSIER_LOGO') }}" width="200">
+            </td>
             <td style="text-align: right;">
                 <span style="font-size: x-large; font-weight: bolder">Contas a Pagar</span><br/>
                 <span style="font-size: small;">Per&iacute;odo: {{ filter.dts }}</span><br/>
