@@ -537,7 +537,12 @@ class NotaFiscalType extends AbstractType
                 'disabled' => true
             ]);
 
-            $builder->add('jsonData', JsonType::class, ['jsonMetadata' => $jsonMetadata, 'jsonData' => ($notaFiscal->jsonData ?? null)]);
+            $builder->add('jsonData', JsonType::class, 
+                [
+                    'jsonMetadata' => $jsonMetadata, 
+                    'jsonData' => ($notaFiscal->jsonData ?? null),
+                    'disabled' => $disabled
+                ]);
 
         });
 
