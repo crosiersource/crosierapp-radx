@@ -23,6 +23,7 @@ security:
                 domain: "%env(CROSIER_MAINDOMAIN)%"
                 samesite: lax
                 httponly: false
+                always_remember_me: true
 
             guard:
                 authenticators:

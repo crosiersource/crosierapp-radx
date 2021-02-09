@@ -33,6 +33,7 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,6 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\ItemInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 /**
@@ -778,7 +780,7 @@ class ProdutoController extends FormListController
             'jsonData.depto_nome',
         ];
 
-        $fnGetFilterDatas = function (array $params) use ($request) : array {
+        $fnGetFilterDatas = function (array $params) use ($request): array {
             return [
                 new FilterData(['id'], 'EQ', 'id', $params),
                 new FilterData(['codigo'], 'LIKE', 'codigo', $params),
@@ -977,6 +979,84 @@ class ProdutoController extends FormListController
         } catch (\Exception $e) {
             return new JsonResponse(['result' => 'ERR']);
         }
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/deleteValuesTagsDin/", name="est_produto_deleteValuesTagsDin")
+     *
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return JsonResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function deleteValuesTagsDin(Request $request, SessionInterface $session): Response
+    {
+        $campo = $request->get('campo');
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.findValuesTagsDin', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $nome = 'findValuesTagsDin_' . $campo; 
+        $cache->delete($nome);
+        return new Response('deletado: ' . $nome);
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/findValuesTagsDin/", name="est_produto_findValuesTagsDin")
+     *
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return JsonResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findValuesTagsDin(Request $request, SessionInterface $session): JsonResponse
+    {
+        $campo = $request->get('campo');
+        $term = $request->get('term');
+
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . ' . findValuesTagsDin', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $vs = $cache->get('findValuesTagsDin_' . $campo, function (ItemInterface $item) use ($campo) {
+            /** @var AppConfigRepository $repoAppConfig */
+            $repoAppConfig = $this->getEntityHandler()->getDoctrine()->getRepository(AppConfig::class);
+            $jsonMetadata = json_decode($repoAppConfig->findByChave('est_produto_json_metadata'), true);
+            $achou = false;
+            foreach ($jsonMetadata['campos'] as $campoNoJson => $ig) {
+                if ($campoNoJson === $campo) {
+                    $achou = true;
+                    break;
+                }
+            }
+            if (!$achou) {
+                return new JsonResponse(['results' => null]);
+            }
+
+            $rs = $this->getEntityHandler()->getDoctrine()->getConnection()
+                ->fetchAllAssociative('select distinct(json_data->>"$.' . $campo . '") as v from est_produto');
+
+            $vs = [];
+            foreach ($rs as $r) {
+                $exp = explode(',', $r['v']);
+                foreach ($exp as $e) {
+                    $vs[] = $e;
+                }
+            }
+            $vs = array_unique($vs);
+            sort($vs);
+            return $vs;
+        });
+
+        $i = 0;
+        $vs = array_filter($vs, function ($v) use ($term, $i) {
+            if ($i++ < 30) {
+                return $v && (strpos($v, $term) !== FALSE);
+            }
+        });
+
+        $vs = Select2JsUtils::arrayToSelect2DataKeyEqualValue($vs);
+        return new JsonResponse(['results' => $vs]);
     }
 
 
