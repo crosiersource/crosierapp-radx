@@ -1017,7 +1017,7 @@ class ProdutoController extends FormListController
         $campo = $request->get('campo');
         $term = $request->get('term');
 
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . ' . findValuesTagsDin', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.findValuesTagsDin', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
         $vs = $cache->get('findValuesTagsDin_' . $campo, function (ItemInterface $item) use ($campo) {
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->getEntityHandler()->getDoctrine()->getRepository(AppConfig::class);
