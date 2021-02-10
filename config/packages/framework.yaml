@@ -15,6 +15,7 @@ framework:
         cookie_samesite: lax
         save_path: "%env(CROSIER_SESSIONS_FOLDER)%"
         cookie_lifetime: 6048000 # 10 semanas
+        cookie_httponly: false
 
     #esi: true
     #fragments: true
