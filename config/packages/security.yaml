@@ -14,7 +14,7 @@ security:
             security: false
         main:
             anonymous: true
-            lazy: false
+            lazy: true
 
             remember_me:
                 name: 'RMMBRM'
