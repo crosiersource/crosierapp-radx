@@ -11,6 +11,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\GrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,7 +48,7 @@ class GrupoController extends FormListController
      * @Route("/fin/grupo/form/{id}", name="grupo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Grupo|null $grupo
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
@@ -67,7 +68,7 @@ class GrupoController extends FormListController
      *
      * @Route("/fin/grupo/list/", name="grupo_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
@@ -91,7 +92,7 @@ class GrupoController extends FormListController
      * @Route("/fin/grupo/datatablesJsList/", name="grupo_datatablesJsList")
      * @param Request $request
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
@@ -126,7 +127,9 @@ class GrupoController extends FormListController
      */
     public function grupoSelect2json(Request $request): Response
     {
-        $grupos = $this->getDoctrine()->getRepository(Grupo::class)->findAll(WhereBuilder::buildOrderBy('descricao'));
+        /** @var GrupoRepository $repoGrupo */
+        $repoGrupo = $this->getDoctrine()->getRepository(Grupo::class);
+        $grupos = $repoGrupo->findAll(WhereBuilder::buildOrderBy('descricao'));
 
         $abertos = $request->get('abertos');
 
@@ -138,19 +141,19 @@ class GrupoController extends FormListController
                 $itens = $this->getDoctrine()->getRepository(GrupoItem::class)->findBy(['pai' => $grupo, 'fechado' => false], ['dtVencto' => 'DESC']);
                 if ($itens and count($itens) > 0) {
                     $r['id'] = $grupo->getId();
-                    $r['text'] = $grupo->getDescricao();
+                    $r['text'] = $grupo->descricao;
                     $r['itens'] = [];
                     /** @var GrupoItem $item */
                     foreach ($itens as $item) {
                         $rItem['id'] = $item->getId();
-                        $rItem['text'] = $item->getDescricao();
+                        $rItem['text'] = $item->descricao;
                         $r['itens'][] = $rItem;
                     }
                     $rs[] = $r;
                 }
             } else {
                 $r['id'] = $grupo->getId();
-                $r['text'] = $grupo->getDescricao();
+                $r['text'] = $grupo->descricao;
                 $rs[] = $r;
             }
         }

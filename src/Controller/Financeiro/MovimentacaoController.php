@@ -328,12 +328,7 @@ class MovimentacaoController extends FormListController
     {
         /** @var TipoLanctoRepository $repoTipoLancto */
         $repoTipoLancto = $this->getDoctrine()->getRepository(TipoLancto::class);
-        if ($request->get('tipoLancto')) {
-            $tipoLancto = $repoTipoLancto->find($request->get('tipoLancto'));
-            return $this->redirect($tipoLancto->getUrl() . (strpos($tipoLancto->getDescricao(), 'PARCELAMENTO') !== FALSE ? '?parcelamento=true' : ''));
-        }
         $tiposLanctos = $repoTipoLancto->findAll(['codigo' => 'ASC']);
-
         return $this->doRender('Financeiro/movimentacaoIniForm.html.twig', ['tiposLanctos' => $tiposLanctos]);
     }
 

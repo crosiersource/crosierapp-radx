@@ -162,7 +162,7 @@ class GrupoItemController extends FormListController
         $vParams = [];
         $vParams['dados'] = $dados;
         $vParams['pai'] = $pai;
-        $vParams['page_title'] = $pai->getDescricao();
+        $vParams['page_title'] = $pai->descricao;
         $vParams['formRoute'] = 'grupoItem_form';
 
         return $this->doRender('Financeiro/grupoItemList.html.twig', $vParams);
@@ -194,7 +194,7 @@ class GrupoItemController extends FormListController
         /** @var GrupoItem $item */
         foreach ($itens as $item) {
             $r['id'] = $item->getId();
-            $r['text'] = $item->getDescricao();
+            $r['text'] = $item->descricao;
             $rs[] = $r;
         }
 
