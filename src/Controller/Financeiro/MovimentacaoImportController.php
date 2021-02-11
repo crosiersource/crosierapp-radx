@@ -166,7 +166,10 @@ class MovimentacaoImportController extends BaseController
 
     private function getMovimentacoesDaSessao(string $tipo): array
     {
-        $arq = $_SERVER['CROSIER_SESSIONS_FOLDER'] . '/MovimentacaoImporter_'. $this->getUser()->getUsername() . '.cache';
+        $arq = $_SERVER['CROSIER_SESSIONS_FOLDER'] . 'MovimentacaoImporter_'. $this->getUser()->getUsername() . '.cache';
+        if (!is_file($arq)) {
+            file_put_contents($arq, '');
+        }
         $movsImportadas = json_decode(file_get_contents($arq), true);
         // $movsImportadas = $this->session->get($tipo);
         $unsMovsImportadas = [];
