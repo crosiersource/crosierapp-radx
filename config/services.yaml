@@ -33,4 +33,8 @@ services:
     app.utils.estoque.vich_uploader_produto_directory_namer:
         alias: App\Utils\Estoque\VichUploaderProdutoDirectoryNamer
         public: true
+        
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+        arguments:
+            - '%env(DATABASE_URL)%'
 

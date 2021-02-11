@@ -6,6 +6,7 @@ use App\Form\Financeiro\MovimentacaoAlterarEmLoteType;
 use App\Form\Financeiro\MovimentacaoGeralType;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoImporter;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
@@ -39,6 +40,8 @@ class MovimentacaoImportController extends BaseController
 
     private SessionInterface $session;
 
+    private EntityIdUtils $entityIdUtils;
+
     private array $vParams = array();
 
     /**
@@ -48,6 +51,15 @@ class MovimentacaoImportController extends BaseController
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
+    }
+
+    /**
+     * @required
+     * @param EntityIdUtils $entityIdUtils
+     */
+    public function setEntityIdUtils(EntityIdUtils $entityIdUtils): void
+    {
+        $this->entityIdUtils = $entityIdUtils;
     }
 
     /**
@@ -152,13 +164,43 @@ class MovimentacaoImportController extends BaseController
         $this->storedViewInfoBusiness->store('movimentacao_import', $storedVParams);
     }
 
+    private function getMovimentacoesDaSessao(string $tipo): array
+    {
+        $arq = $_SERVER['CROSIER_SESSIONS_FOLDER'] . '/MovimentacaoImporter_'. $this->getUser()->getUsername() . '.cache';
+        $movsImportadas = json_decode(file_get_contents($arq), true);
+        // $movsImportadas = $this->session->get($tipo);
+        $unsMovsImportadas = [];
+        if ($movsImportadas) {
+            foreach ($movsImportadas as $mov) {
+                $unsMovsImportadas[$mov['UUID']] = $this->entityIdUtils->unserialize($mov, Movimentacao::class);
+            }
+        }
+        return $unsMovsImportadas;
+    }
+
+    private function setMovimentacoesNaSessao(string $tipo, $movimentacoes)
+    {
+        $serMovimentacoes = null;
+        if ($movimentacoes) {
+            $serMovimentacoes = [];
+            foreach ($movimentacoes as $mov) {
+                if ($mov instanceof Movimentacao) {
+                    $mov = $this->entityIdUtils->serialize($mov);
+                }
+                $serMovimentacoes[] = $mov;
+            }
+        }
+        $arq = $_SERVER['CROSIER_SESSIONS_FOLDER'] . 'MovimentacaoImporter_'. $this->getUser()->getUsername() . '.cache';
+        file_put_contents($arq, json_encode($serMovimentacoes));
+        // $this->session->set($tipo, $serMovimentacoes);
+    }
+
     /**
      *
      * @Route("/fin/movimentacao/import", name="movimentacao_import")
      * @param Request $request
      * @return RedirectResponse|Response
      * @throws ViewException
-     *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
     public function import(Request $request)
@@ -171,7 +213,7 @@ class MovimentacaoImportController extends BaseController
             }
 
             if ($request->request->get('btnVerificar')) {
-                $this->movimentacaoImporter->verificarImportadasAMais($this->session->get('movsImportadas'),
+                $this->movimentacaoImporter->verificarImportadasAMais($this->getMovimentacoesDaSessao('importadas'),
                     $this->vParams['tipoExtrato'],
                     $this->vParams['carteiraExtratoEntity'],
                     $this->vParams['carteiraDestinoEntity'],
@@ -199,7 +241,7 @@ class MovimentacaoImportController extends BaseController
 
         $this->vParams['page_title'] = 'Importação de Movimentações';
 
-        $this->vParams['movsImportadas'] = $this->session->get('movsImportadas');
+        $this->vParams['movsImportadas'] = $this->getMovimentacoesDaSessao('importadas');
         $this->vParams['total'] = $this->session->get('total');
         $this->vParams['linhasExtrato'] = $this->session->get('linhasExtrato');
 
@@ -259,7 +301,7 @@ class MovimentacaoImportController extends BaseController
 
         $this->session->set('linhasExtrato', $r['LINHAS_RESULT']);
         $this->session->set('total', $this->business->somarMovimentacoes($r['movs']));
-        $this->session->set('movsImportadas', $sessionMovs);
+        $this->setMovimentacoesNaSessao('importadas', $sessionMovs);
     }
 
 
@@ -269,11 +311,11 @@ class MovimentacaoImportController extends BaseController
     private function salvarTodas(): bool
     {
         try {
-            $movsImportadas = $this->session->get('movsImportadas');
+            $movsImportadas = $this->getMovimentacoesDaSessao('importadas');
             if ($movsImportadas) {
-                $this->entityHandler->saveAll($this->session->get('movsImportadas'));
+                $this->entityHandler->saveAll($movsImportadas);
                 $this->addFlash('success', 'Movimentações salvas com sucesso!');
-                $this->session->set('movsImportadas', null);
+                $this->setMovimentacoesNaSessao('importadas', null);
                 return true;
             }
             $this->addFlash('warn', 'Nenhuma movimentação a salvar');
@@ -342,7 +384,7 @@ class MovimentacaoImportController extends BaseController
             throw new ViewException('UUID não informado');
         }
 
-        $sessionMovs = $this->session->get('movsImportadas');
+        $sessionMovs = $this->getMovimentacoesDaSessao('importadas');
 
         $movimentacao = $sessionMovs[$UUID];
 
@@ -360,6 +402,7 @@ class MovimentacaoImportController extends BaseController
             if ($form->isValid()) {
                 $movimentacao = $form->getData();
                 $sessionMovs[$UUID] = $movimentacao;
+                $this->setMovimentacoesNaSessao('importadas', $sessionMovs);
                 $this->addFlash('success', 'Registro salvo com sucesso!');
                 return $this->redirectToRoute('movimentacao_import');
             }
@@ -385,9 +428,9 @@ class MovimentacaoImportController extends BaseController
         if (!$UUID) {
             throw new ViewException('UUID não informado');
         }
-        $sessionMovs = $this->session->get('movsImportadas');
+        $sessionMovs = $this->getMovimentacoesDaSessao('importadas');
         unset($sessionMovs[$UUID]);
-        $this->session->set('movsImportadas', $sessionMovs);
+        $this->setMovimentacoesNaSessao('importadas', $sessionMovs);
         return $this->redirectToRoute('movimentacao_import');
     }
 
@@ -409,7 +452,7 @@ class MovimentacaoImportController extends BaseController
                 return $this->redirectToRoute('movimentacao_list');
             }
             $movsSel = $request->get('movsSelecionadas');
-            $this->session->set('movsSelecionadas', $movsSel);
+            $this->setMovimentacoesNaSessao('selecionadas', $movsSel);
         }
 
         $form = $this->createForm(MovimentacaoAlterarEmLoteType::class);
@@ -420,20 +463,19 @@ class MovimentacaoImportController extends BaseController
             if ($form->isValid()) {
 
                 $lote = [];
-                $movsSel = $this->session->get('movsSelecionadas');
+                $movsSel = $this->getMovimentacoesDaSessao('selecionadas');
+                $movsImportadas = $this->getMovimentacoesDaSessao('importadas');
                 foreach ($movsSel as $uuid => $on) {
-                    $lote[$uuid] = $this->session->get('movsImportadas')[$uuid];
+                    $lote[$uuid] = $movsImportadas[$uuid];
                 }
 
                 $movimentacao = $form->getData();
                 $this->business->alterarEmLote($lote, $movimentacao);
 
-                $movsImportadas = $this->session->get('movsImportadas');
-
                 foreach ($lote as $uuid => $mov) {
                     $movsImportadas[$uuid] = $mov;
                 }
-                $this->session->set('movsImportadas', $movsImportadas);
+                $this->setMovimentacoesNaSessao('importadas', $movsImportadas);
 
                 $this->addFlash('success', 'Movimentações alteradas com sucesso.');
                 return $this->redirectToRoute('movimentacao_import');
@@ -457,7 +499,7 @@ class MovimentacaoImportController extends BaseController
      */
     public function removerExistentes(): RedirectResponse
     {
-        $movsImportadas = $this->session->get('movsImportadas');
+        $movsImportadas = $this->getMovimentacoesDaSessao('importadas');
         $nMovsImportadas = [];
         /** @var Movimentacao $movImportada */
         foreach ($movsImportadas as $movImportada) {
@@ -465,7 +507,7 @@ class MovimentacaoImportController extends BaseController
                 $nMovsImportadas[] = $movImportada;
             }
         }
-        $this->session->set('movsImportadas', $nMovsImportadas);
+        $this->setMovimentacoesNaSessao('importadas', $nMovsImportadas);
 
         return $this->redirectToRoute('movimentacao_import');
 
