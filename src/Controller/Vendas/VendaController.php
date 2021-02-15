@@ -1125,6 +1125,10 @@ class VendaController extends FormListController
                         /** @var Venda $venda */
                         foreach ($dados as $venda) {
                             if ($venda->dtVenda->format('Ymd') === $dia->format('Ymd')) {
+                                $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+                                if ($notaFiscal) {
+                                    $venda->notaFiscal = $notaFiscal;
+                                }
                                 $dias[$i]['vendas'][] = $venda;
                                 $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
                                 $totalGeral = bcadd($totalGeral, $dias[$i]['totalDia'], 2);
