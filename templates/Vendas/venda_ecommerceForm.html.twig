@@ -123,22 +123,81 @@
                 {% endif %}
 
 
+                {{ form_row(form.jsonData['obs']) }}
+
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Subtotal</label>
+                            <div class="col-sm-8">
+                                {{ form_widget(form.subtotal) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Descontos</label>
+                            <div class="col-sm-8">
+                                {{ form_widget(form.desconto) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Valor
+                                Total</label>
+                            <div class="col-sm-8">
+                                {{ form_widget(form.valorTotal) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if e.jsonData.ecommerce_entrega_frete_calculado|default(false) %}
+                    <div class="row">
+                        <div class="col-md-8 col-sm-12">
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-sm-4" for="totalComFrete">Total + Frete</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$ </span>
+                                        </div>
+                                        <input type="text" id="totalComFrete" class="crsr-money form-control disabled" disabled="disabled"
+                                               value="{{ (e.valorTotal + e.jsonData.ecommerce_entrega_frete_calculado)|default(0)|number_format(2,',','.') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="d-none">
+                    {{ form_widget(form) }}
+                </div>
+
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+
                 <div class="row mb-3">
                     <div class="col text-right">
                         <button type="submit" class="btn btn-primary" value="Salvar">
                             <i class="fas fa-save" aria-hidden="true"></i> Salvar
                         </button>
-
-                        {#
-                        agora está sendo chamado sempre após resalvar a venda...
-                    <button type="button" value="Atualizar e-commerce" title="Atualizar e-commerce"
-                            class="btn btn-outline-primary"
-                            data-url="{{ url('est_venda_integrarVendaParaECommerce', {'venda': e.id}) }}"
-                            data-target="#confirmationModal"
-                            data-toggle="modal">
-                        <i class="fas fa-cloud-upload-alt"></i> Atualizar e-commerce
-                    </button>
-                        #}
 
                         {% if notaFiscalVendaId|default(false) %}
                             <a role="button" class="btn btn-warning"
@@ -162,26 +221,20 @@
                                 <i class="far fa-check-circle"></i> Finalizar PV
                             </button>
                         {% endif %}
-
                     </div>
-
-
                 </div>
 
 
                 <div class="card">
                     <div class="card-header">
-
                         <div class="row">
                             <div class="col-8">
                                 <h5>Itens</h5>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="card-body">
-
                         <div class="table-responsive-sm">
                             <table class="table table-sm table-striped table-hover">
 
@@ -193,6 +246,7 @@
                                     <th scope="col">Vlr Unit</th>
                                     <th scope="col">Desc</th>
                                     <th scope="col">Total</th>
+                                    <th scope="col"></th>
                                 </tr>
                                 </thead>
 
@@ -201,94 +255,147 @@
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>
-                                            <a href="{{ url('est_produto_form', {'id' : item.produto.id}) }}"
-                                               target="_blank">
-                                                {{ item.id|strpad(9) }} - {{ item.descricao }}
-                                            </a>
+                                            <div class="float-left">
+                                                {{ item.produto.codigo|default(0) }}
+                                                - {{ item.produto.jsonData.titulo ? item.produto.jsonData.titulo : item.descricao }}
+                                                {% if item.jsonData.obs|default(false) %}
+                                                    <br><small class="text-muted">{{ item.jsonData.obs }}</small>
+                                                {% endif %}
+                                            </div>
+                                            <div class="float-right">
+                                                <a href="{{ url('est_produto_form', {'id':item.produto.id}) }}" target="_blank">
+                                                    <i class="fas fa-external-link-alt"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                         <td class="text-right">{{ item.qtde|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.precoVenda|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.desconto|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.total|number_format(2,',','.') }}</td>
+                                        <td class="text-right">
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                    data-url="{{ url('ven_venda_deleteItem', {'item': item.id}) }}?ecommerceForm=true"
+                                                    data-token="{{ csrf_token('ven_venda_deleteItem') }}"
+                                                    data-target="#confirmationModal"
+                                                    data-toggle="modal">
+                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </button>                                            
+                                        </td>
 
                                     </tr>
                                 {% endfor %}
                                 </tbody>
-
                             </table>
                         </div>
 
+                        {% if e.status == 'PV ABERTO' %}
+                            <form method="POST" action="/ven/venda/saveItemEcommerce/{{ e.id }}" id="formItem">
 
-                        {{ form_row(form.jsonData['obs']) }}
-
-                        <div class="row">
-                            <div class="col-md-8 col-sm-12">
-                            </div>
-                            <div class="col-md-4 col-sm-12">
-                                <div class="form-group row">
-                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Subtotal</label>
-                                    <div class="col-sm-8">
-                                        {{ form_widget(form.subtotal) }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8 col-sm-12">
-                            </div>
-                            <div class="col-md-4 col-sm-12">
-                                <div class="form-group row">
-                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Descontos</label>
-                                    <div class="col-sm-8">
-                                        {{ form_widget(form.desconto) }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8 col-sm-12">
-                            </div>
-                            <div class="col-md-4 col-sm-12">
-                                <div class="form-group row">
-                                    <label class="col-form-label col-sm-4" for="nota_fiscal_subtotal">Valor
-                                        Total</label>
-                                    <div class="col-sm-8">
-                                        {{ form_widget(form.valorTotal) }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {% if e.jsonData.ecommerce_entrega_frete_calculado|default(false) %}
-                            <div class="row">
-                                <div class="col-md-8 col-sm-12">
-                                </div>
-                                <div class="col-md-4 col-sm-12">
-                                    <div class="form-group row">
-                                        <label class="col-form-label col-sm-4" for="totalComFrete">Total + Frete</label>
-                                        <div class="col-sm-8">
+                                <div class="row">
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_qtde">Qtde</label>
                                             <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">R$ </span>
+                                                <input type="text" id="item_qtde" name="item[qtde]" required
+                                                       class="form-control" value="1">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"
+                                                          id="item_unidade_append_label">...</span>
                                                 </div>
-                                                <input type="text" id="totalComFrete" class="crsr-money form-control disabled" disabled="disabled"
-                                                       value="{{ (e.valorTotal + e.jsonData.ecommerce_entrega_frete_calculado)|default(0)|number_format(2,',','.') }}">
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <label for="item_produto">Produto</label>
+                                            <input type="hidden" id="item_id" name="item[id]">
+                                            <select id="item_produto" name="item[produto]" required
+                                                    class="form-control {{ e.id ? 'focusOnReady' : '' }}">
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_obs">Obs.:</label>
+                                            <input type="text" id="item_obs" name="item[obs]" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_precoVenda">Preço Venda</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">R$</span>
+                                                </div>
+                                                <input type="text" id="item_precoVenda" name="item[precoVenda]"
+                                                       class="crsr-money form-control">
+                                            </div>
+                                            <small id="item_precoVenda_help" class="form-text text-muted"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_desconto">Desconto</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">R$</span>
+                                                </div>
+                                                <input type="text" id="item_desconto" name="item[desconto]"
+                                                       class="crsr-money form-control" data-allow-negative="true">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="item_valorTotal">Total Item</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">R$</span>
+                                                </div>
+                                                <input type="text" id="item_valorTotal" name="item[valorTotal]"
+                                                       readonly="readonly" class="crsr-money form-control disabled">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-12 d-flex">
+                                        <div class="form-group ml-auto">
+                                            <label for="btnSalvarItemGroup">&nbsp;</label>
+                                            <div class="input-group text-right">
+                                                <div class="btn-group" role="group" id="btnSalvarItemGroup">
+                                                    <button type="submit" class="btn btn-outline-primary"
+                                                            id="btnInserirItem" value="Inserir">
+                                                        <i class="fas fa-save" aria-hidden="true"></i> Inserir item
+                                                    </button>
+
+                                                    <button type="button"
+                                                            onclick="window.location = '/ven/venda/ecommerceForm/{{ e.id }}'"
+                                                            class="btn btn-outline-warning"
+                                                            id="btnRecarregar" value="Recarregar">
+                                                        <i class="fas fa-sync-alt"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </form>
                         {% endif %}
+
 
                     </div>
                 </div>
-
-
-                <div class="d-none">
-                    {{ form_widget(form) }}
-                </div>
-
-                {{ form_end(form, {'render_rest': false}) }}
 
 
             </div>
@@ -303,5 +410,5 @@
 
 
 {% block down_scripts %}
-
+    {{ encore_entry_script_tags('Vendas/venda_ecommerceForm') }}
 {% endblock %}

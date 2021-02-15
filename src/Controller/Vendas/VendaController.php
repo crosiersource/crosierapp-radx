@@ -5,6 +5,7 @@ namespace App\Controller\Vendas;
 use App\Form\Vendas\VendaType;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
@@ -371,7 +372,7 @@ class VendaController extends FormListController
             $vendaItem['unidade_id'] = $unidadeId;
 
             $vendaItem['devolucao'] = $devolucao;
-            $vendaItem['qtde'] = bcmul(($vendaItem['devolucao'] ? -1 : 1) * abs($qtde), 1, $unidade->casasDecimais);
+            $vendaItem['qtde'] = bcmul((($vendaItem['devolucao'] ?? false) ? -1 : 1) * abs($qtde), 1, $unidade->casasDecimais);
 
             $vendaItem['subtotal'] = DecimalUtils::roundUp(bcmul($vendaItem['qtde'], $vendaItem['preco_venda'], 4));
             $vendaItem['desconto'] = ($vendaItem['devolucao'] ? -1 : 1) * $desconto;
@@ -592,6 +593,130 @@ class VendaController extends FormListController
         $params['permiteFinalizarVenda'] = $this->vendaBusiness->permiteFinalizarVenda($venda);
 
         return $this->doForm($request, $venda, $params, false, $fnHandleRequestOnValid);
+    }
+
+    /**
+     *
+     * @Route("/ven/venda/saveItemEcommerce/{venda}", name="ven_venda_saveItemEcommerce", requirements={"venda"="\d+"})
+     * @param Request $request
+     * @param Venda|null $venda
+     * @return RedirectResponse|Response
+     * @IsGranted("ROLE_VENDAS", statusCode=403)
+     */
+    public function saveItemEcommerce(Request $request, Venda $venda)
+    {
+        try {
+            if ($venda->status !== 'PV ABERTO') {
+                throw new ViewException('Status difere de "PV ABERTO"');
+            }
+
+            $item = $request->get('item');
+
+            if (!isset($item['id']) && !isset($item['produto'])) {
+                throw new ViewException('Produto não informado');
+            }
+
+            $conn = $this->entityHandler->getDoctrine()->getConnection();
+
+            $qtde = abs(DecimalUtils::parseStr($item['qtde']));
+            $desconto = DecimalUtils::parseStr($item['desconto'] ?: '0,00');
+
+            if ($item['id'] ?? false) {
+                /** @var VendaItem $vendaItem_ */
+                $vendaItem_ = $this->getDoctrine()->getRepository(VendaItem::class)->find((int)$item['id']);
+                $produtoId = (int)$vendaItem_->produto->getId();
+                $unidadeId = (int)$vendaItem_->unidade->getId();
+            } else {
+                $produtoId = (int)$item['produto'];
+                $unidadeId = (int)($item['unidade'] ?? 0);
+            }
+
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+            /** @var Produto $produto */
+            $produto = $repoProduto->find($produtoId);
+
+            // quando o form é submetido automaticamente numa pesquisa por EAN exato, vem sem a unidade
+            if (!$unidadeId) {
+                $unidadeId = $produto->unidadePadrao->getId();
+            }
+
+
+            if (!($item['id'] ?? false)) {
+                foreach ($venda->itens as $itemNaVenda) {
+                    if ($itemNaVenda->produto->getId() === $produtoId &&
+                        $itemNaVenda->unidade->getId() === $unidadeId) {
+                        if ($item['id'] ?? false) {
+                            // se está alterando para um produto já existente, deleta e incrementa a qtde no outro produto
+                            $conn->delete('ven_venda_item', ['id' => $item['id']]);
+                        }
+                        $itemNaVenda->qtde = bcadd($qtde, abs($itemNaVenda->qtde), 2);
+
+                        $itemNaVenda->desconto = $desconto;
+                        $this->vendaItemEntityHandler->save($itemNaVenda);
+
+                        $this->vendaBusiness->recalcularTotais($venda->getId());
+                        $this->getDoctrine()->getManager()->refresh($venda);
+
+                        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $venda->getId()]);
+                    }
+                }
+            }
+
+            $vendaItem = [];
+
+
+            $vendaItem['produto_id'] = $produtoId;
+            $vendaItem['venda_id'] = $venda->getId();
+
+
+            $vendaItem['preco_venda'] = DecimalUtils::parseStr($item['precoVenda']);
+
+
+            $vendaItem['descricao'] = $produto->nome;
+            if (!($item['id'] ?? false)) {
+                $vendaItem['ordem'] = $venda->itens->count() + 1;
+            }
+
+            $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
+            /** @var Unidade $unidade */
+            $unidade = $repoUnidade->find($unidadeId);
+
+            $vendaItem['unidade_id'] = $unidadeId;
+
+            $vendaItem['qtde'] = bcmul((($vendaItem['devolucao'] ?? false) ? -1 : 1) * abs($qtde), 1, $unidade->casasDecimais);
+
+            $vendaItem['subtotal'] = DecimalUtils::roundUp(bcmul($vendaItem['qtde'], $vendaItem['preco_venda'], 4));
+            $vendaItem['desconto'] = $desconto;
+            $vendaItem['total'] = bcsub($vendaItem['subtotal'], $vendaItem['desconto'], 2);
+
+
+            $vendaItem['updated'] = (new \DateTime())->format('Y-m-d H:i:s');
+            $vendaItem['inserted'] = (new \DateTime())->format('Y-m-d H:i:s');
+            $vendaItem['estabelecimento_id'] = 1;
+            $vendaItem['user_inserted_id'] = 1;
+            $vendaItem['user_updated_id'] = 1;
+            $vendaItem['devolucao'] = 0;
+
+            $vendaItem_jsonData['obs'] = strtoupper($item['obs'] ?? '');
+
+            $vendaItem['json_data'] = json_encode($vendaItem_jsonData);
+
+            if ($item['id'] ?? false) {
+                $conn->update('ven_venda_item', $vendaItem, ['id' => $item['id']]);
+            } else {
+                $conn->insert('ven_venda_item', $vendaItem);
+            }
+
+            $this->vendaBusiness->recalcularTotais($venda->getId());
+            $this->getDoctrine()->getManager()->refresh($venda);
+
+        } catch (\Throwable $e) {
+            $this->addFlash('error', 'Erro ao inserir item');
+            if ($e instanceof ViewException) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+        return $this->redirectToRoute('ven_venda_ecommerceForm', ['id' => $venda->getId()]);
     }
 
     /**
@@ -846,7 +971,8 @@ class VendaController extends FormListController
             }
         }
 
-        return $this->redirectToRoute('ven_venda_form_itens', ['id' => $item->venda->getId()]);
+        $route = $request->get('ecommerceForm') ? 'ven_venda_ecommerceForm' : 'ven_venda_form_itens';
+        return $this->redirectToRoute($route, ['id' => $item->venda->getId()]);
     }
 
     /**
@@ -960,7 +1086,9 @@ class VendaController extends FormListController
                 new FilterData(['dtVenda'], 'BETWEEN_DATE_CONCAT', 'dtsVenda', $params),
                 new FilterData(['canal'], 'EQ', 'canal', $params, null, true),
                 new FilterData(['status'], 'IN', 'status', $params),
-                new FilterData(['ecommerce_status_descricao'], 'IN', 'statusECommerce', $params, null, true),
+                new FilterData(['cliente_nome'], 'LIKE', 'cliente_nome', $params, null, true),
+                new FilterData(['ecommerce_idPedido'], 'EQ', 'ecommerce_idPedido', $params, null, true),
+                new FilterData(['ecommerce_status_descricao'], 'IN', 'statusECommerce', $params, 'string', true),
                 new FilterData(['vendedor_codigo'], 'EQ', 'vendedor', $params, null, true),
             ];
         };
@@ -970,12 +1098,26 @@ class VendaController extends FormListController
             $dias = [];
             $i = -1;
 
+            $totalGeral = 0.0;
+
+            $temMaisFiltros = false;
+            /** @var FilterData $filterData */
+            foreach ($filterDatas as $filterData) {
+                if ($filterData->filterType !== 'BETWEEN_DATE_CONCAT') {
+                    $temMaisFiltros = true;
+                }
+            }
+
             /** @var FilterData $filterData */
             foreach ($filterDatas as $filterData) {
                 if ($filterData->filterType === 'BETWEEN_DATE_CONCAT') {
-                    $serieDeDias = DateTimeUtils::getDatesList($filterData->val['i'], $filterData->val['f']);
+                    $serieDeDias = DateTimeUtils::getDatesList($filterData->val['f'], $filterData->val['i']);
                     /** @var \DateTime $dia */
+                    $hoje = (new \DateTime())->setTime(23, 59, 99);
                     foreach ($serieDeDias as $dia) {
+                        if (DateTimeUtils::diffInMinutes($dia, $hoje) > 0) {
+                            continue;
+                        }
                         $i++;
                         $dias[$i]['totalDia'] = 0.0;
                         $dias[$i]['dtVenda'] = $dia;
@@ -985,15 +1127,21 @@ class VendaController extends FormListController
                             if ($venda->dtVenda->format('Ymd') === $dia->format('Ymd')) {
                                 $dias[$i]['vendas'][] = $venda;
                                 $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
+                                $totalGeral = bcadd($totalGeral, $dias[$i]['totalDia'], 2);
                             }
                         }
+                        if ($temMaisFiltros && count($dias[$i]['vendas']) === 0) {
+                            unset($dias[$i]);
+                        }
                     }
+
                 }
             }
 
-
-            $dados = $dias;
+            $dados['dias'] = $dias;
+            $dados['totalGeral'] = $totalGeral;
         };
+
 
         return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);
     }
@@ -1014,8 +1162,14 @@ class VendaController extends FormListController
 
             $conn = $this->getDoctrine()->getConnection();
 
+            $sqlConf = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                [
+                    'appUUID' => $_SERVER['CROSIERAPP_UUID'],
+                    'chave' => 'ven_venda_findProdutosByCodigoOuNomeJson.sql'
+                ]);
+
             // Pesquisa o produto e seu preço já levando em consideração a unidade padrão
-            $sql = 'SELECT prod.id, prod.codigo, prod.nome, prod.json_data->>"$.qtde_min_para_atacado" as qtde_min_para_atacado, ' .
+            $sql = $sqlConf['valor'] ?? 'SELECT prod.id, prod.codigo, prod.nome, prod.json_data->>"$.qtde_min_para_atacado" as qtde_min_para_atacado, ' .
                 'preco.preco_prazo as precoVenda, u.id as unidade_id, ' .
                 'u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
                 'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
@@ -1030,6 +1184,8 @@ class VendaController extends FormListController
                     'nome' => '%' . $str . '%',
                     'codigo' => '%' . $str
                 ]);
+
+
             $results = $this->handleResultProdutoSelect2($rs);
 
             if (count($results) === 1 && $results[0]['codigo'] === $str) {
@@ -1157,16 +1313,18 @@ class VendaController extends FormListController
             $stmtSaldo->execute();
             $rSaldo = $stmtSaldo->fetchAssociative();
             $saldo = DecimalUtils::formatFloat((string)($rSaldo['qt'] + 0));
-            $text = '...' . substr($codigo, -5) . ' <b>' . $r['nome'] . '</b> (Em estoque: ' . $saldo . ') ';
+            $text = $codigo . ' <b>' . $r['nome'] . '</b> (Em estoque: ' . $saldo . ') ';
             $precos = handlePrecos($conn, $rUnidades);
-            foreach ($precos as $unidade => $preco) {
-                $text .= '(' . $unidade . ') ' .
-                    'Varejo: ' .
-                    number_format($preco['VAREJO']['preco_prazo'], 2, ',', '.') . ', ' .
-                    'Atacado: ' .
-                    number_format($preco['ATACADO']['preco_prazo'], 2, ',', '.') . ' / ';
+            if ($precos) {
+                foreach ($precos as $unidade => $preco) {
+                    $text .= '(' . $unidade . ') ' .
+                        'Varejo: ' .
+                        number_format($preco['VAREJO']['preco_prazo'], 2, ',', '.') . ', ' .
+                        'Atacado: ' .
+                        number_format($preco['ATACADO']['preco_prazo'], 2, ',', '.') . ' / ';
+                }
+                $text = substr($text, 0, -3);
             }
-            $text = substr($text, 0, -3);
 
             $results[] = [
                 'id' => $r['id'],
