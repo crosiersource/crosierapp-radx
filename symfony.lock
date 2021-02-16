@@ -183,7 +183,7 @@
         "version": "2.2.0"
     },
     "myclabs/php-enum": {
-        "version": "1.7.7"
+        "version": "1.8.0"
     },
     "neitanod/forceutf8": {
         "version": "v2.0.4"
@@ -518,22 +518,22 @@
         ]
     },
     "symfony/polyfill-intl-grapheme": {
-        "version": "v1.22.0"
+        "version": "v1.22.1"
     },
     "symfony/polyfill-intl-icu": {
-        "version": "v1.22.0"
+        "version": "v1.22.1"
     },
     "symfony/polyfill-intl-idn": {
-        "version": "v1.22.0"
+        "version": "v1.22.1"
     },
     "symfony/polyfill-intl-normalizer": {
-        "version": "v1.22.0"
+        "version": "v1.22.1"
     },
     "symfony/polyfill-mbstring": {
-        "version": "v1.22.0"
+        "version": "v1.22.1"
     },
     "symfony/polyfill-php80": {
-        "version": "v1.22.0"
+        "version": "v1.22.1"
     },
     "symfony/process": {
         "version": "v5.2.3"
