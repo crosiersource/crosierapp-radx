@@ -18,7 +18,8 @@ api_platform:
         jsonhal:
             mime_types:
                 - application/hal+json
+    defaults:
+        pagination_client_items_per_page: true
     collection:
         pagination:
-            client_items_per_page: true
             items_per_page_parameter_name: rows
