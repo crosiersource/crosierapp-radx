@@ -63,7 +63,7 @@
 
                         <div class="form-group">
                             <label class="" for="venda_cliente">Cliente</label>
-                            <input type="text" class="form-control" disabled
+                            <input type="text" class="form-control" disabled id="venda_cliente"
                                    value="{{ e.cliente.documento|mascararCnpjCpf }} - {{ e.cliente.nome }}">
                         </div>
                     </div>
@@ -190,9 +190,6 @@
                 </div>
 
 
-                {{ form_end(form, {'render_rest': false}) }}
-
-
                 <div class="row mb-3">
                     <div class="col text-right">
                         <button type="submit" class="btn btn-primary" value="Salvar">
@@ -223,6 +220,11 @@
                         {% endif %}
                     </div>
                 </div>
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+
+                
 
 
                 <div class="card">
