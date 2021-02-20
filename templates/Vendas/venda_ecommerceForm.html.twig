@@ -243,7 +243,9 @@
                                 <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Produto</th>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Código</th>
+                                    <th scope="col">Descrição</th>
                                     <th scope="col">Qtde</th>
                                     <th scope="col">Vlr Unit</th>
                                     <th scope="col">Desc</th>
@@ -256,10 +258,11 @@
                                 {% for item in e.itens %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
+                                        <td>{{ item.produto.id|strpad(9) }}</td>
+                                        <td>{{ item.produto.codigo|default(0) }}</td>
                                         <td>
                                             <div class="float-left">
-                                                {{ item.produto.codigo|default(0) }}
-                                                - {{ item.produto.jsonData.titulo ? item.produto.jsonData.titulo : item.descricao }}
+                                                {{ item.descricao }}
                                                 {% if item.jsonData.obs|default(false) %}
                                                     <br><small class="text-muted">{{ item.jsonData.obs }}</small>
                                                 {% endif %}
