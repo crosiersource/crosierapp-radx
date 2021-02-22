@@ -1074,6 +1074,15 @@ class VendaController extends FormListController
             $hj = new \DateTime();
             $dtsVenda = ['i' => $hj, 'f' => $hj];
             $params['fixedFilters']['filter']['dtsVenda'] = $dtsVenda['i']->format('d/m/Y') . ' - ' . $dtsVenda['i']->format('d/m/Y');
+        } else {
+            $dts = DateTimeUtils::parseConcatDates($filter['dtsVenda']);
+            if (abs(DateTimeUtils::monthDiff($dts['i'], $dts['f'])) > 6) {
+                $this->addFlash('warn', 'Período não pode ser maior que 6 meses');
+                /** @var \DateTime $dtIni */
+                $dtIni = $dts['i'];
+                $dtFim = (clone $dtIni)->add(new \DateInterval('P6M'));
+                $params['fixedFilters']['filter']['dtsVenda'] = $dtIni->format('d/m/Y') . ' - ' . $dtFim->format('d/m/Y');
+            }
         }
         $params['fixedFilters']['filter']['canal'] = 'ECOMMERCE';
 
@@ -1103,44 +1112,52 @@ class VendaController extends FormListController
             $temMaisFiltros = false;
             /** @var FilterData $filterData */
             foreach ($filterDatas as $filterData) {
-                if ($filterData->filterType !== 'BETWEEN_DATE_CONCAT') {
+                if (!in_array($filterData->field[0], ['e.canal', 'e.dtVenda'], true)) {
                     $temMaisFiltros = true;
+                    break;
                 }
             }
-
-            /** @var FilterData $filterData */
-            foreach ($filterDatas as $filterData) {
-                if ($filterData->filterType === 'BETWEEN_DATE_CONCAT') {
-                    $serieDeDias = DateTimeUtils::getDatesList($filterData->val['f'], $filterData->val['i']);
-                    /** @var \DateTime $dia */
-                    $hoje = (new \DateTime())->setTime(23, 59, 99);
-                    foreach ($serieDeDias as $dia) {
-                        if (DateTimeUtils::diffInMinutes($dia, $hoje) > 0) {
-                            continue;
-                        }
-                        $i++;
-                        $dias[$i]['totalDia'] = 0.0;
-                        $dias[$i]['dtVenda'] = $dia;
-                        $dias[$i]['vendas'] = [];
-                        /** @var Venda $venda */
-                        foreach ($dados as $venda) {
-                            if ($venda->dtVenda->format('Ymd') === $dia->format('Ymd')) {
-                                $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
-                                if ($notaFiscal) {
-                                    $venda->notaFiscal = $notaFiscal;
-                                }
-                                $dias[$i]['vendas'][] = $venda;
-                                $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
-                                $totalGeral = bcadd($totalGeral, $dias[$i]['totalDia'], 2);
-                            }
-                        }
-                        if ($temMaisFiltros && count($dias[$i]['vendas']) === 0) {
-                            unset($dias[$i]);
-                        }
+            $serieDeDias = [];
+            if (!$temMaisFiltros) {
+                /** @var FilterData $filterData */
+                foreach ($filterDatas as $filterData) {
+                    if ($filterData->filterType === 'BETWEEN_DATE_CONCAT') {
+                        $serieDeDias = DateTimeUtils::getDatesList($filterData->val['f'], $filterData->val['i']);
                     }
-
+                }
+            } else {
+                /** @var Venda $venda */
+                foreach ($dados as $venda) {
+                    $serieDeDias[] = (clone($venda->dtVenda))->setTime(0, 0);
                 }
             }
+            $hoje = (new \DateTime())->setTime(23, 59, 99);
+            /** @var \DateTime $dia */
+            foreach ($serieDeDias as $dia) {
+                if (DateTimeUtils::diffInMinutes($dia, $hoje) > 0) {
+                    continue;
+                }
+                $i++;
+                $dias[$i]['totalDia'] = 0.0;
+                $dias[$i]['dtVenda'] = $dia;
+                $dias[$i]['vendas'] = [];
+                /** @var Venda $venda */
+                foreach ($dados as $venda) {
+                    if ($venda->dtVenda->format('Ymd') === $dia->format('Ymd')) {
+                        $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
+                        if ($notaFiscal) {
+                            $venda->notaFiscal = $notaFiscal;
+                        }
+                        $dias[$i]['vendas'][] = $venda;
+                        $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
+                        $totalGeral = bcadd($totalGeral, $dias[$i]['totalDia'], 2);
+                    }
+                }
+                if ($temMaisFiltros && count($dias[$i]['vendas']) === 0) {
+                    unset($dias[$i]);
+                }
+            }
+
 
             $dados['dias'] = $dias;
             $dados['totalGeral'] = $totalGeral;
