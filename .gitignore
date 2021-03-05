@@ -32,3 +32,5 @@ src/Entity/uppercaseFields.json
 /src/.preload.php
 
 .phpunit.result.cache
+
+crosierapp-radx.env.local.txt
