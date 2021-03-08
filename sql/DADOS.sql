@@ -68,10 +68,9 @@ VALUES (1, 1, 'ENTRADAS', NULL, 0, 1, NULL, 0, NULL, NULL, 100000000000, '2015-0
        (101, 101, 'RECEB. VENDAS INTERNAS', 1, 0, 1, '', 0, '', '', 101000000000, '2015-02-11 18:19:35', '2018-12-28 15:25:36', 3, 1, 1, 1),
        (102, 102, 'RECEB. VENDAS EXTERNAS', 1, 0, 1, NULL, 0, NULL, NULL, 102000000000, '2015-02-11 18:19:40', '2015-02-12 14:58:04', 1, 1, 1, 1),
        (103, 103, 'ENTRADA - EMPRÉSTIMO', 1, 0, 1, NULL, 0, NULL, NULL, 103000000000, '2015-03-06 15:31:56', '2015-03-06 15:31:56', 0, 1, 1, 1),
-       (104, 104, 'VENDAS LICITAÇÕES', 1, 0, 1, NULL, 0, NULL, NULL, 104000000000, '2015-02-11 18:20:26', '2015-03-06 15:31:41', 3, 1, 1, 1),
-       (150, 150, 'OUTROS RECEBIMENTOS', 1, 0, 1, NULL, 0, NULL, NULL, 150000000000, '2015-02-11 18:19:48', '2015-02-11 18:20:20', 1, 1, 1, 1),
+       (150, 150, 'RECEB. OUTROS', 1, 0, 1, NULL, 0, NULL, NULL, 150000000000, '2015-02-11 18:19:48', '2015-02-11 18:20:20', 1, 1, 1, 1),
        (151, 151, 'ENTRADA - AJUSTE DE CAIXA', 1, 0, 1, NULL, 0, NULL, NULL, 151000000000, '2015-03-02 09:49:24', '2015-03-02 09:49:24', 0, 1, 1, 1),
-       (160, 160, 'RECEBIMENTOS PARA TERCEIROS', 1, 0, 1, NULL, 0, NULL, NULL, 160000000000, '2015-05-09 15:10:18', '2015-05-09 15:10:18', 0, 1, 1, 1),
+       (160, 160, 'RECEB. PARA TERCEIROS', 1, 0, 1, NULL, 0, NULL, NULL, 160000000000, '2015-05-09 15:10:18', '2015-05-09 15:10:18', 0, 1, 1, 1),
        (170, 170, 'OUTRAS ENTRADAS', 1, 0, 1, '', 0, '', '', 170000000000, '2015-12-23 11:56:37', '2015-12-23 11:56:37', 0, 1, 1, 1),
        (179, 179, 'REAPRESENTAÇÃO DE CHEQUE (ENTRANDO)', 1, 0, 1, '', 0, '', '', 179000000000, '2016-03-21 17:18:02', '2016-03-21 17:18:02', 0, 1, 1, 1),
        (180, 180, 'ENTRADAS PESSOAIS', 1, 0, 1, '', 0, '', null, 180000000000, '2015-04-30 16:40:36', '2015-10-20 12:18:28', 2, 1, 1, 1),
@@ -137,6 +136,7 @@ VALUES (1, 1, 'ENTRADAS', NULL, 0, 1, NULL, 0, NULL, NULL, 100000000000, '2015-0
        (201100006, 201100006, 'HONORÁRIOS CONTÁBEIS', 28, 0, 2, NULL, 0, NULL, NULL, 201100006000, '2015-02-11 18:25:17', '2015-02-11 18:25:17', 0, 1, 1, 1),
        (201100007, 201100007, 'MÃO-DE-OBRA', 28, 0, 2, NULL, 0, NULL, NULL, 201100007000, '2015-02-24 08:48:51', '2015-02-24 08:48:51', 0, 1, 1, 1),
        (201100008, 201100008, 'CONVÊNIOS', 28, 0, 2, NULL, 0, NULL, NULL, 201100008000, '2015-02-24 08:49:54', '2015-02-24 08:49:54', 0, 1, 1, 1),
+       (201100100, 201100100, 'PAGTO A PROFISSIONAL', 28, 0, 2, NULL, 0, NULL, NULL, 201100100000, '2015-02-24 08:49:54', '2015-02-24 08:49:54', 0, 1, 1, 1),
        (201100999, 201100999, 'ENCARGOS SOCIAIS (GERAIS)', 28, 0, 2, NULL, 0, NULL, NULL, 201100999000, '2015-02-24 08:47:11', '2015-02-24 08:47:11', 0, 1, 1, 1),
        (202005001, 202005001, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 51, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 0, NULL, NULL, 202005001000, '2015-06-10 09:48:20', '2015-07-16 09:52:06', 1, 1, 1, 1),
        (202005002, 202005002, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 51, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 0, NULL, NULL, 202005002000, '2015-06-10 09:48:31', '2015-07-16 09:52:11', 1, 1, 1, 1),
@@ -184,6 +184,9 @@ VALUES (11, 11, 'TRANSF. ENTRE CONTAS', 0, 0, 1, 1, 0, 0, '2015-04-15 17:18:43',
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (12, 50, 'MOVIMENTAÇÃO AGRUPADA', 0, 1, 0, 0, 0, 0, '2015-05-18 17:11:23', '2015-05-18 17:11:23', 0, 1, 1, 1);
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+                        `user_inserted_id`, `user_updated_id`)
+VALUES (13, 60, 'VIRTUAL', 0, 0, 0, 0, 0, 0, '2015-05-18 17:11:23', '2015-05-18 17:11:23', 0, 1, 1, 1);
 
 
 
