@@ -33,7 +33,6 @@ INSERT INTO crm_cliente(id, nome, documento, inserted, updated, version, estabel
 
 
 
-
 DROP TABLE IF EXISTS `est_unidade`;
 
 CREATE TABLE `est_unidade`
@@ -460,7 +459,7 @@ CREATE TABLE `est_produto_saldo`
   COLLATE = utf8_swedish_ci;
 
 
-SET FOREIGN_KEY_CHECKS = 0;
+
 
 DROP TABLE IF EXISTS `est_fornecedor`;
 
@@ -494,7 +493,7 @@ CREATE TABLE `est_fornecedor`
 
 
 
-SET FOREIGN_KEY_CHECKS = 0;
+
 
 DROP TABLE IF EXISTS `est_pedidocompra`;
 
@@ -576,7 +575,7 @@ CREATE TABLE `est_pedidocompra_item`
 
 
 
-SET FOREIGN_KEY_CHECKS = 0;
+
 
 DROP TABLE IF EXISTS `est_romaneio`;
 
@@ -661,7 +660,7 @@ CREATE TABLE `est_romaneio_item`
 
 
 
-SET FOREIGN_KEY_CHECKS = 0;
+
 
 DROP TABLE IF EXISTS `est_entrada`;
 
@@ -741,17 +740,17 @@ DROP TABLE IF EXISTS `fin_tipo_lancto`;
 
 CREATE TABLE `fin_tipo_lancto`
 (
-    `id`                 bigint(20)    NOT NULL AUTO_INCREMENT,
+    `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
 
-    `codigo`             int(11)       NOT NULL,
-    `descricao`          varchar(200)  NOT NULL,
+    `codigo`             int(11)      NOT NULL,
+    `descricao`          varchar(200) NOT NULL,
 
-    `inserted`           datetime      NOT NULL,
-    `updated`            datetime      NOT NULL,
+    `inserted`           datetime     NOT NULL,
+    `updated`            datetime     NOT NULL,
     `version`            int(11),
-    `estabelecimento_id` bigint(20)    NOT NULL,
-    `user_inserted_id`   bigint(20)    NOT NULL,
-    `user_updated_id`    bigint(20)    NOT NULL,
+    `estabelecimento_id` bigint(20)   NOT NULL,
+    `user_inserted_id`   bigint(20)   NOT NULL,
+    `user_updated_id`    bigint(20)   NOT NULL,
 
     PRIMARY KEY (`id`),
     UNIQUE KEY `UK_fin_tipo_lancto_codigo` (`codigo`),
@@ -1594,7 +1593,8 @@ CREATE TABLE `fis_nf`
     `manifest_dest`            varchar(255),
     `dt_manifest_dest`         datetime,
     `entrada_saida`            enum ('E','S') NOT NULL,
-
+    `json_data`                json,
+    
     PRIMARY KEY (`id`),
     UNIQUE KEY `UF_fis_nf_chave_acesso` (`chave_acesso`),
     KEY `K_fis_nf_documento_emitente` (`documento_emitente`),
