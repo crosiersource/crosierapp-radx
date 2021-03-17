@@ -1,4 +1,5 @@
 security:
+    enable_authenticator_manager: true
     encoders:
         CrosierSource\CrosierLibBaseBundle\Entity\Security\User:
             algorithm: auto
@@ -13,8 +14,13 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
-            lazy: true
+            # configuring the maximum login attempts (per minute)
+            login_throttling:
+                max_attempts: 3
+
+            entry_point: App\Security\CrosierCoreAuthenticator
+
+            lazy: false
 
             remember_me:
                 name: 'RMMBRM'
@@ -25,13 +31,12 @@ security:
                 httponly: false
                 always_remember_me: true
 
-            guard:
-                authenticators:
-                    - App\Security\CrosierCoreAuthenticator
-                    - App\Security\APIAuthenticator
+            custom_authenticators:
+                - App\Security\CrosierCoreAuthenticator
+                - App\Security\APIAuthenticator
 
                 # redirect anonymous users to the login page
-                entry_point: App\Security\CrosierCoreAuthenticator
+
 
             logout:
                 path: logout
@@ -53,7 +58,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/nosec, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/nosec, roles: PUBLIC_ACCESS }
         # but, definitely allow /login to be accessible anonymously
         # - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         # if you wanted to force EVERY URL to be protected
