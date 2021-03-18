@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d06483b1f7ff61fb12c8ee72c48ccd9",
+    "content-hash": "307f3795b5501d54312a284dc296f61b",
     "packages": [
         {
             "name": "api-platform/core",
@@ -239,16 +239,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "ad64213e02ef4f7ca59a7fe5cf8fbc77daf37f0f"
+                "reference": "16abf5fed4477735286d4ab4f38e8f70ece77cc4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/ad64213e02ef4f7ca59a7fe5cf8fbc77daf37f0f",
-                "reference": "ad64213e02ef4f7ca59a7fe5cf8fbc77daf37f0f",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/16abf5fed4477735286d4ab4f38e8f70ece77cc4",
+                "reference": "16abf5fed4477735286d4ab4f38e8f70ece77cc4",
                 "shasum": ""
             },
             "require": {
@@ -280,6 +280,7 @@
             "require-dev": {
                 "symfony/phpunit-bridge": "^5.2"
             },
+            "default-branch": true,
             "type": "symfony-bundle",
             "extra": {
                 "symfony": {
@@ -304,9 +305,9 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.0.0"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/master"
             },
-            "time": "2021-03-17T21:00:43+00:00"
+            "time": "2021-03-18T19:33:43+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
@@ -314,16 +315,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "af399e636c14ce3b95852f79ec1a46d43a480bbc"
+                "reference": "10512fbe9a5214f184bc374c2b4f22c48e18ddb7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/af399e636c14ce3b95852f79ec1a46d43a480bbc",
-                "reference": "af399e636c14ce3b95852f79ec1a46d43a480bbc",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/10512fbe9a5214f184bc374c2b4f22c48e18ddb7",
+                "reference": "10512fbe9a5214f184bc374c2b4f22c48e18ddb7",
                 "shasum": ""
             },
             "require": {
-                "crosiersource/crosierlib-base": "^1",
+                "crosiersource/crosierlib-base": "@dev",
                 "econea/nusoap": "^0.9.7",
                 "ext-bcmath": "*",
                 "ext-ctype": "*",
@@ -383,7 +384,7 @@
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
                 "source": "https://github.com/crosiersource/crosierlib-radx/tree/master"
             },
-            "time": "2021-03-18T18:33:58+00:00"
+            "time": "2021-03-18T19:50:41+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -12135,6 +12136,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "crosiersource/crosierlib-base": 20,
         "crosiersource/crosierlib-radx": 20
     },
     "prefer-stable": false,

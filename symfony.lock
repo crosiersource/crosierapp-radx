@@ -17,7 +17,7 @@
         "version": "v1.0.0"
     },
     "crosiersource/crosierlib-radx": {
-        "version": "dev-master"
+        "version": "v1.0.0"
     },
     "doctrine/annotations": {
         "version": "1.0",
