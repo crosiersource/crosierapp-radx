@@ -54,8 +54,6 @@
         "symfony/web-link": "5.2.*",
         "symfony/webpack-encore-bundle": "^1.0",
         "symfony/yaml": "5.2.*",
-        "crosiersource/crosierlib-base": "@dev",
-        "crosiersource/crosierlib-radx": "@dev",
         "symfony/web-profiler-bundle": "5.2.*",
         "nfephp-org/sped-common": "^5.0",
         "nfephp-org/sped-da": "^0",
@@ -66,7 +64,8 @@
         "vich/uploader-bundle": "^1.13",
         "symfony/messenger": "5.2.*",
         "twig/intl-extra": "^3.2",
-        "symfony/rate-limiter": "5.2.*"
+        "symfony/rate-limiter": "5.2.*",
+        "crosiersource/crosierlib-radx": "@dev"
     },
     "require-dev": {
         "symfony/debug-pack": "*",
@@ -120,21 +119,5 @@
             "allow-contrib": true,
             "require": "5.2.*"
         }
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../crosierlib-base/",
-            "options": {
-                "symlink": true
-            }
-        },
-        {
-            "type": "path",
-            "url": "../crosierlib-radx/",
-            "options": {
-                "symlink": true
-            }
-        }
-    ]
+    }
 }
