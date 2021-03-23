@@ -15,8 +15,8 @@ security:
             security: false
         main:
             # configuring the maximum login attempts (per minute)
-            login_throttling:
-                max_attempts: 3
+            #login_throttling:
+            #    max_attempts: 3
 
             entry_point: App\Security\CrosierCoreAuthenticator
 
