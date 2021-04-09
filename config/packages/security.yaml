@@ -23,13 +23,15 @@ security:
             lazy: false
 
             remember_me:
-                name: 'RMMBRM'
-                secret: "%env(CROSIERCORE_APPSECRET)%"
+                name: 'CRSRRMMBRM'
+                secure: true
+                secret: "%env(APP_SECRET)%"
                 lifetime: 6048000 # 10 semanas
                 domain: "%env(CROSIER_MAINDOMAIN)%"
                 samesite: lax
                 httponly: false
                 always_remember_me: true
+                path: /
 
             custom_authenticators:
                 - App\Security\CrosierCoreAuthenticator
