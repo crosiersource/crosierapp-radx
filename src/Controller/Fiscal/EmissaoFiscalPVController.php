@@ -10,6 +10,8 @@ use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\VendaItem;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaItemEntityHandler;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -221,6 +223,27 @@ class EmissaoFiscalPVController extends BaseController
         }
         return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
 
+    }
+
+
+    /**
+     *
+     * @Route("/fis/emissaofiscalpv/corrigirNCM/{vendaItem}", name="fis_emissaofiscalpv_corrigirNCM")
+     * @param Venda $venda
+     * @return Response
+     */
+    public function corrigirNCM(VendaItem $vendaItem, VendaItemEntityHandler $vendaItemEntityHandler): Response
+    {
+        try {
+            $rNcmPadrao = $this->notaFiscalBusiness->notaFiscalItemEntityHandler->getDoctrine()->getConnection()->fetchAllAssociative('SELECT valor FROM cfg_app_config WHERE chave = \'ncm_padrao\'');
+            $ncmPadrao = $rNcmPadrao[0]['valor'] ?? null;
+            $vendaItem->jsonData['ncm'] = $ncmPadrao;
+            $vendaItemEntityHandler->save($vendaItem);
+            $this->addFlash('success', 'NCM corrigido');
+        } catch (ViewException $e) {
+            $this->addFlash('error', 'Ocorreu um erro ao corrigir o NCM');
+        }
+        return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $vendaItem->venda->getId()]);
     }
 
 
