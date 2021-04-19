@@ -925,20 +925,27 @@ class VendaController extends FormListController
             $dia = null;
             $dias = [];
             $i = -1;
+            
+            $subtotal = 0.0;
+            $total = 0.0; // total com frete e possíveis acréscimos
+            
             /** @var Venda $venda */
-            $total = 0.0;
             foreach ($dados as $venda) {
                 if ($venda->dtVenda->format('d/m/Y') !== $dia) {
                     $i++;
-                    $dias[$i]['totalDia'] = 0.0;
+                    $dias[$i]['subtotal'] = 0.0;
+                    $dias[$i]['total'] = 0.0;
                     $dia = $venda->dtVenda->format('d/m/Y');
                     $dias[$i]['dtVenda'] = $venda->dtVenda;
                 }
                 $dias[$i]['vendas'][] = $venda;
-                $dias[$i]['totalDia'] = bcadd($dias[$i]['totalDia'], $venda->valorTotal, 2);
-                $total = bcadd($total, $venda->valorTotal, 2);
+                $dias[$i]['subtotal'] = bcadd($dias[$i]['subtotal'], $venda->valorTotal, 2);
+                $dias[$i]['total'] = bcadd($dias[$i]['total'], $venda->jsonData['total_pagtos'] ?? $venda->valorTotal, 2);
+                $subtotal = bcadd($subtotal, $dias[$i]['subtotal'], 2);
+                $total = bcadd($total, $dias[$i]['total'], 2);
             }
             $dados['dias'] = $dias;
+            $dados['subtotal'] = $subtotal;
             $dados['total'] = $total;
         };
 

@@ -102,15 +102,16 @@
                     <tr>
                         <th scope="col">Id</th>
                         <th scope="col">Cliente</th>
-                        <th scope="col">Vendedor<br/>Plano Pagto</th>
+                        <th scope="col">Vendedor<br/>Forma de Pagamento</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Valor Total</th>
+                        <th scope="col">Subtotal</th>
+                        <th scope="col">Total</th>
                         <th scope="col"></th>
                     </tr>
                     </thead>
 
                     <tbody>
-
+                    {% set i=0 %}
                     {% for dia in dados.dias %}
                         <tr class="table-primary">
                             <th scope="row" colspan="99">
@@ -118,16 +119,17 @@
                             </th>
                         </tr>
                         {% for venda in dia.vendas %}
+                            {% set i = i+1 %}
 
                             <tr>
                                 <td>
-                                    <span class="badge badge-pill badge-info">{{ loop.index }}</span>
+                                    <span class="badge badge-pill badge-info">{{ i }}</span>
                                     {{ venda.id|strpad(9) }}
                                 </td>
                                 <td>
                                     <div style="float: left">
                                         {{ venda.cliente.documento|default('')|mascararCnpjCpf }}
-                                        - {{ venda.cliente.nome|default('') }}
+                                        - {{ venda.cliente.nome|default('')|upper }}
                                     </div>
                                     <div class="text-right">
                                         {% if venda.jsonData.canal|default('') == 'ECOMMERCE' %}
@@ -144,15 +146,19 @@
                                 </td>
                                 <td>
                                     <div class="float-left">
-                                        {{ venda.vendedor.nome|default('') }}
+                                        {{ venda.vendedor.nome|default('') }}<br/>
+                                        {{ venda.jsonData['forma_pagamento']|default('') }}
                                     </div>
                                 </td>
                                 <td class="text-center">
                                     {{ (venda.status|default('') ~ '<br/>')|raw }}
-                                    {{ venda.jsonData.ecommerce_status|default('') }}
+                                    {{ venda.jsonData.ecommerce_status_descricao|default('') }}
                                 </td>
                                 <td class="text-right">
                                     R$ {{ venda.valorTotal|number_format(2,',','.') }}
+                                </td>
+                                <td class="text-right">
+                                    R$ {{ (venda.jsonData['total_pagtos'])|default(0)|number_format(2,',','.') }}
                                 </td>
                                 <td class="text-right">
                                     {% if venda.jsonData.canal == 'ECOMMERCE' %}
@@ -174,10 +180,10 @@
                         {% endfor %}
 
                         <tr class="table-secondary">
-                            <th scope="row" colspan="4" class="text-right">
+                            <th scope="row" colspan="5" class="text-right">
                                 Total dia (R$):
                             </th>
-                            <td class="text-right">{{ dia.totalDia|number_format(2,',','.') }}</td>
+                            <td class="text-right">{{ dia.subtotal|number_format(2,',','.') }}</td>
                             <td class="text-right">
                                 {% if ecomm_info_integra %}
                                     <button type="button" class="btn btn-sm btn-warning" id="btnObterVendasECommerce"
@@ -189,11 +195,25 @@
                                 {% endif %}
                             </td>
                         </tr>
+                        
                     {% endfor %}
 
                     <tr class="table-secondary">
-                        <th scope="row" colspan="4" class="text-right">
+                        <th scope="row" colspan="99">
+                            
+                        </th>
+                    </tr>
+                    <tr class="table-secondary">
+                        <th scope="row" colspan="5" class="text-right">
                             Total (R$):
+                        </th>
+                        <td class="text-right">{{ dados.subtotal|number_format(2,',','.') }}</td>
+                        <td class="text-right">
+                        </td>
+                    </tr>
+                    <tr class="table-secondary">
+                        <th scope="row" colspan="5" class="text-right">
+                            Total (+ frete) (R$):
                         </th>
                         <td class="text-right">{{ dados.total|number_format(2,',','.') }}</td>
                         <td class="text-right">

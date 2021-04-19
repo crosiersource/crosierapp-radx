@@ -34,25 +34,30 @@ class IntegraSimplo7Controller extends BaseController
 
     /**
      *
-     * @Route("/est/integraSimplo7/obterVendas/{dtVenda}", name="est_integraSimplo7_obterVendas", defaults={"dtVenda": null})
-     * @ParamConverter("dtVenda", options={"format": "Y-m-d"})
+     * @Route("/est/integraSimplo7/obterVendasPorPeriodo/{dtIni}/{dtFim}", name="est_integraSimplo7_obterVendas", defaults={"dtIni": null, "dtFim": null})
+     * @ParamConverter("dtIni", options={"format": "Y-m-d"})
+     * @ParamConverter("dtFim", options={"format": "Y-m-d"})
      *
      * @param Request $request
      * @param IntegradorSimplo7 $integraSimplo7Business
-     * @param \DateTime|null $dtVenda
+     * @param \DateTime|null $dtIni
      * @return Response
      * @throws ViewException
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function obterVendas(Request $request, IntegradorSimplo7 $integraSimplo7Business, ?\DateTime $dtVenda = null): Response
+    public function obterVendasPorPeriodo(Request $request, IntegradorSimplo7 $integraSimplo7Business, ?\DateTime $dtIni = null, ?\DateTime $dtFim = null): Response
     {
-        if (!$dtVenda) {
-            $dtVenda = new \DateTime();
+        if (!$dtIni) {
+            $dtIni = new \DateTime();
+        }
+        if (!$dtFim) {
+            $dtFim = new \DateTime();
         }
         $resalvar = $request->get('resalvar') ?? null;
-        $integraSimplo7Business->obterVendas($dtVenda, $resalvar === 'S');
+        $integraSimplo7Business->obterVendasPorPeriodo($dtIni, $dtFim, $resalvar === 'S');
         return new Response('OK');
     }
+
 
     /**
      *

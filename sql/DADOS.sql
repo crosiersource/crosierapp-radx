@@ -51,16 +51,45 @@ VALUES ('b7a5f134-ea80-40e4-822e-e04cdac70258', 'crosierapp-finan (Menu Raíz)',
         '9121ea11-dc5d-4a22-9596-187f5452f95a', '', '', null, 0, null, now(), now(), 1, 1, 1);
 
 
--- Lançamento de Conta a Pagar
+-- Menu "Lançamentos"
 DELETE
 FROM cfg_entmenu
 WHERE uuid = '3984a4f5-cd55-4525-87b9-01212fb1952c';
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated,
                         estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('3984a4f5-cd55-4525-87b9-01212fb1952c', 'Lançamento', 'fas fa-sign-out-alt', 'ENT',
-        '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/movimentacao/form/ini/', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258',
+VALUES ('3984a4f5-cd55-4525-87b9-01212fb1952c', 'Lançamentos', 'fas fa-sign-out-alt', 'DROPDOWN',
+        '9121ea11-dc5d-4a22-9596-187f5452f95a', null, '', 'b7a5f134-ea80-40e4-822e-e04cdac70258',
         1, null, now(), now(), 1, 1, 1);
+
+
+DELETE
+FROM cfg_entmenu
+WHERE pai_uuid = '3984a4f5-cd55-4525-87b9-01212fb1952c';
+
+INSERT INTO `cfg_entmenu` (`id`, `uuid`, `label`, `icon`, `tipo`, `pai_uuid`, `ordem`, `css_style`, `inserted`, `updated`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`, `url`, `app_uuid`,
+                           `roles`)
+VALUES (NULL, '52b3799e-f70e-4adf-8052-88f41ec1834e', 'Conta a Pagar', 'fas fa-file-invoice-dollar', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 2, NULL, '2021-01-06 16:31:57', '2021-02-24 16:26:58', 1, 1, 1,
+        '/fin/movimentacao/form/aPagarReceber/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+       (NULL, '9badfa49-3e39-44a8-b6cc-667d87cbc167', 'Conta a Pagar (Parcelamento)', 'fas fa-file-invoice-dollar', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 3, NULL, '2021-01-06 16:36:28',
+        '2021-02-24 16:26:58', 1, 1, 1, '/fin/movimentacao/form/aPagarReceber/?parcelamento=true', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+       (NULL, 'aaa28528-43b5-4066-9ccc-9a083cd88a1a', 'Cheque Próprio', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 4, NULL, '2021-01-06 16:38:43', '2021-02-24 16:26:58', 1, 1, 1,
+        '/fin/movimentacao/form/chequeProprio/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+       (NULL, '4b847e88-f16c-4b78-8d8a-10d1cfbbb0b1', 'Cheque Terceiros', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 6, NULL, '2021-01-06 16:39:42', '2021-02-24 16:26:58', 1, 1, 1,
+        '/fin/movimentacao/form/chequeTerceiros/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+       (NULL, 'fadc7b3e-f2f3-42cd-9ebc-0652cdade206', 'Transf entre Carteiras', 'fas fa-exchange-alt', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 8, NULL, '2021-01-06 16:40:14', '2021-02-24 16:26:58', 1, 1,
+        1, '/fin/movimentacao/form/transferenciaEntreCarteiras/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+       (NULL, '88281506-754e-4d54-bd68-299593918e03', 'Em Grupo', 'far fa-object-group', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 9, NULL, '2021-01-06 16:40:49', '2021-02-24 16:26:58', 1, 1, 1,
+        '/fin/movimentacao/form/grupo/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+       (NULL, '1e5d6a55-a507-401a-aa02-91602081bae1', 'Estorno', 'fas fa-eraser', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 10, NULL, '2021-01-06 16:41:13', '2021-02-24 16:26:58', 1, 1, 1,
+        '/fin/movimentacao/form/estorno/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+       (NULL, '0558f998-b936-415b-a1b9-5f1ed6b54395', 'Recorrente', 'fas fa-redo-alt', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 11, NULL, '2021-01-06 16:41:46', '2021-02-24 16:26:58', 1, 1, 1,
+        '/fin/movimentacao/form/recorrente/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+       (NULL, 'b5adceda-84db-46ec-aee6-43df24e4ce42', 'Cheque Terceiros (Parcelamento)', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 7, NULL, '2021-01-06 16:42:12', '2021-02-24 16:26:58',
+        1, 1, 1, '/fin/movimentacao/form/chequeTerceiros/?parcelamento=true', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+       (NULL, '4a3625d7-92ef-4a26-aeaf-f9c5d16b615c', 'Cheque Próprio (Parcelamento)', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 5, NULL, '2021-01-06 16:42:40', '2021-02-24 16:26:58',
+        1, 1, 1, '/fin/movimentacao/form/chequeProprio/?parcelamento=true', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
+
 
 
 -- Extrato de Contas a Pagar/Receber

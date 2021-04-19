@@ -10,7 +10,9 @@ use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -72,20 +74,23 @@ class MovimentacaoExtratoController extends FormListController
         /** @var Carteira $carteira */
         $carteira = $this->getDoctrine()->getRepository(Carteira::class)->find($parameters['filter']['carteira']);
 
-        /** @var MovimentacaoRepository $repo */
-        $repo = $this->getDoctrine()->getRepository(Movimentacao::class);
+        /** @var MovimentacaoRepository $repoMovimentacao */
+        $repoMovimentacao = $this->getDoctrine()->getRepository(Movimentacao::class);
         $orders = [
             'e.dtUtil' => 'asc',
             'categ.codigoSuper' => 'asc',
             'e.valorTotal' => 'asc'
         ];
-        $dados = $repo->findByFilters($filterDatas, $orders, 0, null);
+        $dados = $repoMovimentacao->findByFilters($filterDatas, $orders, 0, null);
 
 
         $dtAnterior = (clone $dtIni)->setTime(12, 0, 0, 0)->modify('last day');
 //        $parameters['anteriores']['movs'] = $repo->findAbertasAnteriores($dtAnterior, $carteira);
         $parameters['anteriores']['saldos'] = $this->business->calcularSaldos($dtAnterior, $carteira);
 
+        /** @var VendaRepository $repoVenda */
+        $repoVenda = $this->getDoctrine()->getRepository(Venda::class);
+        
         $dia = null;
         $dias = array();
         $i = -1;
@@ -97,6 +102,17 @@ class MovimentacaoExtratoController extends FormListController
                 $dia = $movimentacao->dtUtil->format('d/m/Y');
                 $dias[$i]['dtUtil'] = $movimentacao->dtUtil;
                 $dias[$i]['saldos'] = $this->business->calcularSaldos($movimentacao->dtUtil, $carteira);
+            }
+            // Para exibir o botão na listagem
+            $movimentacao->urlVenda = null;
+            if ($movimentacao->fatura && $movimentacao->fatura->jsonData['venda_id'] ?? null) {
+                $venda = $repoVenda->find($movimentacao->fatura->jsonData['venda_id']);
+                if (($venda->jsonData['ecommerce_status'] ?? '')) { 
+                    // se tiver o "ecommerce_status" no json_data, já considera como venda de ecommerce
+                    $movimentacao->urlVenda = '/ven/venda/ecommerceForm/' . $movimentacao->fatura->jsonData['venda_id'];
+                } else {
+                    $movimentacao->urlVenda = '/ven/venda/form/dados/' . $movimentacao->fatura->jsonData['venda_id'];
+                }
             }
             $dias[$i]['movs'][] = $movimentacao;
         }
@@ -131,9 +147,9 @@ class MovimentacaoExtratoController extends FormListController
         $this->storedViewInfoBusiness->store('movimentacao_extrato', $sviParams);
 
         if ($carteira->operadoraCartao) {
-            $parameters['totaisExtratoCartao'] = $repo->findTotaisExtratoCartoes($carteira, $dtIni, $dtFim);
+            $parameters['totaisExtratoCartao'] = $repoMovimentacao->findTotaisExtratoCartoes($carteira, $dtIni, $dtFim);
         } else {
-            $parameters['totaisExtrato'] = $repo->findTotaisExtrato($carteira, $dtIni, $dtFim);
+            $parameters['totaisExtrato'] = $repoMovimentacao->findTotaisExtrato($carteira, $dtIni, $dtFim);
         }
 
         return $this->doRender('Financeiro/movimentacaoExtratoList.html.twig', $parameters);

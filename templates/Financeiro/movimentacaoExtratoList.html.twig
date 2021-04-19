@@ -120,6 +120,14 @@
 
                                     <div class="text-right">
 
+                                        {% if (item.urlVenda) %}
+                                            <a href="{{ item.urlVenda }}"
+                                               class="btn btn-sm btn-outline-success"
+                                               role="button" target="_blank"><i
+                                                    class="fas fa-shopping-cart"></i></a>
+                                            <br/>
+                                        {% endif %}
+                                        
                                         {% if (item.chequeNumCheque) %}
                                             <span class="badge badge-pill badge-danger">Cheque</span><br/>
                                         {% endif %}
