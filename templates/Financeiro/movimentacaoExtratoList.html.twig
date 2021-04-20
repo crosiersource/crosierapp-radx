@@ -120,12 +120,20 @@
 
                                     <div class="text-right">
 
+                                        
+
                                         {% if (item.urlVenda) %}
                                             <a href="{{ item.urlVenda }}"
                                                class="btn btn-sm btn-outline-success"
                                                role="button" target="_blank"><i
                                                     class="fas fa-shopping-cart"></i></a>
-                                            <br/>
+                                            {% if (item.fatura) %}
+                                                <a href="/fin/fatura/visualizarFaturaVenda/{{ item.fatura.id }}"
+                                                   class="btn btn-sm btn-outline-warning mr-1"
+                                                   role="button">
+                                                    <i class="fas fa-money-check-alt"></i>
+                                                </a>
+                                            {% endif %}
                                         {% endif %}
                                         
                                         {% if (item.chequeNumCheque) %}
