@@ -1266,7 +1266,7 @@ CREATE TABLE `fin_movimentacao`
 
 
     KEY `K_fin_movimentacao_fatura` (`fatura_id`),
-    CONSTRAINT `FK_fin_movimentacao_fatura` FOREIGN KEY (`fatura_id`) REFERENCES `fin_fatura` (`id`),
+    CONSTRAINT `FK_fin_movimentacao_fatura` FOREIGN KEY (`fatura_id`) REFERENCES `fin_fatura` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 
     UNIQUE KEY UK_fin_movimentacao_uuid (uuid),
 

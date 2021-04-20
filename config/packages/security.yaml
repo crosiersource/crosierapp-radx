@@ -25,7 +25,7 @@ security:
             remember_me:
                 name: 'CRSRRMMBRM'
                 secure: true
-                secret: "%env(APP_SECRET)%"
+                secret: "%env(CROSIERCORE_APPSECRET)%"
                 lifetime: 6048000 # 10 semanas
                 domain: "%env(CROSIER_MAINDOMAIN)%"
                 samesite: lax
