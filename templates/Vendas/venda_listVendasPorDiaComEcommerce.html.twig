@@ -137,6 +137,7 @@
                                                 <i class="fas fa-bezier-curve"></i> {{ venda.jsonData.canal|default('') }}
                                             </span>
                                             <br><span style="font-size: small">E-commerce Id: <b>{{ venda.jsonData.ecommerce_idPedido|default(0)|strpad(9) }}</b></span>
+                                            <br><span style="font-size: small">E-commerce Número do Pedido: <b>{{ venda.jsonData.ecommerce_numeroPedido|default(0)|strpad(9) }}</b></span>
                                         {% else %}
                                             <span class="badge badge-pill badge-info">
                                                 <i class="fas fa-store"></i> {{ venda.jsonData.vendedor|default('') }}

@@ -73,8 +73,8 @@ class IntegraSimplo7Controller extends BaseController
     public function obterVendasPorNumero(Request $request, IntegradorSimplo7 $integraSimplo7Business, int $numero): Response
     {
         $resalvar = $request->get('resalvar') ?? null;
-        $integraSimplo7Business->obterVendasPorNumero($numero, $resalvar === 'S');
-        return new Response('OK');
+        $total = $integraSimplo7Business->obterVendasPorNumero($numero, $resalvar === 'S');
+        return new Response('OK: ' . $total);
     }
 
 
