@@ -176,7 +176,6 @@ class MovimentacaoCaixaType extends AbstractType
                     return $bandeiraCartao ? $bandeiraCartao->descricao : '';
                 },
                 'required' => false,
-                'attr' => ['class' => 'autoSelect2'],
                 'disabled' => $disabled
             ]);
 
