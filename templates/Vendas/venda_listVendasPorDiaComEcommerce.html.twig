@@ -181,11 +181,12 @@
                         {% endfor %}
 
                         <tr class="table-secondary">
-                            <th scope="row" colspan="5" class="text-right">
-                                Total dia (R$):
+                            <th scope="row" colspan="4" class="text-right" style="background-color: lightsteelblue">
+                                Totais dia (R$):
                             </th>
-                            <td class="text-right">{{ dia.subtotal|number_format(2,',','.') }}</td>
-                            <td class="text-right">
+                            <td class="text-right" style="background-color: lightsteelblue">{{ dia.subtotal|number_format(2,',','.') }}</td>
+                            <td class="text-right" style="background-color: lightsteelblue">{{ dia.total|number_format(2,',','.') }}</td>
+                            <td class="text-right" style="background-color: lightsteelblue">
                                 {% if ecomm_info_integra %}
                                     <button type="button" class="btn btn-sm btn-warning" id="btnObterVendasECommerce"
                                             data-url="{{ url('ven_venda_obterVendasECommerce') ~ '/' ~ dia.dtVenda|date('Y-m-d') }}"
@@ -204,22 +205,16 @@
                             
                         </th>
                     </tr>
-                    <tr class="table-secondary">
-                        <th scope="row" colspan="5" class="text-right">
-                            Total (R$):
+                    <tr class="table-success">
+                        <th scope="row" colspan="4" class="text-right">
+                            Totais (R$):
                         </th>
                         <td class="text-right">{{ dados.subtotal|number_format(2,',','.') }}</td>
-                        <td class="text-right">
-                        </td>
-                    </tr>
-                    <tr class="table-secondary">
-                        <th scope="row" colspan="5" class="text-right">
-                            Total (+ frete) (R$):
-                        </th>
                         <td class="text-right">{{ dados.total|number_format(2,',','.') }}</td>
                         <td class="text-right">
                         </td>
                     </tr>
+                    
 
                     </tbody>
 

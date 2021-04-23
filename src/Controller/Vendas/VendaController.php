@@ -941,8 +941,9 @@ class VendaController extends FormListController
                 $dias[$i]['vendas'][] = $venda;
                 $dias[$i]['subtotal'] = bcadd($dias[$i]['subtotal'], $venda->valorTotal, 2);
                 $dias[$i]['total'] = bcadd($dias[$i]['total'], $venda->jsonData['total_pagtos'] ?? $venda->valorTotal, 2);
-                $subtotal = bcadd($subtotal, $dias[$i]['subtotal'], 2);
-                $total = bcadd($total, $dias[$i]['total'], 2);
+                
+                $subtotal = bcadd($subtotal, $venda->valorTotal, 2);
+                $total = bcadd($total, $venda->jsonData['total_pagtos'] ?? $venda->valorTotal, 2);
             }
             $dados['dias'] = $dias;
             $dados['subtotal'] = $subtotal;
