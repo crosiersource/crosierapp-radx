@@ -69,7 +69,8 @@ WHERE pai_uuid = '3984a4f5-cd55-4525-87b9-01212fb1952c';
 
 INSERT INTO `cfg_entmenu` (`id`, `uuid`, `label`, `icon`, `tipo`, `pai_uuid`, `ordem`, `css_style`, `inserted`, `updated`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`, `url`, `app_uuid`,
                            `roles`)
-VALUES (NULL, '52b3799e-f70e-4adf-8052-88f41ec1834e', 'Conta a Pagar', 'fas fa-file-invoice-dollar', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 2, NULL, '2021-01-06 16:31:57', '2021-02-24 16:26:58', 1, 1, 1,
+VALUES (NULL, '52b3799e-f70e-4adf-8052-88f41ec1834e', 'Conta a Pagar', 'fas fa-file-invoice-dollar', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 2, NULL, '2021-01-06 16:31:57', '2021-02-24 16:26:58', 1, 1,
+        1,
         '/fin/movimentacao/form/aPagarReceber/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
        (NULL, '9badfa49-3e39-44a8-b6cc-667d87cbc167', 'Conta a Pagar (Parcelamento)', 'fas fa-file-invoice-dollar', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 3, NULL, '2021-01-06 16:36:28',
         '2021-02-24 16:26:58', 1, 1, 1, '/fin/movimentacao/form/aPagarReceber/?parcelamento=true', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
@@ -85,11 +86,11 @@ VALUES (NULL, '52b3799e-f70e-4adf-8052-88f41ec1834e', 'Conta a Pagar', 'fas fa-f
         '/fin/movimentacao/form/estorno/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
        (NULL, '0558f998-b936-415b-a1b9-5f1ed6b54395', 'Recorrente', 'fas fa-redo-alt', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 11, NULL, '2021-01-06 16:41:46', '2021-02-24 16:26:58', 1, 1, 1,
         '/fin/movimentacao/form/recorrente/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
-       (NULL, 'b5adceda-84db-46ec-aee6-43df24e4ce42', 'Cheque Terceiros (Parcelamento)', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 7, NULL, '2021-01-06 16:42:12', '2021-02-24 16:26:58',
+       (NULL, 'b5adceda-84db-46ec-aee6-43df24e4ce42', 'Cheque Terceiros (Parcelamento)', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 7, NULL, '2021-01-06 16:42:12',
+        '2021-02-24 16:26:58',
         1, 1, 1, '/fin/movimentacao/form/chequeTerceiros/?parcelamento=true', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
        (NULL, '4a3625d7-92ef-4a26-aeaf-f9c5d16b615c', 'Cheque Próprio (Parcelamento)', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 5, NULL, '2021-01-06 16:42:40', '2021-02-24 16:26:58',
         1, 1, 1, '/fin/movimentacao/form/chequeProprio/?parcelamento=true', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
-
 
 
 -- Extrato de Contas a Pagar/Receber
@@ -983,6 +984,18 @@ INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inse
 VALUES (13, 'N INF CRÉD', 9, ' ', '2018-03-02 16:49:10', '2018-03-02 16:50:09', 1, 1, 1, 1);
 INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
 VALUES (14, 'N INF DÉB', 10, ' ', '2018-03-02 16:49:23', '2018-03-02 16:50:03', 3, 1, 1, 1);
+
+
+
+REPLACE INTO `ven_plano_pagto` (`id`, `codigo`, `descricao`, `ativo`, `json_data`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (null, '001', 'A VISTA (ESPÉCIE)', 1, '{\"modo_id\": \"1\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false}', '1900-01-01 00:00:00', '1900-01-01 00:00:00', 0, 1, 1, 1),
+       (null, '002', 'A VISTA (CHEQUE)', 1, '{\"modo_id\": \"8\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false}', '1900-01-01 00:00:00', '1900-01-01 00:00:00', 0, 1, 1, 1),
+       (null, '003', 'CARTÃO DÉBITO', 1, '{\"modo_id\": \"10\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false, \"tipo_carteiras_destino\": \"operadora_cartao\"}', '1900-01-01 00:00:00', '1900-01-01 00:00:00', 0, 1, 1, 1),
+       (null, '010', 'CARTÃO DE CRÉDITO', 1, '{\"modo_id\": \"9\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": true, \"tipo_carteiras_destino\": \"operadora_cartao\"}', '1900-01-01 00:00:00', '1900-01-01 00:00:00', 0, 1, 1, 1),
+       (null, '020', 'DEPÓSITO/TRANSFERÊNCIA', 1, '{\"modo_id\": \"5\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": true}', '1900-01-01 00:00:00', '1900-01-01 00:00:00', 0, 1, 1, 1),
+       (null, '030', 'BOLETO', 1, '{\"modo_id\": \"7\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": true}', '1900-01-01 00:00:00', '1900-01-01 00:00:00', 0, 1, 1, 1),
+       (null, '040', 'PIX', 1, '{\"modo_id\": \"7\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": false}', '1900-01-01 00:00:00', '1900-01-01 00:00:00', 0, 1, 1, 1),
+       (null, '999', 'NÃO INFORMADO', 1, NULL, '1900-01-01 00:00:00', '1900-01-01 00:00:00', 0, 1, 1, 1);
 
 
 COMMIT;
