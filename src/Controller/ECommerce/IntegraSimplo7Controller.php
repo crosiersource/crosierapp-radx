@@ -149,5 +149,8 @@ class IntegraSimplo7Controller extends BaseController
         $r = $integraSimplo7Business->atualizarPedidosMelhorEnvio();
         return new Response(implode('<br>', $r));
     }
+    
+    
+    
 
 }
