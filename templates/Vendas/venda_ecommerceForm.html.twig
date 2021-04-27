@@ -218,6 +218,22 @@
                                 <i class="far fa-check-circle"></i> Finalizar PV
                             </button>
                         {% endif %}
+
+
+                        {% if e.status == 'PV FINALIZADO' %}
+                            <button type="button" value="Imprimir" class="btn btn-outline-success"
+                                    onclick="printJS('{{ url('ven_venda_imprimirPV', {'venda': e.id}) }}')"
+                                    id="btnImprimirPV">
+                                <i class="fas fa-print" aria-hidden="true"></i> Imprimir
+                            </button>
+
+                            <a role="button" title="Visualizar Fatura" class="btn btn-outline-success"
+                               href="{{ url('fin_fatura_visualizarFaturaVenda', {'fatura': e.jsonData.fatura_id}) }}"
+                               id="btnVisualizarFatura">
+                                <i class="fas fa-file-invoice-dollar"></i> Fatura
+                            </a>
+                        {% endif %}
+                        
                     </div>
                 </div>
 
