@@ -21,6 +21,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\BandeiraCartao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Cadeia;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
@@ -851,17 +852,20 @@ class MovimentacaoController extends FormListController
             'formRoute' => 'movimentacao_form_rapida',
             'formView' => 'Financeiro/movimentacaoForm_rapida.html.twig'
         ];
-        
+
         if (!$movimentacao || !$movimentacao->getId()) {
             $movimentacao = new Movimentacao();
             $movimentacao->tipoLancto = ($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 20]));
-        } else {
-            $movimentacao->dtPagto = $movimentacao->dtMoviment;
-            $movimentacao->valorTotal = $movimentacao->valor;
         }
         $movimentacao->status = 'REALIZADA';
 
-        return $this->doForm($request, $movimentacao, $params);
+        $fnHandleRequestOnValid = function (Request $request, Movimentacao $movimentacao) {
+            $movimentacao->dtPagto = $movimentacao->dtMoviment;
+            $movimentacao->valorTotal = $movimentacao->valor;
+        };
+
+        // Verifique o método handleRequestOnValid abaixo
+        return $this->doForm($request, $movimentacao, $params, false, $fnHandleRequestOnValid);
     }
 
 
