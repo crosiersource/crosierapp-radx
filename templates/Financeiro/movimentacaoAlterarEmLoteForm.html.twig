@@ -28,8 +28,16 @@
                 {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 
                 {{ form_start(form) }}
-                {{ form_widget(form) }}
 
+                {{ form_row(form.categoria) }}
+                {{ form_row(form.centroCusto) }}
+                {{ form_row(form.modo) }}
+                {{ form_row(form.descricao) }}
+                {{ form_row(form.obs) }}
+                
+                {{ form_row(form.valor) }}
+                {{ form_row(form.dtMoviment) }}
+                
                 <div class="row">
                     <div class="col text-right">
                         <button type="button" class="btn btn-primary" value="Salvar"
@@ -39,6 +47,10 @@
                             <i class="fas fa-save" aria-hidden="true"></i> Salvar
                         </button>
                     </div>
+                </div>
+
+                <div style="display: none">
+                    {{ form_widget(form) }}
                 </div>
 
 
@@ -57,5 +69,5 @@
 
 
 {% block down_scripts %}
-    {{ encore_entry_script_tags('Financeiro/movimentacaoForm_geral') }}
+    {{ encore_entry_script_tags('Financeiro/movimentacaoForm_alterarEmLote') }}
 {% endblock %}

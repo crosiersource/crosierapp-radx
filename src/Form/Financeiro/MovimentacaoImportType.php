@@ -22,19 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MovimentacaoImportType extends AbstractType
 {
 
-    private EntityManagerInterface $doctrine;
-
     private MovimentacaoTypeBuilder $movimentacaoTypeBuilder;
-
-
-    /**
-     * @required
-     * @param EntityManagerInterface $doctrine
-     */
-    public function setDoctrine(EntityManagerInterface $doctrine): void
-    {
-        $this->doctrine = $doctrine;
-    }
 
     /**
      * @required

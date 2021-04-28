@@ -175,7 +175,9 @@ class MovimentacaoImportController extends BaseController
         $unsMovsImportadas = [];
         if ($movsImportadas) {
             foreach ($movsImportadas as $mov) {
-                $unsMovsImportadas[$mov['UUID']] = $this->entityIdUtils->unserialize($mov, Movimentacao::class);
+                if ($mov['UUID'] ?? false) {
+                    $unsMovsImportadas[$mov['UUID']] = $this->entityIdUtils->unserialize($mov, Movimentacao::class);
+                }
             }
         }
         return $unsMovsImportadas;
@@ -396,7 +398,6 @@ class MovimentacaoImportController extends BaseController
             $this->entityHandler->refindAll($movimentacao);
         }
 
-        $formData = null;
         $form = $this->createForm(MovimentacaoGeralType::class, $movimentacao);
 
         $form->handleRequest($request);

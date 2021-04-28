@@ -129,4 +129,9 @@ class MovimentacaoAlterarEmLoteType extends AbstractType
             'data_class' => Movimentacao::class
         ]);
     }
+
+    public function getBlockPrefix()
+    {
+        return 'movimentacao';
+    }
 }

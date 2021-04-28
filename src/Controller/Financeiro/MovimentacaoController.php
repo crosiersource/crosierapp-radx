@@ -816,7 +816,7 @@ class MovimentacaoController extends FormListController
     }
 
     /**
-     * @Route("/fin/movimentacao/form/pagto/{id}", name="movimentacao_form_pagto", requirements={"id"="\d+"})
+     * @Route("/fin/movimentacao/form/pagto/{id}", name="movimentacao_form_pagto", defaults={"id"=null})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
      * @return RedirectResponse|Response
@@ -824,7 +824,7 @@ class MovimentacaoController extends FormListController
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
-    public function formPagto(Request $request, Movimentacao $movimentacao)
+    public function formPagto(Request $request, ?Movimentacao $movimentacao = null)
     {
         $params = [
             'typeClass' => MovimentacaoPagtoType::class,
@@ -1049,6 +1049,28 @@ class MovimentacaoController extends FormListController
             $this->addFlash('error', 'Ocorreu um erro ao clonar a movimentação');
             return $this->edit($movimentacao);
         }
+    }
+
+
+    /**
+     *
+     * @Route("/fin/movimentacao/getTiposLanctos", name="movimentacao_getTiposLanctos")
+     * @return JsonResponse
+     *
+     * @throws \Exception
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function getTiposLanctos(): JsonResponse
+    {
+        $tiposLanctos = $this->getDoctrine()->getRepository(TipoLancto::class)->findAll(['descricao' => 'ASC']);
+
+        $select2js = Select2JsUtils::toSelect2DataFn($tiposLanctos, function ($e) {
+            /** @var TipoLancto $e */
+            return $e->getDescricaoMontada();
+        });
+        return new JsonResponse(
+            ['results' => $select2js]
+        );
     }
 
 }

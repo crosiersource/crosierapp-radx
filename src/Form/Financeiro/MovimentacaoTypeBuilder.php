@@ -109,7 +109,6 @@ class MovimentacaoTypeBuilder
             'choice_label' => 'descricaoMontada',
             'required' => true,
             'attr' => [
-                'class' => 'autoSelect2',
                 'data-val' => $movimentacao->tipoLancto ? $movimentacao->tipoLancto->getId() : null
             ]
         ]);
@@ -268,7 +267,6 @@ class MovimentacaoTypeBuilder
             'choices' => $carteiraDestinoChoices,
             'attr' => [
                 'data-val' => (null !== $movimentacao and null !== $movimentacao->carteiraDestino) ? $movimentacao->carteiraDestino->getId() : '',
-                'class' => 'autoSelect2'
             ],
             'required' => false
         ]);
@@ -299,7 +297,6 @@ class MovimentacaoTypeBuilder
                 return $modo ? $modo->getDescricaoMontada() : null;
             },
             'required' => false,
-            'attr' => ['class' => 'autoSelect2']
         ]);
 
         /** @var BandeiraCartaoRepository $repoBandeira */
@@ -341,7 +338,6 @@ class MovimentacaoTypeBuilder
             'choices' => $repoCentroCusto->findAll(WhereBuilder::buildOrderBy('codigo')),
             'choice_label' => 'descricaoMontada',
             'required' => false,
-            'attr' => ['class' => 'autoSelect2']
         ]);
 
 
