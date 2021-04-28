@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-9">
                         <h3 id="formPageTitle">Movimentação</h3>
-                        <h5>Registro de Pagamento</h5>
+                        <h5>Lançamento Rápido</h5>
                     </div>
                     <div class="col-3 text-right">
 
@@ -24,10 +24,6 @@
                                 </button>
 
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-                                    <a class="dropdown-item" href="{{ url('movimentacao_form_recorrente', {'id': e.id}) }}">
-                                        <i class="fas fa-undo" aria-hidden="true"></i> Transformar em Recorrente
-                                    </a>
 
                                     <button type="button" class="dropdown-item"
                                             data-url="{{ url('fin_movimentacao_clonar', {id: e.id}) }}"
@@ -115,76 +111,15 @@
                 </div>
 
                 <div class="row">
-
-                    <div class="col-sm-6">
-                        <div class="row">
-                            <div class="col-sm-12">
-
-                                <div id="divCamposValores" class="card">
-
-                                    <h5 class="card-header">Datas</h5>
-                                    <div class="card-body">
-
-                                        <div class="form-group row">
-                                            <label class="col-form-label col-sm-4" for="movimentacao_dtMoviment">Dt Moviment</label>
-                                            <div class="col-sm-8"> {{ form_widget(form.dtMoviment) }} </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-form-label col-sm-4" for="movimentacao_dtVencto">Dt Vencto</label>
-                                            <div class="col-sm-8"> {{ form_widget(form.dtVencto) }} </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-form-label col-sm-4" for="movimentacao_dtVenctoEfet">Dt Vencto Efet</label>
-                                            <div class="col-sm-8"> {{ form_widget(form.dtVenctoEfetiva) }} </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-form-label col-sm-4">Dt Pagto&nbsp;</label>
-                                            <div class="col-sm-8"> {{ form_widget(form.dtPagto) }} </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-
+                    <div class="col-md-7 col-sm-12">
+                        {{ form_row(form.dtMoviment) }}
                     </div>
 
-
-                    <div class="col-sm-6">
-                        <div class="row">
-                            <div class="col-sm-12">
-
-                                <div id="divCamposValores" class="card">
-
-                                    <h5 class="card-header">Valores</h5>
-                                    <div class="card-body">
-
-                                        <div class="form-group row">
-                                            <label class="col-form-label col-sm-4" for="movimentacao_valor">Valor</label>
-                                            <div class="col-sm-8"> {{ form_widget(form.valor) }} </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-form-label col-sm-4" for="movimentacao_descontos">Descontos</label>
-                                            <div class="col-sm-8"> {{ form_widget(form.descontos) }} </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-form-label col-sm-4" for="movimentacao_descontos">Acréscimos</label>
-                                            <div class="col-sm-8"> {{ form_widget(form.acrescimos) }} </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-form-label col-sm-4" for="movimentacao_valorTotal">Total</label>
-                                            <div class="col-sm-8"> {{ form_widget(form.valorTotal) }} </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+                    <div class="col-md-5 col-sm-12">
+                        {{ form_row(form.valor) }}
                     </div>
                 </div>
-
-
+                
                 <div class="row">
                     <div class="col-sm-12">
                         {{ form_row(form.obs) }}

@@ -12,20 +12,16 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class MovimentacaoAPagarReceberType.
+ * Form para lançamento rápido de movimentação.
  *
- * Form para lançamento de contas a pagar.
- *
- * @package App\Form\Financeiro
  * @author Carlos Eduardo Pauluk
  */
-class MovimentacaoPagtoType extends AbstractType
+class MovimentacaoRapidaType extends AbstractType
 {
 
     private EntityManagerInterface $doctrine;
 
     private MovimentacaoTypeBuilder $movimentacaoTypeBuilder;
-
 
     /**
      * @required
@@ -91,7 +87,6 @@ class MovimentacaoPagtoType extends AbstractType
     {
         return 'movimentacao';
     }
-
 
     public function configureOptions(OptionsResolver $resolver)
     {

@@ -19,7 +19,7 @@ import 'daterangepicker';
 $(document).ready(function () {
 
   let $carteira = $('#movimentacao_carteira');
-  
+
   let $sacado = $('#movimentacao_sacado');
   let $cedente = $('#movimentacao_cedente');
 
@@ -76,10 +76,11 @@ $(document).ready(function () {
   function handleSacadoCedente() {
 
     let categoria = $categoria.select2('data')[0];
-
+    
     let $campoComFiliais;
     let $campoComBusca;
 
+    if (!categoria?.id) return;
     if (categoria.element.dataset.codigoSuper === '1') {
       $campoComFiliais = $cedente;
       $campoComBusca = $sacado;

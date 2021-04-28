@@ -835,6 +835,32 @@ class MovimentacaoController extends FormListController
         return $this->doForm($request, $movimentacao, $params);
     }
 
+    /**
+     * @Route("/fin/movimentacao/form/rapida/{id}", name="movimentacao_form_rapida", defaults={"id"=null})
+     * @param Request $request
+     * @param Movimentacao|null $movimentacao
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function formMovimentacaoRapida(Request $request, ?Movimentacao $movimentacao = null)
+    {
+        $params = [
+            'typeClass' => MovimentacaoPagtoType::class,
+            'formRoute' => 'movimentacao_form_rapida',
+            'formView' => 'Financeiro/movimentacaoForm_rapida.html.twig'
+        ];
+        
+        if (!$movimentacao || !$movimentacao->getId()) {
+            $movimentacao = new Movimentacao();
+            $movimentacao->tipoLancto = ($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 20]));
+            $movimentacao->status = 'REALIZADA';
+        }
+
+        return $this->doForm($request, $movimentacao, $params);
+    }
+
 
     /**
      * @param Request $request
