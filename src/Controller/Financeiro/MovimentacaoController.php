@@ -855,10 +855,11 @@ class MovimentacaoController extends FormListController
         if (!$movimentacao || !$movimentacao->getId()) {
             $movimentacao = new Movimentacao();
             $movimentacao->tipoLancto = ($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => 20]));
-            $movimentacao->status = 'REALIZADA';
         } else {
             $movimentacao->dtPagto = $movimentacao->dtMoviment;
+            $movimentacao->valorTotal = $movimentacao->valor;
         }
+        $movimentacao->status = 'REALIZADA';
 
         return $this->doForm($request, $movimentacao, $params);
     }
