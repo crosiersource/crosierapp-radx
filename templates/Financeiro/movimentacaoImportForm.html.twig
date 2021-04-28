@@ -25,96 +25,95 @@
 
             <div class="card-body">
 
-                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+                {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
                 {{ form_start(form) }}
 
                 {{ form_row(form._token) }}
 
-                {{ form_row(form.id) }}
 
-                {{ form_row(form.tipoLancto) }}
+                <div class="row">
 
-                {{ form_row(form.modo) }}
+                    <div class="col-12">
+                        {{ form_row(form.categoria) }}
+                    </div>
 
-                {{ form_row(form.carteira) }}
-                {{ form_row(form.carteiraDestino) }}
+                </div>
 
-                <div class="card" id="divCamposCheque" style="display: none;">
-                    <h5 class="card-header">Cheque</h5>
-                    <div class="card-body">
-                        {{ form_row(form.chequeBanco) }}
-                        {{ form_row(form.chequeAgencia) }}
-                        {{ form_row(form.chequeConta) }}
-                        {{ form_row(form.chequeNumCheque) }}
+                <div class="row">
+
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.carteira) }}
+                    </div>
+
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.modo) }}
+                    </div>
+
+                    <div class="col-md-3 col-sm-12">
+                        {{ form_row(form.centroCusto) }}
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col">
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.sacado) }}
+                    </div>
+
+                    <div class="col-md-6 col-sm-12">
+                        {{ form_row(form.cedente) }}
                     </div>
                 </div>
 
-                <div style="margin-top: 20px"></div>
 
-                {{ form_row(form.categoria) }}
-                {{ form_row(form.centroCusto) }}
-
-
-
-                {{ form_row(form.dtMoviment) }}
-                {{ form_row(form.dtVencto) }}
-                {{ form_row(form.dtVenctoEfetiva) }}
-                {{ form_row(form.dtPagto) }}
-
-
-                {{ form_row(form.sacado) }}
-                {{ form_row(form.cedente) }}
-
-                {{ form_row(form.descricao) }}
-
-
-                <div style="margin-top: 20px" id="divCamposDocumento" class="card">
-                    <h5 class="card-header">Documento</h5>
-                    <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
                         {{ form_row(form.documentoBanco) }}
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
                         {{ form_row(form.documentoNum) }}
                     </div>
                 </div>
 
 
-                <div style="margin-top: 20px" id="divCamposValores" class="card">
-                    <h5 class="card-header">Valores</h5>
-                    <div class="card-body">
-                        {{ form_row(form.valor) }}
-                        {{ form_row(form.descontos) }}
-                        {{ form_row(form.acrescimos) }}
-                        {{ form_row(form.valorTotal) }}
-                    </div>
-                </div>
-
-                <div style="margin-top: 20px" class="row">
-                    <div class="col">
-                        {{ form_row(form.obs) }}
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{ form_row(form.descricao) }}
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col text-right">
-                        <button type="submit" class="btn btn-primary" value="Salvar">
-                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                        </button>
+                    <div class="col-md-7 col-sm-12">
+                        {{ form_row(form.dtPagto) }}
+                    </div>
 
-                        <button type="button" value="Resetar" class="btn btn-secondary"
-                                data-url="{{ url('movimentacao_import_form', {UUID: form.UUID.vars.value }) }}"
-                                data-target="#confirmationModal" data-toggle="modal">
-                            <i class="fas fa-undo" aria-hidden="true"></i> Recarregar
-                        </button>
+                    <div class="col-md-5 col-sm-12">
+                        {{ form_row(form.valor) }}
                     </div>
                 </div>
 
 
-                {{ form_end(form, {'render_rest': false}) }}
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{ form_row(form.obs) }}
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px" class="row">
+                    <div class="col-sm-3 ml-auto">
+                        <button type="submit" class="btn btn-block btn-primary" value="Salvar">
+                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display:none">
+                    {{ form_widget(form) }}
+                </div>
+
+
+                {{ form_end(form) }}
 
 
             </div>
@@ -129,5 +128,5 @@
 
 
 {% block down_scripts %}
-    {{ encore_entry_script_tags('Financeiro/movimentacaoImportForm') }}
+    {{ encore_entry_script_tags('Financeiro/movimentacaoForm_aPagarReceber') }}
 {% endblock %}
