@@ -91,6 +91,20 @@ $(document).ready(function () {
     allowClear: true
   });
 
+  $carteiraDestino.select2({
+    width: '100%',
+    dropdownAutoWidth: true,
+    placeholder: '...',
+    allowClear: true
+  });
+
+  $modo.select2({
+    width: '100%',
+    dropdownAutoWidth: true,
+    placeholder: '...',
+    allowClear: true
+  });
+
 
   // -----------------
 
