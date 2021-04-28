@@ -54,46 +54,46 @@ class MovimentacaoAlterarEmLoteType extends AbstractType
             $movimentacao = $event->getData();
             $form = $event->getForm();
 
-            $this->movimentacaoTypeBuilder->build($form, $movimentacao);
+            $this->movimentacaoTypeBuilder->build($form, $movimentacao, ['sacado' => true, 'cedente' => true]);
 
             $form->remove('id');
             $form->remove('uuid');
 
             $form->remove('tipoLancto');
-            $form->add('tipoLancto', EntityType::class, [
-                'label' => 'Tipo Lancto',
-                'class' => TipoLancto::class,
-                'empty_data' => null,
-                'choices' => $this->doctrine->getRepository(TipoLancto::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
-                'choice_label' => 'descricaoMontada',
-                'required' => false,
-                'attr' => [
-                    'class' => 'autoSelect2 focusOnReady'
-                ]
-            ]);
+//            $form->add('tipoLancto', EntityType::class, [
+//                'label' => 'Tipo Lancto',
+//                'class' => TipoLancto::class,
+//                'empty_data' => null,
+//                'choices' => $this->doctrine->getRepository(TipoLancto::class)->findAll(WhereBuilder::buildOrderBy('codigo')),
+//                'choice_label' => 'descricaoMontada',
+//                'required' => false,
+//                'attr' => [
+//                    'class' => 'autoSelect2 focusOnReady'
+//                ]
+//            ]);
 
 
             $form->remove('status');
-            $form->add('status', ChoiceType::class, [
-                'label' => 'Status',
-                'placeholder' => '',
-                'choices' => [
-                    'ABERTA' => 'ABERTA',
-                    'REALIZADA' => 'REALIZADA'
-                ],
-                'required' => false,
-                'attr' => ['class' => 'autoSelect2']
-            ]);
+//            $form->add('status', ChoiceType::class, [
+//                'label' => 'Status',
+//                'placeholder' => '',
+//                'choices' => [
+//                    'ABERTA' => 'ABERTA',
+//                    'REALIZADA' => 'REALIZADA'
+//                ],
+//                'required' => false,
+//                'attr' => ['class' => 'autoSelect2']
+//            ]);
 
-            $form->add('quitado', ChoiceType::class, [
-                'label' => 'Quitado',
-                'placeholder' => '',
-                'choices' => [
-                    'Sim' => true,
-                    'Não' => false
-                ],
-                'required' => false
-            ]);
+//            $form->add('quitado', ChoiceType::class, [
+//                'label' => 'Quitado',
+//                'placeholder' => '',
+//                'choices' => [
+//                    'Sim' => true,
+//                    'Não' => false
+//                ],
+//                'required' => false
+//            ]);
 
 
         });

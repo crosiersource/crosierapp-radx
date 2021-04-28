@@ -43,6 +43,9 @@ class MovimentacaoImportController extends BaseController
     private EntityIdUtils $entityIdUtils;
 
     private array $vParams = array();
+    
+    // "cachê" no objeto para evitar serializar e desserializar entre as chamadas dos métodos setMovimentacoesDaSessao e getMovimentacoesDaSessao
+    private array $movimentacoesNaSessao;
 
     /**
      * @required
@@ -118,7 +121,7 @@ class MovimentacaoImportController extends BaseController
         $sviParams = $this->storedViewInfoBusiness->retrieve('movimentacao_import');
 
         if ($sviParams) {
-            $this->vParams = array_merge($this->vParams, $sviParams);
+            $this->vParams = array_merge($this->vParams ?? [], $sviParams);
         }
         if (is_array($request->request->all())) {
             $this->vParams = array_merge($this->vParams, $request->request->all());
@@ -166,7 +169,10 @@ class MovimentacaoImportController extends BaseController
 
     private function getMovimentacoesDaSessao(string $tipo): array
     {
-        $arq = $_SERVER['CROSIER_SESSIONS_FOLDER'] . 'MovimentacaoImporter_'. $this->getUser()->getUsername() . '.cache';
+        if ($this->movimentacoesNaSessao[$tipo] ?? false) {
+            return $this->movimentacoesNaSessao[$tipo];
+        }
+        $arq = $_SERVER['CROSIER_SESSIONS_FOLDER'] . 'MovimentacaoImporter_'. $tipo . '_' . $this->getUser()->getUsername() . '.cache';
         if (!is_file($arq)) {
             file_put_contents($arq, '');
         }
@@ -185,18 +191,21 @@ class MovimentacaoImportController extends BaseController
 
     private function setMovimentacoesNaSessao(string $tipo, $movimentacoes)
     {
+        $this->movimentacoesNaSessao[$tipo] = null;
         $serMovimentacoes = null;
         if ($movimentacoes) {
             $serMovimentacoes = [];
-            foreach ($movimentacoes as $mov) {
+            foreach ($movimentacoes as $k => $mov) {
                 if ($mov instanceof Movimentacao) {
+                    $this->movimentacoesNaSessao[$tipo][] = $mov;
                     $mov = $this->entityIdUtils->serialize($mov);
                 }
                 $serMovimentacoes[] = $mov;
             }
         }
-        $arq = $_SERVER['CROSIER_SESSIONS_FOLDER'] . 'MovimentacaoImporter_'. $this->getUser()->getUsername() . '.cache';
+        $arq = $_SERVER['CROSIER_SESSIONS_FOLDER'] . 'MovimentacaoImporter_'. $tipo . '_' . $this->getUser()->getUsername() . '.cache';
         file_put_contents($arq, json_encode($serMovimentacoes));
+        
         // $this->session->set($tipo, $serMovimentacoes);
     }
 
@@ -204,11 +213,11 @@ class MovimentacaoImportController extends BaseController
      *
      * @Route("/fin/movimentacao/import", name="movimentacao_import")
      * @param Request $request
-     * @return RedirectResponse|Response
+     * @return Response
      * @throws ViewException
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
-    public function import(Request $request)
+    public function import(Request $request): Response
     {
         $this->handleVParams($request);
 
@@ -456,7 +465,12 @@ class MovimentacaoImportController extends BaseController
                 return $this->redirectToRoute('movimentacao_list');
             }
             $movsSel = $request->get('movsSelecionadas');
-            $this->setMovimentacoesNaSessao('selecionadas', $movsSel);
+            $movsImportadas = $this->getMovimentacoesDaSessao('importadas');
+            $movsSelecionadas = [];
+            foreach ($movsSel as $uuid => $on) {
+                $movsSelecionadas[] = $movsImportadas[$uuid];
+            }
+            $this->setMovimentacoesNaSessao('selecionadas', $movsSelecionadas);
         }
 
         $form = $this->createForm(MovimentacaoAlterarEmLoteType::class);
