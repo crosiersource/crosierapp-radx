@@ -11,8 +11,8 @@
 
                 <div class="row">
                     <div class="col-8">
-                        <h3>Fatura de Venda</h3>
-                        <h6>{{ venda.dtVenda|date('d/m/Y') }} - {{ venda.jsonData.cliente_nome|default('') }}</h6>
+                        <h3>Fatura</h3>
+                        <h6>Movimentações</h6>
                     </div>
                     <div class="col-4 text-right">
                         <a role="button" class="btn btn-outline-secondary" href="{{ url('carteira_list') }}"
@@ -36,7 +36,7 @@
                             <tr>
                                 <th scope="col">Id</th>
                                 <th scope="col">Carteira<br/>Modo<br/>Categoria</th>
-                                <th scope="col">Descrição</th>
+                                <th scope="col">Descrição<br/><small>Sacado/Cedente</small></th>
                                 <th scope="col">Dt Vencto</th>
                                 <th scope="col">Valor Total</th>
                                 <th scope="col"></th>
@@ -56,11 +56,14 @@
                                     </td>
                                     <td>
                                         <b>{{ mov.getDescricaoMontada()|raw }}</b>
-                                        {% if mov.categoria.codigoSuper == 2 and mov.cedente %}
-                                            <br/><small>{{ mov.cedente }}</small>
+                                        {% if mov.sacado %}
+                                            <br/><small>Sacado: <b>{{ mov.sacado }}</b></small>
                                         {% endif %}
-                                        {% if mov.categoria.codigoSuper == 1 and mov.sacado %}
-                                            <br/><small>{{ mov.sacado }}</small>
+                                        {% if mov.cedente %}
+                                            <br/><small>Cedente: <b>{{ mov.cedente }}</b></small>
+                                        {% endif %}
+                                        {% if mov.obs %}
+                                            <br/><span style="font-size: 9px; color: grey;">{{ mov.obs }}</span>
                                         {% endif %}
                                     </td>
                                     <td>

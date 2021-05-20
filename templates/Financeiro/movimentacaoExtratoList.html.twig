@@ -50,7 +50,7 @@
                         <button class="btn btn-outline-success ml-1" type="submit"><i class="fas fa-search"></i>
                         </button>
                         <button class="btn btn-outline-dark ml-1" type="button" id="btnHoje" name="btnHoje"><i
-                                    class="fas fa-calendar-day"></i>
+                                class="fas fa-calendar-day"></i>
                         </button>
 
                     </div>
@@ -104,7 +104,8 @@
                                     <span class="badge badge-pill badge-light">{{ loop.index }}</span>
                                 </td>
                                 <td>
-                                    <b><span style="{{ (item.categoria.codigo == 195 or item.categoria.codigo == 295) ? 'background-color: yellow' : '' }}">{{ item.categoria.getDescricaoMontada() }}</span></b><br/>
+                                    <b><span
+                                            style="{{ (item.categoria.codigo == 195 or item.categoria.codigo == 295) ? 'background-color: yellow' : '' }}">{{ item.categoria.getDescricaoMontada() }}</span></b><br/>
                                     {{ item.modo.getDescricaoMontada() }}
                                 </td>
                                 <td>
@@ -120,22 +121,22 @@
 
                                     <div class="text-right">
 
-                                        
 
                                         {% if (item.urlVenda) %}
                                             <a href="{{ item.urlVenda }}"
                                                class="btn btn-sm btn-outline-success"
                                                role="button" target="_blank"><i
                                                     class="fas fa-shopping-cart"></i></a>
-                                            {% if (item.fatura) %}
-                                                <a href="/fin/fatura/visualizarFaturaVenda/{{ item.fatura.id }}"
-                                                   class="btn btn-sm btn-outline-warning mr-1"
-                                                   role="button">
-                                                    <i class="fas fa-money-check-alt"></i>
-                                                </a>
-                                            {% endif %}
                                         {% endif %}
-                                        
+
+                                        {% if (item.fatura) %}
+                                            <a href="/fin/fatura/visualizarFatura/{{ item.fatura.id }}"
+                                               class="btn btn-sm btn-outline-warning mr-1"
+                                               role="button">
+                                                <i class="fas fa-money-check-alt"></i>
+                                            </a>
+                                        {% endif %}
+
                                         {% if (item.chequeNumCheque) %}
                                             <span class="badge badge-pill badge-danger">Cheque</span><br/>
                                         {% endif %}
@@ -151,14 +152,14 @@
                                             <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
                                                class="btn btn-sm btn-outline-secondary"
                                                role="button" target="_blank" aria-pressed="true"><i
-                                                        class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+                                                    class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
 
                                         {% elseif (item.cadeia) %}
                                             <span class="badge badge-pill badge-info">Em cadeia</span>
                                             <a href="{{ url('movimentacao_listCadeia', {'cadeia': item.cadeia.id}) }}"
                                                class="btn btn-sm btn-outline-secondary"
                                                role="button" target="_blank" aria-pressed="true"><i
-                                                        class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
+                                                    class="fas fa-ellipsis-h" aria-hidden="true"></i></a><br/>
 
                                         {% endif %}
 

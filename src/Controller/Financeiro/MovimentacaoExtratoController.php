@@ -105,7 +105,7 @@ class MovimentacaoExtratoController extends FormListController
             }
             // Para exibir o botão na listagem
             $movimentacao->urlVenda = null;
-            if ($movimentacao->fatura && $movimentacao->fatura->jsonData['venda_id'] ?? null) {
+            if (($movimentacao->fatura) && ($movimentacao->fatura->jsonData['venda_id'] ?? null)) {
                 $venda = $repoVenda->find($movimentacao->fatura->jsonData['venda_id']);
                 if (($venda->jsonData['ecommerce_status'] ?? '')) { 
                     // se tiver o "ecommerce_status" no json_data, já considera como venda de ecommerce

@@ -43,13 +43,13 @@ class FaturaController extends FormListController
 
     /**
      *
-     * @Route("/fin/fatura/visualizarFaturaVenda/{fatura}", name="fin_fatura_visualizarFaturaVenda", requirements={"fatura"="\d+"})
+     * @Route("/fin/fatura/visualizarFatura/{fatura}", name="fin_fatura_visualizarFatura", requirements={"fatura"="\d+"})
      * @param Fatura $fatura
-     * @return RedirectResponse|Response
+     * @return Response
      *
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function visualizarFaturaVenda(Fatura $fatura)
+    public function visualizarFatura(Fatura $fatura): Response
     {
         $params = [
             'e' => $fatura
@@ -69,15 +69,16 @@ class FaturaController extends FormListController
             if ($fatura->jsonData['venda_id'] ?? false) {
                 $venda = $this->getDoctrine()->getRepository(Venda::class)->find($fatura->jsonData['venda_id']);
                 $params['venda'] = $venda;
+                return $this->doRender('Financeiro/fatura_venda.html.twig', $params);
             } else {
-                throw new \RuntimeException('Fatura de venda sem jsonData[venda_id]');
+                return $this->doRender('Financeiro/fatura_movimentacoes.html.twig', $params);
             }
         } catch (\Throwable $e) {
             $this->addFlash('error', 'Erro ao pesquisar movimentações da fatura');
         }
-        return $this->doRender('Financeiro/fatura_venda.html.twig', $params);
     }
 
+    
     /**
      *
      * @Route("/fin/fatura/list/", name="fatura_list")
