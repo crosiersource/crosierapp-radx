@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -43,7 +44,12 @@ class FiscalCommand extends Command
     protected function configure()
     {
         $this->setName('crosierappradx:fiscal');
-        $this->addArgument('operacao', InputArgument::REQUIRED, '');
+        $this->addOption(
+            'operacao',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Operação a ser executada'
+        );
     }
 
     /**
@@ -54,28 +60,41 @@ class FiscalCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $operacao = $input->getArgument('operacao');
+        $operacao = $input->getOption('operacao');
+        if (!$operacao) {
+            throw new \InvalidArgumentException('operacao n/d');
+        }
 
         switch ($operacao) {
             case 'obterDistDFes':
-                $this->obterDistDFes();
+                $this->obterDistDFes($output);
                 break;
             default:
                 throw new \RuntimeException('operacao desconhecida: ' . $operacao);
         }
-        return 0;
+        return Command::SUCCESS;
     }
 
-
-    public function obterDistDFes(int $primeiroNSU = null)
+    /**
+     * Chamar com:
+     * - php bin/console crosierappradx:fiscal --operacao=obterDistDFes
+     * 
+     * @param OutputInterface $output
+     * @param int|null $primeiroNSU
+     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     */
+    public function obterDistDFes(OutputInterface $output, int $primeiroNSU = null)
     {
         $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
         if ($primeiroNSU) {
-            $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpjEmUso);
+            $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpjEmUso);
         } else {
-            $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso);
+            $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso);
         }
+        $output->write( $q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
+        $output->write( 'Processando obtidos...');
         $this->distDFeBusiness->processarDistDFesObtidos();
+        $output->write('OK');
     }
 
 }
