@@ -34,3 +34,8 @@ src/Entity/uppercaseFields.json
 .phpunit.result.cache
 
 crosierapp-radx.env.local.txt
+
+###> phpunit/phpunit ###
+#/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
