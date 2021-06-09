@@ -14,7 +14,7 @@
                     <div class="card">
 
                         <form id="form_custoOperacional_relatorioMensal"
-                              action="{{ url('fin_custoOperacional_relatorioMensal') }}" method="get">
+                              action="{{ url('fin_custoOperacional_porCategorias') }}" method="get">
 
                             <div class="card-header">
                                 <div class="d-flex flex-wrap align-items-center">
@@ -134,7 +134,7 @@
                                             <tfoot>
                                             <tr>
                                                 <td>Total:</td>
-                                                <td class="text-right">{{ totalEntradas.valor_total|number_format(2,',','.') }}</td>
+                                                <td class="text-right">{{ totalSaidas.valor_total|number_format(2,',','.') }}</td>
                                                 <td class="text-right">
                                                 </td>
                                             </tr>
