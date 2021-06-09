@@ -191,19 +191,19 @@ class CustoOperacionalController extends BaseController
             $params['mascara'] = Categoria::MASK;
 
             $params['entradas'] = $conn->fetchAllAssociative(
-                'SELECT m.categoria_id, c.codigo, c.descricao, sum(m.valor_total) as valor_total FROM fin_movimentacao m, fin_categoria c WHERE m.categoria_id = c.id AND m.dt_pagto between :dtIni and :dtFim and c.codigo_super = 1 AND c.codigo not in (199,299) GROUP BY m.categoria_id ORDER BY valor_total desc',
+                'SELECT m.categoria_id, c.codigo, c.descricao, sum(m.valor_total) as valor_total FROM fin_movimentacao m, fin_categoria c WHERE m.categoria_id = c.id AND m.dt_pagto between :dtIni and :dtFim and c.codigo_super = 1 AND c.codigo not in (199,299,151,251) GROUP BY m.categoria_id ORDER BY valor_total desc',
                 ['dtIni' => $dtIniSQL, 'dtFim' => $dtFimSQL]);
 
             $params['totalEntradas'] = $conn->fetchAssociative(
-                'SELECT sum(m.valor_total) as valor_total FROM fin_movimentacao m, fin_categoria c WHERE m.categoria_id = c.id AND m.dt_pagto between :dtIni and :dtFim and c.codigo_super = 1 AND c.codigo not in (199,299)',
+                'SELECT sum(m.valor_total) as valor_total FROM fin_movimentacao m, fin_categoria c WHERE m.categoria_id = c.id AND m.dt_pagto between :dtIni and :dtFim and c.codigo_super = 1 AND c.codigo not in (199,299,151,251)',
                 ['dtIni' => $dtIniSQL, 'dtFim' => $dtFimSQL]);
 
             $params['saidas'] = $conn->fetchAllAssociative(
-                'SELECT m.categoria_id, c.codigo, c.descricao, sum(m.valor_total) as valor_total FROM fin_movimentacao m, fin_categoria c WHERE m.categoria_id = c.id AND m.dt_pagto between :dtIni and :dtFim and c.codigo_super = 2 AND c.codigo not in (199,299) GROUP BY m.categoria_id ORDER BY valor_total desc',
+                'SELECT m.categoria_id, c.codigo, c.descricao, sum(m.valor_total) as valor_total FROM fin_movimentacao m, fin_categoria c WHERE m.categoria_id = c.id AND m.dt_pagto between :dtIni and :dtFim and c.codigo_super = 2 AND c.codigo not in (199,299,151,251) GROUP BY m.categoria_id ORDER BY valor_total desc',
                 ['dtIni' => $dtIniSQL, 'dtFim' => $dtFimSQL]);
 
             $params['totalSaidas'] = $conn->fetchAssociative(
-                'SELECT sum(m.valor_total) as valor_total FROM fin_movimentacao m, fin_categoria c WHERE m.categoria_id = c.id AND m.dt_pagto between :dtIni and :dtFim and c.codigo_super = 2 AND c.codigo not in (199,299)',
+                'SELECT sum(m.valor_total) as valor_total FROM fin_movimentacao m, fin_categoria c WHERE m.categoria_id = c.id AND m.dt_pagto between :dtIni and :dtFim and c.codigo_super = 2 AND c.codigo not in (199,299,151,251)',
                 ['dtIni' => $dtIniSQL, 'dtFim' => $dtFimSQL]);
 
             $params['periodoAtual'] = $params['filter']['dts'];
