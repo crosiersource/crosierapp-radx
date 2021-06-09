@@ -271,9 +271,16 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td>{{ filter.dts }}</td>
-                                                <td class="text-right">{{ rTotalVendas.valor_total|number_format(2,',','.') }}</td>
-                                                <td class="text-right">{{ rTotalCustos.valor_total|number_format(2,',','.') }}</td>
+                                                <td>{{ periodoAnterior }}</td>
+                                                <td class="text-right">{{ rTotalVendas_mesAnterior.valor_total|number_format(2,',','.') }}</td>
+                                                <td class="text-right">{{ rTotalCustos_mesAnterior.valor_total|number_format(2,',','.') }}</td>
+                                                <td class="text-right">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{ periodoAtual }}</td>
+                                                <td class="text-right">{{ rTotalVendas_mesAtual.valor_total|number_format(2,',','.') }}</td>
+                                                <td class="text-right">{{ rTotalCustos_mesAtual.valor_total|number_format(2,',','.') }}</td>
                                                 <td class="text-right">
                                                 </td>
                                             </tr>
