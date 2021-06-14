@@ -111,6 +111,24 @@ class IntegraWebStormController extends BaseController
         return new Response('OK');
     }
 
+
+    /**
+     *
+     * @Route("/est/integraWebStorm/obterVendaPorId/{id}", name="est_integraWebStorm_obterVendaPorId")
+     * @ParamConverter("dtVenda", options={"format": "Y-m-d"})
+     *
+     * @param Request $request
+     * @param IntegradorWebStorm $integraWebStormBusiness
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function obterVendaPorId(Request $request, IntegradorWebStorm $integraWebStormBusiness, int $id): Response
+    {
+        $resalvar = $request->get('resalvar') ?? null;
+        $integraWebStormBusiness->obterVendaPorId($id, $resalvar === 'S');
+        return new Response('OK');
+    }
+
     /**
      *
      * @Route("/est/integraWebStorm/integrarVendaParaECommerce/{venda}", name="est_integraWebStorm_integrarVendaParaECommerce")
