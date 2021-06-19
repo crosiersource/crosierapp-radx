@@ -531,7 +531,7 @@ TRUNCATE TABLE fin_carteira;
 
 INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
  user_inserted_id, user_updated_id, atual)
-VALUES (null, 99, 'INDEFINIDA', null, null, null, true, true, false, true, '1900-01-01', 0, null, '2019-03-18 16:48:46', '2019-03-18 16:48:46', 0, 1, 1, 1, true);
+VALUES (null, 99, 'INDEFINIDA', null, null, null, true, true, false, false, '1900-01-01', 0, null, '1900-01-01 00:00:00', '1900-01-01 00:00:00', 0, 1, 1, 1, true);
 INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
  user_inserted_id, user_updated_id, atual)
 VALUES (null, 1, 'GERAL', null, null, null, true, false, false, true, '1900-01-01', 0, null, '2019-03-18 16:48:46', '2019-03-18 16:48:46', 0, 1, 1, 1, true);
