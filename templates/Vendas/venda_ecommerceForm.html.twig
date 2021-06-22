@@ -294,13 +294,34 @@
                                         <td class="text-right">{{ item.desconto|number_format(2,',','.') }}</td>
                                         <td class="text-right">{{ item.total|number_format(2,',','.') }}</td>
                                         <td class="text-right">
+
+                                            {% if e.status == 'PV ABERTO' %}
+                                            
+                                            <button type="button"
+                                                    class="btn btn-sm btn-primary btnEditProduto"
+                                                    data-item-id="{{ item.id }}"
+                                                    data-item-produto-id="{{ item.produto.id|default('') }}"
+                                                    data-item-produto-nome="{{ item.produto.nome|default('') }}"
+                                                    data-item-unidade-id="{{ item.unidade.id|default('') }}"
+                                                    data-item-unidade-label="{{ item.unidade.label|default('') }}"
+                                                    data-item-unidade-casas-decimais="{{ item.unidade.casasDecimais|default('') }}"
+                                                    data-item-devolucao="{{ item.devolucao|default('') }}"
+                                                    data-item-qtde="{{ item.qtde|default('') }}"
+                                                    data-item-preco-venda="{{ item.precoVenda|default('') }}"
+                                                    data-item-desconto="{{ item.desconto|number_format(2,',','.') }}"
+                                                    data-item-obs="{{ item.jsonData.obs|default('') }}">
+                                                <i class="fas fa-wrench" aria-hidden="true"></i>
+                                            </button>
+                                            
                                             <button type="button" class="btn btn-sm btn-danger"
                                                     data-url="{{ url('ven_venda_deleteItem', {'item': item.id}) }}?ecommerceForm=true"
                                                     data-token="{{ csrf_token('ven_venda_deleteItem') }}"
                                                     data-target="#confirmationModal"
-                                                    data-toggle="modal">
+                                                    data-toggle="modal" title="Remover item">
                                                 <i class="fa fa-trash" aria-hidden="true"></i>
-                                            </button>                                            
+                                            </button>      
+                                            
+                                            {% endif %}
                                         </td>
 
                                     </tr>

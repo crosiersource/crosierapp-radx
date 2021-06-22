@@ -10,6 +10,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
@@ -712,6 +713,8 @@ class VendaController extends FormListController
 
         } catch (\Throwable $e) {
             $this->addFlash('error', 'Erro ao inserir item');
+            $msg2 = ExceptionUtils::treatException($e);
+            $this->addFlash('error', $msg2);
             if ($e instanceof ViewException) {
                 $this->addFlash('error', $e->getMessage());
             }
