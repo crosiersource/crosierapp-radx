@@ -1,0 +1,49 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Atualizar Dt Pagto Pedido</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <form method="get" action="{{ url('est_integraSimplo7_atualizarDtPagtoPedido') }}">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="form-group">
+                                <label for="id">Id</label>
+                                <input type="number" id="id" name="id" min="1"
+                                       class="form-control" value="{{ id|default('') }}">
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="form-group">
+                                <label for="dtPagto">Dt Pagto</label>
+                                <input type="text" id="dtPagto" name="dtPagto" value="{{ dtPagto|default('') }}"
+                                       class="crsr-date form-control" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="col-2 text-right">
+                            <button type="submit" class="btn btn-primary" value="Salvar" name="btnSalvar">
+                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
