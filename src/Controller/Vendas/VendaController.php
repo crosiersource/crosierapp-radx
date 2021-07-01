@@ -5,7 +5,6 @@ namespace App\Controller\Vendas;
 use App\Form\Vendas\VendaType;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
@@ -23,6 +22,9 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoPreco;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Fatura;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\FinalidadeNF;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Entity\RH\Colaborador;
@@ -35,11 +37,15 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Vendas\VendaItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\FaturaRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\RH\ColaboradorRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
-use Decimal\Decimal;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Driver\Exception;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -928,10 +934,10 @@ class VendaController extends FormListController
             $dia = null;
             $dias = [];
             $i = -1;
-            
+
             $subtotal = 0.0;
             $total = 0.0; // total com frete e possíveis acréscimos
-            
+
             /** @var Venda $venda */
             foreach ($dados as $venda) {
                 if ($venda->dtVenda->format('d/m/Y') !== $dia) {
@@ -944,7 +950,7 @@ class VendaController extends FormListController
                 $dias[$i]['vendas'][] = $venda;
                 $dias[$i]['subtotal'] = bcadd($dias[$i]['subtotal'], $venda->valorTotal, 2);
                 $dias[$i]['total'] = bcadd($dias[$i]['total'], $venda->jsonData['total_pagtos'] ?? $venda->valorTotal, 2);
-                
+
                 $subtotal = bcadd($subtotal, $venda->valorTotal, 2);
                 $total = bcadd($total, $venda->jsonData['total_pagtos'] ?? $venda->valorTotal, 2);
             }
@@ -1437,7 +1443,7 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/venda/venda/clonar/{venda}/", name="ven_venda_clonar", requirements={"venda"="\d+"})
+     * @Route("/ven/venda/clonar/{venda}/", name="ven_venda_clonar", requirements={"venda"="\d+"})
      *
      * @param Request $request
      * @param Venda $venda
@@ -1461,6 +1467,105 @@ class VendaController extends FormListController
             }
             return $this->redirectToRoute('ven_venda_form_dados', ['id' => $venda->getId()]);
         }
+    }
+
+
+    /**
+     *
+     * @Route("/ven/venda/checkVendasComPagtosEmAberto", name="ven_venda_checkVendasComPagtosEmAberto")
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function checkPagtosEmAberto(Request $request): Response
+    {
+        $alterar = $request->get('alterar') ?? false;
+        $similaridade = $request->get('similaridade') ?? 50;
+        $aPartirDe = $request->get('aPartirDe');
+        $sql = 'SELECT json_data->>"$.venda_id" AS venda_id FROM fin_fatura WHERE dt_fatura >= :aPartirDe AND json_data->>"$.venda_id" > 0 AND id in (SELECT fatura_id FROM fin_movimentacao WHERE categoria_id = 101 AND status = \'ABERTA\') ORDER BY dt_fatura';
+        /** @var Connection $conn */
+        $conn = $this->getDoctrine()->getConnection();
+        $vendas = $conn->fetchAllAssociative($sql, ['aPartirDe' => $aPartirDe]);
+
+        $sqlPagto = 'SELECT id, descricao, valor_total, dt_pagto FROM fin_movimentacao WHERE date(dt_moviment) BETWEEN :dtIni AND :dtFim AND valor_total = :valor AND status = \'REALIZADA\' ORDER BY dt_moviment';
+        $stmt = $conn->prepare($sqlPagto);
+
+        /** @var VendaRepository $repoVenda */
+        $repoVenda = $this->getDoctrine()->getRepository(Venda::class);
+
+        /** @var FaturaRepository $repoFatura */
+        $repoFatura = $this->getDoctrine()->getRepository(Fatura::class);
+
+        /** @var MovimentacaoRepository $repoMovimentacao */
+        $repoMovimentacao = $this->getDoctrine()->getRepository(Movimentacao::class);
+
+        /** @var CategoriaRepository $repoCategoria */
+        $repoCategoria = $this->getDoctrine()->getRepository(Categoria::class);
+        $categ101 = $repoCategoria->findOneByCodigo(101);
+
+        /** @var CarteiraRepository $repoCarteira */
+        $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
+        $carteiraBancoPix = $repoCarteira->findOneByCodigo(4);
+
+
+        $regexPIX = '/(?:PIX RECEBIDO \- CP \:\d*\-)(?<nome>[\s\w]*)/';
+
+        $resp = [];
+
+        $conn->beginTransaction();
+
+        try {
+            foreach ($vendas as $vendaId) {
+                $venda = $repoVenda->find($vendaId['venda_id']);
+                $totalPagtos = $venda->jsonData['total_pagtos'];
+                $stmt->bindValue('valor', $totalPagtos);
+                $stmt->bindValue('dtIni', $venda->dtVenda->format('Y-m-d'));
+                $stmt->bindValue('dtFim', DateTimeUtils::addDays($venda->dtVenda, 10)->format('Y-m-d'));
+                $qry = $stmt->executeQuery();
+                $movs = $qry->fetchAllAssociative();
+
+                $movsPorSimilaridadeDeNome = [];
+                foreach ($movs as $mov) {
+                    if (preg_match($regexPIX, StringUtils::removerAcentos($mov['descricao']), $matches, PREG_OFFSET_CAPTURE)) {
+                        $nomeNaDescricao = $matches[1][0];
+                        $s = null;
+                        similar_text(mb_strtoupper($nomeNaDescricao), mb_strtoupper($venda->jsonData['cliente_nome']), $s);
+                        if ($s >= $similaridade) {
+                            $movsPorSimilaridadeDeNome[(int)$s] = $mov;
+                        }
+                    }
+                }
+                if (count($movsPorSimilaridadeDeNome) > 0) {
+                    krsort($movsPorSimilaridadeDeNome, SORT_NUMERIC);
+                    $f = reset($movsPorSimilaridadeDeNome);
+                    $resp[] = $venda->getId() . ') ' . $venda->dtVenda->format('d/m/Y') . ' - ' . $venda->jsonData['total_pagtos'] . $venda->jsonData['cliente_nome'] . ' >>>>>> ' . $f['id'] . ') ' . $f['descricao'];
+                    if ($alterar) {
+                        $fatura = $repoFatura->find($venda->jsonData['fatura_id']);
+                        /** @var Movimentacao $mov */
+                        $mov = $fatura->movimentacoes->get(0);
+                        $mov->descricao = $f['descricao'];
+                        $mov->carteira = $carteiraBancoPix;
+                        $mov->dtPagto = DateTimeUtils::parseDateStr($f['dt_pagto']);
+                        $mov->categoria = $categ101;
+                        $this->vendaBusiness->movimentacaoEntityHandler->save($mov);
+                        $movADeletar = $repoMovimentacao->find($f['id']);
+                        $this->vendaBusiness->movimentacaoEntityHandler->delete($movADeletar);
+                    }
+                } else {
+                    $resp[] = $venda->getId() . ') ' . $venda->dtVenda->format('d/m/Y') . ' - ' . $venda->jsonData['total_pagtos'] . ' ' . $venda->jsonData['cliente_nome'] . ' >>>>>> NENHUMA';
+                }
+                // se não encontrou, marca PV ABERTO
+            }
+            $conn->commit();
+        } catch (\Throwable $e) {
+            try {
+                $conn->rollBack();
+            } catch (ConnectionException $e) {
+                // 
+            }
+        }
+
+        return new Response('OK<hr>' . implode('<br>', $resp));
     }
 
 
