@@ -243,12 +243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "6432c6e78c57a558eba70cc91d05ce7e14d8e679"
+                "reference": "48154760a9e6cc1032c6ab91ac501736896c18d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/6432c6e78c57a558eba70cc91d05ce7e14d8e679",
-                "reference": "6432c6e78c57a558eba70cc91d05ce7e14d8e679",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/48154760a9e6cc1032c6ab91ac501736896c18d3",
+                "reference": "48154760a9e6cc1032c6ab91ac501736896c18d3",
                 "shasum": ""
             },
             "require": {
@@ -307,7 +307,7 @@
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
                 "source": "https://github.com/crosiersource/crosierlib-base/tree/master"
             },
-            "time": "2021-07-01T16:26:11+00:00"
+            "time": "2021-07-01T19:43:05+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
@@ -315,12 +315,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "c9202d64ea4c9bf1aacd0e2fee396b5a91e46185"
+                "reference": "9808c8572f29a8f1225832e22bc7fab7240cd182"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/c9202d64ea4c9bf1aacd0e2fee396b5a91e46185",
-                "reference": "c9202d64ea4c9bf1aacd0e2fee396b5a91e46185",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/9808c8572f29a8f1225832e22bc7fab7240cd182",
+                "reference": "9808c8572f29a8f1225832e22bc7fab7240cd182",
                 "shasum": ""
             },
             "require": {
@@ -384,7 +384,7 @@
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
                 "source": "https://github.com/crosiersource/crosierlib-radx/tree/master"
             },
-            "time": "2021-07-01T16:26:33+00:00"
+            "time": "2021-07-01T19:43:47+00:00"
         },
         {
             "name": "doctrine/annotations",
