@@ -4,6 +4,7 @@ namespace App\Controller\ECommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorSimplo7;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -149,8 +150,37 @@ class IntegraSimplo7Controller extends BaseController
         $r = $integraSimplo7Business->atualizarPedidosMelhorEnvio();
         return new Response(implode('<br>', $r));
     }
-    
-    
-    
+
+
+    /**
+     *
+     * @Route("/est/integraSimplo7/atualizarDtPagtoPedido", name="est_integraSimplo7_atualizarDtPagtoPedido")
+     *
+     * @param IntegradorSimplo7 $integraSimplo7Business
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function atualizarDtPagtoPedido(Request $request, IntegradorSimplo7 $integraSimplo7Business): Response
+    {
+        $dtPagto = null;
+        $id = null;
+        if ($request->get('dtPagto')) {
+            $dtPagto = DateTimeUtils::parseDateStr($request->get('dtPagto'));
+            if (!$dtPagto) {
+                $this->addFlash('warn', 'Data inválida!');
+            }
+        }
+        if ($request->get('id') && ((int)$request->get('id'))) {
+            $id = $request->get('id');
+        }
+        if ($dtPagto && $id && $request->get('btnSalvar')) {
+            $integraSimplo7Business->atualizarDtPagtoPedido($id, $dtPagto);
+            $this->addFlash('info', 'Atualizado com sucesso!');
+        }
+        $params['id'] = $id;
+        $params['dtPagto'] = $dtPagto ? $dtPagto->format('d/m/Y') : null;
+        return $this->doRender('ECommerce/atualizaDtPagtoPedido.html.twig', $params);
+    }
+
 
 }
