@@ -243,12 +243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "6be2fede2c7a2a96bb9ac44c5682180331ea9d7d"
+                "reference": "14592167d8ffb5be094680ea3299db67d9ed5759"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/6be2fede2c7a2a96bb9ac44c5682180331ea9d7d",
-                "reference": "6be2fede2c7a2a96bb9ac44c5682180331ea9d7d",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/14592167d8ffb5be094680ea3299db67d9ed5759",
+                "reference": "14592167d8ffb5be094680ea3299db67d9ed5759",
                 "shasum": ""
             },
             "require": {
@@ -307,7 +307,7 @@
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
                 "source": "https://github.com/crosiersource/crosierlib-base/tree/master"
             },
-            "time": "2021-07-02T14:51:52+00:00"
+            "time": "2021-07-02T22:04:58+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
