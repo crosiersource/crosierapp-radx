@@ -315,12 +315,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "ab25d862d47a1ac42f42c12fa4d761f07d80adb8"
+                "reference": "3de2b4b7bd174d7e94c7d6bf06d9d67cc3fcee1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/ab25d862d47a1ac42f42c12fa4d761f07d80adb8",
-                "reference": "ab25d862d47a1ac42f42c12fa4d761f07d80adb8",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/3de2b4b7bd174d7e94c7d6bf06d9d67cc3fcee1c",
+                "reference": "3de2b4b7bd174d7e94c7d6bf06d9d67cc3fcee1c",
                 "shasum": ""
             },
             "require": {
@@ -384,7 +384,7 @@
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
                 "source": "https://github.com/crosiersource/crosierlib-radx/tree/master"
             },
-            "time": "2021-07-01T22:26:48+00:00"
+            "time": "2021-07-06T20:41:48+00:00"
         },
         {
             "name": "doctrine/annotations",
