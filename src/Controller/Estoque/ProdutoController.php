@@ -9,11 +9,11 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
-use CrosierSource\CrosierLibRadxBundle\Business\Estoque\ProdutoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ListaPreco;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
@@ -59,8 +59,6 @@ class ProdutoController extends FormListController
     private ProdutoPrecoEntityHandler $produtoPrecoEntityHandler;
 
     private UploaderHelper $uploaderHelper;
-
-    private ProdutoBusiness $produtoBusiness;
 
     /**
      * @required
@@ -108,14 +106,6 @@ class ProdutoController extends FormListController
         $this->entityHandler = $entityHandler;
     }
 
-    /**
-     * @required
-     * @param ProdutoBusiness $produtoBusiness
-     */
-    public function setProdutoBusiness(ProdutoBusiness $produtoBusiness): void
-    {
-        $this->produtoBusiness = $produtoBusiness;
-    }
 
     /**
      * @param array $params
@@ -533,7 +523,7 @@ class ProdutoController extends FormListController
             $arquivos[basename($arq)] = $arq;
         }
 
-        $imagens = $conn->fetchAll('select i.id, i.produto_id, depto_id, grupo_id, subgrupo_id, image_name from est_produto p, est_produto_imagem i where p.id = i.produto_id');
+        $imagens = $conn->fetchAllAssociative('select i.id, i.produto_id, depto_id, grupo_id, subgrupo_id, image_name from est_produto p, est_produto_imagem i where p.id = i.produto_id');
 
         $result = [];
 
@@ -642,7 +632,7 @@ class ProdutoController extends FormListController
                 'prod.nome LIKE :str OR ' .
                 'json_data->>"$.codigo" LIKE :str) ORDER BY prod.nome LIMIT 20';
 
-            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAll($sql, ['str' => '%' . $str . '%']);
+            $rs = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative($sql, ['str' => '%' . $str . '%']);
             $results = [];
             foreach ($rs as $r) {
                 $jsonData = json_decode($r['json_data'], true);
@@ -676,10 +666,10 @@ class ProdutoController extends FormListController
     public function corrigirPrecosAtuais(): Response
     {
         try {
-            $produtosIds = $this->entityHandler->getDoctrine()->getConnection()->fetchAll('SELECT id FROM est_produto');
+            $produtosIds = $this->entityHandler->getDoctrine()->getConnection()->fetchAllAssociative('SELECT id FROM est_produto');
             foreach ($produtosIds as $produtoId) {
                 $precoAtual = $precos = $this->entityHandler->getDoctrine()->getConnection()
-                    ->fetchAll('SELECT id FROM est_produto_preco WHERE produto_id = :produtoId ORDER BY preco_prazo DESC LIMIT 1', ['produtoId' => $produtoId['id']]);
+                    ->fetchAllAssociative('SELECT id FROM est_produto_preco WHERE produto_id = :produtoId ORDER BY preco_prazo DESC LIMIT 1', ['produtoId' => $produtoId['id']]);
                 if ($precoAtual) {
                     $this->entityHandler->getDoctrine()->getConnection()
                         ->executeQuery('UPDATE est_produto_preco SET atual = true WHERE id = :id', ['id' => $precoAtual[0]['id']]);
@@ -708,15 +698,13 @@ class ProdutoController extends FormListController
         $conn = $this->entityHandler->getDoctrine()->getConnection();
 
         $sql = 'select id, depto_id, grupo_id, subgrupo_id, json_data FROM est_produto WHERE NOT JSON_IS_NULL_OR_EMPTY(json_data, \'imagem1\') AND json_data->>"$.imagem1" NOT LIKE \'%thumbnail%\' LIMIT ' . (int)$limit;
-        $rProdutosComImagem1 = $conn->fetchAll($sql);
-
+        $rProdutosComImagem1 = $conn->fetchAllAssociative($sql);
 
         foreach ($rProdutosComImagem1 as $produtoComImagem1) {
             echo 'Corrigindo ' . $produtoComImagem1['id'] . '<br>';
             $jsonData = json_decode($produtoComImagem1['json_data'], true);
 
             $url = $_SERVER['CROSIERAPP_URL'] . '/images/produtos/' . $produtoComImagem1['depto_id'] . '/' . $produtoComImagem1['grupo_id'] . '/' . $produtoComImagem1['subgrupo_id'] . '/' . $jsonData['imagem1'];
-            $url = 'https://radx.crosier.rodoponta.com.br/images/produtos/' . $produtoComImagem1['depto_id'] . '/' . $produtoComImagem1['grupo_id'] . '/' . $produtoComImagem1['subgrupo_id'] . '/' . $jsonData['imagem1'];
 
             $imgUtils = new ImageUtils();
             $imgUtils->load($url);
@@ -996,7 +984,7 @@ class ProdutoController extends FormListController
     {
         $campo = $request->get('campo');
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.findValuesTagsDin', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
-        $nome = 'findValuesTagsDin_' . $campo; 
+        $nome = 'findValuesTagsDin_' . $campo;
         $cache->delete($nome);
         return new Response('deletado: ' . $nome);
     }
@@ -1058,6 +1046,8 @@ class ProdutoController extends FormListController
         $vs = Select2JsUtils::arrayToSelect2DataKeyEqualValue($vs);
         return new JsonResponse(['results' => $vs]);
     }
+
+
 
 
 }
