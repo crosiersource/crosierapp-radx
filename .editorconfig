@@ -10,6 +10,12 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = false
 insert_final_newline = false
+tab_width = 4
+max_line_length = 100
 
-[*.{php,yaml,yml,json,twig}]
+[*.{php,yaml,yml,json,twig,xml,xsd,xsl}]
 indent_size = 4
+
+
+
+
