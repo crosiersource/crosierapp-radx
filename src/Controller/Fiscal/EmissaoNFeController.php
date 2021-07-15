@@ -418,6 +418,9 @@ class EmissaoNFeController extends FormListController
     public function imprimir(NotaFiscal $notaFiscal): void
     {
         try {
+            if ($this->notaFiscalBusiness->permiteFaturamento($notaFiscal)){
+                $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
+            }
             $xml = $notaFiscal->getXmlNota();
             $danfe = new Danfe($xml);
             $danfe->debugMode(false);
@@ -448,9 +451,12 @@ class EmissaoNFeController extends FormListController
             //ou setado para download forçado no browser
             //ou ainda gravado na base de dados
             header('Content-Type: application/pdf');
+            if (!$pdf) {
+                throw new \RuntimeException('Erro ao gerar PDF');
+            }
             echo $pdf;
         } catch (\Throwable $e) {
-            echo 'Ocorreu um erro durante o processamento :' . $e->getMessage();
+            throw new \RuntimeException('Ocorreu um erro durante o processamento :' . $e->getMessage());
         }
     }
 
