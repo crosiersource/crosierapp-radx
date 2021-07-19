@@ -315,7 +315,7 @@ class MovimentacaoCaixaController extends FormListController
                 $movimentacao->carteiraDestino = $movimentacaoSalva->carteiraDestino;
                 $movimentacao->operadoraCartao = $movimentacaoSalva->operadoraCartao;
                 $movimentacao->bandeiraCartao = $movimentacaoSalva->bandeiraCartao;
-                $movimentacao->dtMoviment = clone $movimentacaoSalva->dtMoviment;
+                $movimentacao->dtMoviment = $movimentacaoSalva->dtMoviment ? (clone $movimentacaoSalva->dtMoviment) : null;
                 $movimentacao->descricao = $movimentacaoSalva->descricao;
                 $movimentacao->valor = $movimentacaoSalva->valor;
                 $movimentacao->obs = $movimentacaoSalva->obs;

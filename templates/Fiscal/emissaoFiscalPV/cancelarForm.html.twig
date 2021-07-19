@@ -52,7 +52,7 @@
 
                         {% if permiteReimpressaoCancelamento %}
                             <button type="button" value="Reimprimir Cancelamento" class="btn btn-secondary"
-                                    data-url="{{ url('fis_emissaofiscalpv_reimprimirCancelamento', {notaFiscal: notaFiscal.id, venda: venda.id}) }}"
+                                    data-url="{{ url('fis_emissaonfe_imprimirCancelamento', {notaFiscal: notaFiscal.id}) }}"
                                     data-target="#confirmationModal" data-toggle="modal">
                                 <i class="fas fa-print" aria-hidden="true"></i> Reimprimir Cancelamento
                             </button>

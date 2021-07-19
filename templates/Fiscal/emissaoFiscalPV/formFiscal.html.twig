@@ -80,7 +80,7 @@
                     {% else %}
 
                         <button type="button" value="Reimprimir" class="btn btn-success"
-                                onclick="printJS('{{ url('fis_emissaofiscalpv_reimprimir', {notaFiscal: notaFiscal.id, venda: venda.id}) }}')"
+                                onclick="printJS('{{ url('fis_emissaonfe_imprimir', {notaFiscal: notaFiscal.id}) }}')"
                                 id="btnReimprimir">
                             <i class="fas fa-print" aria-hidden="true"></i> Reimprimir
                         </button>
