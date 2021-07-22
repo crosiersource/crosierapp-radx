@@ -575,9 +575,13 @@ class EmissaoNFeController extends FormListController
                 }
             }
         }
+
+        $permiteFaturamento = $this->notaFiscalBusiness->permiteFaturamento($notaFiscal, true);
+        
         return $this->doRender('/Fiscal/emissaoNFe/formItem.html.twig', [
             'form' => $form->createView(),
-            'notaFiscal' => $notaFiscal
+            'notaFiscal' => $notaFiscal,
+            'permiteFaturamento' => $permiteFaturamento,
         ]);
     }
 

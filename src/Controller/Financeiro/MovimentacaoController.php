@@ -200,7 +200,7 @@ class MovimentacaoController extends FormListController
      */
     public function datatablesJsList(Request $request): Response
     {
-        return $this->doDatatablesJsList($request);
+        return $this->doDatatablesJsList($request, null, null, null, ['outrosGruposSerializ' => ['carteira', 'modo', 'categoria']]);
     }
 
     /**

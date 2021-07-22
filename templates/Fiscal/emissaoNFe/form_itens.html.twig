@@ -71,12 +71,12 @@
                                         <i class="far fa-copy"></i>
                                     </button>
 
-                                    {% if permiteFaturamento %}
-                                        <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="window.location.href='{{ url('fis_emissaonfe_formItem', {notaFiscal: notaFiscal.id, 'item':item.id} ) }}'">
-                                            <i class="fas fa-wrench" aria-hidden="true"></i>
-                                        </button>
+                                    <a role="button" class="btn btn-sm btn-primary"
+                                       href="{{ url('fis_emissaonfe_formItem', {notaFiscal: notaFiscal.id, 'item':item.id} ) }}">
+                                        <i class="fas fa-wrench" aria-hidden="true"></i>
+                                    </a>
 
+                                    {% if permiteFaturamento %}
                                         <button type="button" class="btn btn-sm btn-danger"
                                                 data-url="{{ url('fis_emissaonfe_deleteItem', {'item': item.id}) }}"
                                                 data-token="{{ csrf_token('delete') }}"

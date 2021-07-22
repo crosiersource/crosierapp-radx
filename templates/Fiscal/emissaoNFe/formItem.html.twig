@@ -131,15 +131,15 @@
                     </div>
                 </fieldset>
 
-
+                {% if permiteFaturamento %}
                 <div class="row">
                     <div class="col text-right">
                         <button type="submit" class="btn btn-primary" value="Salvar">
                             <i class="fas fa-save" aria-hidden="true"></i> Salvar
                         </button>
-
                     </div>
                 </div>
+                {% endif %}
 
 
                 {{ form_end(form, {'render_rest': true}) }}
