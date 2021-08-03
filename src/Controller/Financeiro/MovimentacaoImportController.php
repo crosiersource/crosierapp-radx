@@ -462,13 +462,19 @@ class MovimentacaoImportController extends BaseController
         if ($request->get('btnAlterarEmLote')) {
             if (!$request->get('movsSelecionadas')) {
                 $this->addFlash('warn', 'Nenhuma movimentação selecionada.');
-                return $this->redirectToRoute('movimentacao_list');
+                return $this->redirectToRoute('movimentacao_import');
             }
             $movsSel = $request->get('movsSelecionadas');
             $movsImportadas = $this->getMovimentacoesDaSessao('importadas');
             $movsSelecionadas = [];
             foreach ($movsSel as $uuid => $on) {
-                $movsSelecionadas[] = $movsImportadas[$uuid];
+                if ($movsImportadas[$uuid] ?? false) {
+                    $movsSelecionadas[] = $movsImportadas[$uuid];
+                }
+            }
+            if (count($movsSelecionadas) < 1) {
+                $this->addFlash('warn', 'Nenhuma movimentação encontrada para selecionar.');
+                return $this->redirectToRoute('movimentacao_import');
             }
             $this->setMovimentacoesNaSessao('selecionadas', $movsSelecionadas);
         }
