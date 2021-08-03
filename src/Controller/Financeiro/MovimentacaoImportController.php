@@ -182,7 +182,7 @@ class MovimentacaoImportController extends BaseController
         if ($movsImportadas) {
             foreach ($movsImportadas as $mov) {
                 if ($mov['UUID'] ?? false) {
-                    $unsMovsImportadas[$mov['UUID']] = $this->entityIdUtils->unserialize($mov, Movimentacao::class);
+                    $unsMovsImportadas[$mov['UUID']] = $this->entityIdUtils->unserialize($mov, Movimentacao::class, 3, Movimentacao::ALL_SERIAL_GROUPS);
                 }
             }
         }
@@ -198,7 +198,7 @@ class MovimentacaoImportController extends BaseController
             foreach ($movimentacoes as $k => $mov) {
                 if ($mov instanceof Movimentacao) {
                     $this->movimentacoesNaSessao[$tipo][] = $mov;
-                    $mov = $this->entityIdUtils->serialize($mov);
+                    $mov = $this->entityIdUtils->serialize($mov, 3, Movimentacao::ALL_SERIAL_GROUPS);
                 }
                 $serMovimentacoes[] = $mov;
             }
