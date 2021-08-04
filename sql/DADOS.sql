@@ -650,19 +650,19 @@ INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `movime
 VALUES (3, 3, 'CHEQUE PRÓPRIO', 0, 0, 0, 1, 0, 1, '2015-02-11 18:06:09', '2018-10-11 17:56:55', 2, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
-VALUES (4, 7, 'TRANSF. BANCÁRIA', 1, 0, 1, 1, 0, 0, '2015-02-11 18:06:14', '2018-10-11 17:56:57', 4, 1, 1, 1);
+VALUES (7, 7, 'TRANSF. BANCÁRIA', 1, 0, 1, 1, 0, 0, '2015-02-11 18:06:14', '2018-10-11 17:56:57', 4, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
 VALUES (5, 5, 'DEPÓSITO BANCÁRIO', 1, 0, 0, 1, 0, 0, '2015-02-11 18:06:18', '2015-02-11 18:06:18', 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
-VALUES (6, 99, 'INDEFINIDO', 0, 0, 0, 0, 0, 0, '2015-02-12 11:55:31', '2015-02-12 11:55:31', 0, 1, 1, 1);
+VALUES (99, 99, 'INDEFINIDO', 0, 0, 0, 0, 0, 0, '2015-02-12 11:55:31', '2015-02-12 11:55:31', 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
-VALUES (7, 6, 'BOLETO/GUIA/DDA', 1, 0, 0, 0, 0, 0, '2015-02-12 16:58:04', '2015-02-12 16:58:27', 1, 1, 1, 1);
+VALUES (6, 6, 'BOLETO/GUIA/DDA', 1, 0, 0, 0, 0, 0, '2015-02-12 16:58:04', '2015-02-12 16:58:27', 1, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
-VALUES (8, 4, 'CHEQUE TERCEIROS', 0, 0, 1, 1, 0, 1, '2015-02-19 12:11:56', '2015-10-21 12:23:32', 2, 1, 1, 1);
+VALUES (4, 4, 'CHEQUE TERCEIROS', 0, 0, 1, 1, 0, 1, '2015-02-19 12:11:56', '2015-10-21 12:23:32', 2, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
 VALUES (9, 9, 'RECEB. CARTÃO CRÉDITO', 0, 0, 0, 1, 1, 0, '2015-04-14 16:02:45', '2018-12-28 15:25:36', 1, 1, 1, 1);
@@ -674,10 +674,10 @@ INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `movime
 VALUES (11, 11, 'TRANSF. ENTRE CONTAS', 0, 0, 1, 1, 0, 0, '2015-04-15 17:18:43', '2015-04-15 17:18:45', 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
-VALUES (12, 50, 'MOVIMENTAÇÃO AGRUPADA', 0, 1, 0, 0, 0, 0, '2015-05-18 17:11:23', '2015-05-18 17:11:23', 0, 1, 1, 1);
+VALUES (50, 50, 'MOVIMENTAÇÃO AGRUPADA', 0, 1, 0, 0, 0, 0, '2015-05-18 17:11:23', '2015-05-18 17:11:23', 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
-VALUES (13, 60, 'VIRTUAL', 0, 0, 0, 0, 0, 0, '2015-05-18 17:11:23', '2015-05-18 17:11:23', 0, 1, 1, 1);
+VALUES (60, 60, 'VIRTUAL', 0, 0, 0, 0, 0, 0, '2015-05-18 17:11:23', '2015-05-18 17:11:23', 0, 1, 1, 1);
 
 
 
