@@ -1752,7 +1752,7 @@ CREATE TABLE `fis_nf_historico`
     `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
     `fis_nf_id`          bigint(20)     NOT NULL,
     `codigo_status`      int(11)        NOT NULL,
-    `descricao`          varchar(20000) NOT NULL,
+    `descricao`          varchar(15000) NOT NULL,
     `obs`                varchar(255),
     `dt_historico`       datetime       NOT NULL,
     `inserted`           datetime       NOT NULL,
