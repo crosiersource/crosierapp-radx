@@ -182,7 +182,7 @@ class MovimentacaoImportController extends BaseController
         if ($movsImportadas) {
             foreach ($movsImportadas as $mov) {
                 if ($mov['UUID'] ?? false) {
-                    $unsMovsImportadas[$mov['UUID']] = $this->entityIdUtils->unserialize($mov, Movimentacao::class);
+                    $unsMovsImportadas[$mov['UUID']] = $this->entityIdUtils->unserialize($mov, Movimentacao::class, 3, Movimentacao::ALL_SERIAL_GROUPS);
                 }
             }
         }
@@ -198,7 +198,7 @@ class MovimentacaoImportController extends BaseController
             foreach ($movimentacoes as $k => $mov) {
                 if ($mov instanceof Movimentacao) {
                     $this->movimentacoesNaSessao[$tipo][] = $mov;
-                    $mov = $this->entityIdUtils->serialize($mov);
+                    $mov = $this->entityIdUtils->serialize($mov, 3, Movimentacao::ALL_SERIAL_GROUPS);
                 }
                 $serMovimentacoes[] = $mov;
             }
@@ -462,13 +462,19 @@ class MovimentacaoImportController extends BaseController
         if ($request->get('btnAlterarEmLote')) {
             if (!$request->get('movsSelecionadas')) {
                 $this->addFlash('warn', 'Nenhuma movimentação selecionada.');
-                return $this->redirectToRoute('movimentacao_list');
+                return $this->redirectToRoute('movimentacao_import');
             }
             $movsSel = $request->get('movsSelecionadas');
             $movsImportadas = $this->getMovimentacoesDaSessao('importadas');
             $movsSelecionadas = [];
             foreach ($movsSel as $uuid => $on) {
-                $movsSelecionadas[] = $movsImportadas[$uuid];
+                if ($movsImportadas[$uuid] ?? false) {
+                    $movsSelecionadas[] = $movsImportadas[$uuid];
+                }
+            }
+            if (count($movsSelecionadas) < 1) {
+                $this->addFlash('warn', 'Nenhuma movimentação encontrada para selecionar.');
+                return $this->redirectToRoute('movimentacao_import');
             }
             $this->setMovimentacoesNaSessao('selecionadas', $movsSelecionadas);
         }

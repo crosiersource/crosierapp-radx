@@ -155,7 +155,7 @@
 
                             <tbody>
                             {% for item in movsImportadas %}
-                                <tr style="color: {{ item.categoria.codigo[0:1] == '1' ? 'blue' : 'red' }}">
+                                <tr style="color: {{ (item.categoria and item.categoria.codigo[0:1] == '1') ? 'blue' : 'red' }}">
                                     <th scope="row"><span data-toggle="tooltip" data-placement="top"
                                                           title="{{ item.UUID }}">{{ loop.index }}</span></th>
                                     <td>
