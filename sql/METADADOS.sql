@@ -1136,6 +1136,7 @@ CREATE TABLE `fin_movimentacao`
 
   `uuid`                 char(36),
   `fatura_id`            bigint(20),
+  `fatura_ordem`         int(11),
   `modo_id`              bigint(20)                   NOT NULL,
   `documento_banco_id`   bigint(20),
   `documento_num`        varchar(200),
@@ -1199,8 +1200,7 @@ CREATE TABLE `fin_movimentacao`
   `user_updated_id`      bigint(20)                   NOT NULL,
 
   PRIMARY KEY (`id`),
-
-
+  
   KEY `K_fin_movimentacao_fatura` (`fatura_id`),
   CONSTRAINT `FK_fin_movimentacao_fatura` FOREIGN KEY (`fatura_id`) REFERENCES `fin_fatura` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 
@@ -1665,30 +1665,30 @@ DROP TABLE IF EXISTS `fis_nf_historico`;
 
 CREATE TABLE `fis_nf_historico`
 (
-    `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
-    `fis_nf_id`          bigint(20)     NOT NULL,
-    `codigo_status`      int(11)        NOT NULL,
-    `descricao`          varchar(15000) NOT NULL,
-    `obs`                varchar(255),
-    `dt_historico`       datetime       NOT NULL,
-    `inserted`           datetime       NOT NULL,
-    `updated`            datetime       NOT NULL,
-    `version`            int(11),
-    `estabelecimento_id` bigint(20)     NOT NULL,
-    `user_inserted_id`   bigint(20)     NOT NULL,
-    `user_updated_id`    bigint(20)     NOT NULL,
+  `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
+  `fis_nf_id`          bigint(20)     NOT NULL,
+  `codigo_status`      int(11)        NOT NULL,
+  `descricao`          varchar(15000) NOT NULL,
+  `obs`                varchar(255),
+  `dt_historico`       datetime       NOT NULL,
+  `inserted`           datetime       NOT NULL,
+  `updated`            datetime       NOT NULL,
+  `version`            int(11),
+  `estabelecimento_id` bigint(20)     NOT NULL,
+  `user_inserted_id`   bigint(20)     NOT NULL,
+  `user_updated_id`    bigint(20)     NOT NULL,
 
-    KEY `fis_nf_id` (`fis_nf_id`),
-    CONSTRAINT `FK_fis_nf_historico_nota_fiscal` FOREIGN KEY (`fis_nf_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `fis_nf_id` (`fis_nf_id`),
+  CONSTRAINT `FK_fis_nf_historico_nota_fiscal` FOREIGN KEY (`fis_nf_id`) REFERENCES `fis_nf` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 
-    PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`),
 
-    KEY `K_fis_nf_historico_estabelecimento` (`estabelecimento_id`),
-    KEY `K_fis_nf_historico_user_inserted` (`user_inserted_id`),
-    KEY `K_fis_nf_historico_user_updated` (`user_updated_id`),
-    CONSTRAINT `FK_fis_nf_historico_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
-    CONSTRAINT `FK_fis_nf_historico_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-    CONSTRAINT `FK_fis_nf_historico_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+  KEY `K_fis_nf_historico_estabelecimento` (`estabelecimento_id`),
+  KEY `K_fis_nf_historico_user_inserted` (`user_inserted_id`),
+  KEY `K_fis_nf_historico_user_updated` (`user_updated_id`),
+  CONSTRAINT `FK_fis_nf_historico_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+  CONSTRAINT `FK_fis_nf_historico_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_fis_nf_historico_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 ) ENGINE = InnoDB
   PACK_KEYS = 0;
 

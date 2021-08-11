@@ -57,7 +57,7 @@ class FaturaController extends FormListController
 
         try {
             $conn = $this->getEntityHandler()->getDoctrine()->getConnection();
-            $rsMovsIds = $conn->fetchAllAssociative('SELECT mov.id FROM fin_movimentacao mov, fin_categoria cat, fin_carteira carteira WHERE mov.carteira_id = carteira.id AND mov.categoria_id = cat.id AND fatura_id = :faturaId ORDER BY id', ['faturaId' => $fatura->getId()]);
+            $rsMovsIds = $conn->fetchAllAssociative('SELECT mov.id FROM fin_movimentacao mov, fin_categoria cat, fin_carteira carteira WHERE mov.carteira_id = carteira.id AND mov.categoria_id = cat.id AND fatura_id = :faturaId ORDER BY mov.fatura_ordem', ['faturaId' => $fatura->getId()]);
             $movs = [];
             $repoMovimentacao = $this->getDoctrine()->getRepository(Movimentacao::class);
 
