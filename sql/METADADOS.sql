@@ -1152,7 +1152,7 @@ CREATE TABLE `fin_movimentacao`
   `categoria_id`         bigint(20)                   NOT NULL,
   `centrocusto_id`       bigint(20)                   NOT NULL,
   `grupo_item_id`        bigint(20),
-  `status`               ENUM ('ABERTA', 'REALIZADA') NOT NULL,
+  `status`               ENUM ('ABERTA','REALIZADA','ESTORNADA') NOT NULL,
 
   `descricao`            varchar(500)                 NOT NULL,
 
