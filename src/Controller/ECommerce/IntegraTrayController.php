@@ -31,7 +31,7 @@ class IntegraTrayController extends BaseController
      * @Route("/ecomm/tray/endpoint", name="ecomm_tray_endpoint")
      *
      */
-    public function authCallback(Request $request): Response
+    public function trayEndpoint(Request $request): Response
     {
         
         $r = [];
