@@ -96,11 +96,15 @@
 
                         {% endif %}
 
-                        <a role="button" value="Imprimir" class="btn btn-outline-primary ml-1"
-                           href="{{ url('fis_emissaonfe_imprimir', {notaFiscal: notaFiscal.id}) }}"
-                           target="_blank">
-                            <i class="fas fa-print" aria-hidden="true"></i> Imprimir {{ permiteReimpressao == false ? ' (prévia)' : '' }}
-                        </a>
+                        {% if notaFiscal.id %}
+                        
+                            <a role="button" value="Imprimir" class="btn btn-outline-primary ml-1"
+                               href="{{ url('fis_emissaonfe_imprimir', {notaFiscal: notaFiscal.id}) }}"
+                               target="_blank">
+                                <i class="fas fa-print" aria-hidden="true"></i> Imprimir {{ permiteReimpressao == false ? ' (prévia)' : '' }}
+                            </a>
+
+                        {% endif %}
                         
                         {% if permiteReimpressao %}
                             <a role="button" value="Download do XML" class="btn btn-outline-primary ml-1"
