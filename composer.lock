@@ -243,12 +243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "baa72bf7d0a09aefc69c6f80f5938b15faca02fe"
+                "reference": "8fa191e60519ecb89c74037a7e5c5ff478480d64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/baa72bf7d0a09aefc69c6f80f5938b15faca02fe",
-                "reference": "baa72bf7d0a09aefc69c6f80f5938b15faca02fe",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/8fa191e60519ecb89c74037a7e5c5ff478480d64",
+                "reference": "8fa191e60519ecb89c74037a7e5c5ff478480d64",
                 "shasum": ""
             },
             "require": {
@@ -268,8 +268,9 @@
                 "symfony/cache": "5.2.*",
                 "symfony/console": "5.2.*",
                 "symfony/debug-bundle": "5.2.*",
-                "symfony/dotenv": "^5.2",
+                "symfony/dotenv": "5.2.*",
                 "symfony/form": "5.2.*",
+                "symfony/messenger": "^5.2",
                 "symfony/monolog-bundle": "^3.0",
                 "symfony/orm-pack": "2.*",
                 "symfony/security-bundle": "5.2.*",
@@ -307,7 +308,7 @@
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
                 "source": "https://github.com/crosiersource/crosierlib-base/tree/master"
             },
-            "time": "2021-08-11T17:50:03+00:00"
+            "time": "2021-08-17T22:36:23+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
@@ -315,12 +316,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "cb239a0d2acfb88f0d6ab58e0c5369e96f87ee55"
+                "reference": "f2fa2a79724df97880dbc3b3e7be681db6ab688d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/cb239a0d2acfb88f0d6ab58e0c5369e96f87ee55",
-                "reference": "cb239a0d2acfb88f0d6ab58e0c5369e96f87ee55",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/f2fa2a79724df97880dbc3b3e7be681db6ab688d",
+                "reference": "f2fa2a79724df97880dbc3b3e7be681db6ab688d",
                 "shasum": ""
             },
             "require": {
@@ -343,27 +344,10 @@
                 "php": "7.4.*",
                 "php-http/guzzle6-adapter": "^1.1",
                 "scienta/doctrine-json-functions": "~4.1",
-                "symfony/cache": "5.2.*",
-                "symfony/console": "5.2.*",
-                "symfony/debug-bundle": "5.2.*",
-                "symfony/form": "5.2.*",
-                "symfony/messenger": "^5.2",
-                "symfony/monolog-bundle": "^3.0",
-                "symfony/orm-pack": "2.*",
-                "symfony/security-bundle": "5.2.*",
-                "symfony/serializer-pack": "1.*",
-                "symfony/validator": "5.2.*",
-                "symfony/webpack-encore-bundle": "^1.7",
                 "vich/uploader-bundle": "^1.13"
             },
             "default-branch": true,
             "type": "symfony-bundle",
-            "extra": {
-                "symfony": {
-                    "allow-contrib": false,
-                    "require": "5.2.*"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "CrosierSource\\CrosierLibRadxBundle\\": "src/"
@@ -384,7 +368,7 @@
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
                 "source": "https://github.com/crosiersource/crosierlib-radx/tree/master"
             },
-            "time": "2021-08-16T14:51:53+00:00"
+            "time": "2021-08-17T15:22:48+00:00"
         },
         {
             "name": "doctrine/annotations",
