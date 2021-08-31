@@ -43,7 +43,7 @@ class IntegraMercadoLivreController extends BaseController
     }
 
     /**
-     * @Route("/ecomm/mercadoLivre/endpoint", name="ecomm_mercadoLivre_endpoint")
+     * @Route("/ecomm/mercadolivre/endpoint", name="ecomm_mercadoLivre_endpoint")
      */
     public function mercadolivreEndpoint(Request $request): Response
     {
