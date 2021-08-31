@@ -57,6 +57,8 @@ class IntegraTrayController extends BaseController
 
         $r[] = '<hr />';
 
+        $this->syslog->info('ecomm_tray_endpoint', implode(PHP_EOL, $r));
+
         return new Response(implode('<br />', $r));
     }
 

@@ -73,6 +73,8 @@ class IntegraMercadoLivreController extends BaseController
         
         $r[] = '<hr />';
 
+        $this->syslog->info('ecomm_mercadoLivre_endpoint', implode(PHP_EOL, $r));
+        
         return new Response(implode('<br />', $r));
     }
 
