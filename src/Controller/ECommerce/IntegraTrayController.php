@@ -27,22 +27,31 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     *
      * @Route("/ecomm/tray/endpoint", name="ecomm_tray_endpoint")
-     *
      */
     public function trayEndpoint(Request $request): Response
     {
-        
         $r = [];
         $r[] = 'Cliente IP: ' . $request->getClientIp();
         $r[] = 'Host: ' . $request->getHost();
         $r[] = '<hr />';
         $r[] = 'Query';
-        $r[] = implode('<br />', $request->query->all());
+        foreach ($request->query->all() as $k => $v) {
+            $r[] = $k . ': ' . $v;
+        }
+
         $r[] = '<hr />';
         $r[] = 'Request';
-        $r[] = implode('<br />', $request->request->all());
+        foreach ($request->request->all() as $k => $v) {
+            $r[] = $k . ': ' . $v;
+        }
+
+        $r[] = '<hr />';
+        $r[] = 'Headers';
+        foreach ($request->headers->all() as $k => $v) {
+            $r[] = $k . ': ' . $v;
+        }
+
         $r[] = '<hr />';
 
         return new Response(implode('<br />', $r));
