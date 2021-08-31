@@ -45,27 +45,30 @@ class IntegraMercadoLivreController extends BaseController
     /**
      * @Route("/ecomm/mercadoLivre/endpoint", name="ecomm_mercadoLivre_endpoint")
      */
-    public function trayEndpoint(Request $request): Response
+    public function mercadolivreEndpoint(Request $request): Response
     {
         $r = [];
         $r[] = 'Cliente IP: ' . $request->getClientIp();
         $r[] = 'Host: ' . $request->getHost();
         $r[] = '<hr />';
+        $r[] = 'Content:';
+        $r[] = $request->getContent();
+        $r[] = '<hr />';
         $r[] = 'Query';
         foreach ($request->query->all() as $k => $v) {
-            $r[] = $k . ': ' . $v;
+            $r[] = $k . ': ' . print_r($v, true);
         }
         
         $r[] = '<hr />';
         $r[] = 'Request';
         foreach ($request->request->all() as $k => $v) {
-            $r[] = $k . ': ' . $v;
+            $r[] = $k . ': ' . print_r($v, true);
         }
 
         $r[] = '<hr />';
         $r[] = 'Headers';
         foreach ($request->headers->all() as $k => $v) {
-            $r[] = $k . ': ' . $v;
+            $r[] = $k . ': ' . print_r($v, true);
         }
         
         $r[] = '<hr />';
