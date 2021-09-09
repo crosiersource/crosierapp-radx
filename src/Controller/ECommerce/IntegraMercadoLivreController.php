@@ -27,9 +27,7 @@ class IntegraMercadoLivreController extends BaseController
 
 
     /**
-     *
      * @Route("/ecomm/mercadoLivre/authCallback", name="ecomm_mercadoLivre_authCallback")
-     *
      */
     public function authCallback(Request $request): Response
     {
@@ -42,6 +40,42 @@ class IntegraMercadoLivreController extends BaseController
         
         $this->syslog->info('ecomm_mercadoLivre_authCallback', implode(PHP_EOL, $r));   
         return new Response('OK <hr /><pre>' . implode('<br />', $r) . '</pre>');
+    }
+
+    /**
+     * @Route("/ecomm/mercadolivre/endpoint", name="ecomm_mercadoLivre_endpoint")
+     */
+    public function mercadolivreEndpoint(Request $request): Response
+    {
+        $r = [];
+        $r[] = 'Cliente IP: ' . $request->getClientIp();
+        $r[] = 'Host: ' . $request->getHost();
+        $r[] = '<hr />';
+        $r[] = 'Content:';
+        $r[] = $request->getContent();
+        $r[] = '<hr />';
+        $r[] = 'Query';
+        foreach ($request->query->all() as $k => $v) {
+            $r[] = $k . ': ' . print_r($v, true);
+        }
+        
+        $r[] = '<hr />';
+        $r[] = 'Request';
+        foreach ($request->request->all() as $k => $v) {
+            $r[] = $k . ': ' . print_r($v, true);
+        }
+
+        $r[] = '<hr />';
+        $r[] = 'Headers';
+        foreach ($request->headers->all() as $k => $v) {
+            $r[] = $k . ': ' . print_r($v, true);
+        }
+        
+        $r[] = '<hr />';
+
+        $this->syslog->info('ecomm_mercadoLivre_endpoint', implode(PHP_EOL, $r));
+        
+        return new Response(implode('<br />', $r));
     }
 
 }
