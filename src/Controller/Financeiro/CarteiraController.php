@@ -44,7 +44,7 @@ class CarteiraController extends FormListController
 
     /**
      *
-     * @Route("/fin/carteira/form/{id}", name="carteira_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/fin/carteira/form2/{id}", name="carteira_form2", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Carteira|null $carteira
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
@@ -52,7 +52,7 @@ class CarteiraController extends FormListController
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function form(Request $request, Carteira $carteira = null)
+    public function form2(Request $request, Carteira $carteira = null)
     {
         $params = [
             'typeClass' => CarteiraType::class,
@@ -65,14 +65,14 @@ class CarteiraController extends FormListController
 
     /**
      *
-     * @Route("/fin/carteira/list/", name="carteira_list")
+     * @Route("/fin/carteira/list2/", name="carteira_list2")
      * @param Request $request
      * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function list(Request $request): Response
+    public function list2(Request $request): Response
     {
         $params = [
             'formRoute' => 'carteira_form',
@@ -166,5 +166,29 @@ class CarteiraController extends FormListController
         return new Response($json);
     }
 
+
+    /**
+     * @Route("/fin/carteira/form", name="fin_carteira_form")
+     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
+     */
+    public function form(): Response
+    {
+        $params = [
+            'jsEntry' => 'Financeiro/Carteira/form'
+        ];
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
+    }
+
+    /**
+     * @Route("/fin/carteira/list", name="fin_carteira_list")
+     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
+     */
+    public function list(): Response
+    {
+        $params = [
+            'jsEntry' => 'Financeiro/Carteira/list'
+        ];
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
+    }
 
 }
