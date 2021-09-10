@@ -70,15 +70,14 @@ class FaturaController extends FormListController
                 $venda = $this->getDoctrine()->getRepository(Venda::class)->find($fatura->jsonData['venda_id']);
                 $params['venda'] = $venda;
                 return $this->doRender('Financeiro/fatura_venda.html.twig', $params);
-            } else {
-                return $this->doRender('Financeiro/fatura_movimentacoes.html.twig', $params);
             }
         } catch (\Throwable $e) {
             $this->addFlash('error', 'Erro ao pesquisar movimentações da fatura');
         }
+        return $this->doRender('Financeiro/fatura_movimentacoes.html.twig', $params);
     }
 
-    
+
     /**
      *
      * @Route("/fin/fatura/list/", name="fatura_list")
