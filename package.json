@@ -76,7 +76,6 @@
         "simple-line-icons": "^2.4.1",
         "sortablejs": "^1.8.1",
         "sprintf-js": "^1.1.2",
-        "stimulus": "^2.0.0",
         "summernote": "^0.8.11",
         "toastr": "^2.1.4",
         "ts-loader": "^8.0.1",
