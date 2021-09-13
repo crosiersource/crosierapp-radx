@@ -125,8 +125,6 @@ export default {
         $store: this.$store,
         formDataStateName: "fields",
         $toast: this.$toast,
-        fnBeforeSave: (formData) => {
-        },
       });
       this.setLoading(false);
     },
