@@ -27,6 +27,17 @@ VALUES (null, now(), now(), 1, 1, 1, '440e429c-b711-4411-87ed-d95f7281cd43', 'pr
 
 DELETE
 FROM cfg_app_config
+WHERE chave = 'fis_nf_json_metadata'
+  AND app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
+
+INSERT INTO cfg_app_config(id, chave, app_uuid, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, is_json, valor)
+VALUES (null, 'fis_nf_json_metadata', '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 1, 1, 1, 1,
+        '{"campos":{"idDest":{"label":"ID Dest","tipo":"select","sugestoes_com_keys":true,"sugestoes":{"1":"1=Operação interna","2":"2=Operação interestadual","3":"Operação com exterior"}}}}');
+
+
+
+DELETE
+FROM cfg_app_config
 WHERE chave = 'est_produto_json_metadata'
   AND app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
 
