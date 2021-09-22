@@ -154,7 +154,8 @@ class ClienteController extends FormListController
             'listRoute' => 'crm_cliente_list',
             'listRouteAjax' => 'crm_cliente_datatablesJsList',
             'listPageTitle' => 'Clientes',
-            'listId' => 'cliente_list'
+            'listId' => 'cliente_list',
+            'deleteRoute' => 'crm_cliente_delete',
         ];
         return $this->doList($request, $params);
     }
