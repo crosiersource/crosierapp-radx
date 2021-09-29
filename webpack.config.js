@@ -51,7 +51,7 @@ Encore
 
   .addEntry('Financeiro/Carteira/list', './assets/js/Financeiro/Carteira/list.js')
   .addEntry('Financeiro/Carteira/form', './assets/js/Financeiro/Carteira/form.js')
-  .addEntry('Financeiro/carteiraList', './assets/js/Financeiro/carteiraList.js')
+  .addEntry('Financeiro/Carteira/caixaOperacaoForm', './assets/js/Financeiro/Carteira/caixaOperacaoForm.js')
   .addEntry('Financeiro/bancoList', './assets/js/Financeiro/bancoList.js')
   .addEntry('Financeiro/grupoList', './assets/js/Financeiro/grupoList.js')
   .addEntry('Financeiro/grupoItemList', './assets/js/Financeiro/grupoItemList.js')

@@ -191,4 +191,17 @@ class CarteiraController extends FormListController
         return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
+    /**
+     * @Route("/fin/carteira/caixaOperacaoForm", name="fin_carteira_caixaOperacaoForm")
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function caixaOperacaoForm(): Response
+    {
+        $params = [
+            'jsEntry' => 'Financeiro/Carteira/caixaOperacaoForm'
+        ];
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
+    }
+
+
 }

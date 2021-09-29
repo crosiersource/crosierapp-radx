@@ -823,32 +823,36 @@ DROP TABLE IF EXISTS `fin_carteira`;
 
 CREATE TABLE `fin_carteira`
 (
-  `id`                  bigint(20)  NOT NULL AUTO_INCREMENT,
-  `codigo`              int(11)     NOT NULL,
-  `descricao`           varchar(40) NOT NULL,
+  `id`                   bigint(20)  NOT NULL AUTO_INCREMENT,
+  `codigo`               int(11)     NOT NULL,
+  `descricao`            varchar(40) NOT NULL,
 
-  `banco_id`            bigint(20),
-  `agencia`             varchar(30),
-  `conta`               varchar(30),
+  `banco_id`             bigint(20),
+  `agencia`              varchar(30),
+  `conta`                varchar(30),
 
-  `abertas`             tinyint(1)  NOT NULL,
-  `caixa`               tinyint(1)  NOT NULL,
-  `cheque`              tinyint(1)  NOT NULL,
-  `concreta`            tinyint(1)  NOT NULL,
-  `dt_consolidado`      date        NOT NULL,
-  `limite`              decimal(15, 2),
-  `operadora_cartao_id` bigint(20),
+  `abertas`              tinyint(1)  NOT NULL,
+  `caixa`                tinyint(1)  NOT NULL,
+  `cheque`               tinyint(1)  NOT NULL,
+  `concreta`             tinyint(1)  NOT NULL,
+  `dt_consolidado`       date        NOT NULL,
+  `limite`               decimal(15, 2),
+  `operadora_cartao_id`  bigint(20),
 
-  `atual`               tinyint(1)  NOT NULL,
-  `json_data`           json,
+  `atual`                tinyint(1)  NOT NULL,
+
+  `caixa_status`         enum ('ABERTO','FECHADO'),
+  `caixa_responsavel_id` bigint(20),
+
+  `json_data`            json,
 
 
-  `inserted`            datetime    NOT NULL,
-  `updated`             datetime    NOT NULL,
-  `version`             int(11),
-  `estabelecimento_id`  bigint(20)  NOT NULL,
-  `user_inserted_id`    bigint(20)  NOT NULL,
-  `user_updated_id`     bigint(20)  NOT NULL,
+  `inserted`             datetime    NOT NULL,
+  `updated`              datetime    NOT NULL,
+  `version`              int(11),
+  `estabelecimento_id`   bigint(20)  NOT NULL,
+  `user_inserted_id`     bigint(20)  NOT NULL,
+  `user_updated_id`      bigint(20)  NOT NULL,
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_fin_carteira_codigo` (`codigo`),
@@ -858,12 +862,60 @@ CREATE TABLE `fin_carteira`
   CONSTRAINT `FK_fin_carteira_banco` FOREIGN KEY (`banco_id`) REFERENCES `fin_banco` (`id`),
   CONSTRAINT `fk_fin_carteira_operadora_cartao` FOREIGN KEY (`operadora_cartao_id`) REFERENCES `fin_operadora_cartao` (`id`),
 
+  KEY `K_fin_carteira_caixa_responsavel` (`responsavel_id`),
+  CONSTRAINT `FK_fin_carteira_caixa_responsavel` FOREIGN KEY (`caixa_responsavel_id`) REFERENCES `sec_user` (`id`),
+
   KEY `K_fin_carteira_estabelecimento` (`estabelecimento_id`),
   KEY `K_fin_carteira_user_inserted` (`user_inserted_id`),
   KEY `K_fin_carteira_user_updated` (`user_updated_id`),
   CONSTRAINT `FK_fin_carteira_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
   CONSTRAINT `FK_fin_carteira_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
   CONSTRAINT `FK_fin_carteira_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
+) ENGINE = InnoDB;
+
+
+
+DROP TABLE IF EXISTS `fin_caixa_operacao`;
+CREATE TABLE `fin_caixa_operacao`
+(
+  `id`                  bigint(20)                                  NOT NULL AUTO_INCREMENT,
+  `uuid`                char(36)                                    NOT NULL,
+  `carteira_id`         bigint(20)                                  NOT NULL,
+  `operacao`            enum ('ABERTURA','FECHAMETO','CONFERÊNCIA') NOT NULL,
+  `obs`                 varchar(255),
+  `dt_operacao`         datetime                                    NOT NULL,
+  `responsavel_id`      bigint(20)                                  NOT NULL,
+  `responsavel_dest_id` bigint(20),
+  `valor`               decimal(15, 2)                              NOT NULL,
+
+  `json_data`           json,
+
+
+  `inserted`            datetime                                    NOT NULL,
+  `updated`             datetime                                    NOT NULL,
+  `version`             int(11),
+  `estabelecimento_id`  bigint(20)                                  NOT NULL,
+  `user_inserted_id`    bigint(20)                                  NOT NULL,
+  `user_updated_id`     bigint(20)                                  NOT NULL,
+
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_fin_caixa_operacao_uuid` (`uuid`),
+  KEY `K_fin_caixa_operacao_carteira` (`carteira_id`),
+  CONSTRAINT `FK_fin_caixa_operacao_carteira` FOREIGN KEY (`carteira_id`) REFERENCES `fin_carteira` (`id`),
+
+  KEY `K_fin_caixa_operacao_responsavel` (`responsavel_id`),
+  CONSTRAINT `FK_fin_caixa_operacao_responsavel` FOREIGN KEY (`responsavel_id`) REFERENCES `sec_user` (`id`),
+
+  KEY `K_fin_caixa_operacao_responsavel_dest` (`responsavel_dest_id`),
+  CONSTRAINT `FK_fin_caixa_operacao_responsavel_dest` FOREIGN KEY (`responsavel_dest_id`) REFERENCES `sec_user` (`id`),
+
+  KEY `K_fin_caixa_operacao_estabelecimento` (`estabelecimento_id`),
+  KEY `K_fin_caixa_operacao_user_inserted` (`user_inserted_id`),
+  KEY `K_fin_caixa_operacao_user_updated` (`user_updated_id`),
+  CONSTRAINT `FK_fin_caixa_operacao_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+  CONSTRAINT `FK_fin_caixa_operacao_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_fin_caixa_operacao_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 
 ) ENGINE = InnoDB;
 
@@ -1132,35 +1184,35 @@ DROP TABLE IF EXISTS `fin_movimentacao`;
 
 CREATE TABLE `fin_movimentacao`
 (
-  `id`                   bigint(20)                   NOT NULL AUTO_INCREMENT,
+  `id`                   bigint(20)                              NOT NULL AUTO_INCREMENT,
 
   `uuid`                 char(36),
   `fatura_id`            bigint(20),
   `fatura_ordem`         int(11),
-  `modo_id`              bigint(20)                   NOT NULL,
+  `modo_id`              bigint(20)                              NOT NULL,
   `documento_banco_id`   bigint(20),
   `documento_num`        varchar(200),
 
   `sacado`               varchar(500),
   `cedente`              varchar(500),
 
-  `quitado`              tinyint(1)                   NOT NULL,
+  `quitado`              tinyint(1)                              NOT NULL,
 
-  `tipo_lancto_id`       bigint(20)                   NOT NULL,
-  `carteira_id`          bigint(20)                   NOT NULL,
+  `tipo_lancto_id`       bigint(20)                              NOT NULL,
+  `carteira_id`          bigint(20)                              NOT NULL,
   `carteira_destino_id`  bigint(20),
-  `categoria_id`         bigint(20)                   NOT NULL,
-  `centrocusto_id`       bigint(20)                   NOT NULL,
+  `categoria_id`         bigint(20)                              NOT NULL,
+  `centrocusto_id`       bigint(20)                              NOT NULL,
   `grupo_item_id`        bigint(20),
   `status`               ENUM ('ABERTA','REALIZADA','ESTORNADA') NOT NULL,
 
-  `descricao`            varchar(500)                 NOT NULL,
+  `descricao`            varchar(500)                            NOT NULL,
 
-  `dt_moviment`          date                         NOT NULL,
-  `dt_vencto`            date                         NOT NULL,
-  `dt_vencto_efetiva`    date                         NOT NULL,
+  `dt_moviment`          date                                    NOT NULL,
+  `dt_vencto`            date                                    NOT NULL,
+  `dt_vencto_efetiva`    date                                    NOT NULL,
   `dt_pagto`             date,
-  `dt_util`              date                         NOT NULL,
+  `dt_util`              date                                    NOT NULL,
 
   `cheque_banco_id`      bigint(20),
   `cheque_agencia`       varchar(30),
@@ -1173,34 +1225,34 @@ CREATE TABLE `fin_movimentacao`
   `id_transacao_cartao`  varchar(255),
   `num_cartao`           varchar(50),
 
-  `recorrente`           tinyint(1)                   NOT NULL,
+  `recorrente`           tinyint(1)                              NOT NULL,
   `recorr_dia`           int(11),
   `recorr_frequencia`    varchar(50),
   `recorr_tipo_repet`    varchar(50),
   `recorr_variacao`      int(11),
 
-  `valor`                decimal(15, 2)               NOT NULL,
+  `valor`                decimal(15, 2)                          NOT NULL,
   `descontos`            decimal(15, 2),
   `acrescimos`           decimal(15, 2),
-  `valor_total`          decimal(15, 2)               NOT NULL,
+  `valor_total`          decimal(15, 2)                          NOT NULL,
 
   `cadeia_id`            bigint(20),
-  `parcelamento`         tinyint(1)                   NOT NULL DEFAULT FALSE,
+  `parcelamento`         tinyint(1)                              NOT NULL DEFAULT FALSE,
   `cadeia_ordem`         int(11),
   `cadeia_qtde`          int(11),
 
   `obs`                  varchar(5000),
   `json_data`            json,
 
-  `inserted`             datetime                     NOT NULL,
-  `updated`              datetime                     NOT NULL,
+  `inserted`             datetime                                NOT NULL,
+  `updated`              datetime                                NOT NULL,
   `version`              int(11),
-  `estabelecimento_id`   bigint(20)                   NOT NULL,
-  `user_inserted_id`     bigint(20)                   NOT NULL,
-  `user_updated_id`      bigint(20)                   NOT NULL,
+  `estabelecimento_id`   bigint(20)                              NOT NULL,
+  `user_inserted_id`     bigint(20)                              NOT NULL,
+  `user_updated_id`      bigint(20)                              NOT NULL,
 
   PRIMARY KEY (`id`),
-  
+
   KEY `K_fin_movimentacao_fatura` (`fatura_id`),
   CONSTRAINT `FK_fin_movimentacao_fatura` FOREIGN KEY (`fatura_id`) REFERENCES `fin_fatura` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 
