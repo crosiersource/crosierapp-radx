@@ -24,8 +24,12 @@ const store = createStore({
   state() {
     return {
       loading: 0,
-      fields: {},
-      fieldsErrors: {},
+      fields: {
+        caixaResponsavel: {},
+      },
+      fieldsErrors: {
+        caixaResponsavel: {},
+      },
     };
   },
   getters: {

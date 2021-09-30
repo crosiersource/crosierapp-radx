@@ -91,6 +91,24 @@
         id="operadoraCartao"
       />
     </div>
+
+    <div class="form-row" v-show="this.fields.caixa">
+      <CrosierInputText
+        id="caixaStatus"
+        label="Status"
+        col="5"
+        v-model="this.fields.caixaStatus"
+        :disabled="true"
+      />
+
+      <CrosierInputText
+        id="caixaResponsavel"
+        label="Responsável Atual"
+        col="7"
+        v-model="this.fields.caixaResponsavel.nome"
+        :disabled="true"
+      />
+    </div>
   </CrosierFormS>
 </template>
 
@@ -154,6 +172,9 @@ export default {
         $store: this.$store,
         formDataStateName: "fields",
         $toast: this.$toast,
+        fnBeforeSave: (formData) => {
+          formData.caixaResponsavel = formData.caixaResponsavel["@id"] ?? null;
+        },
       });
       this.setLoading(false);
     },
