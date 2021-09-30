@@ -879,25 +879,25 @@ CREATE TABLE `fin_carteira`
 DROP TABLE IF EXISTS `fin_caixa_operacao`;
 CREATE TABLE `fin_caixa_operacao`
 (
-  `id`                  bigint(20)                                  NOT NULL AUTO_INCREMENT,
-  `uuid`                char(36)                                    NOT NULL,
-  `carteira_id`         bigint(20)                                  NOT NULL,
-  `operacao`            enum ('ABERTURA','FECHAMETO','CONFERÊNCIA') NOT NULL,
+  `id`                  bigint(20)                     NOT NULL AUTO_INCREMENT,
+  `uuid`                char(36)                       NOT NULL,
+  `carteira_id`         bigint(20)                     NOT NULL,
+  `operacao`            enum ('ABERTURA','FECHAMENTO') NOT NULL,
   `obs`                 varchar(255),
-  `dt_operacao`         datetime                                    NOT NULL,
-  `responsavel_id`      bigint(20)                                  NOT NULL,
+  `dt_operacao`         datetime                       NOT NULL,
+  `responsavel_id`      bigint(20)                     NOT NULL,
   `responsavel_dest_id` bigint(20),
-  `valor`               decimal(15, 2)                              NOT NULL,
+  `valor`               decimal(15, 2)                 NOT NULL,
 
   `json_data`           json,
 
 
-  `inserted`            datetime                                    NOT NULL,
-  `updated`             datetime                                    NOT NULL,
+  `inserted`            datetime                       NOT NULL,
+  `updated`             datetime                       NOT NULL,
   `version`             int(11),
-  `estabelecimento_id`  bigint(20)                                  NOT NULL,
-  `user_inserted_id`    bigint(20)                                  NOT NULL,
-  `user_updated_id`     bigint(20)                                  NOT NULL,
+  `estabelecimento_id`  bigint(20)                     NOT NULL,
+  `user_inserted_id`    bigint(20)                     NOT NULL,
+  `user_updated_id`     bigint(20)                     NOT NULL,
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_fin_caixa_operacao_uuid` (`uuid`),

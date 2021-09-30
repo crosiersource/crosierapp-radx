@@ -8,7 +8,7 @@
       <CrosierInputInt
         id="id"
         label="Id"
-        col="3"
+        col="2"
         v-model="this.fields.carteira.id"
         :disabled="true"
       />
@@ -16,8 +16,24 @@
       <CrosierInputText
         id="descricao"
         label="Descrição"
-        col="9"
+        col="4"
         v-model="this.fields.carteira.descricaoMontada"
+        :disabled="true"
+      />
+
+      <CrosierInputText
+        id="caixaStatus"
+        label="Status"
+        col="3"
+        v-model="this.fields.carteira.caixaStatus"
+        :disabled="true"
+      />
+
+      <CrosierInputText
+        id="caixaResponsavel"
+        label="Responsável Atual"
+        col="3"
+        v-model="this.fields.carteira.caixaResponsavel.nome"
         :disabled="true"
       />
     </div>
@@ -67,12 +83,12 @@ import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import * as yup from "yup";
 import {
-  submitForm,
-  CrosierFormS,
   CrosierCalendar,
-  CrosierInputText,
-  CrosierInputInt,
   CrosierCurrency,
+  CrosierFormS,
+  CrosierInputInt,
+  CrosierInputText,
+  submitForm,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 import { nextTick } from "vue";
@@ -118,28 +134,32 @@ export default {
     ...mapMutations(["setLoading", "setFields", "setFieldsErrors"]),
 
     async submitForm() {
-      this.setLoading(true);
-
       this.$confirm.require({
         header: "Confirmação",
         message: "Confirmar a operação?",
         icon: "pi pi-exclamation-triangle",
         accept: async () => {
-          await submitForm({
-            apiResource: "/api/fin/caixaOperacao",
-            schemaValidator: this.schemaValidator,
-            $store: this.$store,
-            formDataStateName: "fields",
-            $toast: this.$toast,
-            fnBeforeSave: (formData) => {
-              formData.carteira = formData.carteira["@id"];
-              formData.responsavel = `/api/core/security/user/${formData.responsavel.id}`;
-            },
-          });
+          this.setLoading(true);
+          if (
+            await submitForm({
+              apiResource: "/api/fin/caixaOperacao",
+              schemaValidator: this.schemaValidator,
+              $store: this.$store,
+              formDataStateName: "fields",
+              $toast: this.$toast,
+              setUrlId: false,
+              fnBeforeSave: (formData) => {
+                formData.carteira = formData.carteira["@id"];
+                formData.responsavel = `/api/core/security/user/${formData.responsavel.id}`;
+              },
+            })
+          ) {
+            // eslint-disable-next-line no-restricted-globals
+            history.go(0);
+          }
+          this.setLoading(false);
         },
       });
-
-      this.setLoading(false);
     },
   },
 

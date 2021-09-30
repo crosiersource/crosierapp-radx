@@ -25,11 +25,19 @@ const store = createStore({
     return {
       loading: 0,
       fields: {
-        carteira: {},
+        carteira: {
+          caixaResponsavel: {
+            nome: null,
+          },
+        },
         responsavel: {},
       },
       fieldsErrors: {
-        carteira: {},
+        carteira: {
+          caixaResponsavel: {
+            nome: null,
+          },
+        },
         responsavel: {},
       },
     };
@@ -59,6 +67,14 @@ const store = createStore({
     setFields(state, fields) {
       fields.dtConsolidado = fields.dtConsolidado ? new Date(fields.dtConsolidado) : null;
       fields.operadoraCartao = fields.operadoraCartao ? fields.operadoraCartao["@id"] : null;
+      if (!fields?.carteira?.caixaResponsavel) {
+        fields.carteira = {
+          ...fields.carteira,
+          ...{
+            caixaResponsavel: {},
+          },
+        };
+      }
       state.fields = fields;
     },
 
