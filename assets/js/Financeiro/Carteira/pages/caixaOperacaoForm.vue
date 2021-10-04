@@ -3,77 +3,78 @@
 
   <ConfirmDialog></ConfirmDialog>
 
-  <CrosierFormS listUrl="/fin/carteira/list" @submitForm="this.submitForm" :titulo="this.titulo">
+  <CrosierFormS @submitForm="this.submitForm" :titulo="this.titulo">
     <div class="form-row">
-      <CrosierInputInt
-        id="id"
-        label="Id"
-        col="2"
-        v-model="this.fields.carteira.id"
-        :disabled="true"
-      />
-
-      <CrosierInputText
-        id="descricao"
-        label="Descrição"
-        col="4"
-        v-model="this.fields.carteira.descricaoMontada"
-        :disabled="true"
-      />
-
-      <CrosierInputText
-        id="caixaStatus"
-        label="Status"
-        col="3"
-        v-model="this.fields.carteira.caixaStatus"
-        :disabled="true"
-      />
-
-      <CrosierInputText
-        id="caixaResponsavel"
-        label="Responsável Atual"
-        col="3"
-        v-model="this.fields.carteira.caixaResponsavel.nome"
-        :disabled="true"
-      />
-    </div>
-    <div class="form-row">
-      <CrosierInputText
-        id="operacao"
-        label="Operação"
-        col="3"
-        v-model="this.fields.operacao"
-        :disabled="true"
-      />
-
-      <CrosierCalendar
-        id="operacao"
-        label="Operação"
-        inputClass="crsr-datetime"
-        col="3"
-        v-model="this.fields.dtOperacao"
-        :disabled="true"
-      />
-
-      <CrosierInputText
-        id="responsavel_nome"
-        label="Responsável"
-        col="3"
-        v-model="this.fields.responsavel.nome"
-        :disabled="true"
-      />
-
-      <CrosierCurrency
-        id="valor"
-        label="Valor"
-        col="3"
-        v-model="this.fields.valor"
-        :error="this.formErrors.valor"
+      <CrosierDropdownEntity
+        v-model="this.fields.carteira"
+        entity-uri="/api/fin/carteira"
+        optionLabel="descricao"
+        :optionValue="null"
+        :orderBy="{ descricao: 'ASC' }"
+        :filters="{ caixa: true }"
+        label="Caixa"
+        id="caixa"
+        @change="this.onChangeCaixa"
       />
     </div>
 
-    <div class="form-row">
-      <CrosierInputText id="obs" label="Obs" col="12" v-model="this.fields.obs" />
+    <div v-if="this.fields.carteira.id">
+      <div class="form-row">
+        <CrosierInputText
+          id="caixaStatus"
+          label="Status"
+          col="6"
+          v-model="this.fields.carteira.caixaStatus"
+          :disabled="true"
+        />
+
+        <CrosierInputText
+          v-if="this.fields.carteira.caixaResponsavel"
+          id="caixaResponsavel"
+          label="Responsável Atual"
+          col="6"
+          v-model="this.fields.carteira.caixaResponsavel.nome"
+          :disabled="true"
+        />
+      </div>
+      <div class="form-row">
+        <CrosierInputText
+          id="operacao"
+          label="Operação"
+          col="3"
+          v-model="this.fields.operacao"
+          :disabled="true"
+        />
+
+        <CrosierCalendar
+          id="operacao"
+          label="Operação"
+          inputClass="crsr-datetime"
+          col="3"
+          v-model="this.fields.dtOperacao"
+          :disabled="true"
+        />
+
+        <CrosierInputText
+          id="responsavel_nome"
+          label="Responsável"
+          col="3"
+          v-model="this.fields.responsavel.nome"
+          :disabled="true"
+        />
+
+        <CrosierCurrency
+          id="valor"
+          label="Valor"
+          col="3"
+          v-model="this.fields.valor"
+          :error="this.formErrors.valor"
+        />
+      </div>
+
+      <div class="form-row">
+        <CrosierInputText id="obs" label="Obs" col="12" v-model="this.fields.obs" />
+      </div>
     </div>
   </CrosierFormS>
 </template>
@@ -83,11 +84,12 @@ import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import * as yup from "yup";
 import {
+  api,
   CrosierCalendar,
   CrosierCurrency,
   CrosierFormS,
-  CrosierInputInt,
   CrosierInputText,
+  CrosierDropdownEntity,
   submitForm,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
@@ -101,7 +103,7 @@ export default {
     CrosierCalendar,
     CrosierInputText,
     CrosierCurrency,
-    CrosierInputInt,
+    CrosierDropdownEntity,
   },
 
   data() {
@@ -116,12 +118,15 @@ export default {
   async mounted() {
     this.setLoading(true);
 
-    this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
       valor: yup.string().required().typeError(),
     });
 
-    nextTick(() => document.getElementById("valor").focus());
+    const me = await api.get({
+      apiResource: "/api/whoami",
+    });
+
+    this.fields.responsavel = me.data;
 
     window.setInterval(() => {
       this.fields.dtOperacao = new Date();
@@ -132,6 +137,14 @@ export default {
 
   methods: {
     ...mapMutations(["setLoading", "setFields", "setFieldsErrors"]),
+
+    onChangeCaixa() {
+      nextTick(() => {
+        console.log(this.fields.carteira?.caixaStatus);
+        this.fields.operacao =
+          this.fields.carteira?.caixaStatus === "ABERTO" ? "FECHAMENTO" : "ABERTURA";
+      });
+    },
 
     async submitForm() {
       this.$confirm.require({
@@ -167,7 +180,9 @@ export default {
     ...mapGetters({ fields: "getFields", formErrors: "getFieldsErrors" }),
 
     titulo() {
-      return this.fields.operacao === "ABERTURA" ? "Abertura de Caixa" : "Fechamento de Caixa";
+      return this.fields.carteira?.caixaStatus === "ABERTO"
+        ? "Fechamento de Caixa"
+        : "Abertura de Caixa";
     },
   },
 };

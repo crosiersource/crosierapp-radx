@@ -841,7 +841,7 @@ CREATE TABLE `fin_carteira`
 
   `atual`                tinyint(1)  NOT NULL,
 
-  `caixa_status`         enum ('ABERTO','FECHADO'),
+  `caixa_status`         enum ('','ABERTO','FECHADO'),
   `caixa_responsavel_id` bigint(20),
 
   `json_data`            json,
@@ -862,7 +862,7 @@ CREATE TABLE `fin_carteira`
   CONSTRAINT `FK_fin_carteira_banco` FOREIGN KEY (`banco_id`) REFERENCES `fin_banco` (`id`),
   CONSTRAINT `fk_fin_carteira_operadora_cartao` FOREIGN KEY (`operadora_cartao_id`) REFERENCES `fin_operadora_cartao` (`id`),
 
-  KEY `K_fin_carteira_caixa_responsavel` (`responsavel_id`),
+  KEY `K_fin_carteira_caixa_responsavel` (`caixa_responsavel_id`),
   CONSTRAINT `FK_fin_carteira_caixa_responsavel` FOREIGN KEY (`caixa_responsavel_id`) REFERENCES `sec_user` (`id`),
 
   KEY `K_fin_carteira_estabelecimento` (`estabelecimento_id`),

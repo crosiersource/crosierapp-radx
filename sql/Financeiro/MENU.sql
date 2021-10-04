@@ -129,6 +129,18 @@ VALUES ('79c10300-39f8-4192-ac45-af4113d97ea7', 'Caixas', 'fas fa-hand-holding-u
         '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/movimentacao/caixa', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', 6,
         null, now(), now(), 1, 1, 1);
 
+
+-- Abertura e Fechamento de Caixa
+DELETE
+FROM cfg_entmenu
+WHERE uuid = 'e31a61ee-22f6-11ec-b802-2f8810a1181b';
+
+INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated,
+                        estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES ('e31a61ee-22f6-11ec-b802-2f8810a1181b', 'Abertura e Fechamento de Caixa', 'fas fa-book-open', 'ENT',
+        '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/carteira/caixaOperacaoForm', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', 6,
+        null, now(), now(), 1, 1, 1);
+
 -- Recorrentes
 DELETE
 FROM cfg_entmenu

@@ -600,7 +600,8 @@ VALUES (20, 20, 'MOVIMENTAÇÃO NORMAL', now(), now(), 0, 1, 1, 1),
  (60, 60, 'TRANSFERÊNCIA ENTRE CARTEIRAS', now(), now(), 0, 1, 1, 1),
  (61, 61, 'TRANSFERÊNCIA DE ENTRADA DE CAIXA', now(), now(), 0, 1, 1, 1),
  (62, 62, 'FATURA TRANSACIONAL', now(), now(), 0, 1, 1, 1),
- (63, 63, 'MOVIMENTAÇÃO CARTÃO CRÉDITO/DÉBITO', now(), now(), 0, 1, 1, 1);
+ (63, 63, 'MOVIMENTAÇÃO CARTÃO CRÉDITO/DÉBITO', now(), now(), 0, 1, 1, 1),
+ (64, 64, 'ENTRADA DE CAIXA POR TRANSF. BANCÁRIA', now(), now(), 0, 1, 1, 1);
 
 TRUNCATE TABLE fin_categoria;
 

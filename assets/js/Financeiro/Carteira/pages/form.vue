@@ -92,7 +92,7 @@
       />
     </div>
 
-    <div class="form-row" v-show="this.fields.caixa">
+    <div class="form-row" v-if="this.fields.caixa">
       <CrosierInputText
         id="caixaStatus"
         label="Status"
@@ -173,7 +173,9 @@ export default {
         formDataStateName: "fields",
         $toast: this.$toast,
         fnBeforeSave: (formData) => {
-          formData.caixaResponsavel = formData.caixaResponsavel["@id"] ?? null;
+          formData.caixaResponsavel = formData?.caixaResponsavel
+            ? formData.caixaResponsavel["@id"]
+            : null;
         },
       });
       this.setLoading(false);

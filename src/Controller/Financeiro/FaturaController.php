@@ -47,7 +47,7 @@ class FaturaController extends FormListController
      * @param Fatura $fatura
      * @return Response
      *
-     * @IsGranted("ROLE_VENDAS", statusCode=403)
+     * @IsGranted("ROLE_FINAN", statusCode=403)
      */
     public function visualizarFatura(Fatura $fatura): Response
     {
@@ -85,7 +85,7 @@ class FaturaController extends FormListController
      * @return Response
      * @throws \Exception
      *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_FINAN", statusCode=403)
      */
     public function list(Request $request): Response
     {
@@ -107,7 +107,7 @@ class FaturaController extends FormListController
      * @return Response
      * @throws ViewException
      *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_FINAN", statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
