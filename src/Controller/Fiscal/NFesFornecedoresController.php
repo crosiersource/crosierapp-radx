@@ -5,6 +5,7 @@ namespace App\Controller\Fiscal;
 use App\Form\Fiscal\NotaFiscalType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
@@ -13,6 +14,7 @@ use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -234,9 +236,12 @@ class NFesFornecedoresController extends FormListController
     }
 
 
+    
+
+
     /**
-     *
      * @Route("/fis/nfesFornecedores/gerarFatura/{notaFiscal}", name="fis_nfesFornecedores_gerarFatura", requirements={"notaFiscal"="\d+"})
+     * 
      * @param Request $request
      * @param NotaFiscal|null $notaFiscal
      * @return RedirectResponse|Response

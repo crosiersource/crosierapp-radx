@@ -45,6 +45,7 @@ Encore
   .addEntry('Fiscal/emissaoNFe/formItem', './assets/js/Fiscal/emissaoNFe/formItem.js')
   .addEntry('Fiscal/emissaoNFe/list', './assets/js/Fiscal/emissaoNFe/list.js')
   .addEntry('Fiscal/nfesFornecedoresList', './assets/js/Fiscal/nfesFornecedoresList.js')
+  .addEntry('Fiscal/NotaFiscal/nfEntradaList', './assets/js/Fiscal/NotaFiscal/nfEntradaList.js')
   .addEntry('Fiscal/distDFeList', './assets/js/Fiscal/distDFeList.js')
 
   .addEntry('Vendas/vendasPorPeriodo', './assets/js/Vendas/vendasPorPeriodo.js')
