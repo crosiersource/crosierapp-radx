@@ -225,12 +225,12 @@ export default {
     },
 
     beforeFilter() {
-      this.filters["dtEmissao[after]"] = this.filters["dtEmissao[after]"]
-        ? `${moment(this.filters["dtEmissao[after]"]).format("YYYY-MM-DD")}T00:00:00-03:00`
-        : null;
-      this.filters["dtEmissao[before]"] = this.filters["dtEmissao[before]"]
-        ? `${moment(this.filters["dtEmissao[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
-        : null;
+      // this.filters["dtEmissao[after]"] = this.filters["dtEmissao[after]"]
+      //   ? `${moment(this.filters["dtEmissao[after]"]).format("YYYY-MM-DD")}T00:00:00-03:00`
+      //   : null;
+      // this.filters["dtEmissao[before]"] = this.filters["dtEmissao[before]"]
+      //   ? `${moment(this.filters["dtEmissao[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
+      //   : null;
     },
 
     edit(data) {

@@ -21,7 +21,9 @@ const store = createStore({
   state() {
     return {
       loading: 0,
-      filters: {},
+      filters: {
+        xNomeEmitente: null,
+      },
     };
   },
 
@@ -35,12 +37,12 @@ const store = createStore({
     },
 
     setFilters(state, filters) {
-      state.filters["dtEmissao[after]"] = state.filters["dtEmissao[after]"]
-        ? new Date(state.filters["dtEmissao[after]"])
-        : null;
-      state.filters["dtEmissao[before]"] = state.filters["dtEmissao[before]"]
-        ? new Date(state.filters["dtEmissao[before]"])
-        : null;
+      // filters["dtEmissao[after]"] = filters["dtEmissao[after]"]
+      //   ? new Date(filters["dtEmissao[after]"])
+      //   : null;
+      // filters["dtEmissao[before]"] = filters["dtEmissao[before]"]
+      //   ? new Date(filters["dtEmissao[before]"])
+      //   : null;
       state.filters = filters;
     },
   },
