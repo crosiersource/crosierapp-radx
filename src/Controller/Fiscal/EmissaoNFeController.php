@@ -946,7 +946,6 @@ class EmissaoNFeController extends FormListController
 
         $zip->addFromString('avisos.txt', implode(PHP_EOL, $problemas));
 
-        $zip->status;
         $zip->close();
 
         // Return a response with a specific content
