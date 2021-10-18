@@ -4,12 +4,14 @@ namespace App\Controller\Fiscal;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\DistDFe;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\DistDFeEntityHandler;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -114,9 +116,9 @@ class DistDFeController extends FormListController
      *
      * @param Request $request
      * @param int|null $primeiroNSU
-     * @return Response
+     * @return JsonResponse
      */
-    public function obterDistDFes(Request $request, int $primeiroNSU = null): Response
+    public function obterDistDFes(Request $request, int $primeiroNSU = null): JsonResponse
     {
         try {
             $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
@@ -125,13 +127,19 @@ class DistDFeController extends FormListController
             } else {
                 $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso);
             }
-            $this->addFlash('info', $q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
+            
             $this->distDFeBusiness->processarDistDFesObtidos();
-        } catch (ViewException $e) {
-            $this->addFlash('error', $e->getMessage());
+            return new JsonResponse([
+                'RESULT' => 'OK', 
+                'MSG' => $q . ' registro(s) obtido(s)', 
+            ]);
+        } catch (\Exception $e) {
+            $msg = ExceptionUtils::treatException($e);
+            return new JsonResponse([
+                'RESULT' => 'ERR', 
+                'MSG' => $msg
+            ]);
         }
-        $route = $request->get('redirectToRoute') ?? 'distDFe_list';
-        return $this->redirectToRoute($route);
     }
 
     /**
