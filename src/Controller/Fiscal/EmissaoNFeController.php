@@ -742,7 +742,7 @@ class EmissaoNFeController extends FormListController
      */
     public function downloadXML(NotaFiscal $nf): Response
     {
-        $filename = $nf->getChaveAcesso() . '.xml';
+        $filename = $nf->chaveAcesso . '-' . strtolower($nf->tipoNotaFiscal) . '.xml';
 
         if (!$nf->getXMLDecoded() || $nf->getXMLDecoded()->getName() !== 'nfeProc') {
             $nf = $this->spedNFeBusiness->gerarXML($nf);

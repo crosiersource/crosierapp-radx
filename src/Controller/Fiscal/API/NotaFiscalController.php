@@ -110,7 +110,7 @@ class NotaFiscalController extends BaseController
 
         /** @var NotaFiscal $nf */
         foreach ($nfs as $nf) {
-            $nomeArquivo = $nf->getChaveAcesso() . '.xml';
+            $nomeArquivo = $nf->chaveAcesso . '-' . strtolower($nf->tipoNotaFiscal) . '.xml';
             $zip->addFromString($nomeArquivo, $nf->getXMLDecodedAsString());
         }
 

@@ -187,7 +187,7 @@ class NFesFornecedoresController extends FormListController
      */
     public function downloadXML(NotaFiscal $nf): Response
     {
-        $filename = $nf->getChaveAcesso() . '.xml';
+        $filename = $nf->chaveAcesso . '-' . strtolower($nf->tipoNotaFiscal) . '.xml';
 
 
         try {
