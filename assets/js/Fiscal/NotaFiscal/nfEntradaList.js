@@ -24,6 +24,9 @@ const store = createStore({
       filters: {
         xNomeEmitente: null,
       },
+      defaultFilters: {
+        entradaSaida: "E",
+      },
     };
   },
 
@@ -37,12 +40,12 @@ const store = createStore({
     },
 
     setFilters(state, filters) {
-      // filters["dtEmissao[after]"] = filters["dtEmissao[after]"]
-      //   ? new Date(filters["dtEmissao[after]"])
-      //   : null;
-      // filters["dtEmissao[before]"] = filters["dtEmissao[before]"]
-      //   ? new Date(filters["dtEmissao[before]"])
-      //   : null;
+      filters["dtEmissao[after]"] = filters["dtEmissao[after]"]
+        ? new Date(filters["dtEmissao[after]"])
+        : null;
+      filters["dtEmissao[before]"] = filters["dtEmissao[before]"]
+        ? new Date(filters["dtEmissao[before]"])
+        : null;
       state.filters = filters;
     },
   },
@@ -53,9 +56,10 @@ const store = createStore({
     },
 
     getFilters(state) {
-      state.filters.entradaSaida = "E";
       return state.filters;
     },
+
+    getDefaultFilters: (state) => state.defaultFilters,
   },
 });
 

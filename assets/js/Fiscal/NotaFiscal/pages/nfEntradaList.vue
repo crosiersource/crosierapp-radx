@@ -6,6 +6,7 @@
     apiResource="/api/fis/notaFiscal/"
     :formUrl="this.formUrl"
     @beforeFilter="this.beforeFilter"
+    v-model:selection="this.selection"
     ref="dt"
   >
     <template v-slot:headerButtons>
@@ -23,30 +24,18 @@
     </template>
     <template v-slot:filter-fields>
       <div class="form-row">
-        <CrosierDropdown
-          label="Tipo"
-          col="2"
-          id="nfEntrada"
-          v-model="this.filters.entradaSaida"
-          :disabled="true"
-          :options="[
-            { name: 'Entrada', value: 'E' },
-            { name: 'Saída', value: 'S' },
-          ]"
-        />
-
         <CrosierInputInt label="Número" col="3" id="codigo" v-model="this.filters.numero" />
 
         <CrosierInputText
           label="CPF/CNPJ Emitente"
-          col="3"
+          col="4"
           id="documentoEmitente"
           v-model="this.filters.documentoEmitente"
         />
 
         <CrosierInputText
           label="Nome Emitente"
-          col="4"
+          col="5"
           id="xNomeEmitente"
           v-model="this.filters.xNomeEmitente"
         />
@@ -187,12 +176,11 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import {
-  CrosierListS,
-  CrosierInputInt,
-  CrosierInputText,
-  CrosierDropdown,
   CrosierCalendar,
   CrosierCurrency,
+  CrosierInputInt,
+  CrosierInputText,
+  CrosierListS,
 } from "crosier-vue";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -202,19 +190,26 @@ import axios from "axios";
 
 export default {
   name: "nfEntradaList",
+
   components: {
     CrosierListS,
     Column,
     CrosierInputInt,
     CrosierInputText,
-    CrosierDropdown,
     CrosierCalendar,
     CrosierCurrency,
     ConfirmDialog,
     Toast,
   },
+
   data() {
-    return {};
+    return {
+      selection: [],
+    };
+  },
+
+  mounted() {
+    console.log("mounted");
   },
 
   methods: {
@@ -225,12 +220,12 @@ export default {
     },
 
     beforeFilter() {
-      // this.filters["dtEmissao[after]"] = this.filters["dtEmissao[after]"]
-      //   ? `${moment(this.filters["dtEmissao[after]"]).format("YYYY-MM-DD")}T00:00:00-03:00`
-      //   : null;
-      // this.filters["dtEmissao[before]"] = this.filters["dtEmissao[before]"]
-      //   ? `${moment(this.filters["dtEmissao[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
-      //   : null;
+      this.filters["dtEmissao[after]"] = this.filters["dtEmissao[after]"]
+        ? `${moment(this.filters["dtEmissao[after]"]).format("YYYY-MM-DD")}T00:00:00-03:00`
+        : null;
+      this.filters["dtEmissao[before]"] = this.filters["dtEmissao[before]"]
+        ? `${moment(this.filters["dtEmissao[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
+        : null;
     },
 
     edit(data) {
@@ -244,11 +239,8 @@ export default {
         icon: "pi pi-exclamation-triangle",
         accept: async () => {
           this.setLoading(true);
-          console.log("manifestando em lote");
 
-          const ls = JSON.parse(localStorage.getItem("dt-state/api/fis/notaFiscal/"));
-
-          const nfsIds = ls.selection
+          const nfsIds = this.selection
             .map((nf) => {
               return nf.id;
             })
@@ -289,9 +281,7 @@ export default {
     },
 
     downloadXMLs() {
-      const ls = JSON.parse(localStorage.getItem("dt-state/api/fis/notaFiscal/"));
-
-      const nfsIds = ls.selection
+      const nfsIds = this.selection
         .map((nf) => {
           return nf.id;
         })
