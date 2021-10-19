@@ -19,7 +19,8 @@ security:
             lazy: false
 
             remember_me:
-                name: 'CRSRRMMBRM'
+                token_provider: 'Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider'
+                name: 'CRSRRMMBRMTK'
                 secure: true
                 secret: "%env(CROSIERCORE_APPSECRET)%"
                 lifetime: 6048000 # 10 semanas
