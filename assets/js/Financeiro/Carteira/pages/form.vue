@@ -1,6 +1,6 @@
 <template>
   <Toast class="mt-5" />
-  <CrosierFormS listUrl="/fin/carteira/list" @submitForm="this.submitForm" titulo="Carteiras">
+  <CrosierFormS listUrl="/fin/carteira/list" @submitForm="this.submitForm" titulo="Carteira">
     <div class="form-row">
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
 

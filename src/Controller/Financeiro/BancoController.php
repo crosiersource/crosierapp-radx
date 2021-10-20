@@ -3,110 +3,40 @@
 namespace App\Controller\Financeiro;
 
 
-use App\Form\Financeiro\BancoType;
-use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Banco;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\BancoEntityHandler;
+use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * CRUD Controller para Banco.
- *
- * @package App\Controller\Financeiro
  * @author Carlos Eduardo Pauluk
  */
-class BancoController extends FormListController
+class BancoController extends BaseController
 {
 
-    /**
-     * @required
-     * @param BancoEntityHandler $entityHandler
-     */
-    public function setEntityHandler(BancoEntityHandler $entityHandler): void
-    {
-        $this->entityHandler = $entityHandler;
-    }
-
-    public function getFilterDatas(array $params): array
-    {
-        return [
-            new FilterData(['descricao'], 'LIKE', 'descricao', $params)
-        ];
-    }
 
     /**
-     *
-     * @Route("/fin/banco/form/{id}", name="banco_form", defaults={"id"=null}, requirements={"id"="\d+"})
-     * @param Request $request
-     * @param Banco|null $banco
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @throws \Exception
-     *
+     * @Route("/fin/banco/form", name="fin_banco_form")
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function form(Request $request, Banco $banco = null)
+    public function form(): Response
     {
         $params = [
-            'typeClass' => BancoType::class,
-            'formView' => '@CrosierLibBase/form.html.twig',
-            'formRoute' => 'banco_form',
-            'formPageTitle' => 'Banco'
+            'jsEntry' => 'Financeiro/Banco/form'
         ];
-        return $this->doForm($request, $banco, $params);
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
     /**
-     *
-     * @Route("/fin/banco/list/", name="banco_list")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     *
+     * @Route("/fin/banco/list", name="fin_banco_list")
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function list(Request $request): Response
+    public function list(): Response
     {
         $params = [
-            'formRoute' => 'banco_form',
-            'listView' => 'Financeiro/bancoList.html.twig',
-            'listRoute' => 'banco_list',
-            'listRouteAjax' => 'banco_datatablesJsList',
-            'listPageTitle' => 'Bancos',
-            'listId' => 'bancoList'
+            'jsEntry' => 'Financeiro/Banco/list'
         ];
-        return $this->doList($request, $params);
-    }
-
-    /**
-     *
-     * @Route("/fin/banco/datatablesJsList/", name="banco_datatablesJsList")
-     * @param Request $request
-     * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
-     *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function datatablesJsList(Request $request): Response
-    {
-        return $this->doDatatablesJsList($request);
-    }
-
-    /**
-     *
-     * @Route("/fin/banco/delete/{id}/", name="banco_delete", requirements={"id"="\d+"})
-     * @param Request $request
-     * @param Banco $banco
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function delete(Request $request, Banco $banco): \Symfony\Component\HttpFoundation\RedirectResponse
-    {
-        return $this->doDelete($request, $banco, []);
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
 
