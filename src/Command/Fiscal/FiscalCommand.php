@@ -88,22 +88,22 @@ class FiscalCommand extends Command
     {
         $cnpjs = $this->nfeUtils->getNFeConfigsCNPJs();
         foreach ($cnpjs as $cnpj) {
-            $output->write('Obtendo DistDFes para o CNPJ: ' . $cnpj);
+            $output->writeln('Obtendo DistDFes para o CNPJ: ' . $cnpj);
             try {
                 if ($primeiroNSU) {
                     $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpj);
                 } else {
                     $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpj);
                 }
-                $output->write($q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
-                $output->write('Processando obtidos...');
+                $output->writeln($q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
+                $output->writeln('Processando obtidos...');
                 $this->distDFeBusiness->processarDistDFesObtidos();
-                $output->write('OK');
+                $output->writeln('OK');
             } catch (ViewException $e) {
-                $output->write('Erro ao obter e processar DistDFes para o CNPJ: ' . $cnpj);
-                $output->write($e->getMessage());
+                $output->writeln('Erro ao obter e processar DistDFes para o CNPJ: ' . $cnpj);
+                $output->writeln($e->getMessage());
             }
-            $output->write('----------');
+            $output->writeln('----------');
         }
     }
 
