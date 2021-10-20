@@ -3,11 +3,7 @@
 namespace App\Controller\Fiscal;
 
 
-use App\Business\Clinica\CompromissoBusiness;
-use App\Entity\Clinica\Compromisso;
-use App\Entity\Clinica\Profissional;
 use App\Form\Fiscal\ConfigToolsType;
-use App\Repository\Clinica\CompromissoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
