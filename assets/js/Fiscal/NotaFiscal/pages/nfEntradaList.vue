@@ -22,20 +22,31 @@
         <i class="fas fa-eye"></i> Manifestar Ciência
       </button>
     </template>
+
     <template v-slot:filter-fields>
       <div class="form-row">
-        <CrosierInputInt label="Número" col="3" id="codigo" v-model="this.filters.numero" />
+        <CrosierDropdown
+          label="Contribuinte"
+          col="4"
+          id="contribuinte"
+          :options="this.contribuintes"
+          optionLabel="empresa"
+          optionValue="cnpj"
+          v-model="this.filters.documentoDestinatario"
+        />
+
+        <CrosierInputInt label="Número" col="2" id="codigo" v-model="this.filters.numero" />
 
         <CrosierInputText
           label="CPF/CNPJ Emitente"
-          col="4"
+          col="3"
           id="documentoEmitente"
           v-model="this.filters.documentoEmitente"
         />
 
         <CrosierInputText
           label="Nome Emitente"
-          col="5"
+          col="3"
           id="xNomeEmitente"
           v-model="this.filters.xNomeEmitente"
         />
@@ -181,6 +192,7 @@ import {
   CrosierInputInt,
   CrosierInputText,
   CrosierListS,
+  CrosierDropdown,
 } from "crosier-vue";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -199,17 +211,40 @@ export default {
     CrosierCalendar,
     CrosierCurrency,
     ConfirmDialog,
+    CrosierDropdown,
     Toast,
   },
 
   data() {
     return {
       selection: [],
+      contribuintes: null,
     };
   },
 
-  mounted() {
-    console.log("mounted");
+  async mounted() {
+    this.setLoading(true);
+    const rs = await axios.get("/api/fis/nfeUtils/getContribuintes", {
+      headers: {
+        "Content-Type": "application/ld+json",
+      },
+      validateStatus(status) {
+        return status < 500;
+      },
+    });
+    console.log(rs);
+    if (rs?.data?.RESULT === "OK") {
+      this.contribuintes = rs.data.DATA;
+    } else {
+      console.error(rs?.data?.MSG);
+      this.$toast.add({
+        severity: "error",
+        summary: "Erro",
+        detail: rs?.data?.MSG,
+        life: 5000,
+      });
+    }
+    this.setLoading(false);
   },
 
   methods: {
@@ -298,14 +333,17 @@ export default {
         accept: async () => {
           this.setLoading(true);
           console.log("obtendo notas");
-          const rs = await axios.get("/fis/distDFe/obterDistDFes", {
-            headers: {
-              "Content-Type": "application/ld+json",
-            },
-            validateStatus(status) {
-              return status < 500;
-            },
-          });
+          const rs = await axios.get(
+            `/fis/distDFe/obterDistDFes?documentoDestinatario=${this.filters.documentoDestinatario}`,
+            {
+              headers: {
+                "Content-Type": "application/ld+json",
+              },
+              validateStatus(status) {
+                return status < 500;
+              },
+            }
+          );
           console.log(rs);
           if (rs?.data?.RESULT === "OK") {
             this.$toast.add({

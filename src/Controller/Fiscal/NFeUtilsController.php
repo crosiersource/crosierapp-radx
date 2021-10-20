@@ -3,9 +3,14 @@
 namespace App\Controller\Fiscal;
 
 
+use App\Business\Clinica\CompromissoBusiness;
+use App\Entity\Clinica\Compromisso;
+use App\Entity\Clinica\Profissional;
 use App\Form\Fiscal\ConfigToolsType;
+use App\Repository\Clinica\CompromissoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
@@ -246,6 +251,49 @@ class NFeUtilsController extends BaseController
             $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsEmUso();
             return new JsonResponse(['result' => 'ERR', 'msg' => $msg, 'nfeConfigsEmUso' => $nfeConfigsEmUso]);
         }
+    }
+
+
+    /**
+     * @Route("/api/fis/nfeUtils/getContribuintes", name="fis_nfeUtils_getContribuintes")
+     * @IsGranted("ROLE_FISCAL", statusCode=403)
+     */
+    public function getContribuintes(Connection $conn): JsonResponse
+    {
+        try {
+            $rContribuintes = $conn->fetchAllAssociative("SELECT id, valor FROM cfg_app_config WHERE chave LIKE 'nfeConfigs\_%'");
+
+            $contribuintes = [];
+            $idAtual = $this->nfeUtils->getNfeConfigsIdEmUso();
+            foreach ($rContribuintes as $rContribuinte) {
+                $nfeConfigs = json_decode($rContribuinte['valor'], true);
+                $contribuintes[] = [
+                    'id' => $rContribuinte['id'],
+                    'cnpj' => $nfeConfigs['cnpj'],
+                    'empresa' => StringUtils::mascararCnpjCpf($nfeConfigs['cnpj']) . ' - ' . $nfeConfigs['razaosocial'],
+                    'checked' => $idAtual === (int)$rContribuinte['id'] ? 'checked' : ''
+                ];
+            }
+
+            return new JsonResponse(
+                [
+                    'RESULT' => 'OK',
+                    'MSG' => count($contribuintes) . ' registro(s)',
+                    'DATA' => $contribuintes
+                ]
+            );
+        } catch (\Throwable $e) {
+            $msg = ExceptionUtils::treatException($e);
+            if (!$msg) {
+                $msg = 'Erro - getContribuintes';
+            }
+            $r = [
+                'RESULT' => 'ERRO',
+                'MSG' => $msg
+            ];
+            return new JsonResponse($r);
+        }
+
     }
 
 

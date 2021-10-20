@@ -121,7 +121,7 @@ class DistDFeController extends FormListController
     public function obterDistDFes(Request $request, int $primeiroNSU = null): JsonResponse
     {
         try {
-            $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+            $cnpjEmUso = $request->get('documentoDestinatario') ?? $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
             if ($primeiroNSU) {
                 $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpjEmUso);
             } else {

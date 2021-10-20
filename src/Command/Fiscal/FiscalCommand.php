@@ -85,16 +85,20 @@ class FiscalCommand extends Command
      */
     public function obterDistDFes(OutputInterface $output, int $primeiroNSU = null)
     {
-        $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
-        if ($primeiroNSU) {
-            $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpjEmUso);
-        } else {
-            $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso);
+        $cnpjs = $this->nfeUtils->getNFeConfigsCNPJs();
+        foreach ($cnpjs as $cnpj) {
+            $output->write('Obtendo DistDFes para o CNPJ: ' . $cnpj);
+            if ($primeiroNSU) {
+                $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpj);
+            } else {
+                $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpj);
+            }
+            $output->write($q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
+            $output->write('Processando obtidos...');
+            $this->distDFeBusiness->processarDistDFesObtidos();
+            $output->write('OK');
+            $output->write('----------');
         }
-        $output->write( $q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
-        $output->write( 'Processando obtidos...');
-        $this->distDFeBusiness->processarDistDFesObtidos();
-        $output->write('OK');
     }
 
 }
