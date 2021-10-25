@@ -176,7 +176,7 @@ class FiscalCommand extends Command
             try {
                 $rsNFs = $this->nfeUtils->conn
                     ->fetchAllAssociative(
-                        'SELECT id FROM fis_nf WHERE entrada_saida = \'E\' AND documento_destinatario = :cnpj AND resumo = true AND dt_emissao >= DATE(NOW()) - INTERVAL :dias DAY',
+                        'SELECT id FROM fis_nf WHERE documento_destinatario = :cnpj AND resumo = true AND dt_emissao >= DATE(NOW()) - INTERVAL :dias DAY',
                         [
                             'cnpj' => $cnpj,
                             'dias' => $dias

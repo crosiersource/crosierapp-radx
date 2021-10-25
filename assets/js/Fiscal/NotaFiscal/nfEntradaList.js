@@ -24,9 +24,6 @@ const store = createStore({
       filters: {
         xNomeEmitente: null,
       },
-      defaultFilters: {
-        entradaSaida: "E",
-      },
     };
   },
 
@@ -58,8 +55,6 @@ const store = createStore({
     getFilters(state) {
       return state.filters;
     },
-
-    getDefaultFilters: (state) => state.defaultFilters,
   },
 });
 
