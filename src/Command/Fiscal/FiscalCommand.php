@@ -176,7 +176,7 @@ class FiscalCommand extends Command
             try {
                 $rsNFs = $this->nfeUtils->conn
                     ->fetchAllAssociative(
-                        'SELECT id FROM fis_nf WHERE documento_destinatario = :cnpj AND resumo = true AND dt_emissao >= DATE(NOW()) - INTERVAL :dias DAY',
+                        'SELECT id FROM fis_nf WHERE (manifest_dest IS NULL OR trim(manifest_dest) = \'\') AND documento_destinatario = :cnpj AND resumo = true AND dt_emissao >= DATE(NOW()) - INTERVAL :dias DAY',
                         [
                             'cnpj' => $cnpj,
                             'dias' => $dias
@@ -191,7 +191,7 @@ class FiscalCommand extends Command
                     foreach ($rsNFs as $rNF) {
                         try {
                             $nf = $repoNotaFiscal->find($rNF);
-                            $this->spedNFeBusiness->manifestar($nf, 'ciencia');
+                            $this->spedNFeBusiness->manifestar($nf, 210210); // 210210 - Ciência da Operação
                             $msg = 'NF manifestada com sucesso (chave: ' . $nf->chaveAcesso . ')';
                             $output->writeln($msg);
                             $this->syslog->info($msg);
