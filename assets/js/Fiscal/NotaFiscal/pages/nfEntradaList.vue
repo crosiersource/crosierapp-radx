@@ -7,20 +7,40 @@
     :formUrl="this.formUrl"
     @beforeFilter="this.beforeFilter"
     v-model:selection="this.selection"
+    @tudoSelecionadoClick="this.onTudoSelecionadoClick"
+    :ativarSelecao="true"
     ref="dt"
   >
     <template v-slot:headerButtons>
       <button type="button" class="btn btn-warning ml-1" @click="this.obterNotas">
-        <i class="fas fa-download"></i> Obter Notas
+        <i class="fas fa-download"></i> Baixar Notas
       </button>
 
-      <button type="button" class="btn btn-success ml-1" @click="this.downloadXMLs">
-        <i class="fas fa-file-code"></i> Download XMLs
-      </button>
+      <SplitButton
+        style="width: 200px"
+        label="Download XMLs"
+        class="ml-1 p-button-success"
+        icon="fas fa-file-code"
+        @click="this.downloadXMLs"
+        :model="[
+          {
+            label: 'Download PDFs',
+            icon: 'fas fa-file-pdf',
+            command: () => {
+              this.downloadPDFs();
+            },
+          },
+        ]"
+      ></SplitButton>
 
-      <button type="button" class="btn btn-info ml-1" @click="this.manifestarEmLote">
-        <i class="fas fa-eye"></i> Manifestar Ciência
-      </button>
+      <SplitButton
+        style="width: 250px"
+        label="Manifestar Ciência"
+        class="ml-1"
+        icon="fas fa-thumbs-up"
+        @click="this.manifestarEmLote('ciencia')"
+        :model="this.itensMenuManifestar"
+      ></SplitButton>
     </template>
 
     <template v-slot:filter-fields>
@@ -77,10 +97,36 @@
 
         <CrosierCurrency label="Valor" col="3" id="valor" v-model="this.filters.valorTotal" />
       </div>
+      <div class="form-row">
+        <CrosierDropdown
+          label="Status Download"
+          col="4"
+          id="statusDownload"
+          v-model="this.filters.resumo"
+          :options="[
+            { name: 'Completa', value: false },
+            { name: 'Resumo', value: true },
+            { name: 'Todas', value: '' },
+          ]"
+        />
+
+        <CrosierDropdown
+          label="Manifestação"
+          col="4"
+          id="manifestacao"
+          v-model="this.filters.manifestDest"
+          :options="[
+            { name: 'Ciência', value: '210210 - CIÊNCIA DA OPERAÇÃO' },
+            { name: 'Confirmação', value: '210200 - CONFIRMAÇÃO DA OPERAÇÃO' },
+            { name: 'Desconhecimento', value: '210220 - DESCONHECIMENTO DA OPERAÇÃO' },
+            { name: 'Não realizada', value: '210240 - OPERAÇÃO NÃO REALIZADA' },
+            { name: 'Nenhuma', value: '' },
+          ]"
+        />
+      </div>
     </template>
 
     <template v-slot:columns>
-      <Column selectionMode="multiple" headerStyle="width: 5em"></Column>
       <Column field="id" header="Número / Série / Chave" :sortable="true">
         <template #body="r">
           {{ new String(r.data.numero ?? "0").padStart(6, "0") }} /
@@ -115,6 +161,9 @@
             {{ this.moment(r.data.dtEmissao).format("DD/MM/YYYY HH:mm:ss") }}
           </div>
         </template>
+      </Column>
+      <Column field="cStat" header="Status" :sortable="true">
+        <template #body="r"> {{ r.data.cStat }} - {{ r.data.xMotivo }} </template>
       </Column>
       <Column field="valorTotal" header="Valor Total" :sortable="true">
         <template #body="r">
@@ -189,12 +238,13 @@ import { mapGetters, mapMutations } from "vuex";
 import {
   CrosierCalendar,
   CrosierCurrency,
+  CrosierDropdown,
   CrosierInputInt,
   CrosierInputText,
   CrosierListS,
-  CrosierDropdown,
 } from "crosier-vue";
 import Column from "primevue/column";
+import SplitButton from "primevue/splitbutton";
 import ConfirmDialog from "primevue/confirmdialog";
 import Toast from "primevue/toast";
 import moment from "moment";
@@ -206,6 +256,7 @@ export default {
   components: {
     CrosierListS,
     Column,
+    SplitButton,
     CrosierInputInt,
     CrosierInputText,
     CrosierCalendar,
@@ -219,6 +270,29 @@ export default {
     return {
       selection: [],
       contribuintes: null,
+      itensMenuManifestar: [
+        {
+          label: "Manifestar Confirmação",
+          icon: "fas fa-check-double",
+          command: () => {
+            this.manifestarEmLote("confirmacao");
+          },
+        },
+        {
+          label: "Manifestar Desconhecimento",
+          icon: "far fa-question-circle",
+          command: () => {
+            this.manifestarEmLote("desconhecimento");
+          },
+        },
+        {
+          label: "Manifestar 'Não Realizada'",
+          icon: "fas fa-thumbs-down",
+          command: () => {
+            this.manifestarEmLote("naoRealizada");
+          },
+        },
+      ],
     };
   },
 
@@ -232,7 +306,6 @@ export default {
         return status < 500;
       },
     });
-    console.log(rs);
     if (rs?.data?.RESULT === "OK") {
       this.contribuintes = rs.data.DATA;
     } else {
@@ -244,6 +317,7 @@ export default {
         life: 5000,
       });
     }
+
     this.setLoading(false);
   },
 
@@ -252,6 +326,10 @@ export default {
 
     moment(date) {
       return moment(date);
+    },
+
+    onTudoSelecionadoClick(sel) {
+      this.selection = sel;
     },
 
     beforeFilter() {
@@ -267,7 +345,7 @@ export default {
       return data.resumo ? "nfesFornecedores_formResumo" : "nfesFornecedores_form";
     },
 
-    manifestarEmLote() {
+    manifestarEmLote(operacao) {
       this.$confirm.require({
         header: "Confirmação",
         message: "Confirmar a operação?",
@@ -282,7 +360,7 @@ export default {
             .join(",");
 
           const rs = await axios.get(
-            `/fis/notaFiscal/nfEntrada/manifestarEmLote?nfsIds=${nfsIds}`,
+            `/fis/notaFiscal/nfEntrada/manifestarEmLote?nfsIds=${nfsIds}&operacao=${operacao}`,
             {
               headers: {
                 "Content-Type": "application/ld+json",
@@ -292,7 +370,6 @@ export default {
               },
             }
           );
-          console.log(rs);
           if (rs?.data?.RESULT === "OK") {
             this.$toast.add({
               severity: "success",
@@ -325,6 +402,16 @@ export default {
       window.open(`/fis/notaFiscal/nfEntrada/downloadXMLs?nfsIds=${nfsIds}`, "_blank");
     },
 
+    downloadPDFs() {
+      const nfsIds = this.selection
+        .map((nf) => {
+          return nf.id;
+        })
+        .join(",");
+
+      window.open(`/fis/notaFiscal/nfEntrada/downloadPDFs?nfsIds=${nfsIds}`, "_blank");
+    },
+
     obterNotas() {
       this.$confirm.require({
         header: "Confirmação",
@@ -332,8 +419,8 @@ export default {
         icon: "pi pi-exclamation-triangle",
         accept: async () => {
           this.setLoading(true);
-          console.log("obtendo notas");
           const rs = await axios.get(
+            // eslint-disable-next-line max-len
             `/fis/distDFe/obterDistDFes?documentoDestinatario=${this.filters.documentoDestinatario}`,
             {
               headers: {
@@ -344,7 +431,6 @@ export default {
               },
             }
           );
-          console.log(rs);
           if (rs?.data?.RESULT === "OK") {
             this.$toast.add({
               severity: "success",
@@ -369,7 +455,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters({ filters: "getFilters" }),
+    ...mapGetters({
+      filters: "getFilters",
+    }),
   },
 };
 </script>

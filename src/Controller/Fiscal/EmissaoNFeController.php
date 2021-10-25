@@ -24,7 +24,6 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalRepository;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use NFePHP\DA\NFe\Daevento;
-use NFePHP\DA\NFe\Danfe;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -418,38 +417,7 @@ class EmissaoNFeController extends FormListController
     public function imprimir(NotaFiscal $notaFiscal): void
     {
         try {
-            if ($this->notaFiscalBusiness->permiteFaturamento($notaFiscal)){
-                $notaFiscal = $this->spedNFeBusiness->gerarXML($notaFiscal);
-            }
-            $xml = $notaFiscal->getXmlNota();
-            $danfe = new Danfe($xml);
-            $danfe->debugMode(false);
-            $danfe->creditsIntegratorFooter('EKT Plus');
-
-
-            $arrContextOptions = array(
-                "ssl" => array(
-                    "verify_peer" => false,
-                    "verify_peer_name" => false,
-                ),
-            );
-
-            $logo = null;
-            $nfeConfigsEmUso = null;
-            if ($notaFiscal->getDocumentoEmitente() && in_array($notaFiscal->getDocumentoEmitente(), $this->nfeUtils->getNFeConfigsCNPJs(), true)) {
-                $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
-
-                $response = file_get_contents($nfeConfigsEmUso['logo_fiscal'] ?? $_SERVER['CROSIER_LOGO'], false, stream_context_create($arrContextOptions));
-                $logo = 'data://text/plain;base64,' . base64_encode($response);
-                
-            }
-
-
-            $pdf = $danfe->render($logo);
-            //o pdf porde ser exibido como view no browser
-            //salvo em arquivo
-            //ou setado para download forçado no browser
-            //ou ainda gravado na base de dados
+            $pdf = $this->notaFiscalBusiness->gerarPDF($notaFiscal);
             header('Content-Type: application/pdf');
             if (!$pdf) {
                 throw new \RuntimeException('Erro ao gerar PDF');
@@ -516,7 +484,7 @@ class EmissaoNFeController extends FormListController
      * @param NotaFiscalItem|null $item
      * @return RedirectResponse
      */
-    public function deleteItem(Request $request, NotaFiscalItem $item)
+    public function deleteItem(Request $request, NotaFiscalItem $item): RedirectResponse
     {
         $notaFiscalId = $item->getNotaFiscal()->getId();
         if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
@@ -577,7 +545,7 @@ class EmissaoNFeController extends FormListController
         }
 
         $permiteFaturamento = $this->notaFiscalBusiness->permiteFaturamento($notaFiscal, true);
-        
+
         return $this->doRender('/Fiscal/emissaoNFe/formItem.html.twig', [
             'form' => $form->createView(),
             'notaFiscal' => $notaFiscal,

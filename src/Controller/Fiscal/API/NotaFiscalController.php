@@ -8,6 +8,7 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalRepository;
@@ -57,9 +58,16 @@ class NotaFiscalController extends BaseController
          * 210200 Confirmação da operação
          * 210210 Ciência da Operação
          * 210220 Desconhecimento da operação
-         * 21040 Operação não realizada
+         * 210240 Operação não realizada
          */
-        $codManifest = $request->get('codManifest') ?? '210210';
+        $operacao = $request->get('operacao') ?? 'ciencia';
+        $operacoes = [
+            'confirmacao' => 210200,
+            'ciencia' => 210210,
+            'desconhecimento' => 210220,
+            'naoRealizada' => 210240,
+        ];
+        $codManifest = $operacoes[$operacao];
         try {
             $rNfsIds = $request->get('nfsIds');
             $nfsIds = explode(',', $rNfsIds);
@@ -112,6 +120,68 @@ class NotaFiscalController extends BaseController
         foreach ($nfs as $nf) {
             $nomeArquivo = $nf->chaveAcesso . '-' . strtolower($nf->tipoNotaFiscal) . '.xml';
             $zip->addFromString($nomeArquivo, $nf->getXMLDecodedAsString());
+        }
+
+        $zip->close();
+
+        // Return a response with a specific content
+        $response = new Response(file_get_contents($arquivo));
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-length', filesize($arquivo));
+
+        // Set the content disposition
+        $response->headers->set('Content-Disposition',
+            $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $uuid . '.zip'
+            )
+        );
+        $files = glob($_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . '/*.zip'); // get all file names
+        foreach($files as $file){ // iterate files
+            if(is_file($file)) {
+                unlink($file); // delete file
+            }
+        }
+        // Dispatch request
+        return $response;
+    }
+    
+    /**
+     * @Route("/fis/notaFiscal/nfEntrada/downloadPDFs", name="fis_notaFiscal_nfEntrada_downloadPDFs")
+     * @throws ViewException
+     */
+    public function downloadPDFsEmLote(Request $request, NotaFiscalBusiness $notaFiscalBusiness): Response
+    {
+        $nfsIds = $request->get('nfsIds');
+
+        $zip = new ZipArchive();
+        $uuid = StringUtils::guidv4();
+
+        $arquivo = $_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . '/' . $uuid . '.zip';
+        @unlink($arquivo);
+
+        if ($zip->open($arquivo, ZipArchive::CREATE) !== TRUE) {
+            throw new RuntimeException('Não foi possível escrever o arquivo zip');
+        }
+        
+        /** @var NotaFiscalRepository $repoNotasFiscais */
+        $repoNotasFiscais = $this->getDoctrine()->getRepository(NotaFiscal::class);
+
+        $nfs = $repoNotasFiscais->findByFiltersSimpl([
+            ['id', 'IN', explode(',', $nfsIds)],
+        ], null, 0, -1);
+
+
+        /** @var NotaFiscal $nf */
+        foreach ($nfs as $nf) {
+            $nomeArquivo = $nf->chaveAcesso . '-' . strtolower($nf->tipoNotaFiscal) . '.pdf';
+            try {
+                $pdf = $notaFiscalBusiness->gerarPDF($nf);
+                $zip->addFromString($nomeArquivo, $pdf);
+            } catch (Exception $e) {
+                $nomeArquivo = $nf->chaveAcesso . '-' . strtolower($nf->tipoNotaFiscal) . 'ERRO.pdf.txt';
+                $zip->addFromString($nomeArquivo, $e->getMessage());
+            }
         }
 
         $zip->close();
