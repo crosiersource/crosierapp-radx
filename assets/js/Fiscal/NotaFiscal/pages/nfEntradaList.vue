@@ -52,6 +52,7 @@
           :options="this.contribuintes"
           optionLabel="empresa"
           optionValue="cnpj"
+          :showClear="false"
           v-model="this.filters.documentoDestinatario"
         />
 
@@ -234,7 +235,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import {
   CrosierCalendar,
   CrosierCurrency,
@@ -269,7 +270,6 @@ export default {
   data() {
     return {
       selection: [],
-      contribuintes: null,
       itensMenuManifestar: [
         {
           label: "Manifestar Confirmação",
@@ -298,31 +298,13 @@ export default {
 
   async mounted() {
     this.setLoading(true);
-    const rs = await axios.get("/api/fis/nfeUtils/getContribuintes", {
-      headers: {
-        "Content-Type": "application/ld+json",
-      },
-      validateStatus(status) {
-        return status < 500;
-      },
-    });
-    if (rs?.data?.RESULT === "OK") {
-      this.contribuintes = rs.data.DATA;
-    } else {
-      console.error(rs?.data?.MSG);
-      this.$toast.add({
-        severity: "error",
-        summary: "Erro",
-        detail: rs?.data?.MSG,
-        life: 5000,
-      });
-    }
-
+    await this.loadData();
     this.setLoading(false);
   },
 
   methods: {
     ...mapMutations(["setLoading"]),
+    ...mapActions(["loadData"]),
 
     moment(date) {
       return moment(date);
@@ -457,6 +439,7 @@ export default {
   computed: {
     ...mapGetters({
       filters: "getFilters",
+      contribuintes: "getContribuintes",
     }),
   },
 };

@@ -4,6 +4,7 @@ import ToastService from "primevue/toastservice";
 import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
 import { createStore } from "vuex";
+import axios from "axios";
 import Page from "./pages/nfEntradaList";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/saga-blue/theme.css"; // theme
@@ -23,7 +24,9 @@ const store = createStore({
       loading: 0,
       filters: {
         xNomeEmitente: null,
+        documentoDestinatario: null,
       },
+      contribuintes: [],
     };
   },
 
@@ -45,6 +48,10 @@ const store = createStore({
         : null;
       state.filters = filters;
     },
+
+    setContribuintes(state, contribuintes) {
+      state.contribuintes = contribuintes;
+    },
   },
 
   getters: {
@@ -54,6 +61,38 @@ const store = createStore({
 
     getFilters(state) {
       return state.filters;
+    },
+
+    getContribuintes(state) {
+      return state.contribuintes;
+    },
+  },
+
+  actions: {
+    async loadData(context) {
+      const rs = await axios.get("/api/fis/nfeUtils/getContribuintes", {
+        headers: {
+          "Content-Type": "application/ld+json",
+        },
+        validateStatus(status) {
+          return status < 500;
+        },
+      });
+      console.log(rs);
+      if (rs?.data?.RESULT === "OK") {
+        context.commit("setContribuintes", rs.data.DATA);
+        if (context.state.filters.documentoDestinatario) {
+          context.state.filters.documentoDestinatario = rs.data.DATA[0].cnpj;
+        }
+      } else {
+        console.error(rs?.data?.MSG);
+        this.$toast.add({
+          severity: "error",
+          summary: "Erro",
+          detail: rs?.data?.MSG,
+          life: 5000,
+        });
+      }
     },
   },
 });
