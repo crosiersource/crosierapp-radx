@@ -94,7 +94,7 @@
         "version": "2.10.2"
     },
     "doctrine/persistence": {
-        "version": "2.2.2"
+        "version": "2.2.3"
     },
     "doctrine/sql-formatter": {
         "version": "1.1.1"
@@ -124,10 +124,7 @@
             "branch": "master",
             "version": "2.3",
             "ref": "a9f2e49180f75cdc71ae279a929c4b2e0638de84"
-        },
-        "files": [
-            "config/routes/fos_js_routing.yaml"
-        ]
+        }
     },
     "guzzlehttp/guzzle": {
         "version": "6.5.5"
@@ -815,10 +812,7 @@
             "branch": "master",
             "version": "1.7",
             "ref": "c4f5755b37fb65b9c6a3cbdae91205c15a137ed4"
-        },
-        "files": [
-            "config/packages/vich_uploader.yaml"
-        ]
+        }
     },
     "webmozart/assert": {
         "version": "1.10.0"

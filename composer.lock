@@ -8,23 +8,23 @@
     "packages": [
         {
             "name": "api-platform/core",
-            "version": "v2.6.2",
+            "version": "v2.6.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "2edb3bf1fffe57f1d5e6833e25e7b0b54dd7a583"
+                "reference": "25c71b216473844cdbe5bf284ccbeeb26acd76e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/2edb3bf1fffe57f1d5e6833e25e7b0b54dd7a583",
-                "reference": "2edb3bf1fffe57f1d5e6833e25e7b0b54dd7a583",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/25c71b216473844cdbe5bf284ccbeeb26acd76e7",
+                "reference": "25c71b216473844cdbe5bf284ccbeeb26acd76e7",
                 "shasum": ""
             },
             "require": {
                 "doctrine/inflector": "^1.0 || ^2.0",
                 "fig/link-util": "^1.0",
                 "php": ">=7.1",
-                "psr/cache": "^1.0",
+                "psr/cache": "^1.0 || ^2.0 || ^3.0",
                 "psr/container": "^1.0",
                 "symfony/http-foundation": "^4.4 || ^5.1",
                 "symfony/http-kernel": "^4.4 || ^5.1",
@@ -36,17 +36,19 @@
             },
             "conflict": {
                 "doctrine/common": "<2.7",
-                "doctrine/mongodb-odm": "<2.0",
+                "doctrine/dbal": "<2.10",
+                "doctrine/mongodb-odm": "<2.2",
                 "doctrine/persistence": "<1.3"
             },
             "require-dev": {
                 "behat/behat": "^3.1",
                 "behat/mink": "^1.7",
                 "doctrine/annotations": "^1.7",
+                "doctrine/cache": "^1.11",
                 "doctrine/common": "^2.11 || ^3.0",
                 "doctrine/data-fixtures": "^1.2.2",
                 "doctrine/doctrine-bundle": "^1.12 || ^2.0",
-                "doctrine/mongodb-odm": "^2.0",
+                "doctrine/mongodb-odm": "^2.2",
                 "doctrine/mongodb-odm-bundle": "^4.0",
                 "doctrine/orm": "^2.6.4 || ^3.0",
                 "elasticsearch/elasticsearch": "^6.0 || ^7.0",
@@ -135,7 +137,7 @@
             "authors": [
                 {
                     "name": "Kévin Dunglas",
-                    "email": "dunglas@gmail.com",
+                    "email": "kevin@dunglas.fr",
                     "homepage": "https://dunglas.fr"
                 }
             ],
@@ -154,7 +156,7 @@
             ],
             "support": {
                 "issues": "https://github.com/api-platform/core/issues",
-                "source": "https://github.com/api-platform/core/tree/v2.6.2"
+                "source": "https://github.com/api-platform/core/tree/v2.6.6"
             },
             "funding": [
                 {
@@ -162,7 +164,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-02-07T14:18:49+00:00"
+            "time": "2021-09-29T19:11:04+00:00"
         },
         {
             "name": "composer/package-versions-deprecated",
@@ -243,16 +245,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "ef6547460018d8284be59b0d8e0228ced9967bc6"
+                "reference": "588c51ccc2a611b1a1463d56626f724de27d256c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/ef6547460018d8284be59b0d8e0228ced9967bc6",
-                "reference": "ef6547460018d8284be59b0d8e0228ced9967bc6",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/588c51ccc2a611b1a1463d56626f724de27d256c",
+                "reference": "588c51ccc2a611b1a1463d56626f724de27d256c",
                 "shasum": ""
             },
             "require": {
-                "api-platform/core": "2.6.2",
+                "api-platform/core": "2.*",
                 "ext-bcmath": "*",
                 "ext-ctype": "*",
                 "ext-curl": "*",
@@ -308,7 +310,7 @@
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
                 "source": "https://github.com/crosiersource/crosierlib-base/tree/master"
             },
-            "time": "2021-10-27T15:30:51+00:00"
+            "time": "2021-10-27T18:03:41+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
@@ -1593,16 +1595,16 @@
         },
         {
             "name": "doctrine/persistence",
-            "version": "2.2.2",
+            "version": "2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/persistence.git",
-                "reference": "4ce4712e6dc84a156176a0fbbb11954a25c93103"
+                "reference": "5e7bdbbfe9811c06e1f745d1c166647d5c47d6ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/persistence/zipball/4ce4712e6dc84a156176a0fbbb11954a25c93103",
-                "reference": "4ce4712e6dc84a156176a0fbbb11954a25c93103",
+                "url": "https://api.github.com/repos/doctrine/persistence/zipball/5e7bdbbfe9811c06e1f745d1c166647d5c47d6ee",
+                "reference": "5e7bdbbfe9811c06e1f745d1c166647d5c47d6ee",
                 "shasum": ""
             },
             "require": {
@@ -1674,9 +1676,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/persistence/issues",
-                "source": "https://github.com/doctrine/persistence/tree/2.2.2"
+                "source": "https://github.com/doctrine/persistence/tree/2.2.3"
             },
-            "time": "2021-08-10T19:01:29+00:00"
+            "time": "2021-10-25T19:59:10+00:00"
         },
         {
             "name": "doctrine/sql-formatter",
