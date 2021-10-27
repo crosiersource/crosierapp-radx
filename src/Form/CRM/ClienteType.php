@@ -87,7 +87,7 @@ class ClienteType extends AbstractType
                 /** @var Cliente $cliente */
                 $cliente = $event->getData();
                 if ($cliente->getId()) {
-                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM crm_cliente WHERE id = :id', ['id' => $cliente->getId()])['json_data'] ?? '{}', true);
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssociative('SELECT json_data FROM crm_cliente WHERE id = :id', ['id' => $cliente->getId()])['json_data'] ?? '{}', true);
                     $cliente->jsonData = array_merge($jsonDataOrig, $cliente->jsonData);
                     $event->setData($cliente);
                 }

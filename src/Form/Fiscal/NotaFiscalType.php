@@ -553,7 +553,7 @@ class NotaFiscalType extends AbstractType
                 /** @var NotaFiscal $notaFiscal */
                 $notaFiscal = $event->getData();
                 if ($notaFiscal->getId()) {
-                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM fis_nf WHERE id = :id', ['id' => $notaFiscal->getId()])['json_data'] ?? '{}', true);
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssociative('SELECT json_data FROM fis_nf WHERE id = :id', ['id' => $notaFiscal->getId()])['json_data'] ?? '{}', true);
                     $notaFiscal->jsonData = array_merge($jsonDataOrig, $notaFiscal->jsonData);
                     $event->setData($notaFiscal);
                 }

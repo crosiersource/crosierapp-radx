@@ -120,7 +120,7 @@ class EntradaType extends AbstractType
                 /** @var Entrada $entrada */
                 $entrada = $event->getData();
                 if ($entrada->getId()) {
-                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssoc('SELECT json_data FROM est_entrada WHERE id = :id', ['id' => $entrada->getId()])['json_data'] ?? '{}', true);
+                    $jsonDataOrig = json_decode($this->doctrine->getConnection()->fetchAssociative('SELECT json_data FROM est_entrada WHERE id = :id', ['id' => $entrada->getId()])['json_data'] ?? '{}', true);
                     $entrada->jsonData = array_merge($jsonDataOrig, $entrada->jsonData);
                     $event->setData($entrada);
                 }
