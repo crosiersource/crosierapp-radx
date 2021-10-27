@@ -3525,16 +3525,16 @@
         },
         {
             "name": "nfephp-org/sped-nfe",
-            "version": "v5.0.124",
+            "version": "v5.0.126",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-nfe.git",
-                "reference": "8012f741906dca03499c6241756e77123ea80bc7"
+                "reference": "d42a07f830a45a6e83005e380f5f228e1b951128"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/8012f741906dca03499c6241756e77123ea80bc7",
-                "reference": "8012f741906dca03499c6241756e77123ea80bc7",
+                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/d42a07f830a45a6e83005e380f5f228e1b951128",
+                "reference": "d42a07f830a45a6e83005e380f5f228e1b951128",
                 "shasum": ""
             },
             "require": {
@@ -3596,9 +3596,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nfephp-org/sped-nfe/issues",
-                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.0.124"
+                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.0.126"
             },
-            "time": "2021-10-13T17:59:00+00:00"
+            "time": "2021-10-21T12:24:09+00:00"
         },
         {
             "name": "phenx/php-font-lib",
