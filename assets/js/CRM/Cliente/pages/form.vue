@@ -1,0 +1,92 @@
+<template>
+  <Toast class="mt-5" />
+  <CrosierFormS listUrl="/crm/cliente/list" @submitForm="this.submitForm" titulo="Cliente">
+    <div class="form-row">
+      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
+
+      <CrosierInputInt
+        label="Código"
+        col="2"
+        id="codigoCliente"
+        v-model="this.fields.codigoCliente"
+        :error="this.formErrors.codigoCliente"
+      />
+
+      <CrosierInputText
+        label="Nome"
+        col="5"
+        id="nome"
+        v-model="this.fields.nome"
+        :error="this.formErrors.nome"
+      />
+
+      <CrosierDropdown label="Utilizado" col="2" id="utilizado" v-model="this.fields.utilizado" />
+    </div>
+  </CrosierFormS>
+</template>
+
+<script>
+import Toast from "primevue/toast";
+import * as yup from "yup";
+import {
+  CrosierFormS,
+  submitForm,
+  CrosierDropdown,
+  CrosierInputText,
+  CrosierInputInt,
+} from "crosier-vue";
+import { mapGetters, mapMutations } from "vuex";
+
+export default {
+  components: {
+    Toast,
+    CrosierFormS,
+    CrosierDropdown,
+    CrosierInputText,
+    CrosierInputInt,
+  },
+
+  data() {
+    return {
+      criarVincularFields: false,
+      schemaValidator: {},
+    };
+  },
+
+  async mounted() {
+    this.setLoading(true);
+
+    this.$store.dispatch("loadData");
+    this.schemaValidator = yup.object().shape({
+      codigoCliente: yup.number().required().typeError(),
+      nome: yup.string().required().typeError(),
+      utilizado: yup.boolean().required().typeError(),
+    });
+
+    this.setLoading(false);
+  },
+
+  methods: {
+    ...mapMutations(["setLoading", "setFields", "setFieldsErrors"]),
+
+    async submitForm() {
+      this.setLoading(true);
+      await submitForm({
+        apiResource: "/api/crm/cliente",
+        schemaValidator: this.schemaValidator,
+        $store: this.$store,
+        formDataStateName: "fields",
+        $toast: this.$toast,
+        // fnBeforeSave: (formData) => {
+        //
+        // },
+      });
+      this.setLoading(false);
+    },
+  },
+
+  computed: {
+    ...mapGetters({ fields: "getFields", formErrors: "getFieldsErrors" }),
+  },
+};
+</script>

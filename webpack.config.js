@@ -88,8 +88,8 @@ Encore
 
   .addEntry('RH/colaborador_form', './assets/js/RH/colaborador_form.js')
 
-  .addEntry('CRM/cliente_list', './assets/js/CRM/cliente_list.js')
-  .addEntry('CRM/cliente_form', './assets/js/CRM/cliente_form.js')
+  .addEntry('CRM/cliente_list', './assets/js/CRM/Cliente/list.js')
+  .addEntry('CRM/cliente_form', './assets/js/CRM/Cliente/form.js')
 
 
   .addEntry('Vendas/ven_venda_listVendasPorDiaComEcommerce', './assets/js/Vendas/ven_venda_listVendasPorDiaComEcommerce.js')
@@ -113,6 +113,9 @@ Encore
   .configureBabelPresetEnv((config) => {
     config.useBuiltIns = 'usage';
     config.corejs = 3;
+  })
+  .configureBabel((config) => {
+    config.plugins.push('@babel/plugin-proposal-class-properties');
   })
   .enableVueLoader(function (options) {
     options.loaders = {
