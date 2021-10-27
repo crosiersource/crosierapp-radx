@@ -163,7 +163,7 @@ class EntradaController extends FormListController
         foreach ($entrada->itens as $item) {
             $stmtPrecos->bindValue('produtoId', $item->produto->getId());
             $stmtPrecos->execute();
-            $rPrecos = $stmtPrecos->fetchAll();
+            $rPrecos = $stmtPrecos->fetchAllAssociative();
             $helpText = '';
             foreach ($rPrecos as $preco) {
                 if ($preco['unidade'] === $item->unidade->label) {
@@ -199,7 +199,7 @@ class EntradaController extends FormListController
 
             $entradaItem['updated'] = (new \DateTime())->format('Y-m-d H:i:s');
 
-            if ($rs = $conn->fetchAll('SELECT * FROM est_entrada_item WHERE entrada_id = :entradaId AND produto_id = :produtoId AND unidade_id = :unidadeId',
+            if ($rs = $conn->fetchAllAssociative('SELECT * FROM est_entrada_item WHERE entrada_id = :entradaId AND produto_id = :produtoId AND unidade_id = :unidadeId',
                 [
                     'entradaId' => $entradaItem['entrada_id'],
                     'produtoId' => $entradaItem['produto_id'],
@@ -344,7 +344,7 @@ class EntradaController extends FormListController
                 'prod.nome LIKE :nome OR ' .
                 'prod.codigo LIKE :codigo) ORDER BY prod.nome LIMIT 30';
 
-            $rs = $conn->fetchAll($sql,
+            $rs = $conn->fetchAllAssociative($sql,
                 [
                     'id' => (int)$str,
                     'nome' => '%' . $str . '%',
@@ -356,7 +356,7 @@ class EntradaController extends FormListController
 //            $stmtUnidades = $this->entityHandler->getDoctrine()->getConnection()->prepare($sqlUnidades);
 
 
-            $rUnidades = $conn->fetchAll('SELECT u.id, u.label as text, u.casas_decimais FROM est_unidade u ORDER BY u.label');
+            $rUnidades = $conn->fetchAllAssociative('SELECT u.id, u.label as text, u.casas_decimais FROM est_unidade u ORDER BY u.label');
 
             $sqlPrecos = 'select lista.descricao as lista, u.label as unidade, preco.preco_prazo from est_produto_preco preco, est_unidade u, est_lista_preco lista where preco.produto_id = :produtoId and preco.lista_id = lista.id and preco.unidade_id = u.id and preco.atual IS TRUE';
             $stmtPrecos = $conn->prepare($sqlPrecos);
@@ -365,11 +365,11 @@ class EntradaController extends FormListController
                 $codigo = str_pad($r['codigo'], 9, '0', STR_PAD_LEFT);
 //                $stmtUnidades->bindValue('produtoId', $r['id']);
 //                $stmtUnidades->execute();
-//                $rUnidades = $stmtUnidades->fetchAll();
+//                $rUnidades = $stmtUnidades->fetchAllAssociative();
 
                 $stmtPrecos->bindValue('produtoId', $r['id']);
                 $stmtPrecos->execute();
-                $rPrecos = $stmtPrecos->fetchAll();
+                $rPrecos = $stmtPrecos->fetchAllAssociative();
 
                 $results[] = [
                     'id' => $r['id'],

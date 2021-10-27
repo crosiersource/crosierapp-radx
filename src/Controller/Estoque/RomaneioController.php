@@ -178,13 +178,13 @@ class RomaneioController extends FormListController
         $anterior = null;
         if ($romaneioItem->ordem > 1) {
             $anterior = $this->entityHandler->getDoctrine()->getConnection()
-                ->fetchAll('SELECT id FROM est_romaneio_item WHERE ordem = :ordem AND romaneio_id = :romaneioId',
+                ->fetchAllAssociative('SELECT id FROM est_romaneio_item WHERE ordem = :ordem AND romaneio_id = :romaneioId',
                     ['ordem' => $romaneioItem->ordem - 1, 'romaneioId' => $romaneioItem->romaneio->getId()]);
         }
         $proximo = null;
         if ($romaneioItem->ordem < $romaneioItem->romaneio->itens->count()) {
             $proximo = $this->entityHandler->getDoctrine()->getConnection()
-                ->fetchAll('SELECT id FROM est_romaneio_item WHERE ordem = :ordem AND romaneio_id = :romaneioId',
+                ->fetchAllAssociative('SELECT id FROM est_romaneio_item WHERE ordem = :ordem AND romaneio_id = :romaneioId',
                     ['ordem' => $romaneioItem->ordem + 1, 'romaneioId' => $romaneioItem->romaneio->getId()]);
         }
 
