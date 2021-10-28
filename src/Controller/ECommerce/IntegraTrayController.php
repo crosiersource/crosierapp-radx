@@ -123,8 +123,8 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/api/ecommIntegra/tray/renewAccessTokenTray/{id}", name="ecommIntegra_clienteConfig_renewAccessTokenTray")
-     * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
+     * @Route("/api/ecommIntegra/tray/renewAccessToken/{id}", name="api_ecommIntegra_tray_renewAccessToken")
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
     public function renewAccessTokenTray(?string $storeId = null): JsonResponse
@@ -137,12 +137,27 @@ class IntegraTrayController extends BaseController
             ]
         );
     }
+    
+    /**
+     * @Route("/api/ecommIntegra/tray/renewAllAccessTokens", name="api_ecommIntegra_tray_renewAllAccessTokens")
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     * @throws ViewException
+     */
+    public function renewAllAccessTokens(): JsonResponse
+    {
+        $this->integradorTray->renewAllAccessTokens();
+        return new JsonResponse(
+            [
+                'RESULT' => 'OK',
+                'MSG' => 'Executado com sucesso',
+            ]
+        );
+    }
 
 
     /**
      * @Route("/ecommIntegra/tray/integraCategoria/{depto}", name="ecommIntegra_tray_integraCategoria", requirements={"depto"="\d+"})
-     * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
-     * @throws ViewException
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
     public function integraCategoria(Depto $depto): Response
     {
@@ -155,7 +170,7 @@ class IntegraTrayController extends BaseController
 
     /**
      * @Route("/ecommIntegra/tray/integraProduto/{produto}", name="ecommIntegra_tray_integraProduto", requirements={"produto"="\d+"})
-     * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
     public function integraProduto(Produto $produto): Response
@@ -169,7 +184,7 @@ class IntegraTrayController extends BaseController
 
     /**
      * @Route("/ecommIntegra/tray/integraVariacaoProduto/{produto}", name="ecommIntegra_tray_integraVariacaoProduto", requirements={"produto"="\d+"})
-     * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
     public function integraVariacaoProduto(Produto $produto): Response
@@ -183,7 +198,7 @@ class IntegraTrayController extends BaseController
 
     /**
      * @Route("/ecommIntegra/tray/obterPedido/{id}", name="ecommIntegra_tray_obterPedido", requirements={"id"="\d+"})
-     * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
     public function obterPedido(int $numPedido): Response
     {
@@ -196,7 +211,7 @@ class IntegraTrayController extends BaseController
 
     /**
      * @Route("/ecommIntegra/tray/integrarVendaParaECommerce/{numPedido}", name="ecommIntegra_tray_integrarVendaParaECommerce", requirements={"numPedido"="\d+"})
-     * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
     public function integrarVendaParaECommerce(int $numPedido): Response
@@ -210,7 +225,7 @@ class IntegraTrayController extends BaseController
 
     /**
      * @Route("/ecommIntegra/tray/atualizaDadosEnvio/{numPedido}", name="ecommIntegra_tray_atualizaDadosEnvio", requirements={"numPedido"="\d+"})
-     * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
     public function atualizaDadosEnvio(int $numPedido): Response
@@ -224,7 +239,7 @@ class IntegraTrayController extends BaseController
 
     /**
      * @Route("/ecommIntegra/tray/cancelarPedido/{numPedido}", name="ecommIntegra_tray_cancelarPedido", requirements={"numPedido"="\d+"})
-     * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
     public function cancelarPedido(int $numPedido): Response
