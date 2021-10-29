@@ -2,11 +2,11 @@
   <CrosierListS titulo="Clientes" apiResource="/api/crm/cliente" :formUrl="this.formUrl">
     <template v-slot:filter-fields>
       <div class="form-row">
-        <CrosierInputInt
-          label="Código"
+        <CrosierInputText
+          label="CPF/CNPJ"
           col="3"
-          id="codigoCliente"
-          v-model="this.filters.codigoCliente"
+          id="documento"
+          v-model="this.filters.documento"
         />
 
         <CrosierInputText label="Nome" col="5" id="nome" v-model="this.filters.nome" />
@@ -23,7 +23,7 @@
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true"></Column>
 
-      <Column field="codigoCliente" header="Código" :sortable="true"></Column>
+      <Column field="documento" header="CPF/CNPJ" :sortable="true"></Column>
 
       <Column field="nome" header="Nome" :sortable="true"></Column>
 
@@ -55,7 +55,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierDropdown, CrosierInputInt, CrosierInputText, CrosierListS } from "crosier-vue";
+import { CrosierDropdown, CrosierInputText, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
 
 export default {
@@ -64,7 +64,6 @@ export default {
     Column,
     CrosierDropdown,
     CrosierInputText,
-    CrosierInputInt,
   },
   data() {
     return {
