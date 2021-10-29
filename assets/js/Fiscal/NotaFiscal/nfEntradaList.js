@@ -46,6 +46,7 @@ const store = createStore({
       filters["dtEmissao[before]"] = filters["dtEmissao[before]"]
         ? new Date(filters["dtEmissao[before]"])
         : null;
+
       state.filters = filters;
     },
 
@@ -81,8 +82,11 @@ const store = createStore({
       console.log(rs);
       if (rs?.data?.RESULT === "OK") {
         context.commit("setContribuintes", rs.data.DATA);
-        if (context.state.filters.documentoDestinatario) {
+        if (!context.state.filters.documentoDestinatario) {
+          console.log(`setando: ${rs.data.DATA[0].cnpj}`);
           context.state.filters.documentoDestinatario = rs.data.DATA[0].cnpj;
+        } else {
+          console.log(`já tem : |${context.state.filters.documentoDestinatario}|`);
         }
       } else {
         console.error(rs?.data?.MSG);

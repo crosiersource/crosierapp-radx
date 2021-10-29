@@ -204,7 +204,8 @@ class EmissaoNFeController extends FormListController
     public function faturar(Request $request, NotaFiscal $notaFiscal): RedirectResponse
     {
         try {
-            $this->notaFiscalBusiness->faturarNFe($notaFiscal);
+            $gerarXML = filter_var($request->get("gerarXML") ?? true, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            $this->notaFiscalBusiness->faturarNFe($notaFiscal, $gerarXML);
         } catch (\Throwable $e) {
             if ($e instanceof ViewException) {
                 $this->addFlash('error', $e->getMessage());
