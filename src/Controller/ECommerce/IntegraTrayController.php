@@ -8,7 +8,6 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorTray;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
-use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,7 +50,7 @@ class IntegraTrayController extends BaseController
      * @Route("/ecommIntegra/tray/endpoint", name="ecommIntegra_tray_endpoint")
      * @throws ViewException
      */
-    public function trayEndpoint(Connection $conn, Request $request)
+    public function trayEndpoint(Request $request): Response
     {
         $r = [];
         $r[] = 'Cliente IP: ' . $request->getClientIp();
@@ -79,9 +78,11 @@ class IntegraTrayController extends BaseController
 
         if ($request->get("code")) {
             $storeId = $request->get('store');
-            $this->integradorTray->getStore($storeId);
+            $store = $this->integradorTray->getStore($storeId);
             $store['code'] = $request->get("code");
+            
             $this->integradorTray->saveStoreConfig($store);
+            return new Response(implode('<br/>', $r));
         } else {
             return new Response('"code" não retornado pela tray');
         }
@@ -129,7 +130,8 @@ class IntegraTrayController extends BaseController
      */
     public function renewAccessTokenTray(?string $storeId = null): JsonResponse
     {
-        $this->integradorTray->renewAccessToken($storeId);
+        $store = $this->integradorTray->getStore($storeId);
+        $this->integradorTray->renewAccessToken($store);
         return new JsonResponse(
             [
                 'RESULT' => 'OK',
@@ -141,7 +143,6 @@ class IntegraTrayController extends BaseController
     /**
      * @Route("/api/ecommIntegra/tray/renewAllAccessTokens", name="api_ecommIntegra_tray_renewAllAccessTokens")
      * @IsGranted("ROLE_ADMIN", statusCode=403)
-     * @throws ViewException
      */
     public function renewAllAccessTokens(): JsonResponse
     {
@@ -171,7 +172,6 @@ class IntegraTrayController extends BaseController
     /**
      * @Route("/ecommIntegra/tray/integraProduto/{produto}", name="ecommIntegra_tray_integraProduto", requirements={"produto"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
-     * @throws ViewException
      */
     public function integraProduto(Produto $produto): Response
     {
@@ -185,7 +185,6 @@ class IntegraTrayController extends BaseController
     /**
      * @Route("/ecommIntegra/tray/integraVariacaoProduto/{produto}", name="ecommIntegra_tray_integraVariacaoProduto", requirements={"produto"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
-     * @throws ViewException
      */
     public function integraVariacaoProduto(Produto $produto): Response
     {
@@ -212,7 +211,6 @@ class IntegraTrayController extends BaseController
     /**
      * @Route("/ecommIntegra/tray/integrarVendaParaECommerce/{numPedido}", name="ecommIntegra_tray_integrarVendaParaECommerce", requirements={"numPedido"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
-     * @throws ViewException
      */
     public function integrarVendaParaECommerce(int $numPedido): Response
     {
@@ -226,7 +224,6 @@ class IntegraTrayController extends BaseController
     /**
      * @Route("/ecommIntegra/tray/atualizaDadosEnvio/{numPedido}", name="ecommIntegra_tray_atualizaDadosEnvio", requirements={"numPedido"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
-     * @throws ViewException
      */
     public function atualizaDadosEnvio(int $numPedido): Response
     {
@@ -240,7 +237,6 @@ class IntegraTrayController extends BaseController
     /**
      * @Route("/ecommIntegra/tray/cancelarPedido/{numPedido}", name="ecommIntegra_tray_cancelarPedido", requirements={"numPedido"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
-     * @throws ViewException
      */
     public function cancelarPedido(int $numPedido): Response
     {
@@ -262,8 +258,9 @@ class IntegraTrayController extends BaseController
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $nfId]);
         } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
+            return new Response($e->getMessage());
         }
-        return new Response('ERRO');
+        
     }
 
     /**
