@@ -1025,11 +1025,11 @@ class VendaController extends FormListController
      * @param Request $request
      * @param IntegradorECommerceFactory $integradorBusinessFactory
      * @param \DateTime $dtVenda
-     * @return Response
+     * @return RedirectResponse
      * @throws \Exception
      * @IsGranted("ROLE_VENDAS_ADMIN", statusCode=403)
      */
-    public function obterVendasECommerce(Request $request, IntegradorECommerceFactory $integradorBusinessFactory, ?\DateTime $dtVenda = null): Response
+    public function obterVendasECommerce(Request $request, IntegradorECommerceFactory $integradorBusinessFactory, ?\DateTime $dtVenda = null): RedirectResponse
     {
         if (!$dtVenda) {
             $dtVenda = new \DateTime();
@@ -1048,7 +1048,7 @@ class VendaController extends FormListController
 
         return $this->redirect($request->server->get('HTTP_REFERER'));
     }
-
+    
 
     /**
      * Lista apenas as vendas do ecommerce.
