@@ -298,7 +298,7 @@ export default {
 
   async mounted() {
     this.setLoading(true);
-    await this.loadData();
+
     this.setLoading(false);
   },
 
@@ -314,13 +314,15 @@ export default {
       this.selection = sel;
     },
 
-    beforeFilter() {
+    async beforeFilter() {
+      await this.loadData();
       this.filters["dtEmissao[after]"] = this.filters["dtEmissao[after]"]
         ? `${moment(this.filters["dtEmissao[after]"]).format("YYYY-MM-DD")}T00:00:00-03:00`
         : null;
       this.filters["dtEmissao[before]"] = this.filters["dtEmissao[before]"]
         ? `${moment(this.filters["dtEmissao[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
         : null;
+      console.log("beforeFilter aqui ó");
     },
 
     edit(data) {

@@ -47,10 +47,28 @@ const store = createStore({
         ? new Date(filters["dtEmissao[before]"])
         : null;
 
+      if (!state.filters.documentoDestinatario && state.contribuintes) {
+        console.log(`setando: ${state.contribuintes[0].cnpj}`);
+        state.filters.documentoDestinatario = state.contribuintes[0].cnpj;
+      } else {
+        console.log(`já tem : |${state.filters.documentoDestinatario}|`);
+      }
+
       state.filters = filters;
     },
 
     setContribuintes(state, contribuintes) {
+      if (!state.filters.documentoDestinatario) {
+        let cnpj = contribuintes[0].cnpj;
+        const ls = JSON.parse(localStorage.getItem("filters/api/fis/notaFiscal/_filters"));
+        if (ls.documentoDestinatario) {
+          cnpj = ls.documentoDestinatario;
+        }
+        console.log(`setando: ${cnpj}`);
+        state.filters.documentoDestinatario = cnpj;
+      } else {
+        console.log(`já tem : |${state.filters.documentoDestinatario}|`);
+      }
       state.contribuintes = contribuintes;
     },
   },
@@ -82,12 +100,6 @@ const store = createStore({
       console.log(rs);
       if (rs?.data?.RESULT === "OK") {
         context.commit("setContribuintes", rs.data.DATA);
-        if (!context.state.filters.documentoDestinatario) {
-          console.log(`setando: ${rs.data.DATA[0].cnpj}`);
-          context.state.filters.documentoDestinatario = rs.data.DATA[0].cnpj;
-        } else {
-          console.log(`já tem : |${context.state.filters.documentoDestinatario}|`);
-        }
       } else {
         console.error(rs?.data?.MSG);
         this.$toast.add({
