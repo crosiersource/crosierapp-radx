@@ -242,6 +242,7 @@ import {
   CrosierDropdown,
   CrosierInputInt,
   CrosierInputText,
+  CrosierListS,
 } from "crosier-vue";
 import Column from "primevue/column";
 import SplitButton from "primevue/splitbutton";
@@ -249,7 +250,6 @@ import ConfirmDialog from "primevue/confirmdialog";
 import Toast from "primevue/toast";
 import moment from "moment";
 import axios from "axios";
-import CrosierListS from "./crosierListS";
 
 export default {
   name: "nfEntradaList",
