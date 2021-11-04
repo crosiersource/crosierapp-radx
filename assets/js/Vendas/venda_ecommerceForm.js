@@ -122,7 +122,6 @@ $(document).ready(function () {
 
   $('.btnEditProduto').click(function () {
     let dados = $(this).data();
-    console.log(dados);
     $item_id.val(dados.itemId);
 
     $unidade.prop('disabled', true);

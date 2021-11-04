@@ -5,15 +5,17 @@ import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
 import { createStore } from "vuex";
 import axios from "axios";
+import primevueOptions from "crosier-vue/src/primevue.config.js";
 import Page from "./pages/nfEntradaList";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/saga-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
 import "primeicons/primeicons.css";
+import "crosier-vue/src/yup.locale.pt-br.js";
 
 const app = createApp(Page);
 
-app.use(PrimeVue);
+app.use(PrimeVue, primevueOptions);
 
 app.use(ToastService);
 
@@ -47,11 +49,8 @@ const store = createStore({
         ? new Date(filters["dtEmissao[before]"])
         : null;
 
-      if (!state.filters.documentoDestinatario && state.contribuintes) {
-        console.log(`setando: ${state.contribuintes[0].cnpj}`);
+      if (!state.filters.documentoDestinatario && state.contribuintes[0]) {
         state.filters.documentoDestinatario = state.contribuintes[0].cnpj;
-      } else {
-        console.log(`já tem : |${state.filters.documentoDestinatario}|`);
       }
 
       state.filters = filters;
@@ -64,10 +63,7 @@ const store = createStore({
         if (ls.documentoDestinatario) {
           cnpj = ls.documentoDestinatario;
         }
-        console.log(`setando: ${cnpj}`);
         state.filters.documentoDestinatario = cnpj;
-      } else {
-        console.log(`já tem : |${state.filters.documentoDestinatario}|`);
       }
       state.contribuintes = contribuintes;
     },
@@ -97,7 +93,6 @@ const store = createStore({
           return status < 500;
         },
       });
-      console.log(rs);
       if (rs?.data?.RESULT === "OK") {
         context.commit("setContribuintes", rs.data.DATA);
       } else {

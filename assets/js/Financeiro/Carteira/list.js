@@ -4,6 +4,7 @@ import ToastService from "primevue/toastservice";
 import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
 import { createStore } from "vuex";
+import primevueOptions from "crosier-vue/src/primevue.config.js";
 import Page from "./pages/list";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/saga-blue/theme.css"; // theme
@@ -12,7 +13,7 @@ import "primeicons/primeicons.css";
 
 const app = createApp(Page);
 
-app.use(PrimeVue);
+app.use(PrimeVue, primevueOptions);
 
 app.use(ToastService);
 

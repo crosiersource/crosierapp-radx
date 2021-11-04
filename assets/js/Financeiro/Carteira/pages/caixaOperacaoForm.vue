@@ -140,7 +140,6 @@ export default {
 
     onChangeCaixa() {
       nextTick(() => {
-        console.log(this.fields.carteira?.caixaStatus);
         this.fields.operacao =
           this.fields.carteira?.caixaStatus === "ABERTO" ? "FECHAMENTO" : "ABERTURA";
       });

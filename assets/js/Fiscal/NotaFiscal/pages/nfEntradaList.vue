@@ -242,7 +242,6 @@ import {
   CrosierDropdown,
   CrosierInputInt,
   CrosierInputText,
-  CrosierListS,
 } from "crosier-vue";
 import Column from "primevue/column";
 import SplitButton from "primevue/splitbutton";
@@ -250,6 +249,7 @@ import ConfirmDialog from "primevue/confirmdialog";
 import Toast from "primevue/toast";
 import moment from "moment";
 import axios from "axios";
+import CrosierListS from "./crosierListS";
 
 export default {
   name: "nfEntradaList",
@@ -303,7 +303,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["setLoading"]),
+    ...mapMutations(["setLoading", "setFilters"]),
     ...mapActions(["loadData"]),
 
     moment(date) {
@@ -322,7 +322,6 @@ export default {
       this.filters["dtEmissao[before]"] = this.filters["dtEmissao[before]"]
         ? `${moment(this.filters["dtEmissao[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
         : null;
-      console.log("beforeFilter aqui ó");
     },
 
     edit(data) {
