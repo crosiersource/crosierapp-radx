@@ -272,11 +272,11 @@ class IntegraTrayController extends BaseController
         try {
             $nfId = $this->integradorTray->integrarDadosFiscaisNoPedido($codVenda);
             $this->addFlash('success', 'Dados fiscais integrados com sucesso no pedido');
-            return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $nfId]);
+            return new Response('OK');
         } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
+            return new Response('ERRO');
         }
-        return new Response('ERRO');
     }
 
 
