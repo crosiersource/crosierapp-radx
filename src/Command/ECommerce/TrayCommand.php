@@ -37,13 +37,7 @@ class TrayCommand extends Command
         $this->addArgument('dtBase', InputArgument::OPTIONAL, 'Data Base');
     }
 
-    /**
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Exception
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tipoIntegracao = $input->getArgument('tipoIntegracao');
