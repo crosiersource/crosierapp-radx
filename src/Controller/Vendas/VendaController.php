@@ -45,7 +45,6 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\PlanoPagtoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ConnectionException;
-use Doctrine\DBAL\Driver\Exception;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -142,6 +141,8 @@ class VendaController extends FormListController
      * @param Request $request
      * @param Venda|null $venda
      * @return RedirectResponse|Response
+     * @throws ViewException
+     * @throws \Doctrine\DBAL\Exception
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
     public function vendaFormDados(Request $request, Venda $venda = null)
@@ -420,6 +421,8 @@ class VendaController extends FormListController
      * @Route("/ven/venda/form/pagto/{id}", name="ven_venda_form_pagto", requirements={"id"="\d+"})
      * @param Venda|null $venda
      * @return RedirectResponse|Response
+     * @throws ViewException
+     * @throws \Throwable
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
     public function vendaFormPagto(Venda $venda)
@@ -535,10 +538,10 @@ class VendaController extends FormListController
      *
      * @Route("/ven/venda/form/resumo/{id}", name="ven_venda_form_resumo", requirements={"id"="\d+"})
      * @param Venda|null $venda
-     * @return RedirectResponse|Response
+     * @return Response
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function vendaFormResumo(Venda $venda = null)
+    public function vendaFormResumo(Venda $venda = null): Response
     {
         $params = [
             'listRoute' => 'ven_venda_listVendasEcommerce',
@@ -970,6 +973,7 @@ class VendaController extends FormListController
      * @return RedirectResponse
      *
      * @IsGranted("ROLE_VENDAS_ADMIN", statusCode=403)
+     * @throws \Throwable
      */
     public function deleteItem(Request $request, VendaItem $item): RedirectResponse
     {
@@ -1198,6 +1202,7 @@ class VendaController extends FormListController
             $str = $request->get('term');
             $str = str_replace(' ', '%', $str);
 
+            /** @var Connection $conn */
             $conn = $this->getDoctrine()->getConnection();
 
             $sqlConf = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
@@ -1289,9 +1294,12 @@ class VendaController extends FormListController
      *
      * @param array $rs
      * @return array
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     private function handleResultProdutoSelect2(array $rs): array
     {
+        /** @var Connection $conn */
         $conn = $this->getDoctrine()->getConnection();
 
         $results = [];
@@ -1326,12 +1334,12 @@ class VendaController extends FormListController
                 $stmtPrecos->bindValue('produtoId', $rUnidadesPrecos['produto_id']);
                 $stmtPrecos->bindValue('unidade', $rUnidadesPrecos['text']);
                 $stmtPrecos->bindValue('listaDescricao', 'ATACADO');
-                $stmtPrecos->execute();
-                $rPrecoAtacado = $stmtPrecos->fetchAssociative();
+                $rsPrecos = $stmtPrecos->executeQuery();
+                $rPrecoAtacado = $rsPrecos->fetchAssociative();
 
                 $stmtPrecos->bindValue('listaDescricao', 'VAREJO');
-                $stmtPrecos->execute();
-                $rPrecoVarejo = $stmtPrecos->fetchAssociative();
+                $rsPrecos = $stmtPrecos->executeQuery();
+                $rPrecoVarejo = $rsPrecos->fetchAssociative();
 
                 // Se não tiver preço no ATACADO, utiliza o de VAREJO
                 $rs[$rUnidadesPrecos['text']]['ATACADO'] = $rPrecoAtacado ?: $rPrecoVarejo;
@@ -1344,12 +1352,13 @@ class VendaController extends FormListController
             $codigo = str_pad($r['codigo'], 9, '0', STR_PAD_LEFT);
 
             $stmtUnidades->bindValue('produtoId', $r['id']);
-            $stmtUnidades->execute();
-            $rUnidades = $stmtUnidades->fetchAllAssociative();
+            $rsUnidades = $stmtUnidades->executeQuery();
+            $rUnidades = $rsUnidades->fetchAllAssociative();
 
             $stmtSaldo->bindValue('produtoId', $r['id']);
-            $stmtSaldo->execute();
-            $rSaldo = $stmtSaldo->fetchAssociative();
+            $rsSaldo = $stmtSaldo->executeQuery();
+            $rSaldo = $rsSaldo->fetchAssociative();
+            
             $saldo = DecimalUtils::formatFloat((string)($rSaldo['qt'] + 0));
             $text = $codigo . ' <b>' . $r['nome'] . '</b> (Em estoque: ' . $saldo . ') ';
             $precos = handlePrecos($conn, $rUnidades);
@@ -1476,6 +1485,7 @@ class VendaController extends FormListController
      *
      * @param Request $request
      * @return RedirectResponse
+     * @throws \Doctrine\DBAL\Exception
      */
     public function checkPagtosEmAberto(Request $request): Response
     {
