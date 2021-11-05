@@ -10,6 +10,17 @@ VALUES (null, now(), now(), 'ROLE_CRM_ADMIN', 'ROLE_CRM_ADMIN', 1, 1, 1);
 
 
 INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (null, now(), now(), 'ROLE_CLIENTES', 'Permissão para alterar cadastro de clientes.', 1, 1, 1);
+INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (null, now(), now(), 'ROLE_CLIENTES_ADMIN', 'Permissão para deletar registros de clientes.', 1, 1, 1);
+
+INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (null, now(), now(), 'ROLE_FORNECEDORES', 'Permissão para alterar cadastro de fornecedores.', 1, 1, 1);
+INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (null, now(), now(), 'ROLE_FORNECEDORES_ADMIN', 'Permissão para deletar registros de fornecedores.', 1, 1, 1);
+
+
+INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, now(), now(), 'ROLE_ESTOQUE', 'ROLE_ESTOQUE', 1, 1, 1);
 INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, now(), now(), 'ROLE_ESTOQUE_ADMIN', 'ROLE_ESTOQUE_ADMIN', 1, 1, 1);
