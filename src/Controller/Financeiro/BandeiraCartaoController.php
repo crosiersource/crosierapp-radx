@@ -45,4 +45,5 @@ class BandeiraCartaoController extends FormListController
         ];
         return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
+    
 }
