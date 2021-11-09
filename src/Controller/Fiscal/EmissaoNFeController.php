@@ -713,7 +713,14 @@ class EmissaoNFeController extends FormListController
     {
         $filename = $nf->chaveAcesso . '-' . strtolower($nf->tipoNotaFiscal) . '.xml';
 
-        if (!$nf->getXMLDecoded() || $nf->getXMLDecoded()->getName() !== 'nfeProc') {
+        if (!$nf->getXMLDecoded()) {
+            $nf = $this->spedNFeBusiness->gerarXML($nf);
+        }
+        if (!$nf->getXMLDecoded()) {
+            throw new ViewException('XMLDecoded n/d');
+        }
+        
+        if ($nf->getXMLDecoded()->getName() !== 'nfeProc') {
             $nf = $this->spedNFeBusiness->gerarXML($nf);
             $tools = $this->nfeUtils->getToolsEmUso();
             $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
