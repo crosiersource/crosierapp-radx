@@ -1,5 +1,13 @@
 <template>
-  <CrosierListS titulo="Carteiras" apiResource="/api/fin/carteira" :formUrl="this.formUrl">
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <ConfirmDialog />
+
+  <CrosierListS
+    titulo="Carteiras"
+    apiResource="/api/fin/carteira/"
+    :formUrl="this.formUrl"
+    ref="dt"
+  >
     <template v-slot:filter-fields>
       <div class="form-row">
         <div class="col-md-2">
@@ -42,6 +50,13 @@
               :href="this.formUrl + '?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
+            <a
+              role="button"
+              class="btn btn-danger btn-sm ml-1"
+              title="Deletar registro"
+              @click="this.$refs.dt.deletar(r.data.id)"
+              ><i class="fas fa-trash" aria-hidden="true"></i
+            ></a>
           </div>
           <div class="d-flex justify-content-end mt-1">
             <span
@@ -64,6 +79,8 @@ import { CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
 import Dropdown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
+import Toast from "primevue/toast";
+import ConfirmDialog from "primevue/confirmdialog";
 
 export default {
   components: {
@@ -71,6 +88,8 @@ export default {
     Column,
     InputText,
     Dropdown,
+    Toast,
+    ConfirmDialog,
   },
   data() {
     return {

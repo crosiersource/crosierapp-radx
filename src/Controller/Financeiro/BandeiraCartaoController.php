@@ -23,91 +23,26 @@ class BandeiraCartaoController extends FormListController
 {
 
     /**
-     * @required
-     * @param BandeiraCartaoEntityHandler $entityHandler
-     */
-    public function setEntityHandler(BandeiraCartaoEntityHandler $entityHandler): void
-    {
-        $this->entityHandler = $entityHandler;
-    }
-
-    public function getFilterDatas(array $params): array
-    {
-        return [
-            new FilterData(['descricao'], 'LIKE', 'descricao', $params)
-        ];
-    }
-
-    /**
-     *
-     * @Route("/fin/bandeiraCartao/form/{id}", name="bandeiraCartao_form", defaults={"id"=null}, requirements={"id"="\d+"})
-     * @param Request $request
-     * @param BandeiraCartao|null $bandeiraCartao
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @throws \Exception
-     *
+     * @Route("/fin/bandeiraCartao/form", name="fin_bandeiraCartao_form")
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function form(Request $request, BandeiraCartao $bandeiraCartao = null)
+    public function form(): Response
     {
         $params = [
-            'typeClass' => BandeiraCartaoType::class,
-            'formView' => '@CrosierLibBase/form.html.twig',
-            'formRoute' => 'bandeiraCartao_form',
-            'formPageTitle' => 'Bandeira de Cartão'
+            'jsEntry' => 'Financeiro/BandeiraCartao/form'
         ];
-        return $this->doForm($request, $bandeiraCartao, $params);
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
     /**
-     *
-     * @Route("/fin/bandeiraCartao/list/", name="bandeiraCartao_list")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     *
+     * @Route("/fin/bandeiraCartao/list", name="fin_bandeiraCartao_list")
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function list(Request $request): Response
+    public function list(): Response
     {
         $params = [
-            'formRoute' => 'bandeiraCartao_form',
-            'listView' => 'Financeiro/bandeiraCartaoList.html.twig',
-            'listRoute' => 'bandeiraCartao_list',
-            'listRouteAjax' => 'bandeiraCartao_datatablesJsList',
-            'listPageTitle' => 'Bandeira de Cartão',
-            'listId' => 'bandeiraCartaoList'
+            'jsEntry' => 'Financeiro/BandeiraCartao/list'
         ];
-        return $this->doList($request, $params);
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
-
-    /**
-     *
-     * @Route("/fin/bandeiraCartao/datatablesJsList/", name="bandeiraCartao_datatablesJsList")
-     * @param Request $request
-     * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
-     *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function datatablesJsList(Request $request): Response
-    {
-        return $this->doDatatablesJsList($request);
-    }
-
-    /**
-     *
-     * @Route("/fin/bandeiraCartao/delete/{id}/", name="bandeiraCartao_delete", requirements={"id"="\d+"})
-     * @param Request $request
-     * @param BandeiraCartao $bandeiraCartao
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function delete(Request $request, BandeiraCartao $bandeiraCartao): \Symfony\Component\HttpFoundation\RedirectResponse
-    {
-        return $this->doDelete($request, $bandeiraCartao);
-    }
-
-
 }

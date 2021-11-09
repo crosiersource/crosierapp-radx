@@ -1,5 +1,5 @@
 <template>
-  <Toast class="mt-5" />
+  <Toast position="bottom-right" class="mt-5" />
   <CrosierFormS listUrl="/fin/banco/list" @submitForm="this.submitForm" titulo="Banco">
     <div class="form-row">
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />

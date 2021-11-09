@@ -56,14 +56,14 @@ Encore
 
   .addEntry('Financeiro/Banco/list', './assets/js/Financeiro/Banco/list.js')
   .addEntry('Financeiro/Banco/form', './assets/js/Financeiro/Banco/form.js')
+  .addEntry('Financeiro/BandeiraCartao/list', './assets/js/Financeiro/BandeiraCartao/list.js')
+  .addEntry('Financeiro/BandeiraCartao/form', './assets/js/Financeiro/BandeiraCartao/form.js')
   
-  .addEntry('Financeiro/bancoList', './assets/js/Financeiro/bancoList.js')
   .addEntry('Financeiro/grupoList', './assets/js/Financeiro/grupoList.js')
   .addEntry('Financeiro/grupoItemList', './assets/js/Financeiro/grupoItemList.js')
   .addEntry('Financeiro/grupoItemListMovs', './assets/js/Financeiro/grupoItemListMovs.js')
   .addEntry('Financeiro/centroCustoList', './assets/js/Financeiro/centroCustoList.js')
   .addEntry('Financeiro/modoList', './assets/js/Financeiro/modoList.js')
-  .addEntry('Financeiro/bandeiraCartaoList', './assets/js/Financeiro/bandeiraCartaoList.js')
   .addEntry('Financeiro/operadoraCartaoList', './assets/js/Financeiro/operadoraCartaoList.js')
   .addEntry('Financeiro/registroConferenciaList', './assets/js/Financeiro/registroConferenciaList.js')
   .addEntry('Financeiro/regraImportacaoLinhaList', './assets/js/Financeiro/regraImportacaoLinhaList.js')
