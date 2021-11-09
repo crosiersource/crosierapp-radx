@@ -22,90 +22,27 @@ class RegraImportacaoLinhaController extends FormListController
 {
 
     /**
-     * @required
-     * @param RegraImportacaoLinhaEntityHandler $entityHandler
-     */
-    public function setEntityHandler(RegraImportacaoLinhaEntityHandler $entityHandler): void
-    {
-        $this->entityHandler = $entityHandler;
-    }
-
-    public function getFilterDatas(array $params): array
-    {
-        return [
-            new FilterData(['regraRegexJava'], 'LIKE', 'str', $params)
-        ];
-    }
-
-    /**
-     *
-     * @Route("/fin/regraImportacaoLinha/form/{id}", name="regraImportacaoLinha_form", defaults={"id"=null}, requirements={"id"="\d+"})
-     * @param Request $request
-     * @param RegraImportacaoLinha|null $regraImportacaoLinha
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @throws \Exception
-     *
+     * @Route("/fin/regraImportacaoLinha/form", name="fin_regraImportacaoLinha_form")
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function form(Request $request, RegraImportacaoLinha $regraImportacaoLinha = null)
+    public function form(): Response
     {
         $params = [
-            'typeClass' => RegraImportacaoLinhaType::class,
-            'formView' => 'Financeiro/regraImportacaoLinhaForm.html.twig',
-            'formRoute' => 'regraImportacaoLinha_form',
-            'formPageTitle' => 'Regra de Importação'
+            'jsEntry' => 'Financeiro/RegraImportacaoLinha/form'
         ];
-        return $this->doForm($request, $regraImportacaoLinha, $params);
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
     /**
-     *
-     * @Route("/fin/regraImportacaoLinha/list/", name="regraImportacaoLinha_list")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     *
+     * @Route("/fin/regraImportacaoLinha/list", name="fin_regraImportacaoLinha_list")
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function list(Request $request): Response
+    public function list(): Response
     {
         $params = [
-            'formRoute' => 'regraImportacaoLinha_form',
-            'listView' => 'Financeiro/regraImportacaoLinhaList.html.twig',
-            'listRoute' => 'regraImportacaoLinha_list',
-            'listRouteAjax' => 'regraImportacaoLinha_datatablesJsList',
-            'listPageTitle' => 'Regras de Importação',
-            'listId' => 'regraImportacaoLinhaList'
+            'jsEntry' => 'Financeiro/RegraImportacaoLinha/list'
         ];
-        return $this->doList($request, $params);
-    }
-
-    /**
-     *
-     * @Route("/fin/regraImportacaoLinha/datatablesJsList/", name="regraImportacaoLinha_datatablesJsList")
-     * @param Request $request
-     * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
-     *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function datatablesJsList(Request $request): Response
-    {
-        return $this->doDatatablesJsList($request);
-    }
-
-    /**
-     *
-     * @Route("/fin/regraImportacaoLinha/delete/{id}/", name="regraImportacaoLinha_delete", requirements={"id"="\d+"})
-     * @param Request $request
-     * @param RegraImportacaoLinha $regraImportacaoLinha
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function delete(Request $request, RegraImportacaoLinha $regraImportacaoLinha): \Symfony\Component\HttpFoundation\RedirectResponse
-    {
-        return $this->doDelete($request, $regraImportacaoLinha, []);
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
 
