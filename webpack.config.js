@@ -65,6 +65,7 @@ Encore
   .addEntry('Financeiro/Modo/form', './assets/js/Financeiro/Modo/form.js')
   .addEntry('Financeiro/RegraImportacaoLinha/list', './assets/js/Financeiro/RegraImportacaoLinha/list.js')
   .addEntry('Financeiro/RegraImportacaoLinha/form', './assets/js/Financeiro/RegraImportacaoLinha/form.js')
+  .addEntry('Financeiro/Categoria/form', './assets/js/Financeiro/Categoria/form.js')
   
   .addEntry('Financeiro/grupoList', './assets/js/Financeiro/grupoList.js')
   .addEntry('Financeiro/grupoItemList', './assets/js/Financeiro/grupoItemList.js')

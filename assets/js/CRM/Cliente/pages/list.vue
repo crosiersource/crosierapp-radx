@@ -37,6 +37,13 @@
               :href="this.formUrl + '?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
+            <a
+              role="button"
+              class="btn btn-danger btn-sm ml-1"
+              title="Deletar registro"
+              @click="this.$refs.dt.deletar(r.data.id)"
+              ><i class="fas fa-trash" aria-hidden="true"></i
+            ></a>
           </div>
           <div class="d-flex justify-content-end mt-1">
             <span

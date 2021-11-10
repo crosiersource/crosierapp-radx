@@ -25,77 +25,20 @@ use Symfony\Component\Serializer\Serializer;
 class CategoriaController extends FormListController
 {
 
-    /**
-     * @required
-     * @param CategoriaEntityHandler $entityHandler
-     */
-    public function setEntityHandler(CategoriaEntityHandler $entityHandler): void
-    {
-        $this->entityHandler = $entityHandler;
-    }
-
-    public function getFilterDatas(array $params): array
-    {
-        return [
-            new FilterData(['descricao'], 'LIKE', 'descricao', $params)
-        ];
-    }
 
     /**
-     *
-     * @Route("/fin/categoria/form/{id}", name="categoria_form", defaults={"id"=null}, requirements={"id"="\d+"})
-     * @param Request $request
-     * @param Categoria|null $categoria
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
-     *
+     * @Route("/fin/categoria/form", name="fin_categoria_form")
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function form(Request $request, Categoria $categoria = null)
+    public function form(): Response
     {
         $params = [
-            'typeClass' => CategoriaType::class,
-            'formView' => '@CrosierLibBase/form.html.twig',
-            'formRoute' => 'categoria_form',
-            'formPageTitle' => 'Categoria'
+            'jsEntry' => 'Financeiro/Categoria/form'
         ];
-        return $this->doForm($request, $categoria, $params);
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
-    /**
-     *
-     * @Route("/fin/categoria/list/", name="categoria_list")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
-     *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function list(Request $request): Response
-    {
-        $dados = null;
-        /** @var CategoriaRepository $repo */
-        $repo = $this->getDoctrine()->getRepository(Categoria::class);
-        $dados = $repo->findAll(['codigoOrd' => 'ASC']);
-        $params['dados'] = $dados;
-
-        return $this->doRender('Financeiro/categoriaTreeList.html.twig', $params);
-    }
-
-    /**
-     *
-     * @Route("/fin/categoria/delete/{id}/", name="categoria_delete", requirements={"id"="\d+"})
-     * @param Request $request
-     * @param Categoria $categoria
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function delete(Request $request, Categoria $categoria): \Symfony\Component\HttpFoundation\RedirectResponse
-    {
-        return $this->doDelete($request, $categoria);
-    }
-
+    
     /**
      *
      * @Route("/fin/categoria/select2json", name="categoria_select2json")
