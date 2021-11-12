@@ -7,7 +7,6 @@
     :formUrl="this.formUrl"
     @beforeFilter="this.beforeFilter"
     v-model:selection="this.selection"
-    @tudoSelecionadoClick="this.onTudoSelecionadoClick"
     :ativarSelecao="true"
     ref="dt"
   >
@@ -308,10 +307,6 @@ export default {
 
     moment(date) {
       return moment(date);
-    },
-
-    onTudoSelecionadoClick(sel) {
-      this.selection = sel;
     },
 
     async beforeFilter() {
