@@ -72,7 +72,9 @@ class DeptoController extends BaseController
      */
     public function form(Request $request)
     {
-        $parameters = [];
+        $parameters = [
+            'deptos' => [],
+        ];
 
         try {
             /** @var DeptoRepository $repoDepto */
@@ -86,9 +88,8 @@ class DeptoController extends BaseController
                 foreach ($depto->grupos as $grupo) {
                     foreach ($grupo->subgrupos as $subgrupo) {
                         $stmt_qtdePorSubgrupo->bindValue('subgrupoId', $subgrupo->getId());
-                        $stmt_qtdePorSubgrupo->execute();
-                        $rs_qtdePorSubgrupo = $stmt_qtdePorSubgrupo->fetchAllAssociative();
-                        $subgrupo->qtdeTotalProdutos = $rs_qtdePorSubgrupo[0]['qt'] ?? 0;
+                        $rs_qtdePorSubgrupo = $stmt_qtdePorSubgrupo->executeQuery()->fetchAssociative();
+                        $subgrupo->qtdeTotalProdutos = $rs_qtdePorSubgrupo['qt'] ?? 0;
                     }
                 }
             }
