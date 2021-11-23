@@ -10,8 +10,10 @@ use App\Form\Financeiro\MovimentacaoPagtoType;
 use App\Form\Financeiro\MovimentacaoTransferenciaEntreCarteirasType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
@@ -21,7 +23,6 @@ use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\BandeiraCartao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Cadeia;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
@@ -31,7 +32,6 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\CadeiaEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\BandeiraCartaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
@@ -58,8 +58,6 @@ class MovimentacaoController extends FormListController
     private MovimentacaoBusiness $business;
 
     private SessionInterface $session;
-
-    private CadeiaEntityHandler $cadeiaEntityHandler;
 
     private EntityIdUtils $entityIdUtils;
 
@@ -97,16 +95,6 @@ class MovimentacaoController extends FormListController
     public function setEntityIdUtils(EntityIdUtils $entityIdUtils): void
     {
         $this->entityIdUtils = $entityIdUtils;
-    }
-
-
-    /**
-     * @required
-     * @param CadeiaEntityHandler $cadeiaEntityHandler
-     */
-    public function setCadeiaEntityHandler(CadeiaEntityHandler $cadeiaEntityHandler): void
-    {
-        $this->cadeiaEntityHandler = $cadeiaEntityHandler;
     }
 
 
@@ -1105,5 +1093,108 @@ class MovimentacaoController extends FormListController
             ['results' => $select2js]
         );
     }
+
+
+
+    // ------------------------------------ vue
+
+
+    /**
+     * @Route("/fin/movimentacao/aPagarReceber/form", name="fin_banco_form")
+     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
+     */
+    public function form(): Response
+    {
+        $params = [
+            'jsEntry' => 'Financeiro/Movimentacao/form_aPagarReceber'
+        ];
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
+    }
+
+    /**
+     *
+     * @Route("/api/fin/movimentacao/filiais/", name="api_fin_movimentacao_filiais")
+     * @return Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function getFiliais(): Response
+    {
+        try {
+
+
+            /** @var AppConfigRepository $repoAppConfig */
+            $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+            $filiaisR = json_decode($repoAppConfig->findConfigByChaveAndAppNome('financeiro.filiais_prop.json', 'crosierapp-radx')->getValor(), true);
+            if (!$filiaisR) {
+                throw new \RuntimeException();
+            }
+            $filiais = [];
+            foreach ($filiaisR as $documento => $nome) {
+                $str = StringUtils::mascararCnpjCpf($documento) . ' - ' . $nome;
+                $filiais[] = [
+                    'name' => $str,
+                    'value' => $str
+                ];
+            }
+            
+
+            return new JsonResponse(
+                [
+                    'RESULT' => 'OK',
+                    'MSG' => 'Executado com sucesso',
+                    'DATA' => $filiais
+                ]
+            );
+        } catch (ViewException $e) {
+            return new JsonResponse(
+                [
+                    'RESULT' => 'ERR',
+                    'MSG' => 'Erro - getFiliais',
+                ]
+            );
+        }
+    }
+
+    /**
+     *
+     * @Route("/api/fin/movimentacao/findSacadoOuCedente/", name="api_fin_movimentacao_findSacadoOuCedente")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function getSacadoOuCedente(Request $request): Response
+    {
+        try {
+            $term = $request->get('term');
+            /** @var MovimentacaoRepository $repoMovimentacao */
+            $repoMovimentacao = $this->getDoctrine()->getRepository(Movimentacao::class);
+
+            $rs = $repoMovimentacao->findSacadoOuCedente($term);
+            $fn = function ($e) {
+                return StringUtils::mascararCnpjCpf($e['documento']) . ' - ' . $e['nome'];
+            };
+            $s2js = Select2JsUtils::toSelect2DataFn($rs, $fn, [], $fn);
+            return new JsonResponse(
+                [
+                    'RESULT' => 'OK',
+                    'MSG' => 'Executado com sucesso',
+                    'DATA' => $s2js
+                ]
+            );
+        } catch (ViewException $e) {
+            return new JsonResponse(
+                [
+                    'RESULT' => 'ERR',
+                    'MSG' => 'Erro - getFiliais',
+                ]
+            );
+        }
+
+    }
+
 
 }

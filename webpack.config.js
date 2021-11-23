@@ -66,12 +66,12 @@ Encore
   .addEntry('Financeiro/RegraImportacaoLinha/list', './assets/js/Financeiro/RegraImportacaoLinha/list.js')
   .addEntry('Financeiro/RegraImportacaoLinha/form', './assets/js/Financeiro/RegraImportacaoLinha/form.js')
   .addEntry('Financeiro/Categoria/form', './assets/js/Financeiro/Categoria/form.js')
+  .addEntry('Financeiro/Movimentacao/form_aPagarReceber', './assets/js/Financeiro/Movimentacao/form_aPagarReceber.js')
   
   .addEntry('Financeiro/grupoList', './assets/js/Financeiro/grupoList.js')
   .addEntry('Financeiro/grupoItemList', './assets/js/Financeiro/grupoItemList.js')
   .addEntry('Financeiro/grupoItemListMovs', './assets/js/Financeiro/grupoItemListMovs.js')
   .addEntry('Financeiro/registroConferenciaList', './assets/js/Financeiro/registroConferenciaList.js')
-  .addEntry('Financeiro/categoriaTreeList', './assets/js/Financeiro/categoriaTreeList.js')
   .addEntry('Financeiro/movimentacaoList', './assets/js/Financeiro/movimentacaoList.js')
   .addEntry('Financeiro/movimentacao_pesquisa_list', './assets/js/Financeiro/movimentacao_pesquisa_list.js')
   .addEntry('Financeiro/movimentacaoExtratoList', './assets/js/Financeiro/movimentacaoExtratoList.js')
