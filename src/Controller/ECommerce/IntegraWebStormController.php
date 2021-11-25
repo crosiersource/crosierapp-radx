@@ -92,6 +92,26 @@ class IntegraWebStormController extends BaseController
 
     /**
      *
+     * @Route("/est/integraWebStorm/atualizarTodosOsEstoquesEPrecos", name="est_integraWebStorm_atualizarTodosOsEstoquesEPrecos")
+     * @param Request $request
+     * @param IntegradorWebStorm $integraWebStormBusiness
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function atualizarTodosOsEstoquesEPrecos(Request $request, IntegradorWebStorm $integraWebStormBusiness): Response
+    {
+        try {
+            $rQtde = $integraWebStormBusiness->atualizarTodosOsEstoquesEPrecos();
+            $this->addFlash('success', $rQtde . ' qtdes/preços atualizados.');
+        } catch (\Throwable $e) {
+            $this->addFlash('error', 'Erro ao atualiar qtdes/preços (' . $e->getMessage() . ')');
+        }
+        return new Response('OK');
+    }
+
+
+    /**
+     *
      * @Route("/est/integraWebStorm/obterVendas/{dtVenda}", name="est_integraWebStorm_obterVendas", defaults={"dtVenda": null})
      * @ParamConverter("dtVenda", options={"format": "Y-m-d"})
      *
