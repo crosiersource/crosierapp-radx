@@ -5227,16 +5227,16 @@
         },
         {
             "name": "symfony/config",
-            "version": "v5.3.4",
+            "version": "v5.3.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "4268f3059c904c61636275182707f81645517a37"
+                "reference": "f080af00c441f1df40cf5c269707fdebe5740557"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/4268f3059c904c61636275182707f81645517a37",
-                "reference": "4268f3059c904c61636275182707f81645517a37",
+                "url": "https://api.github.com/repos/symfony/config/zipball/f080af00c441f1df40cf5c269707fdebe5740557",
+                "reference": "f080af00c441f1df40cf5c269707fdebe5740557",
                 "shasum": ""
             },
             "require": {
@@ -5286,7 +5286,7 @@
             "description": "Helps you find, load, combine, autofill and validate configuration values of any kind",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/config/tree/v5.3.4"
+                "source": "https://github.com/symfony/config/tree/v5.3.11"
             },
             "funding": [
                 {
@@ -5302,7 +5302,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-07-21T12:40:44+00:00"
+            "time": "2021-10-29T16:05:40+00:00"
         },
         {
             "name": "symfony/console",
@@ -5484,16 +5484,16 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v5.3.8",
+            "version": "v5.3.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "e39c344e06a3ceab531ebeb6c077e6652c4a0829"
+                "reference": "3793617321eb39b2e8e708f6fd61f875ec5f0ed6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/e39c344e06a3ceab531ebeb6c077e6652c4a0829",
-                "reference": "e39c344e06a3ceab531ebeb6c077e6652c4a0829",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/3793617321eb39b2e8e708f6fd61f875ec5f0ed6",
+                "reference": "3793617321eb39b2e8e708f6fd61f875ec5f0ed6",
                 "shasum": ""
             },
             "require": {
@@ -5552,7 +5552,7 @@
             "description": "Allows you to standardize and centralize the way objects are constructed in your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dependency-injection/tree/v5.3.8"
+                "source": "https://github.com/symfony/dependency-injection/tree/v5.3.11"
             },
             "funding": [
                 {
@@ -5568,7 +5568,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-21T20:52:44+00:00"
+            "time": "2021-11-17T12:16:12+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -9069,16 +9069,16 @@
         },
         {
             "name": "symfony/security-bundle",
-            "version": "v5.3.8",
+            "version": "v5.3.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-bundle.git",
-                "reference": "b755ed5d11685ba9aaa27b060250e5a57371f37f"
+                "reference": "be52715f4a7fd490937e4f881dc00ff5c0dcfeb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-bundle/zipball/b755ed5d11685ba9aaa27b060250e5a57371f37f",
-                "reference": "b755ed5d11685ba9aaa27b060250e5a57371f37f",
+                "url": "https://api.github.com/repos/symfony/security-bundle/zipball/be52715f4a7fd490937e4f881dc00ff5c0dcfeb3",
+                "reference": "be52715f4a7fd490937e4f881dc00ff5c0dcfeb3",
                 "shasum": ""
             },
             "require": {
@@ -9151,7 +9151,7 @@
             "description": "Provides a tight integration of the Security component into the Symfony full-stack framework",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/security-bundle/tree/v5.3.8"
+                "source": "https://github.com/symfony/security-bundle/tree/v5.3.12"
             },
             "funding": [
                 {
@@ -9167,20 +9167,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-26T16:32:59+00:00"
+            "time": "2021-11-24T08:15:08+00:00"
         },
         {
             "name": "symfony/security-core",
-            "version": "v5.3.8",
+            "version": "v5.3.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-core.git",
-                "reference": "62e5943d042aa5fc43d44b40209aa7304f68c56e"
+                "reference": "48c8ed9f4789439427917f0023f86895d64b73a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-core/zipball/62e5943d042aa5fc43d44b40209aa7304f68c56e",
-                "reference": "62e5943d042aa5fc43d44b40209aa7304f68c56e",
+                "url": "https://api.github.com/repos/symfony/security-core/zipball/48c8ed9f4789439427917f0023f86895d64b73a7",
+                "reference": "48c8ed9f4789439427917f0023f86895d64b73a7",
                 "shasum": ""
             },
             "require": {
@@ -9244,7 +9244,7 @@
             "description": "Symfony Security Component - Core Library",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/security-core/tree/v5.3.8"
+                "source": "https://github.com/symfony/security-core/tree/v5.3.11"
             },
             "funding": [
                 {
@@ -9260,7 +9260,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-21T20:52:44+00:00"
+            "time": "2021-11-17T12:16:12+00:00"
         },
         {
             "name": "symfony/security-csrf",
@@ -9403,16 +9403,16 @@
         },
         {
             "name": "symfony/security-http",
-            "version": "v5.3.8",
+            "version": "v5.3.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-http.git",
-                "reference": "d499ecde6f81de42e557514626d6d5c14c0bdb78"
+                "reference": "c25090783bd4209a42f9c43a235280fd23315a62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-http/zipball/d499ecde6f81de42e557514626d6d5c14c0bdb78",
-                "reference": "d499ecde6f81de42e557514626d6d5c14c0bdb78",
+                "url": "https://api.github.com/repos/symfony/security-http/zipball/c25090783bd4209a42f9c43a235280fd23315a62",
+                "reference": "c25090783bd4209a42f9c43a235280fd23315a62",
                 "shasum": ""
             },
             "require": {
@@ -9468,7 +9468,7 @@
             "description": "Symfony Security Component - HTTP Integration",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/security-http/tree/v5.3.8"
+                "source": "https://github.com/symfony/security-http/tree/v5.3.11"
             },
             "funding": [
                 {
@@ -9484,7 +9484,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-26T16:35:00+00:00"
+            "time": "2021-11-05T16:25:46+00:00"
         },
         {
             "name": "symfony/serializer",
@@ -9735,16 +9735,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.3.7",
+            "version": "v5.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "8d224396e28d30f81969f083a58763b8b9ceb0a5"
+                "reference": "d70c35bb20bbca71fc4ab7921e3c6bda1a82a60c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/8d224396e28d30f81969f083a58763b8b9ceb0a5",
-                "reference": "8d224396e28d30f81969f083a58763b8b9ceb0a5",
+                "url": "https://api.github.com/repos/symfony/string/zipball/d70c35bb20bbca71fc4ab7921e3c6bda1a82a60c",
+                "reference": "d70c35bb20bbca71fc4ab7921e3c6bda1a82a60c",
                 "shasum": ""
             },
             "require": {
@@ -9798,7 +9798,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v5.3.7"
+                "source": "https://github.com/symfony/string/tree/v5.3.10"
             },
             "funding": [
                 {
@@ -9814,7 +9814,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-08-26T08:00:08+00:00"
+            "time": "2021-10-27T18:21:46+00:00"
         },
         {
             "name": "symfony/translation",
