@@ -1059,9 +1059,6 @@ class MovimentacaoController extends FormListController
     public function clonar(Request $request, Movimentacao $movimentacao = null): RedirectResponse
     {
         try {
-            if (!$this->isCsrfTokenValid('fin_movimentacao_clonar', $request->get('token'))) {
-                throw new ViewException('Token inválido');
-            }
             /** @var Movimentacao $nova */
             $nova = $this->getEntityHandler()->doClone($movimentacao);
             $this->addFlash('success', 'Movimentação clonada com sucesso');
@@ -1111,6 +1108,7 @@ class MovimentacaoController extends FormListController
         return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
+    
     /**
      *
      * @Route("/api/fin/movimentacao/filiais/", name="api_fin_movimentacao_filiais")
@@ -1122,8 +1120,6 @@ class MovimentacaoController extends FormListController
     public function getFiliais(): Response
     {
         try {
-
-
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
             $filiaisR = json_decode($repoAppConfig->findConfigByChaveAndAppNome('financeiro.filiais_prop.json', 'crosierapp-radx')->getValor(), true);
@@ -1157,6 +1153,7 @@ class MovimentacaoController extends FormListController
         }
     }
 
+    
     /**
      *
      * @Route("/api/fin/movimentacao/findSacadoOuCedente/", name="api_fin_movimentacao_findSacadoOuCedente")
@@ -1175,9 +1172,13 @@ class MovimentacaoController extends FormListController
 
             $rs = $repoMovimentacao->findSacadoOuCedente($term);
             $fn = function ($e) {
-                return StringUtils::mascararCnpjCpf($e['documento']) . ' - ' . $e['nome'];
+                return StringUtils::mascararCnpjCpf($e['documento'] ?: 99999999999999) . ' - ' . $e['nome'];
             };
             $s2js = Select2JsUtils::toSelect2DataFn($rs, $fn, [], $fn);
+
+//            foreach ($rs as $r) {
+//                $s2js[] = StringUtils::mascararCnpjCpf($r['documento'] ?: 99999999999999) . ' - ' . $r['nome'];
+//            }
             return new JsonResponse(
                 [
                     'RESULT' => 'OK',

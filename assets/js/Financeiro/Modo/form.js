@@ -61,7 +61,7 @@ const store = createStore({
       if (id) {
         try {
           const response = await api.get({
-            apiResource: `/api/fin/modo/${id}}`,
+            apiResource: `/api/fin/modo/${id}`,
           });
 
           if (response.data["@id"]) {

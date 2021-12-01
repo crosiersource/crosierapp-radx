@@ -63,7 +63,7 @@ const store = createStore({
       if (id) {
         try {
           const response = await api.get({
-            apiResource: `/api/fin/operadoraCartao/${id}}`,
+            apiResource: `/api/fin/movimentacao/${id}`,
           });
 
           if (response.data["@id"]) {

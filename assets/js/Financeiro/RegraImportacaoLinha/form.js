@@ -63,7 +63,7 @@ const store = createStore({
       if (id) {
         try {
           const response = await api.get({
-            apiResource: `/api/fin/regraImportacaoLinha/${id}}`,
+            apiResource: `/api/fin/regraImportacaoLinha/${id}`,
           });
 
           if (response.data["@id"]) {

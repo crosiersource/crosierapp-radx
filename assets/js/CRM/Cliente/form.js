@@ -61,7 +61,7 @@ const store = createStore({
       if (id) {
         try {
           const response = await api.get({
-            apiResource: `/api/crm/cliente/${id}}`,
+            apiResource: `/api/crm/cliente/${id}`,
           });
 
           if (response.data["@id"]) {
