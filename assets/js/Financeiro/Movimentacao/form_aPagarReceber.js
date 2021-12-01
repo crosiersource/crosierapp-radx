@@ -48,6 +48,9 @@ const store = createStore({
     },
 
     setFields(state, fields) {
+      fields.dtMoviment = fields.dtMoviment ? new Date(fields.dtMoviment) : null;
+      fields.dtVencto = fields.dtVencto ? new Date(fields.dtVencto) : null;
+      fields.dtVenctoEfetiva = fields.dtVenctoEfetiva ? new Date(fields.dtVenctoEfetiva) : null;
       state.fields = fields;
     },
 

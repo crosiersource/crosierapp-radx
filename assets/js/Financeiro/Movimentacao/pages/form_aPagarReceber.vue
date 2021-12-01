@@ -230,7 +230,7 @@
               />
             </div>
 
-            <div class="form-row form-group">
+            <div class="form-row form-group camposEmpilhados">
               <label class="col-form-label col-sm-3" for="dtVencto">Dt Vencto</label>
               <CrosierCalendar
                 :showLabel="false"
@@ -241,7 +241,7 @@
               />
             </div>
 
-            <div class="form-row form-group">
+            <div class="form-row form-group camposEmpilhados">
               <label class="col-form-label col-sm-3" for="dtVenctoEfetiva">Dt Vencto Efet</label>
               <CrosierCalendar
                 :showLabel="false"
@@ -251,11 +251,6 @@
                 v-model="this.fields.dtVenctoEfetiva"
                 :error="this.fieldsErrors.dtVenctoEfetiva"
               />
-            </div>
-
-            <div class="form-group row">
-              <label class="col-form-label col-sm-4">&nbsp;</label>
-              <div class="col-sm-8">&nbsp;</div>
             </div>
           </div>
         </div>
@@ -279,7 +274,7 @@
               />
             </div>
 
-            <div class="form-row form-group">
+            <div class="form-row form-group camposEmpilhados">
               <label class="col-form-label col-sm-3" for="dtVencto">Descontos</label>
               <CrosierCurrency
                 :showLabel="false"
@@ -291,7 +286,7 @@
               />
             </div>
 
-            <div class="form-row form-group">
+            <div class="form-row form-group camposEmpilhados">
               <label class="col-form-label col-sm-3" for="acrescimos">Acréscimos</label>
               <CrosierCurrency
                 :showLabel="false"
@@ -303,7 +298,7 @@
               />
             </div>
 
-            <div class="form-row form-group">
+            <div class="form-row form-group camposEmpilhados">
               <label class="col-form-label col-sm-3" for="valorTotal">Valor Total</label>
               <CrosierCurrency
                 :showLabel="false"
@@ -541,3 +536,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.camposEmpilhados {
+  margin-top: -15px;
+}
+</style>
