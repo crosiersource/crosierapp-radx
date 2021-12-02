@@ -22,7 +22,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class VendaAPIController extends BaseAPIEntityIdController
 {
 
-    /** @var VendaEntityHandler */
     protected $entityHandler;
 
     private VendaBusiness $vendaBusiness;
