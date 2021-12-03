@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -21,6 +22,17 @@ class DefaultController extends BaseController
     public function index()
     {
         return $this->doRender('dashboard.html.twig');
+    }
+
+    /**
+     * @Route("/v/{vuePage}", name="v_vuaPage", requirements={"vuePage"=".+"})
+     */
+    public function vuePage($vuePage): Response
+    {
+        $params = [
+            'jsEntry' => $vuePage
+        ];
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
 }

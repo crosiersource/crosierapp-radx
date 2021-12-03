@@ -336,12 +336,12 @@ import {
   CrosierInputInt,
   CrosierInputText,
   CrosierInputTextarea,
+  CrosierCalendar,
   submitForm,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 import moment from "moment";
-import CrosierCalendar from "./CrosierCalendar";
 
 export default {
   components: {

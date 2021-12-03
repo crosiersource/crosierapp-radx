@@ -320,16 +320,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "d606ec45aa922371edf5bfa71b0aa74e9c8e8306"
+                "reference": "c0fb927a4510be35d86e58299db9af82c52ba6bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/d606ec45aa922371edf5bfa71b0aa74e9c8e8306",
-                "reference": "d606ec45aa922371edf5bfa71b0aa74e9c8e8306",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/c0fb927a4510be35d86e58299db9af82c52ba6bc",
+                "reference": "c0fb927a4510be35d86e58299db9af82c52ba6bc",
                 "shasum": ""
             },
             "require": {
                 "crosiersource/crosierlib-base": "@dev",
+                "doctrine/annotations": "^1.0",
+                "doctrine/doctrine-bundle": "^2.4",
+                "doctrine/doctrine-migrations-bundle": "^3.2",
+                "doctrine/orm": "^2.10",
                 "econea/nusoap": "^0.9.7",
                 "ext-bcmath": "*",
                 "ext-ctype": "*",
@@ -375,7 +379,7 @@
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
                 "source": "https://github.com/crosiersource/crosierlib-radx/tree/master"
             },
-            "time": "2021-12-01T15:21:03+00:00"
+            "time": "2021-12-03T17:07:57+00:00"
         },
         {
             "name": "doctrine/annotations",
