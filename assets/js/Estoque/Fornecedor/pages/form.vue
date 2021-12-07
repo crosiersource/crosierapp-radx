@@ -1,11 +1,10 @@
 <template>
   <Toast position="bottom-right" class="mt-5" />
-
   <CrosierFormS
-    listUrl="/v/crm/cliente/list"
-    formUrl="/v/crm/cliente/form"
+    listUrl="/v/est/fornecedor/list"
+    formUrl="/v/est/fornecedor/form"
     @submitForm="this.submitForm"
-    titulo="Cliente"
+    titulo="Fornecedor"
   >
     <div class="form-row">
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
@@ -13,9 +12,9 @@
       <CrosierInputInt
         label="Código"
         col="2"
-        id="codigoCliente"
-        v-model="this.fields.codigoCliente"
-        :error="this.formErrors.codigoCliente"
+        id="codigoFornecedor"
+        v-model="this.fields.codigoFornecedor"
+        :error="this.formErrors.codigoFornecedor"
       />
 
       <CrosierInputText
@@ -69,7 +68,7 @@ export default {
 
     this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
-      codigoCliente: yup.number().required().typeError(),
+      codigoFornecedor: yup.number().required().typeError(),
       nome: yup.string().required().typeError(),
       utilizado: yup.boolean().required().typeError(),
     });
@@ -83,7 +82,7 @@ export default {
     async submitForm() {
       this.setLoading(true);
       await submitForm({
-        apiResource: "/api/crm/cliente",
+        apiResource: "/api/est/fornecedor",
         schemaValidator: this.schemaValidator,
         $store: this.$store,
         formDataStateName: "fields",

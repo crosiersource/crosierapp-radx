@@ -34,11 +34,11 @@
         :error="this.formErrors.dtConsolidado"
       />
 
-      <CrosierDropdown label="Atual" col="2" id="atual" v-model="this.fields.atual" />
+      <CrosierDropdownBoolean label="Atual" col="2" id="atual" v-model="this.fields.atual" />
     </div>
 
     <div class="form-row">
-      <CrosierDropdown
+      <CrosierDropdownBoolean
         label="Concreta"
         col="3"
         id="concreta"
@@ -48,7 +48,7 @@
         :error="this.formErrors.concreta"
       />
 
-      <CrosierDropdown
+      <CrosierDropdownBoolean
         label="Abertas"
         col="3"
         id="abertas"
@@ -57,7 +57,7 @@
         :error="this.formErrors.abertas"
       />
 
-      <CrosierDropdown
+      <CrosierDropdownBoolean
         label="Caixa"
         col="3"
         id="caixa"
@@ -66,7 +66,7 @@
         :error="this.formErrors.caixa"
       />
 
-      <CrosierDropdown
+      <CrosierDropdownBoolean
         label="Cheques"
         col="3"
         id="cheque"
@@ -126,7 +126,7 @@ import {
   submitForm,
   CrosierCalendar,
   CrosierCurrency,
-  CrosierDropdown,
+  CrosierDropdownBoolean,
   CrosierDropdownBanco,
   CrosierDropdownEntity,
   CrosierInputText,
@@ -141,7 +141,7 @@ export default {
     CrosierDropdownBanco,
     Toast,
     CrosierFormS,
-    CrosierDropdown,
+    CrosierDropdownBoolean,
     CrosierInputText,
     CrosierInputInt,
     CrosierCalendar,

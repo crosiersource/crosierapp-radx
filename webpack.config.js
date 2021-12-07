@@ -32,14 +32,15 @@ Encore
   .addEntry('Estoque/pedidoCompra_form', './assets/js/Estoque/pedidoCompra_form.js')
   .addEntry('Estoque/pedidoCompraItem_form', './assets/js/Estoque/pedidoCompraItem_form.js')
   .addEntry('Estoque/pedidoCompra_list', './assets/js/Estoque/pedidoCompra_list.js')
-  .addEntry('Estoque/fornecedor_list', './assets/js/Estoque/fornecedor_list.js')
   .addEntry('Estoque/romaneio_form', './assets/js/Estoque/romaneio_form.js')
   .addEntry('Estoque/romaneio_marcarProdutoForm', './assets/js/Estoque/romaneio_marcarProdutoForm.js')
-  .addEntry('Estoque/fornecedor_form', './assets/js/Estoque/fornecedor_form.js')
   .addEntry('Estoque/unidade_form', './assets/js/Estoque/unidade_form.js')
   .addEntry('Estoque/unidade_list', './assets/js/Estoque/unidade_list.js')
   .addEntry('Estoque/entrada_form', './assets/js/Estoque/entrada_form.js')
   .addEntry('Estoque/entrada_list', './assets/js/Estoque/entrada_list.js')
+
+  .addEntry('est/fornecedor/list', './assets/js/Estoque/Fornecedor/list.js')
+  .addEntry('est/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')
 
   .addEntry('Fiscal/emissaoNFe/form', './assets/js/Fiscal/emissaoNFe/form.js')
   .addEntry('Fiscal/emissaoNFe/formItem', './assets/js/Fiscal/emissaoNFe/formItem.js')
@@ -93,8 +94,8 @@ Encore
 
   .addEntry('RH/colaborador_form', './assets/js/RH/colaborador_form.js')
 
-  .addEntry('CRM/Cliente/list', './assets/js/CRM/Cliente/list.js')
-  .addEntry('CRM/Cliente/form', './assets/js/CRM/Cliente/form.js')
+  .addEntry('crm/cliente/list', './assets/js/CRM/Cliente/list.js')
+  .addEntry('crm/cliente/form', './assets/js/CRM/Cliente/form.js')
 
 
   .addEntry('Vendas/ven_venda_listVendasPorDiaComEcommerce', './assets/js/Vendas/ven_venda_listVendasPorDiaComEcommerce.js')

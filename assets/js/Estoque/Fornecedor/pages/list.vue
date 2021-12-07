@@ -1,5 +1,5 @@
 <template>
-  <CrosierListS titulo="Clientes" apiResource="/api/crm/cliente" :formUrl="this.formUrl">
+  <CrosierListS titulo="Fornecedores" apiResource="/api/est/fornecedor" :formUrl="this.formUrl">
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputText
@@ -74,7 +74,7 @@ export default {
   },
   data() {
     return {
-      formUrl: "/v/crm/cliente/form",
+      formUrl: "/v/est/fornecedor/form",
     };
   },
 

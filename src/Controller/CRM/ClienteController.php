@@ -101,29 +101,6 @@ class ClienteController extends FormListController
     }
 
 
-    /**
-     * @Route("/crm/cliente/form", name="crm_cliente_form")
-     * @IsGranted("ROLE_CRM_ADMIN", statusCode=403)
-     */
-    public function form(): Response
-    {
-        $params = [
-            'jsEntry' => 'CRM/Cliente/form'
-        ];
-        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
-    }
-
-    /**
-     * @Route("/crm/cliente/list", name="crm_cliente_list")
-     * @IsGranted("ROLE_CRM_ADMIN", statusCode=403)
-     */
-    public function list(): Response
-    {
-        $params = [
-            'jsEntry' => 'CRM/Cliente/list'
-        ];
-        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
-    }
 
 
 
