@@ -1130,7 +1130,7 @@ class MovimentacaoController extends FormListController
             foreach ($filiaisR as $documento => $nome) {
                 $str = StringUtils::mascararCnpjCpf($documento) . ' - ' . $nome;
                 $filiais[] = [
-                    'name' => $str,
+                    'label' => $str,
                     'value' => $str
                 ];
             }

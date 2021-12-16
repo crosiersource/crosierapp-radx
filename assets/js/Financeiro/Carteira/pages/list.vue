@@ -96,8 +96,8 @@ export default {
       formUrl: "/fin/carteira/form",
       dropdownOptions: {
         statusOptions: [
-          { name: "Ativo", value: true },
-          { name: "Inativo", value: false },
+          { label: "Ativo", value: true },
+          { label: "Inativo", value: false },
         ],
       },
     };

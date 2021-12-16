@@ -72,9 +72,9 @@
         col="3"
         v-model="this.fields.sinalValor"
         :options="[
-          { name: 'Positivo', value: 1 },
-          { name: 'Negativo', value: -1 },
-          { name: 'Ambos', value: 0 },
+          { label: 'Positivo', value: 1 },
+          { label: 'Negativo', value: -1 },
+          { label: 'Ambos', value: 0 },
         ]"
         label="Sinal"
         id="sinalValor"

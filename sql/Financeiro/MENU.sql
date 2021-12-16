@@ -46,11 +46,8 @@ WHERE pai_uuid = '3984a4f5-cd55-4525-87b9-01212fb1952c';
 
 INSERT INTO `cfg_entmenu` (`id`, `uuid`, `label`, `icon`, `tipo`, `pai_uuid`, `ordem`, `css_style`, `inserted`, `updated`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`, `url`, `app_uuid`,
                            `roles`)
-VALUES (NULL, '52b3799e-f70e-4adf-8052-88f41ec1834e', 'Conta a Pagar', 'fas fa-file-invoice-dollar', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 2, NULL, now(), now(), 1, 1,
-        1,
-        '/fin/movimentacao/form/aPagarReceber/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
-       (NULL, '9badfa49-3e39-44a8-b6cc-667d87cbc167', 'Conta a Pagar (Parcelamento)', 'fas fa-file-invoice-dollar', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 3, NULL, now(),
-        now(), 1, 1, 1, '/fin/movimentacao/form/aPagarReceber/?parcelamento=true', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
+VALUES (NULL, '52b3799e-f70e-4adf-8052-88f41ec1834e', 'Conta a Pagar', 'fas fa-file-invoice-dollar', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 2, NULL, now(), 
+        now(), 1, 1, 1, '/fin/movimentacao/aPagarReceber/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
        (NULL, 'aaa28528-43b5-4066-9ccc-9a083cd88a1a', 'Cheque Próprio', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 4, NULL, now(), now(), 1, 1, 1,
         '/fin/movimentacao/form/chequeProprio/', '9121ea11-dc5d-4a22-9596-187f5452f95a', ''),
        (NULL, '4b847e88-f16c-4b78-8d8a-10d1cfbbb0b1', 'Cheque Terceiros', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', 6, NULL, now(), now(), 1, 1, 1,

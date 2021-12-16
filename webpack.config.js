@@ -75,7 +75,6 @@ Encore
   .addEntry('Financeiro/grupoItemListMovs', './assets/js/Financeiro/grupoItemListMovs.js')
   .addEntry('Financeiro/registroConferenciaList', './assets/js/Financeiro/registroConferenciaList.js')
   .addEntry('Financeiro/movimentacaoList', './assets/js/Financeiro/movimentacaoList.js')
-  .addEntry('Financeiro/movimentacao_pesquisa_list', './assets/js/Financeiro/movimentacao_pesquisa_list.js')
   .addEntry('Financeiro/movimentacaoExtratoList', './assets/js/Financeiro/movimentacaoExtratoList.js')
   .addEntry('Financeiro/movimentacaoAPagarReceberList', './assets/js/Financeiro/movimentacaoAPagarReceberList.js')
   .addEntry('Financeiro/movimentacaoRecorrentesList', './assets/js/Financeiro/movimentacaoRecorrentesList.js')

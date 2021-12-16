@@ -5,6 +5,7 @@
   <CrosierListS
     :filtrosNaSidebar="true"
     titulo="Movimentações"
+    subtitulo="Pesquisa"
     apiResource="/api/fin/movimentacao/"
     :formUrl="this.formUrl"
     ref="dt"
@@ -50,9 +51,22 @@
           v-model="this.filters.descricao"
         />
       </div>
+
+      <div class="form-row">
+        <CrosierDropdown
+          v-model="this.filters.status"
+          label="Status"
+          id="status"
+          :options="[
+            { label: 'ABERTA', value: 'ABERTA' },
+            { label: 'REALIZADA', value: 'REALIZADA' },
+          ]"
+        />
+      </div>
+
       <div class="form-row">
         <CrosierCalendar
-          label="De"
+          label="Desde..."
           col="6"
           inputClass="crsr-date"
           id="dt"
@@ -61,12 +75,66 @@
         />
 
         <CrosierCalendar
-          label="Até"
+          label="até..."
           col="6"
           inputClass="crsr-date"
           id="dt"
           :baseZIndex="10000"
           v-model="this.filters['dtUtil[before]']"
+        />
+      </div>
+      <div class="form-row">
+        <CrosierCurrency
+          label="Valor Total entre..."
+          col="6"
+          id="dt"
+          v-model="this.filters['valorTotal[gte]']"
+        />
+
+        <CrosierCurrency label="e..." col="6" id="dt" v-model="this.filters['valorTotal[lte]']" />
+      </div>
+
+      <div class="form-row">
+        <CrosierDropdownEntity
+          v-model="this.filters.categoria"
+          entity-uri="/api/fin/categoria"
+          optionLabel="descricaoMontadaTree"
+          :orderBy="{ codigoOrd: 'ASC' }"
+          label="Categoria"
+          id="categoria"
+        />
+      </div>
+
+      <div class="form-row">
+        <CrosierDropdownEntity
+          v-model="this.filters.carteira"
+          entity-uri="/api/fin/carteira"
+          optionLabel="descricaoMontada"
+          :orderBy="{ codigo: 'ASC' }"
+          label="Carteira"
+          id="carteira"
+        />
+      </div>
+
+      <div class="form-row">
+        <CrosierDropdownEntity
+          v-model="this.filters.modo"
+          entity-uri="/api/fin/modo"
+          optionLabel="descricaoMontada"
+          :orderBy="{ codigo: 'ASC' }"
+          label="Modo"
+          id="modo"
+        />
+      </div>
+
+      <div class="form-row">
+        <CrosierDropdownEntity
+          v-model="this.filters.centroCusto"
+          entity-uri="/api/fin/centroCusto"
+          optionLabel="descricaoMontada"
+          :orderBy="{ codigo: 'ASC' }"
+          label="Centro de Custo"
+          id="centroCusto"
         />
       </div>
     </template>
@@ -84,7 +152,7 @@
 
       <Column field="descricao" header="Descrição" :sortable="true">
         <template class="text-right" #body="r">
-          <div class="float-left">
+          <div style="max-width: 50em; white-space: pre-wrap">
             <b>{{ r.data.descricaoMontada }}</b>
 
             <div v-if="r.data.categoria.codigoSuper === 1 && r.data.sacado">
@@ -93,57 +161,53 @@
             <div v-if="r.data.categoria.codigoSuper === 2 && r.data.cedente">
               <small>{{ r.data.sacado }}</small>
             </div>
-          </div>
 
-          <div class="text-right">
-            <template v-if="r.data.chequeNumCheque">
-              <span class="badge badge-pill badge-danger"
-                ><i class="fas fa-money-check-alt"></i> Cheque</span
+            <div class="text-right w-100">
+              <template v-if="r.data.chequeNumCheque">
+                <span class="ml-1 badge badge-pill badge-danger"
+                  ><i class="fas fa-money-check-alt"></i> Cheque</span
+                >
+              </template>
+
+              <template v-if="r.data.recorrente">
+                <span class="ml-1 badge badge-pill badge-info"
+                  ><i class="fas fa-redo"></i> Recorrente</span
+                >
+              </template>
+
+              <template v-if="r.data.parcelamento">
+                <span class="ml-1 badge badge-pill badge-info"
+                  ><i class="fas fa-align-justify"></i> Parcelamento</span
+                >
+              </template>
+
+              <template v-if="r.data?.cadeia?.id">
+                <a
+                  class="ml-1 badge badge-pill badge-success"
+                  :href="'/fin/movimentacao/listCadeia/' + r.data?.cadeia?.id"
+                  target="_blank"
+                  style="text-decoration: none; color: white"
+                  ><i class="fas fa-link"></i> Em cadeia</a
+                >
+              </template>
+
+              <span
+                v-if="
+                  r.data.transferenciaEntreCarteiras &&
+                  r.data.movimentacaoOposta &&
+                  r.data.movimentacaoOposta.categoria
+                "
+                class="ml-1 badge badge-pill badge-secondary"
               >
-              <div class="clearfix"></div>
-            </template>
-
-            <template v-if="r.data.recorrente">
-              <span class="badge badge-pill badge-info"
-                ><i class="fas fa-redo"></i> Recorrente</span
-              >
-              <div class="clearfix"></div>
-            </template>
-
-            <template v-if="r.data.parcelamento">
-              <span class="badge badge-pill badge-info"
-                ><i class="fas fa-align-justify"></i> Parcelamento</span
-              >
-              <div class="clearfix"></div>
-            </template>
-
-            <template v-if="r.data?.cadeia?.id">
-              <a
-                class="badge badge-pill badge-success"
-                :href="'/fin/movimentacao/listCadeia/' + r.data?.cadeia?.id"
-                target="_blank"
-                style="text-decoration: none; color: white"
-                ><i class="fas fa-link"></i> Em cadeia</a
-              >
-              <div class="clearfix"></div>
-            </template>
-
-            <span
-              v-if="
-                r.data.transferenciaEntreCarteiras &&
-                r.data.movimentacaoOposta &&
-                r.data.movimentacaoOposta.categoria
-              "
-              class="badge badge-pill badge-secondary"
-            >
-              <span v-if="r.data?.movimentacaoOposta?.categoria?.codigo === 199"
-                ><i class="fas fa-sign-out-alt"></i> Para:
+                <span v-if="r.data?.movimentacaoOposta?.categoria?.codigo === 199"
+                  ><i class="fas fa-sign-out-alt"></i> Para:
+                </span>
+                <span v-if="r.data?.movimentacaoOposta?.categoria?.codigo === 299"
+                  ><i class="fas fa-sign-out-alt"></i> De:
+                </span>
+                {{ r.data.movimentacaoOposta.carteira.descricaoMontada }}
               </span>
-              <span v-if="r.data?.movimentacaoOposta?.categoria?.codigo === 299"
-                ><i class="fas fa-sign-out-alt"></i> De:
-              </span>
-              {{ r.data.movimentacaoOposta.carteira.descricaoMontada }}
-            </span>
+            </div>
           </div>
         </template>
       </Column>
@@ -232,11 +296,19 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierCalendar, CrosierInputInt, CrosierInputText, CrosierListS } from "crosier-vue";
+import {
+  CrosierCalendar,
+  CrosierCurrency,
+  CrosierDropdown,
+  CrosierInputInt,
+  CrosierInputText,
+  CrosierListS,
+} from "crosier-vue";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import moment from "moment";
+import CrosierDropdownEntity from "./CrosierDropdownEntity";
 
 export default {
   components: {
@@ -245,8 +317,11 @@ export default {
     CrosierInputText,
     CrosierCalendar,
     CrosierInputInt,
+    CrosierDropdownEntity,
+    CrosierDropdown,
     Toast,
     ConfirmDialog,
+    CrosierCurrency,
   },
   data() {
     return {

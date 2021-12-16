@@ -108,7 +108,7 @@ WHERE uuid = '03478c70-0115-11ec-bddf-8f2c061802e5';
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated,
                         estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES ('03478c70-0115-11ec-bddf-8f2c061802e5', 'Fornecedores', 'fas fa-truck-loading', 'ENT',
-        '9121ea11-dc5d-4a22-9596-187f5452f95a', '/est/fornecedor/list', '', 'a1c75606-0114-11ec-8e35-4bb6e339954f', 3,
+        '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/est/fornecedor/list', '', 'a1c75606-0114-11ec-8e35-4bb6e339954f', 3,
         null, now(), now(), 1, 1, 1);
 
 

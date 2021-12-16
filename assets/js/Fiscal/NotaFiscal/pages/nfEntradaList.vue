@@ -104,9 +104,9 @@
           id="statusDownload"
           v-model="this.filters.resumo"
           :options="[
-            { name: 'Completa', value: false },
-            { name: 'Resumo', value: true },
-            { name: 'Todas', value: '' },
+            { label: 'Completa', value: false },
+            { label: 'Resumo', value: true },
+            { label: 'Todas', value: '' },
           ]"
         />
 
@@ -116,11 +116,11 @@
           id="manifestacao"
           v-model="this.filters.manifestDest"
           :options="[
-            { name: 'Ciência', value: '210210 - CIÊNCIA DA OPERAÇÃO' },
-            { name: 'Confirmação', value: '210200 - CONFIRMAÇÃO DA OPERAÇÃO' },
-            { name: 'Desconhecimento', value: '210220 - DESCONHECIMENTO DA OPERAÇÃO' },
-            { name: 'Não realizada', value: '210240 - OPERAÇÃO NÃO REALIZADA' },
-            { name: 'Nenhuma', value: '' },
+            { label: 'Ciência', value: '210210 - CIÊNCIA DA OPERAÇÃO' },
+            { label: 'Confirmação', value: '210200 - CONFIRMAÇÃO DA OPERAÇÃO' },
+            { label: 'Desconhecimento', value: '210220 - DESCONHECIMENTO DA OPERAÇÃO' },
+            { label: 'Não realizada', value: '210240 - OPERAÇÃO NÃO REALIZADA' },
+            { label: 'Nenhuma', value: '' },
           ]"
         />
       </div>

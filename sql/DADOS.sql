@@ -16,6 +16,28 @@ VALUES (null, '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 'crosierapp-
 
 DELETE
 FROM cfg_app_config
+WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
+ AND chave = 'financeiro.filiais_prop.json';
+
+INSERT INTO cfg_app_config
+ (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'financeiro.filiais_prop.json', 
+        '{ "00000000000000": "EMPRESA TESTE LTDA" }');
+
+DELETE
+FROM cfg_app_config
+WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
+ AND chave = 'manifestarCienciaParaUltimas.dias';
+
+INSERT INTO cfg_app_config
+ (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'manifestarCienciaParaUltimas.dias', 
+        '10');
+
+
+
+DELETE
+FROM cfg_app_config
 WHERE app_uuid = '440e429c-b711-4411-87ed-d95f7281cd43'
  AND chave = 'produto_form.ordem_abas';
 
