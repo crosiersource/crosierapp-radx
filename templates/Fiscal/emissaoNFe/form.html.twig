@@ -106,7 +106,7 @@
 
                         {% endif %}
                         
-                        {% if permiteReimpressao %}
+                        {% if notaFiscal.id %}
                             <a role="button" value="Download do XML" class="btn btn-outline-primary ml-1"
                                href="{{ url('fis_emissaonfe_downloadXML', {nf: notaFiscal.id}) }}"
                                target="_blank">

@@ -709,18 +709,18 @@ class EmissaoNFeController extends FormListController
      * @return Response
      * @throws ViewException
      */
-    public function downloadXML(NotaFiscal $nf): Response
+    public function downloadXML(Request $request, NotaFiscal $nf): Response
     {
         $filename = $nf->chaveAcesso . '-' . strtolower($nf->tipoNotaFiscal) . '.xml';
 
-        if (!$nf->getXMLDecoded()) {
+        if (!$nf->getXMLDecoded() || $request->get("regerar")) {
             $nf = $this->spedNFeBusiness->gerarXML($nf);
         }
         if (!$nf->getXMLDecoded()) {
             throw new ViewException('XMLDecoded n/d');
         }
         
-        if ($nf->getXMLDecoded()->getName() !== 'nfeProc') {
+        if ($nf->getXMLDecoded()->getName() !== 'nfeProc' && !$request->get('naoAssinar')) {
             $nf = $this->spedNFeBusiness->gerarXML($nf);
             $tools = $this->nfeUtils->getToolsEmUso();
             $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
