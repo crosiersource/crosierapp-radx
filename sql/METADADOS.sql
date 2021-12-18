@@ -1769,7 +1769,7 @@ CREATE TABLE `fis_distdfe`
   `proprio`               tinyint(1),
   `nota_fiscal_evento_id` bigint(20),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `fis_distdfe_nsu` (`nsu`),
+  UNIQUE KEY `fis_distdfe_nsu` (`nsu`,`documento`),
   KEY `K_fis_distdfe_estabelecimento` (`estabelecimento_id`),
   KEY `K_fis_distdfe_user_inserted` (`user_inserted_id`),
   KEY `K_fis_distdfe_user_updated` (`user_updated_id`),
@@ -2029,3 +2029,5 @@ CREATE TABLE `ven_venda_pagto`
 
 
 
+# ALTER TABLE fis_distdfe DROP KEY `fis_distdfe_nsu`;
+# ALTER TABLE fis_distdfe ADD UNIQUE KEY `fis_distdfe_nsu` (`nsu`,`documento`);
