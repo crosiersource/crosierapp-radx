@@ -1,5 +1,5 @@
 <template>
-  <CrosierListS titulo="Clientes" apiResource="/api/crm/cliente" :formUrl="this.formUrl">
+  <CrosierListS titulo="Clientes" apiResource="/api/crm/cliente/" :formUrl="this.formUrl" ref="dt">
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputText
