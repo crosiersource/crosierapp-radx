@@ -129,10 +129,15 @@
     <template v-slot:columns>
       <Column field="id" header="Número / Série / Chave" :sortable="true">
         <template #body="r">
-          {{ new String(r.data.numero ?? "0").padStart(6, "0") }} /
-          {{ new String(r.data.serie ?? "0").padStart(3, "0") }}
-          <br />
-          <span style="font-size: smaller">{{ r.data.chaveAcesso }}</span>
+          <div class="float-left">
+            {{ new String(r.data.numero ?? "0").padStart(6, "0") }} /
+            {{ new String(r.data.serie ?? "0").padStart(3, "0") }}
+            <br />
+            <span style="font-size: smaller">{{ r.data.chaveAcesso }}</span>
+          </div>
+          <div class="text-right">
+            <span class="badge badge-pill badge-secondary" title="NSU">{{ r.data.nsu }}</span>
+          </div>
         </template>
       </Column>
       <Column field="documento" header="Emitente" :sortable="true">

@@ -127,16 +127,16 @@ class DistDFeController extends FormListController
             } else {
                 $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso);
             }
-            
+
             $this->distDFeBusiness->processarDistDFesObtidos();
             return new JsonResponse([
-                'RESULT' => 'OK', 
-                'MSG' => $q . ' registro(s) obtido(s)', 
+                'RESULT' => 'OK',
+                'MSG' => $q . ' registro(s) obtido(s)',
             ]);
         } catch (\Exception $e) {
             $msg = ExceptionUtils::treatException($e);
             return new JsonResponse([
-                'RESULT' => 'ERR', 
+                'RESULT' => 'ERR',
                 'MSG' => $msg
             ]);
         }
@@ -154,6 +154,43 @@ class DistDFeController extends FormListController
             $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
             $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados($cnpjEmUso);
             return new Response($q . ' DFe\'s obtidos');
+        } catch (ViewException $e) {
+            return new Response($e->getMessage());
+        }
+    }
+
+    /**
+     * @Route("/fis/distDFe/verificarNSUsPulados", name="fis_distDFe_verificarNSUsPulados")
+     */
+    public function verificarNSUsPulados(): JsonResponse
+    {
+        $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+        $nsusPulados = $this->distDFeBusiness->getNSUsPulados();
+        return new JsonResponse($nsusPulados);
+    }
+
+    /**
+     *
+     * @Route("/fis/distDFe/verificarNSUsNaSefaz/{cnpj}", name="fis_distDFe_verificarNSUsNaSefaz")
+     *
+     * @param int $nsu
+     * @return Response
+     */
+    public function verificarNSUsNaSefaz(string $cnpj): JsonResponse
+    {
+        try {
+            $r = $this->distDFeBusiness->verificarNSUsNaSefaz($cnpj);
+
+            $rBase = $this->getDoctrine()->getConnection()
+                ->fetchAssociative(
+                    'select min(nsu), max(nsu) from fis_distdfe where documento = :cnpj order by nsu',
+                    ['cnpj' => $cnpj]);
+
+            return new JsonResponse(
+                [
+                    'dadosSefaz' => $r,
+                    'dadosBase' => $rBase,
+                ]);
         } catch (ViewException $e) {
             return new Response($e->getMessage());
         }
