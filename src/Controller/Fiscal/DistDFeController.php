@@ -144,15 +144,14 @@ class DistDFeController extends FormListController
 
     /**
      *
-     * @Route("/fis/distDFe/obterDistDFesDeNSUsPulados/", name="distDFe_obterDistDFesDeNSUsPulados")
+     * @Route("/fis/distDFe/obterDistDFesDeNSUsPulados/{cnpj}", name="distDFe_obterDistDFesDeNSUsPulados")
      *
      * @return Response
      */
-    public function obterDistDFesDeNSUsPulados(): Response
+    public function obterDistDFesDeNSUsPulados(string $cnpj): Response
     {
         try {
-            $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
-            $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados($cnpjEmUso);
+            $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados($cnpj);
             return new Response($q . ' DFe\'s obtidos');
         } catch (ViewException $e) {
             return new Response($e->getMessage());
@@ -160,12 +159,11 @@ class DistDFeController extends FormListController
     }
 
     /**
-     * @Route("/fis/distDFe/verificarNSUsPulados", name="fis_distDFe_verificarNSUsPulados")
+     * @Route("/fis/distDFe/verificarNSUsPulados/{cnpj}", name="fis_distDFe_verificarNSUsPulados")
      */
-    public function verificarNSUsPulados(): JsonResponse
+    public function verificarNSUsPulados(string $cnpj): JsonResponse
     {
-        $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
-        $nsusPulados = $this->distDFeBusiness->getNSUsPulados();
+        $nsusPulados = $this->distDFeBusiness->getNSUsPulados($cnpj);
         return new JsonResponse($nsusPulados);
     }
 
@@ -198,25 +196,14 @@ class DistDFeController extends FormListController
 
     /**
      *
-     * @Route("/fis/distDFe/obterDFePorNSU/{nsu}", name="distDFe_obterDFePorNSU", requirements={"nsu"="\d+"})
+     * @Route("/fis/distDFe/obterDFePorNSU/{cnpj}/{nsu}", name="distDFe_obterDFePorNSU")
      *
      * @param int $nsu
      * @return Response
      */
-    public function obterDFePorNSU(int $nsu): Response
+    public function obterDFePorNSU(string $cnpj, int $nsu): JsonResponse
     {
-        try {
-            $cnpjEmUso = $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
-            $r = $this->distDFeBusiness->obterDistDFeByNSU($nsu, $cnpjEmUso);
-            if ($r) {
-                $this->addFlash('success', 'DFe obtido');
-            } else {
-                $this->addFlash('warn', 'DFe já existente');
-            }
-            return $this->redirectToRoute('distDFe_list');
-        } catch (ViewException $e) {
-            return new Response($e->getMessage());
-        }
+        return $this->distDFeBusiness->obterDistDFeByNSU($nsu, $cnpj);
     }
 
 
