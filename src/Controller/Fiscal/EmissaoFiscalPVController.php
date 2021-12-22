@@ -67,13 +67,13 @@ class EmissaoFiscalPVController extends BaseController
         $notaFiscalId = null;
         if (!$notaFiscal) {
             $notaFiscal = new NotaFiscal();
-            $notaFiscal->setTipoNotaFiscal('NFCE');
-            $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+            $notaFiscal->tipoNotaFiscal = 'NFCE';
+            $notaFiscal->finalidadeNf = FinalidadeNF::NORMAL['key'];
         } else {
             $notaFiscalId = $notaFiscal->getId();
         }
 
-        $tipoAnterior = $notaFiscal->getTipoNotaFiscal();
+        $tipoAnterior = $notaFiscal->tipoNotaFiscal;
 
         $form = $this->createForm(NotaFiscalType::class, $notaFiscal);
         $form->handleRequest($request);
@@ -81,14 +81,14 @@ class EmissaoFiscalPVController extends BaseController
             $notaFiscal->setId($notaFiscalId);
         }
 
-        $tipoAtual = $notaFiscal->getTipoNotaFiscal();
+        $tipoAtual = $notaFiscal->tipoNotaFiscal;
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, $tipoAtual !== $tipoAnterior);
                 try {
-                    $notaFiscal->setDtEmissao(new \DateTime());
-                    $notaFiscal->setDtSaiEnt(new \DateTime());
+                    $notaFiscal->dtEmissao = new \DateTime();
+                    $notaFiscal->dtSaiEnt = new \DateTime();
                     $this->notaFiscalBusiness->faturarNFe($notaFiscal);
                 } catch (\Exception $e) {
                     $this->addFlash('error', $e->getMessage());

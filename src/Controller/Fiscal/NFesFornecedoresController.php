@@ -95,7 +95,7 @@ class NFesFornecedoresController extends FormListController
     public function form(NotaFiscal $notaFiscal)
     {
         if ($notaFiscal->getXMLDecoded() && $notaFiscal->getXMLDecoded()->getName() === 'resNFe') {
-            $notaFiscal->setResumo(true);
+            $notaFiscal->resumo = true;
             $this->entityHandler->save($notaFiscal);
             return $this->redirectToRoute('nfesFornecedores_formResumo', ['id' => $notaFiscal->getId()]);
         }

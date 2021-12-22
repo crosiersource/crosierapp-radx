@@ -72,7 +72,7 @@ class RomaneioType extends AbstractType
                 'choices' => $notaFiscalChoices,
                 'data' => $notaFiscalVal ?? null,
                 'choice_label' => function (?NotaFiscal $notaFiscal) {
-                    return $notaFiscal ? $notaFiscal->getNumero() . ' - ' . $notaFiscal->getXNomeEmitente() : null;
+                    return $notaFiscal ? $notaFiscal->numero . ' - ' . $notaFiscal->xNomeEmitente : null;
                 },
                 'attr' => [
                     'class' => 'autoSelect2',

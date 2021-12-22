@@ -4,6 +4,7 @@ namespace App\Controller\Fiscal;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
@@ -11,6 +12,7 @@ use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\DistDFe;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\DistDFeEntityHandler;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -273,6 +275,16 @@ class DistDFeController extends FormListController
 
         // Dispatch request
         return $response;
+    }
+
+
+    /**
+     * @Route("/fis/distDFe/res2proc", name="fis_distDFe_res2proc")
+     */
+    public function res2proc(): JsonResponse
+    {
+        $this->distDFeBusiness->res2proc();
+        return CrosierApiResponse::success();
     }
 
 

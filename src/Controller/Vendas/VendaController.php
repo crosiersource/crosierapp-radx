@@ -793,8 +793,8 @@ class VendaController extends FormListController
             $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
             if (!$notaFiscal) {
                 $notaFiscal = new NotaFiscal();
-                $notaFiscal->setTipoNotaFiscal('NFE');
-                $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+                $notaFiscal->tipoNotaFiscal = 'NFE';
+                $notaFiscal->finalidadeNf = FinalidadeNF::NORMAL['key'];
                 $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
             }
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
@@ -828,8 +828,8 @@ class VendaController extends FormListController
 
             if (!$notaFiscal) {
                 $notaFiscal = new NotaFiscal();
-                $notaFiscal->setTipoNotaFiscal('NFE');
-                $notaFiscal->setFinalidadeNf(FinalidadeNF::NORMAL['key']);
+                $notaFiscal->tipoNotaFiscal = 'NFE';
+                $notaFiscal->finalidadeNf = FinalidadeNF::NORMAL['key'];
 
                 $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
 
@@ -839,7 +839,7 @@ class VendaController extends FormListController
                     );
                 $infoCompl = 'Pedido E-commerce: ' . $venda->jsonData['ecommerce_idPedido'] ?? '????';
                 $infoCompl .= "\n\r" . ($rInfo[0]['valor'] ?? '');
-                $notaFiscal->setInfoCompl($infoCompl);
+                $notaFiscal->infoCompl = $infoCompl;
                 $this->notaFiscalEntityHandler->save($notaFiscal);
             }
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
@@ -1052,7 +1052,7 @@ class VendaController extends FormListController
 
         return $this->redirect($request->server->get('HTTP_REFERER'));
     }
-    
+
 
     /**
      * Lista apenas as vendas do ecommerce.
@@ -1358,7 +1358,7 @@ class VendaController extends FormListController
             $stmtSaldo->bindValue('produtoId', $r['id']);
             $rsSaldo = $stmtSaldo->executeQuery();
             $rSaldo = $rsSaldo->fetchAssociative();
-            
+
             $saldo = DecimalUtils::formatFloat((string)($rSaldo['qt'] + 0));
             $text = $codigo . ' <b>' . $r['nome'] . '</b> (Em estoque: ' . $saldo . ') ';
             $precos = handlePrecos($conn, $rUnidades);

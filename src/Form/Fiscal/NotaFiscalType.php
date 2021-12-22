@@ -71,12 +71,12 @@ class NotaFiscalType extends AbstractType
                 if (!$this->notaFiscalBusiness->permiteSalvar($notaFiscal)) {
                     $disabled = true;
                 }
-                if ($notaFiscal->getDocumentoEmitente() && !($this->notaFiscalBusiness->isCnpjEmitente($notaFiscal->getDocumentoEmitente()))) {
+                if ($notaFiscal->documentoEmitente && !($this->notaFiscalBusiness->isCnpjEmitente($notaFiscal->documentoEmitente))) {
                     $disabled = true;
                 }
             }
             $disabledCancelamento = !($notaFiscal && $this->notaFiscalBusiness->permiteCancelamento($notaFiscal));
-            $disabledTransp = $disabled || ($notaFiscal && $notaFiscal->getTranspModalidadeFrete() === 'SEM_FRETE');
+            $disabledTransp = $disabled || ($notaFiscal && $notaFiscal->transpModalidadeFrete === 'SEM_FRETE');
 
             $builder->add('id', HiddenType::class, [
                 'required' => false,
@@ -537,9 +537,9 @@ class NotaFiscalType extends AbstractType
                 'disabled' => true
             ]);
 
-            $builder->add('jsonData', JsonType::class, 
+            $builder->add('jsonData', JsonType::class,
                 [
-                    'jsonMetadata' => $jsonMetadata, 
+                    'jsonMetadata' => $jsonMetadata,
                     'jsonData' => ($notaFiscal->jsonData ?? null),
                     'disabled' => $disabled
                 ]);

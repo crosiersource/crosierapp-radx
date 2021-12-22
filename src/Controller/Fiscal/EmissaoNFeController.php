@@ -124,10 +124,10 @@ class EmissaoNFeController extends FormListController
     {
         if (!$notaFiscal) {
             $notaFiscal = new NotaFiscal();
-            $notaFiscal->setTipoNotaFiscal('NFE');
-            $notaFiscal->setEntradaSaida('S');
-            $notaFiscal->setDtEmissao(new \DateTime());
-            $notaFiscal->setNaturezaOperacao('VENDA');
+            $notaFiscal->tipoNotaFiscal = 'NFE';
+            $notaFiscal->entradaSaida = 'S';
+            $notaFiscal->dtEmissao = new \DateTime();
+            $notaFiscal->naturezaOperacao = 'VENDA';
         }
 
         $form = $this->createForm(NotaFiscalType::class, $notaFiscal);
@@ -137,10 +137,10 @@ class EmissaoNFeController extends FormListController
             if ($form->isValid()) {
                 try {
                     /** @var NotaFiscal $notaFiscal */
-                    if (!ValidaCPFCNPJ::valida($notaFiscal->getDocumentoDestinatario())) {
+                    if (!ValidaCPFCNPJ::valida($notaFiscal->documentoDestinatario)) {
                         throw new ViewException('CPF/CNPJ inválido');
                     }
-                    $notaFiscal->setTipoNotaFiscal('NFE');
+                    $notaFiscal->tipoNotaFiscal = 'NFE';
                     $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscal($notaFiscal);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
                     return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
@@ -233,8 +233,8 @@ class EmissaoNFeController extends FormListController
 
         $this->notaFiscalBusiness->consultarStatus($notaFiscal);
 
-        $dadosEmitente = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
-        if ($dadosEmitente['cnpj'] !== $notaFiscal->getDocumentoEmitente()) {
+        $dadosEmitente = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->documentoEmitente);
+        if ($dadosEmitente['cnpj'] !== $notaFiscal->documentoEmitente) {
             $this->addFlash('error', 'Emitente da nota diferente do selecionado');
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
         }
@@ -283,7 +283,7 @@ class EmissaoNFeController extends FormListController
 
             $xml = $evento['xml'];
 
-            $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->getDocumentoEmitente());
+            $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($notaFiscal->documentoEmitente);
 
             $dadosEmitente = [
                 'razao' => $nfeConfigsEmUso['razaosocial'],
@@ -389,7 +389,7 @@ class EmissaoNFeController extends FormListController
         } catch (ViewException $e) {
             $this->addFlash('error', $e->getMessage());
         }
-        return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $cartaCorrecao->getNotaFiscal()->getId(), '_fragment' => 'cartasCorrecao']);
+        return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $cartaCorrecao->notaFiscal->getId(), '_fragment' => 'cartasCorrecao']);
     }
 
     /**
@@ -440,7 +440,7 @@ class EmissaoNFeController extends FormListController
         try {
             $xml = $cartaCorrecao->getMsgRetorno();
 
-            $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($cartaCorrecao->getNotaFiscal()->getDocumentoEmitente());
+            $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($cartaCorrecao->notaFiscal->documentoEmitente);
 
             $dadosEmitente = [
                 'razao' => $nfeConfigsEmUso['razaosocial'],
@@ -487,7 +487,7 @@ class EmissaoNFeController extends FormListController
      */
     public function deleteItem(Request $request, NotaFiscalItem $item): RedirectResponse
     {
-        $notaFiscalId = $item->getNotaFiscal()->getId();
+        $notaFiscalId = $item->notaFiscal->getId();
         if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
@@ -516,11 +516,11 @@ class EmissaoNFeController extends FormListController
     {
         if (!$item) {
             $item = new NotaFiscalItem();
-            $item->setNotaFiscal($notaFiscal);
+            $item->notaFiscal = $notaFiscal;
         }
 
-        if (!$item->getOrdem()) {
-            $item->setOrdem(0);
+        if (!$item->ordem) {
+            $item->ordem = 0;
         }
 
         $form = $this->createForm(NotaFiscalItemType::class, $item);
@@ -723,7 +723,7 @@ class EmissaoNFeController extends FormListController
         if ($nf->getXMLDecoded()->getName() !== 'nfeProc' && !$request->get('naoAssinar')) {
             $nf = $this->spedNFeBusiness->gerarXML($nf);
             $tools = $this->nfeUtils->getToolsEmUso();
-            $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
+            $tools->model($nf->tipoNotaFiscal === 'NFE' ? '55' : '65');
             $this->notaFiscalBusiness->handleIdeFields($nf);
             $fileContent = $tools->signNFe($nf->getXmlNota());
         } else {
@@ -800,73 +800,73 @@ class EmissaoNFeController extends FormListController
 
         /** @var NotaFiscal $nf */
         foreach ($nfes as $nf) {
-            $this->logger->info($nf->getTipoNotaFiscal() . '. Série: ' . $nf->getSerie() . ', Número: ' . $nf->getNumero() . '.');
-            if (!$nf->getNumero()) {
+            $this->logger->info($nf->tipoNotaFiscal . '. Série: ' . $nf->serie . ', Número: ' . $nf->numero . '.');
+            if (!$nf->numero) {
                 $this->logger->info('Nota sem número. Continuando...');
                 continue;
             }
-            if (!$nf->getCStat()) {
+            if (!$nf->cStat) {
                 $this->logger->info('Nota sem "cstat". Continuando...');
                 continue;
             }
 
-            if ((int)$nf->getCStat() === -100) {
+            if ((int)$nf->cStat === -100) {
                 $this->spedNFeBusiness->consultarStatus($nf);
             }
 
-            if (((int)$nf->getCStat() === 100 || (int)$nf->getCStat() === 101) && !$nf->getXmlNota()) {
-                if ((int)$nf->getCStatLote() === 217) {
-                    $msg = 'NFE (Chave: ' . $nf->getChaveAcesso() . ') com statLote = 217 (NF-E NAO CONSTA NA BASE DE DADOS DA SEFAZ). Não será possível exportar para o zip.';
+            if (((int)$nf->cStat === 100 || (int)$nf->cStat === 101) && !$nf->getXmlNota()) {
+                if ((int)$nf->cStatLote === 217) {
+                    $msg = 'NFE (Chave: ' . $nf->chaveAcesso . ') com statLote = 217 (NF-E NAO CONSTA NA BASE DE DADOS DA SEFAZ). Não será possível exportar para o zip.';
                     $problemas[] = $msg;
                     $this->logger->error($msg);
                     continue;
                 }
-                $this->logger->info('XML não encontrado para nota ' . $nf->getChaveAcesso());
+                $this->logger->info('XML não encontrado para nota ' . $nf->chaveAcesso);
                 $nf = $this->spedNFeBusiness->gerarXML($nf);
-                $tools->model($nf->getTipoNotaFiscal() === 'NFE' ? '55' : '65');
+                $tools->model($nf->tipoNotaFiscal === 'NFE' ? '55' : '65');
                 $fileContent = $tools->signNFe($nf->getXmlNota());
                 $nf->setXmlNota($fileContent);
                 $this->entityHandler->save($nf);
             }
             if (!$nf->getXMLDecoded()) {
-                $this->logger->info('getXMLDecoded não encontrado para nota ' . $nf->getChaveAcesso());
+                $this->logger->info('getXMLDecoded não encontrado para nota ' . $nf->chaveAcesso);
             }
             if ($nf->getXMLDecoded()->getName() !== 'nfeProc') {
                 $this->logger->info('XML sem o nfeProc. Consultando status...');
                 $this->spedNFeBusiness->consultarStatus($nf);
-                if ((int)$nf->getCStatLote() !== 104 && (int)$nf->getCStatLote() !== 100) {
-                    $msg = $nf->getTipoNotaFiscal() . '. Série: ' . $nf->getSerie() . ', Número: ' . $nf->getNumero() . ': cStatLote: ' . $nf->getCStatLote() . ', xMotivoLote: ' . $nf->getXMotivoLote();
+                if ((int)$nf->cStatLote !== 104 && (int)$nf->cStatLote !== 100) {
+                    $msg = $nf->tipoNotaFiscal . '. Série: ' . $nf->serie . ', Número: ' . $nf->numero . ': cStatLote: ' . $nf->cStatLote . ', xMotivoLote: ' . $nf->xMotivoLote;
                     $this->logger->error($msg);
                     $problemas[] = $msg;
                     continue;
                 }
             }
 
-            if ($nf->getTipoNotaFiscal() === 'NFE') {
-                if ((int)$nf->getCStat() === 100) {
+            if ($nf->tipoNotaFiscal === 'NFE') {
+                if ((int)$nf->cStat === 100) {
                     $nfes100[] = $nf;
-                } else if ((int)$nf->getCStat() === 101 || ((int)$nf->getCStat() === 135 && (int)$nf->getCStatLote() === 101)) {
-                    $problemas[] = 'NFE ' . $nf->getNumero() . ' (Chave: ' . $nf->getChaveAcesso() . ') CANCELADA';
+                } else if ((int)$nf->cStat === 101 || ((int)$nf->cStat === 135 && (int)$nf->cStatLote === 101)) {
+                    $problemas[] = 'NFE ' . $nf->numero . ' (Chave: ' . $nf->chaveAcesso . ') CANCELADA';
                     $nfes101[] = $nf;
                 } else {
-                    $msg = 'NFE ' . $nf->getNumero() . ' (Chave: ' . $nf->getChaveAcesso() . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
+                    $msg = 'NFE ' . $nf->numero . ' (Chave: ' . $nf->chaveAcesso . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
                     $problemas[] = $msg;
                     $this->logger->error($msg);
                     continue;
                 }
-            } else if ($nf->getTipoNotaFiscal() === 'NFCE') {
-                if ((int)$nf->getCStat() === 100) {
+            } else if ($nf->tipoNotaFiscal === 'NFCE') {
+                if ((int)$nf->cStat === 100) {
                     $nfces100[] = $nf;
-                } else if ((int)$nf->getCStat() === 101) {
+                } else if ((int)$nf->cStat === 101) {
                     $nfces101[] = $nf;
                 } else {
-                    $msg = 'NFE ' . $nf->getNumero() . ' (Chave: ' . $nf->getChaveAcesso() . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
+                    $msg = 'NFE ' . $nf->numero . ' (Chave: ' . $nf->chaveAcesso . ') com status diferente de 100 ou 101. Não será possível exportar para o zip.';
                     $problemas[] = $msg;
                     $this->logger->error($msg);
                     continue;
                 }
             }
-            $verifNumeros[$nf->getTipoNotaFiscal()][] = $nf->getNumero();
+            $verifNumeros[$nf->tipoNotaFiscal][] = $nf->numero;
         }
 
         foreach ($verifNumeros as $tipo => $numeros) {
@@ -889,34 +889,34 @@ class EmissaoNFeController extends FormListController
 
         /** @var NotaFiscal $nfe100 */
         foreach ($nfes100 as $nfe100) {
-            $nomeArquivo = $nfe100->getChaveAcesso() . '-' . $nfe100->getNumero() . '.xml';
+            $nomeArquivo = $nfe100->chaveAcesso . '-' . $nfe100->numero . '.xml';
             $arquivoCompleto = $_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . 'tmp/' . $nomeArquivo;
             file_put_contents($arquivoCompleto, $nfe100->getXmlNota());
-            touch($arquivoCompleto, $nfe100->getDtEmissao()->getTimestamp());
+            touch($arquivoCompleto, $nfe100->dtEmissao->getTimestamp());
             $zip->addFile($arquivoCompleto, 'NFEs/homologadas/' . $nomeArquivo);
         }
 
         foreach ($nfes101 as $nfe101) {
-            $nomeArquivo = $nfe101->getChaveAcesso() . '-' . $nfe101->getNumero() . '.xml';
+            $nomeArquivo = $nfe101->chaveAcesso . '-' . $nfe101->numero . '.xml';
             $arquivoCompleto = $_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . 'tmp/' . $nomeArquivo;
             file_put_contents($arquivoCompleto, $nfe101->getXmlNota());
-            touch($arquivoCompleto, $nfe101->getDtEmissao()->getTimestamp());
+            touch($arquivoCompleto, $nfe101->dtEmissao->getTimestamp());
             $zip->addFile($arquivoCompleto, 'NFEs/canceladas/' . $nomeArquivo);
         }
 
         foreach ($nfces100 as $nfce100) {
-            $nomeArquivo = $nfce100->getChaveAcesso() . '-' . $nfce100->getNumero() . '.xml';
+            $nomeArquivo = $nfce100->chaveAcesso . '-' . $nfce100->numero . '.xml';
             $arquivoCompleto = $_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . 'tmp/' . $nomeArquivo;
             file_put_contents($arquivoCompleto, $nfce100->getXmlNota());
-            touch($arquivoCompleto, $nfce100->getDtEmissao()->getTimestamp());
+            touch($arquivoCompleto, $nfce100->dtEmissao->getTimestamp());
             $zip->addFile($arquivoCompleto, 'NFCEs/homologadas/' . $nomeArquivo);
         }
 
         foreach ($nfces101 as $nfce101) {
-            $nomeArquivo = $nfce101->getChaveAcesso() . '-' . $nfce101->getNumero() . '.xml';
+            $nomeArquivo = $nfce101->chaveAcesso . '-' . $nfce101->numero . '.xml';
             $arquivoCompleto = $_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . 'tmp/' . $nomeArquivo;
             file_put_contents($arquivoCompleto, $nfce101->getXmlNota());
-            touch($arquivoCompleto, $nfce101->getDtEmissao()->getTimestamp());
+            touch($arquivoCompleto, $nfce101->dtEmissao->getTimestamp());
             $zip->addFile($arquivoCompleto, 'NFCEs/canceladas/' . $nomeArquivo);
         }
 
@@ -995,27 +995,27 @@ class EmissaoNFeController extends FormListController
             throw new \RuntimeException('nf não encontrada');
         }
 
-        $configs = $this->nfeUtils->getNFeConfigsByCNPJ($nf->getDocumentoEmitente());
+        $configs = $this->nfeUtils->getNFeConfigsByCNPJ($nf->documentoEmitente);
 
-        $primeiros = $nf->getChaveAcesso() . '|2|1|' . (int)$configs['CSCid_prod'];
+        $primeiros = $nf->chaveAcesso . '|2|1|' . (int)$configs['CSCid_prod'];
         $codigoHash = sha1($primeiros . $configs['CSC_prod']);
         $qrcode = 'http://www.fazenda.pr.gov.br/nfce/qrcode?p=' . $primeiros . '|' . $codigoHash;
 
         $chaveAcesso =
-            substr($nf->getChaveAcesso(), 0, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 4, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 8, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 12, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 16, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 24, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 28, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 32, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 36, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 40, 4);
+            substr($nf->chaveAcesso, 0, 4) . ' ' .
+            substr($nf->chaveAcesso, 4, 4) . ' ' .
+            substr($nf->chaveAcesso, 8, 4) . ' ' .
+            substr($nf->chaveAcesso, 12, 4) . ' ' .
+            substr($nf->chaveAcesso, 16, 4) . ' ' .
+            substr($nf->chaveAcesso, 24, 4) . ' ' .
+            substr($nf->chaveAcesso, 28, 4) . ' ' .
+            substr($nf->chaveAcesso, 32, 4) . ' ' .
+            substr($nf->chaveAcesso, 36, 4) . ' ' .
+            substr($nf->chaveAcesso, 40, 4);
 
         $params = [
             'xml' => $nf->getXMLDecoded(),
-            'cancelada' => (int)$nf->getCStat() === 135,
+            'cancelada' => (int)$nf->cStat === 135,
             'chaveAcesso' => $chaveAcesso,
             'qrcode' => $qrcode
         ];
@@ -1063,24 +1063,24 @@ class EmissaoNFeController extends FormListController
             throw new \RuntimeException('nf não encontrada');
         }
 
-        $configs = $this->nfeUtils->getNFeConfigsByCNPJ($nf->getDocumentoEmitente());
+        $configs = $this->nfeUtils->getNFeConfigsByCNPJ($nf->documentoEmitente);
 
-        $primeiros = $nf->getChaveAcesso() . '|2|1|' . (int)$configs['CSCid_prod'];
+        $primeiros = $nf->chaveAcesso . '|2|1|' . (int)$configs['CSCid_prod'];
         $codigoHash = sha1($primeiros . $configs['CSC_prod']);
         $qrcode = 'http://www.fazenda.pr.gov.br/nfce/qrcode?p=' . $primeiros . '|' . $codigoHash;
 
-        $nf->setChaveAcesso(
-            substr($nf->getChaveAcesso(), 0, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 4, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 8, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 12, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 16, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 24, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 28, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 32, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 36, 4) . ' ' .
-            substr($nf->getChaveAcesso(), 40, 4)
-        );
+        $nf->chaveAcesso = 
+            substr($nf->chaveAcesso, 0, 4) . ' ' .
+            substr($nf->chaveAcesso, 4, 4) . ' ' .
+            substr($nf->chaveAcesso, 8, 4) . ' ' .
+            substr($nf->chaveAcesso, 12, 4) . ' ' .
+            substr($nf->chaveAcesso, 16, 4) . ' ' .
+            substr($nf->chaveAcesso, 24, 4) . ' ' .
+            substr($nf->chaveAcesso, 28, 4) . ' ' .
+            substr($nf->chaveAcesso, 32, 4) . ' ' .
+            substr($nf->chaveAcesso, 36, 4) . ' ' .
+            substr($nf->chaveAcesso, 40, 4)
+        ;
 
         $params = [
             'nf' => $nf,
