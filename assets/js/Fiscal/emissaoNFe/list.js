@@ -62,11 +62,11 @@ function getDatatablesColumns() {
             },
         },
         {
-            name: 'e.valorTotal',
+            name: 'e.valorTotalFormatted',
             data: 'e',
             title: 'Valor',
             render: function (data, type, row) {
-                let val = parseFloat(data.valorTotal);
+                let val = parseFloat(data.valorTotalFormatted);
                 return Numeral(val).format('$ 0.0,[00]');
             },
             className: 'text-right'

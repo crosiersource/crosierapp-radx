@@ -340,7 +340,7 @@ class EmissaoNFeController extends FormListController
 
         if (!$cartaCorrecao) {
             $cartaCorrecao = new NotaFiscalCartaCorrecao();
-            $cartaCorrecao->setDtCartaCorrecao(new \DateTime());
+            $cartaCorrecao->dtCartaCorrecao = new \DateTime();
         }
 
         $form = $this->createForm(NotaFiscalCartaCorrecaoType::class, $cartaCorrecao);
@@ -350,7 +350,7 @@ class EmissaoNFeController extends FormListController
             if ($form->isValid()) {
                 /** @var NotaFiscalCartaCorrecao $cartaCorrecao */
                 $cartaCorrecao = $form->getData();
-                $cartaCorrecao->setNotaFiscal($notaFiscal);
+                $cartaCorrecao->notaFiscal = $notaFiscal;
                 try {
                     $this->cartaCorrecaoEntityHandler->save($cartaCorrecao);
                     $notaFiscal = $this->notaFiscalBusiness->cartaCorrecao($cartaCorrecao);

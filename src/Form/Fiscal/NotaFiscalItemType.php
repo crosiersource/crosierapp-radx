@@ -228,7 +228,7 @@ class NotaFiscalItemType extends AbstractType
             ]);
 
 
-            $builder->add('valor_unit', MoneyType::class, [
+            $builder->add('valorUnit', MoneyType::class, [
                 'label' => 'Valor Unit',
                 'currency' => 'BRL',
                 'grouping' => 'true',
@@ -239,7 +239,7 @@ class NotaFiscalItemType extends AbstractType
                 'disabled' => $disabled
             ]);
 
-            $builder->add('sub_total', MoneyType::class, [
+            $builder->add('subtotal', MoneyType::class, [
                 'label' => 'Subtotal',
                 'currency' => 'BRL',
                 'grouping' => 'true',
@@ -249,7 +249,7 @@ class NotaFiscalItemType extends AbstractType
                 'disabled' => true
             ]);
 
-            $builder->add('valor_desconto', MoneyType::class, [
+            $builder->add('valorDesconto', MoneyType::class, [
                 'label' => 'Valor Desconto',
                 'currency' => 'BRL',
                 'grouping' => 'true',
@@ -260,7 +260,7 @@ class NotaFiscalItemType extends AbstractType
                 'disabled' => $disabled
             ]);
 
-            $builder->add('valor_total', MoneyType::class, [
+            $builder->add('valorTotal', MoneyType::class, [
                 'label' => 'Valor Total',
                 'currency' => 'BRL',
                 'grouping' => 'true',
