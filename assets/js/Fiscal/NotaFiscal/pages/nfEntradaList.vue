@@ -421,7 +421,7 @@ export default {
               detail: rs?.data?.MSG,
               life: 5000,
             });
-            this.$refs.dt.doClearFilters();
+            history.go(0);
           } else {
             console.error(rs?.data?.MSG);
             this.$toast.add({

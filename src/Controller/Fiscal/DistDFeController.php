@@ -130,7 +130,7 @@ class DistDFeController extends FormListController
                 $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso);
             }
 
-            $this->distDFeBusiness->processarDistDFesObtidos();
+            $this->distDFeBusiness->processarDistDFesObtidos($cnpjEmUso);
             return new JsonResponse([
                 'RESULT' => 'OK',
                 'MSG' => $q . ' registro(s) obtido(s)',
