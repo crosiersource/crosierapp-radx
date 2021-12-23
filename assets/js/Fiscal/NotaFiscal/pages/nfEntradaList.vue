@@ -217,6 +217,7 @@
             </a>
 
             <a
+              v-show="!r.data.resumo"
               role="button"
               title="Ver PDF"
               class="ml-1 btn btn-sm btn-outline-success"
