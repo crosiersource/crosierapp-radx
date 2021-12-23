@@ -12,7 +12,6 @@ use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\DistDFe;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\DistDFeEntityHandler;
-use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -215,10 +214,11 @@ class DistDFeController extends FormListController
      *
      * @return Response
      */
-    public function processarDistDFesObtidos(): ?Response
+    public function processarDistDFesObtidos(Request $request): ?Response
     {
         try {
-            $this->distDFeBusiness->processarDistDFesObtidos();
+            $cnpjEmUso = $request->get('documentoDestinatario') ?? $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+            $this->distDFeBusiness->processarDistDFesObtidos($cnpjEmUso);
             $this->addFlash('info', 'DistDFe(s) processados');
             return $this->redirectToRoute('distDFe_list');
         } catch (ViewException $e) {
