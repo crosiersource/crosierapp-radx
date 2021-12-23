@@ -9,6 +9,20 @@
     v-model:selection="this.selection"
     :ativarSelecao="true"
     ref="dt"
+    :properties="[
+      'id',
+      'updated',
+      'chaveAcesso',
+      'documentoDestinatario',
+      'documentoEmitente',
+      'dtEmissao',
+      'nsu',
+      'numero',
+      'serie',
+      'resumo',
+      'valorTotalFormatted',
+      'xNomeEmitente',
+    ]"
   >
     <template v-slot:headerButtons>
       <button type="button" class="btn btn-warning ml-1" @click="this.obterNotas">
@@ -167,14 +181,11 @@
           </div>
         </template>
       </Column>
-      <Column field="cStat" header="Status" :sortable="true">
-        <template #body="r"> {{ r.data.cStat }} - {{ r.data.xMotivo }} </template>
-      </Column>
       <Column field="valorTotal" header="Valor Total" :sortable="true">
         <template #body="r">
           <div class="text-right">
             {{
-              r.data.valorTotal.toLocaleString("pt-BR", {
+              (r.data.valorTotal ?? 0).toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
               })
@@ -239,7 +250,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 import {
   CrosierCalendar,
   CrosierCurrency,
