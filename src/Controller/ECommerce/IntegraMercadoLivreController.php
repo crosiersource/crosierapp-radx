@@ -4,8 +4,10 @@ namespace App\Controller\ECommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use CrosierSource\CrosierLibRadxBundle\Messenger\ECommerce\Message\MlNotification;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -45,34 +47,19 @@ class IntegraMercadoLivreController extends BaseController
     /**
      * @Route("/ecomm/mercadolivre/endpoint", name="ecomm_mercadoLivre_endpoint")
      */
-    public function mercadolivreEndpoint(Request $request): Response
+    public function mercadolivreEndpoint(Request $request, MessageBusInterface $bus): Response
     {
         $r = [];
         $r[] = 'Cliente IP: ' . $request->getClientIp();
         $r[] = 'Host: ' . $request->getHost();
-        $r[] = '<hr />';
         $r[] = 'Content:';
         $r[] = $request->getContent();
-        $r[] = '<hr />';
-        $r[] = 'Query';
-        foreach ($request->query->all() as $k => $v) {
-            $r[] = $k . ': ' . print_r($v, true);
-        }
-        
-        $r[] = '<hr />';
-        $r[] = 'Request';
-        foreach ($request->request->all() as $k => $v) {
-            $r[] = $k . ': ' . print_r($v, true);
-        }
-
-        $r[] = '<hr />';
         $r[] = 'Headers';
-        foreach ($request->headers->all() as $k => $v) {
-            $r[] = $k . ': ' . print_r($v, true);
-        }
+        $r[] = json_encode($request->headers->all());
         
-        $r[] = '<hr />';
 
+        $bus->dispatch(new MlNotification($request->getContent()));
+        
         $this->syslog->info('ecomm_mercadoLivre_endpoint', implode(PHP_EOL, $r));
         
         return new Response(implode('<br />', $r));
