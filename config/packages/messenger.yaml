@@ -2,13 +2,20 @@ framework:
     messenger:
         # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
         # failure_transport: failed
-
+        
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             async: '%env(MESSENGER_TRANSPORT_DSN)%'
             failed: 'doctrine://default?queue_name=failed'
+            # este transporte é uma RTA para que, de fato, não tente consumir a mensagem, deixando 
+            # tempo para que o handler correto (em outra aplicação) faça o tratamento
+            notreat:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                retry_strategy:
+                    # milliseconds delay
+                    delay: 31536000000 
             # sync: 'sync://'
-
         routing:
             # Route your messages to the transports
             'CrosierSource\CrosierLibRadxBundle\Messenger\ECommerce\Message\IntegrarProdutoEcommerceMessage': async
+            'CrosierSource\CrosierLibRadxBundle\Messenger\ECommerce\Message\MlNotification': notreat
