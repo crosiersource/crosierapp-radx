@@ -56,10 +56,14 @@ class IntegraMercadoLivreController extends BaseController
         $r[] = $request->getContent();
         $r[] = 'Headers';
         $r[] = json_encode($request->headers->all());
-        
 
-        $bus->dispatch(new MlNotification($request->getContent()));
-        
+
+        try {
+            $bus->dispatch(new MlNotification($request->getContent()));
+        } catch (\Exception $e) {
+            $this->syslog->err('Erro ao dispatch a MlNotification', $e->getMessage());
+        }
+
         $this->syslog->info('ecomm_mercadoLivre_endpoint', implode(PHP_EOL, $r));
         
         return new Response(implode('<br />', $r));
