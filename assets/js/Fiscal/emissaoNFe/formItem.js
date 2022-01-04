@@ -16,7 +16,6 @@ $(document).ready(function () {
     let $valorTotal = $('#nota_fiscal_item_valorTotal');
 
     function resValorTotal() {
-      console.log('resValorTotal');
         let qtde = $qtde.maskMoney('unmasked')[0];
         let valorUnit = $valorUnit.maskMoney('unmasked')[0];
 
@@ -27,7 +26,6 @@ $(document).ready(function () {
         let valorTotal = (subTotal - desconto).toFixed(2).replace('.',',');
         $valorTotal.val(valorTotal).maskMoney('mask');
         CrosierMasks.maskDecs();
-        console.log('fim');
     }
 
     $qtde.blur(function () {
