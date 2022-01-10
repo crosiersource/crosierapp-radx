@@ -8,13 +8,13 @@ framework:
     # Remove or comment this section to explicitly disable session support.
     session:
         name: 'CRSRSESSNCK5'
-        #handler_id: ~
+        handler_id: ~
         #handler_id: 'session.handler.native_file'
-        handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        #handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         cookie_domain: "%env(CROSIER_MAINDOMAIN)%"
         cookie_secure: 'auto'
         cookie_samesite: lax
-        #save_path: "%env(CROSIER_SESSIONS_FOLDER)%"
+        save_path: "%env(CROSIER_SESSIONS_FOLDER)%"
         cookie_lifetime: 6048000 # 10 semanas
         cookie_httponly: false
 
