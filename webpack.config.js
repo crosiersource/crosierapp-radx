@@ -93,8 +93,7 @@ Encore
 
   .addEntry('RH/colaborador_form', './assets/js/RH/colaborador_form.js')
 
-  .addEntry('crm/cliente/list', './assets/js/CRM/Cliente/list.js')
-  .addEntry('crm/cliente/form', './assets/js/CRM/Cliente/form.js')
+  
 
 
   .addEntry('Vendas/ven_venda_listVendasPorDiaComEcommerce', './assets/js/Vendas/ven_venda_listVendasPorDiaComEcommerce.js')
@@ -104,6 +103,14 @@ Encore
   .addEntry('Vendas/venda_form_pagamento', './assets/js/Vendas/venda_form_pagamento.js')
   .addEntry('Vendas/venda_form_resumo', './assets/js/Vendas/venda_form_resumo.js')
 
+  // acessos pelo "/v"
+  .addEntry('crm/cliente/list', './assets/js/CRM/Cliente/list.js')
+  .addEntry('crm/cliente/form', './assets/js/CRM/Cliente/form.js')
+  
+  .addEntry('fin/registroConferencia/list', './assets/js/Financeiro/RegistroConferencia/list.js')
+  .addEntry('fin/registroConferencia/form', './assets/js/Financeiro/RegistroConferencia/form.js')
+  
+  
   // --------------------------------------------
 
   .splitEntryChunks()
