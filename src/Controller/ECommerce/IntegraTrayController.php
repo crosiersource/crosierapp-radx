@@ -9,6 +9,7 @@ use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorTray;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -219,6 +220,30 @@ class IntegraTrayController extends BaseController
 //        $integradorTray->integrarVendaParaECommerce2($numPedido);
         return new Response('Pedido integrado com sucesso');
     }
+
+    /**
+     *
+     * @Route("/ecommIntegra/tray/obterVendasPorPeriodo/{dtIni}", name="ecommIntegra_tray_obterVendasPorPeriodo", defaults={"dtIni": null})
+     * @ParamConverter("dtIni", options={"format": "Y-m-d"})
+     *
+     * @param Request $request
+     * @param IntegradorSimplo7 $integraSimplo7Business
+     * @param \DateTime|null $dtIni
+     * @param \DateTime|null $dtFim
+     * @return Response
+     * @throws ViewException
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function obterVendasPorPeriodo(Request $request, ?\DateTime $dtIni = null): Response
+    {
+        if (!$dtIni) {
+            $dtIni = new \DateTime();
+        }
+        $resalvar = $request->get('resalvar') ?? null;
+        $total = $this->integradorTray->obterVendas($dtIni, $resalvar === 'S');
+        return new Response('OK: ' . $total);
+    }
+
 
 
     /**

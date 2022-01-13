@@ -35,4 +35,14 @@ class DefaultController extends BaseController
         return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
+    /**
+     *
+     * @Route("/nosec", name="nosec", methods={"GET"})
+     * @return Response
+     */
+    public function nosec(): Response
+    {
+        return new Response('nosec OK');
+    }
+
 }
