@@ -5,15 +5,11 @@ namespace App\Controller\Financeiro;
 
 use App\Form\Financeiro\RegistroConferenciaType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\RegistroConferenciaBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\RegistroConferencia;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\RegistroConferenciaEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -22,27 +18,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistroConferenciaController extends FormListController
 {
 
-    private RegistroConferenciaBusiness $business;
-
     /**
      *
-     * @Route("/fin/registroConferencia/gerarProximo/{id}/", name="registroConferencia_gerarProximo", requirements={"id"="\d+"})
+     * @Route("/api/fin/registroConferencia/gerarProximo/{id}", name="api_fin_registroConferencia_gerarProximo", requirements={"id"="\d+"})
      * @param RegistroConferencia $registroConferencia
-     * @return RedirectResponse
+     * @return JsonResponse
      *
      * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
      */
-    public function gerarProximo(RegistroConferencia $registroConferencia): RedirectResponse
+    public function gerarProximo(RegistroConferenciaBusiness $business, RegistroConferencia $registroConferencia): JsonResponse
     {
         try {
-            $this->business->gerarProximo($registroConferencia);
-            $this->addFlash('info', 'Registro gerado com sucesso');
-        } catch (ViewException $e) {
-            $this->addFlash('error', $e->getMessage());
+            $business->gerarProximo($registroConferencia);
+            return CrosierApiResponse::success();
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Erro ao processar requisição.');
+            return CrosierApiResponse::error($e, true);
         }
-        return $this->redirectToRoute('registroConferencia_list');
     }
 
 

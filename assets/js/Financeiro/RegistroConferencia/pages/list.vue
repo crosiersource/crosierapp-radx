@@ -1,5 +1,5 @@
 <template>
-  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <Toast position="bottom-right" class="mb-5" />
   <ConfirmDialog />
 
   <CrosierListS
@@ -88,9 +88,17 @@
       <Column field="updated" header="" :sortable="true">
         <template class="text-right" #body="r">
           <div class="d-flex justify-content-end">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary"
+              @click="this.gerarProximo(r.data.id)"
+              title="Gerar próximo"
+            >
+              <i class="fas fa-forward"></i>
+            </button>
             <a
               role="button"
-              class="btn btn-primary btn-sm"
+              class="btn btn-primary btn-sm ml-1"
               title="Editar registro"
               :href="this.formUrl + '?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
@@ -131,6 +139,7 @@ import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import moment from "moment";
+import axios from "axios";
 
 export default {
   components: {
@@ -163,6 +172,46 @@ export default {
       this.filters["dtRegistro[before]"] = this.filters["dtRegistro[before]"]
         ? `${moment(this.filters["dtRegistro[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
         : null;
+    },
+
+    async gerarProximo(id) {
+      this.$confirm.require({
+        header: "Confirmação",
+        message: "Confirmar a operação?",
+        icon: "pi pi-exclamation-triangle",
+        accept: async () => {
+          this.setLoading(true);
+          try {
+            const rs = await axios.get(`/api/fin/registroConferencia/gerarProximo/${id}`, {
+              validateStatus(status) {
+                return status < 500;
+              },
+            });
+            if (rs?.status === 200) {
+              this.$refs.dt.doClearFilters();
+              this.$toast.add({
+                severity: "success",
+                summary: "Sucesso",
+                detail: "Registro gerado com sucesso",
+                life: 5000,
+              });
+              this.setLoading(false);
+              return;
+            }
+            // else
+            throw new Error(rs?.data?.EXCEPTION_MSG || rs?.data?.MSG);
+          } catch (e) {
+            console.dir(e);
+            this.$toast.add({
+              severity: "error",
+              summary: "Erro",
+              detail: e?.message || "Ocorreu um erro",
+              life: 3000,
+            });
+          }
+          this.setLoading(false);
+        },
+      });
     },
   },
 
