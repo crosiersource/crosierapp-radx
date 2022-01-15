@@ -274,7 +274,7 @@ class NFesFornecedoresController extends FormListController
     public function reparseDownloadedXML(NotaFiscal $notaFiscal): ?Response
     {
         try {
-            $this->distDFeBusiness->nfeProc2NotaFiscal($notaFiscal->getXMLDecoded(), $notaFiscal);
+            $this->distDFeBusiness->nfeProc2NotaFiscal($notaFiscal->documentoDestinatario, $notaFiscal->getXMLDecoded(), $notaFiscal);
             $this->addFlash('success', 'XML reprocessado com sucesso');
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erro ao reprocessar XML');

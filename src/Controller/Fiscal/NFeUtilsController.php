@@ -119,7 +119,7 @@ class NFeUtilsController extends BaseController
     public function reparseDownloadedXML(NotaFiscal $notaFiscal): ?Response
     {
         try {
-            $this->distDFeBusiness->nfeProc2NotaFiscal($notaFiscal->getXMLDecoded(), $notaFiscal);
+            $this->distDFeBusiness->nfeProc2NotaFiscal($notaFiscal->documentoDestinatario, $notaFiscal->getXMLDecoded(), $notaFiscal);
             return new Response('OK');
         } catch (\Exception $e) {
             return new Response($e->getMessage());
