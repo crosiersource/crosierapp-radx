@@ -6,7 +6,6 @@
     titulo="Regras de Importação"
     subtitulo="Para importações de extratos"
     apiResource="/api/fin/regraImportacaoLinha/"
-    :formUrl="this.formUrl"
     ref="dt"
   >
     <template v-slot:columns>
@@ -21,7 +20,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="this.formUrl + '?id=' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <a
@@ -60,11 +59,6 @@ export default {
     Column,
     Toast,
     ConfirmDialog,
-  },
-  data() {
-    return {
-      formUrl: "/fin/regraImportacaoLinha/form",
-    };
   },
 
   methods: {

@@ -99,7 +99,7 @@ WHERE uuid = '61d20df0-d26b-4e29-a304-9c56121d7fd0';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('61d20df0-d26b-4e29-a304-9c56121d7fd0', 'Pesquisar', 'fas fa-search-dollar', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/movimentacao/list', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('61d20df0-d26b-4e29-a304-9c56121d7fd0', 'Pesquisar', 'fas fa-search-dollar', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/movimentacao/list', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Extrato de Movimentações
@@ -188,7 +188,7 @@ WHERE uuid = '8b1a74a8-fb70-4a05-a1e1-150e2561ce70';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('8b1a74a8-fb70-4a05-a1e1-150e2561ce70', 'Carteiras', 'fas fa-piggy-bank', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/carteira/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('8b1a74a8-fb70-4a05-a1e1-150e2561ce70', 'Carteiras', 'fas fa-piggy-bank', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/carteira/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Categorias
@@ -199,7 +199,7 @@ WHERE uuid = 'b41a78d8-14ec-4ba4-8ec6-453240719321';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('b41a78d8-14ec-4ba4-8ec6-453240719321', 'Categorias', 'fas fa-stream', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/categoria/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('b41a78d8-14ec-4ba4-8ec6-453240719321', 'Categorias', 'fas fa-stream', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/categoria/form', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Centros de Custos
@@ -210,7 +210,7 @@ WHERE uuid = '6f68649c-516c-4b1f-a735-040d9f7125a9';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('6f68649c-516c-4b1f-a735-040d9f7125a9', 'Centros de Custos', 'fas fa-location-arrow', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/centroCusto/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('6f68649c-516c-4b1f-a735-040d9f7125a9', 'Centros de Custos', 'fas fa-location-arrow', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/centroCusto/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Grupos
@@ -232,7 +232,7 @@ WHERE uuid = 'b1dcae54-08ce-4b25-b38b-a8f7d56218e8';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('b1dcae54-08ce-4b25-b38b-a8f7d56218e8', 'Modos', 'fas fa-sitemap', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/modo/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('b1dcae54-08ce-4b25-b38b-a8f7d56218e8', 'Modos', 'fas fa-sitemap', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/modo/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Operadoras de Cartão
@@ -243,7 +243,7 @@ WHERE uuid = '5fe09111-9fce-4eaf-b65a-060a09d2f8e7';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('5fe09111-9fce-4eaf-b65a-060a09d2f8e7', 'Operadoras de Cartão', 'fas fa-building', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/operadoraCartao/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('5fe09111-9fce-4eaf-b65a-060a09d2f8e7', 'Operadoras de Cartão', 'fas fa-building', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/operadoraCartao/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Bandeiras de Cartão
@@ -254,7 +254,7 @@ WHERE uuid = 'ced83376-84a7-4c89-a185-e252a9ae3936';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('ced83376-84a7-4c89-a185-e252a9ae3936', 'Bandeiras de Cartão', 'fab fa-cc-visa', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/bandeiraCartao/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('ced83376-84a7-4c89-a185-e252a9ae3936', 'Bandeiras de Cartão', 'fab fa-cc-visa', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/bandeiraCartao/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Regras de Importação
@@ -265,7 +265,7 @@ WHERE uuid = 'cb7e4d97-59fe-4666-880f-6f8eecd806f3';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('cb7e4d97-59fe-4666-880f-6f8eecd806f3', 'Regras de Importação', 'fas fa-file-excel', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/regraImportacaoLinha/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('cb7e4d97-59fe-4666-880f-6f8eecd806f3', 'Regras de Importação', 'fas fa-file-excel', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/regraImportacaoLinha/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Registros para Conferências
@@ -287,7 +287,7 @@ WHERE uuid = '5cf74ef9-4d4d-4283-98d0-120d4617a7ea';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('5cf74ef9-4d4d-4283-98d0-120d4617a7ea', 'Bancos', 'fas fa-university', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/banco/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('5cf74ef9-4d4d-4283-98d0-120d4617a7ea', 'Bancos', 'fas fa-university', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/banco/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Fornecedores
@@ -298,8 +298,18 @@ WHERE uuid = '49ca2892-7a0f-11ec-8038-5f519df769f7';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('49ca2892-7a0f-11ec-8038-5f519df769f7', 'Fornecedores', 'fas fa-university', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/fornecedor/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('49ca2892-7a0f-11ec-8038-5f519df769f7', 'Fornecedores', 'fas fa-truck-loading', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/fornecedor/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
+
+-- Clientes
+DELETE
+FROM cfg_entmenu
+WHERE uuid = 'dfb4137a-7d4f-11ec-8acd-3faa558a49a0';
+
+SET @ordem = @ordem + 1;
+
+INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES ('dfb4137a-7d4f-11ec-8acd-3faa558a49a0', 'Clientes', 'fas fa-user-circle', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/cliente/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 

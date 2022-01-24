@@ -1,10 +1,6 @@
 <template>
   <Toast position="bottom-right" class="mt-5" />
-  <CrosierFormS
-    listUrl="/fin/operadoraCartao/list"
-    @submitForm="this.submitForm"
-    titulo="Operadora Cartão"
-  >
+  <CrosierFormS @submitForm="this.submitForm" titulo="Operadora Cartão">
     <div class="form-row">
       <CrosierInputInt label="Id" col="3" id="id" v-model="this.fields.id" :disabled="true" />
 

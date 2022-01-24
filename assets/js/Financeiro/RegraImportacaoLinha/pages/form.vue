@@ -1,11 +1,6 @@
 <template>
   <Toast position="bottom-right" class="mt-5" />
-  <CrosierFormS
-    formUrl="/fin/regraImportacaoLinha/form"
-    listUrl="/fin/regraImportacaoLinha/list"
-    @submitForm="this.submitForm"
-    titulo="Regra para Importação de Linha"
-  >
+  <CrosierFormS @submitForm="this.submitForm" titulo="Regra para Importação de Linha">
     <div class="form-row">
       <CrosierInputInt label="Id" col="3" id="id" v-model="this.fields.id" :disabled="true" />
 

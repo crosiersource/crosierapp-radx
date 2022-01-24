@@ -2,12 +2,7 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog />
 
-  <CrosierListS
-    titulo="Operadoras Cartões"
-    apiResource="/api/fin/operadoraCartao/"
-    :formUrl="this.formUrl"
-    ref="dt"
-  >
+  <CrosierListS titulo="Operadoras Cartões" apiResource="/api/fin/operadoraCartao/" ref="dt">
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true"></Column>
 
@@ -22,7 +17,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="this.formUrl + '?id=' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <a
@@ -61,11 +56,6 @@ export default {
     Column,
     Toast,
     ConfirmDialog,
-  },
-  data() {
-    return {
-      formUrl: "/fin/operadoraCartao/form",
-    };
   },
 
   methods: {

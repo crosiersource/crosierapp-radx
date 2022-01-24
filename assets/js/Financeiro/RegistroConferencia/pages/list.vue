@@ -6,7 +6,6 @@
     :filtrosNaSidebar="true"
     titulo="Registros para Conferências"
     apiResource="/api/fin/registroConferencia/"
-    :formUrl="this.formUrl"
     ref="dt"
     :properties="[
       'id',
@@ -100,7 +99,7 @@
               role="button"
               class="btn btn-primary btn-sm ml-1"
               title="Editar registro"
-              :href="this.formUrl + '?id=' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <a
@@ -151,11 +150,6 @@ export default {
     CrosierDropdownEntity,
     CrosierCalendar,
     CrosierCurrency,
-  },
-  data() {
-    return {
-      formUrl: "/v/fin/registroConferencia/form",
-    };
   },
 
   methods: {

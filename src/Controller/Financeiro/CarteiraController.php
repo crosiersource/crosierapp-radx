@@ -74,31 +74,6 @@ class CarteiraController extends BaseController
         return new Response($json);
     }
 
-
-    /**
-     * @Route("/fin/carteira/form", name="fin_carteira_form")
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function form(): Response
-    {
-        $params = [
-            'jsEntry' => 'Financeiro/Carteira/form'
-        ];
-        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
-    }
-
-    /**
-     * @Route("/fin/carteira/list", name="fin_carteira_list")
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function list(): Response
-    {
-        $params = [
-            'jsEntry' => 'Financeiro/Carteira/list'
-        ];
-        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
-    }
-
     /**
      * @Route("/fin/carteira/caixaOperacaoForm", name="fin_carteira_caixaOperacaoForm")
      * @IsGranted("ROLE_FINAN", statusCode=403)

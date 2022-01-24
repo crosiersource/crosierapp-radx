@@ -26,18 +26,6 @@ class CategoriaController extends FormListController
 {
 
 
-    /**
-     * @Route("/fin/categoria/form", name="fin_categoria_form")
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function form(): Response
-    {
-        $params = [
-            'jsEntry' => 'Financeiro/Categoria/form'
-        ];
-        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
-    }
-
     
     /**
      *

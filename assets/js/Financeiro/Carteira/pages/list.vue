@@ -2,12 +2,7 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog />
 
-  <CrosierListS
-    titulo="Carteiras"
-    apiResource="/api/fin/carteira/"
-    :formUrl="this.formUrl"
-    ref="dt"
-  >
+  <CrosierListS titulo="Carteiras" apiResource="/api/fin/carteira/" ref="dt">
     <template v-slot:filter-fields>
       <div class="form-row">
         <div class="col-md-2">
@@ -47,7 +42,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="this.formUrl + '?id=' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <a
@@ -93,7 +88,6 @@ export default {
   },
   data() {
     return {
-      formUrl: "/fin/carteira/form",
       dropdownOptions: {
         statusOptions: [
           { label: "Ativo", value: true },

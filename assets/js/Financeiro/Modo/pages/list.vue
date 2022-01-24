@@ -2,7 +2,7 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog />
 
-  <CrosierListS titulo="Modos" apiResource="/api/fin/modo/" :formUrl="this.formUrl" ref="dt">
+  <CrosierListS titulo="Modos" apiResource="/api/fin/modo/" ref="dt">
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputInt label="Código" col="3" id="codigo" v-model="this.filters.codigo" />
@@ -37,7 +37,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="this.formUrl + '?id=' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <a
@@ -79,11 +79,6 @@ export default {
     CrosierInputInt,
     Toast,
     ConfirmDialog,
-  },
-  data() {
-    return {
-      formUrl: "/fin/modo/form",
-    };
   },
 
   methods: {
