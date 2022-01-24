@@ -330,7 +330,7 @@ class MovimentacaoAPagarReceberListController extends BaseController
     
     /**
      *
-     * @Route("/fin/aPagarReceber/rel3", name="aPagarReceber_rel3")
+     * @Route("/fin/movimentacao/aPagarReceber/rel", name="fin_movimentacoa_aPagarReceber_rel")
      *
      * @param Request $request
      * @return void
@@ -338,7 +338,7 @@ class MovimentacaoAPagarReceberListController extends BaseController
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
-    public function rel23DF(Request $request): Response
+    public function rel(Request $request): Response
     {
         $content = json_decode($request->getContent(), true);
         $tableData = json_decode($content['tableData'], true);
@@ -347,6 +347,10 @@ class MovimentacaoAPagarReceberListController extends BaseController
         $params['totalGeral'] = $content['totalGeral'];
         
         $params['hoje'] = (new \DateTime())->format('d/m/Y H:i:s');
+
+        $filters['dtVenctoEfetiva[after]'] = $filters['dtVenctoEfetiva[after]'] ?? '0001-01-01';
+        $filters['dtVenctoEfetiva[before]'] = $filters['dtVenctoEfetiva[before]'] ?? '9999-01-01';
+        
         $params['dts'] = DateTimeUtils::parseDateStr($filters['dtVenctoEfetiva[after]'])->format('d/m/Y') . ' - ' .
             DateTimeUtils::parseDateStr($filters['dtVenctoEfetiva[before]'])->format('d/m/Y');
         $params['tableData'] = $tableData;

@@ -117,7 +117,6 @@ Encore
   .addEntry('fin/movimentacao/list', './assets/js/Financeiro/Movimentacao/list.js')
   .addEntry('fin/movimentacao/aPagarReceber/form', './assets/js/Financeiro/Movimentacao/form_aPagarReceber.js')
   .addEntry('fin/movimentacao/aPagarReceber/list', './assets/js/Financeiro/Movimentacao/list_aPagarReceber.js')
-  .addEntry('fin/movimentacao/aPagarReceber/rel', './assets/js/Financeiro/Movimentacao/rel_aPagarReceber.js')
 
   .addEntry('est/fornecedor/list', './assets/js/Estoque/Fornecedor/list.js')
   .addEntry('est/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')

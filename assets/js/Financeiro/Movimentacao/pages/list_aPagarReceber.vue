@@ -407,7 +407,6 @@ export default {
     CrosierMultiSelectEntity,
     CrosierCalendar,
     CrosierCurrency,
-    print,
   },
 
   emits: [
@@ -487,7 +486,7 @@ export default {
       this.visibleRight = !this.visibleRight;
     },
 
-    async doFilter(event) {
+    async doFilter() {
       this.setLoading(true);
 
       this.filters["dtVenctoEfetiva[after]"] = this.filters["dtVenctoEfetiva[after]"]
@@ -658,7 +657,7 @@ export default {
 
     async imprimir() {
       this.setLoading(true);
-      const pdf = await axios.post("/fin/aPagarReceber/rel3", {
+      const pdf = await axios.post("/fin/movimentacao/aPagarReceber/rel", {
         tableData: JSON.stringify(this.tableData),
         filters: JSON.stringify(this.filters),
         somatorios: JSON.stringify(Object.fromEntries(this.somatorios)),
