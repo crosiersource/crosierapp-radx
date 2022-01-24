@@ -39,8 +39,7 @@ Encore
   .addEntry('Estoque/entrada_form', './assets/js/Estoque/entrada_form.js')
   .addEntry('Estoque/entrada_list', './assets/js/Estoque/entrada_list.js')
 
-  .addEntry('est/fornecedor/list', './assets/js/Estoque/Fornecedor/list.js')
-  .addEntry('est/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')
+  
 
   .addEntry('Fiscal/emissaoNFe/form', './assets/js/Fiscal/emissaoNFe/form.js')
   .addEntry('Fiscal/emissaoNFe/formItem', './assets/js/Fiscal/emissaoNFe/formItem.js')
@@ -67,7 +66,6 @@ Encore
   .addEntry('Financeiro/RegraImportacaoLinha/list', './assets/js/Financeiro/RegraImportacaoLinha/list.js')
   .addEntry('Financeiro/RegraImportacaoLinha/form', './assets/js/Financeiro/RegraImportacaoLinha/form.js')
   .addEntry('Financeiro/Categoria/form', './assets/js/Financeiro/Categoria/form.js')
-  .addEntry('Financeiro/Movimentacao/form_aPagarReceber', './assets/js/Financeiro/Movimentacao/form_aPagarReceber.js')
   .addEntry('fin/movimentacao/list', './assets/js/Financeiro/Movimentacao/list.js')
   
   .addEntry('Financeiro/grupoList', './assets/js/Financeiro/grupoList.js')
@@ -85,7 +83,6 @@ Encore
   .addEntry('Financeiro/movimentacaoForm_caixa', './assets/js/Financeiro/movimentacaoForm_caixa.js')
   .addEntry('Financeiro/movimentacaoForm_chequeProprio', './assets/js/Financeiro/movimentacaoForm_chequeProprio.js')
   .addEntry('Financeiro/movimentacaoForm_chequeProprio_parcelamento', './assets/js/Financeiro/movimentacaoForm_chequeProprio_parcelamento.js')
-  .addEntry('Financeiro/movimentacaoForm_aPagarReceber', './assets/js/Financeiro/movimentacaoForm_aPagarReceber.js')
   .addEntry('Financeiro/movimentacaoForm_alterarEmLote', './assets/js/Financeiro/movimentacaoForm_alterarEmLote.js')
   .addEntry('Financeiro/movimentacaoForm_grupo', './assets/js/Financeiro/movimentacaoForm_grupo.js')
   .addEntry('Financeiro/movimentacaoForm_recorrente', './assets/js/Financeiro/movimentacaoForm_recorrente.js')
@@ -109,6 +106,15 @@ Encore
   
   .addEntry('fin/registroConferencia/list', './assets/js/Financeiro/RegistroConferencia/list.js')
   .addEntry('fin/registroConferencia/form', './assets/js/Financeiro/RegistroConferencia/form.js')
+  .addEntry('fin/fornecedor/list', './assets/js/Estoque/Fornecedor/list.js')
+  .addEntry('fin/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')
+
+  .addEntry('fin/movimentacao/aPagarReceber/form', './assets/js/Financeiro/Movimentacao/form_aPagarReceber.js')
+  .addEntry('fin/movimentacao/aPagarReceber/list', './assets/js/Financeiro/Movimentacao/list_aPagarReceber.js')
+  .addEntry('fin/movimentacao/aPagarReceber/rel', './assets/js/Financeiro/Movimentacao/rel_aPagarReceber.js')
+
+  .addEntry('est/fornecedor/list', './assets/js/Estoque/Fornecedor/list.js')
+  .addEntry('est/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')
   
   
   // --------------------------------------------

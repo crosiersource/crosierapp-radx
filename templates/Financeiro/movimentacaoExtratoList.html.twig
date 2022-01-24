@@ -101,7 +101,7 @@
                                 <td>
                                     {{ item.id|strpad(9) }}
                                     <br/>
-                                    <span class="badge badge-pill badge-light">{{ loop.index }}</span>
+                                    <span class="badge badge-pill badge-info">{{ loop.index }}</span>
                                 </td>
                                 <td>
                                     <b><span
@@ -164,7 +164,7 @@
                                         {% endif %}
 
                                         {% if (item.transferenciaEntreCarteiras and item.movimentacaoOposta and item.movimentacaoOposta.categoria) %}
-                                            <span class="badge badge-pill badge-light">
+                                            <span class="badge badge-pill badge-info">
                                             {{ (item.movimentacaoOposta.categoria.codigo == 199 ? '<i class="fas fa-sign-out-alt"></i> Para: ' : '<i class="fas fa-sign-in-alt"></i> De: ') }}
                                                 {{ item.movimentacaoOposta.carteira.getDescricaoMontada() }} </span>
                                         {% endif %}

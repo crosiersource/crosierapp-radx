@@ -24,7 +24,11 @@ const store = createStore({
   state() {
     return {
       loading: 0,
-      fields: {},
+      fields: {
+        jsonData: {
+          endereco: {},
+        },
+      },
       fieldsErrors: {},
     };
   },
@@ -46,6 +50,12 @@ const store = createStore({
     },
 
     setFields(state, fields) {
+      if (!fields.jsonData) {
+        fields.jsonData = {};
+      }
+      if (!fields.jsonData.endereco) {
+        fields.jsonData.endereco = {};
+      }
       state.fields = fields;
     },
 

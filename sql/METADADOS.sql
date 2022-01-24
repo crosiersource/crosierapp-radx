@@ -446,11 +446,16 @@ CREATE TABLE `est_fornecedor`
 (
   `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
 
+  `codigo`             varchar(36)  NOT NULL,
   `nome`               VARCHAR(255) NOT NULL,
   `nome_fantasia`      VARCHAR(255),
   `documento`          varchar(20),
   `inscricao_estadual` varchar(20),
+  `utilizado`          tinyint(1)   NOT NULL,
   `json_data`          json,
+
+
+  UNIQUE KEY `UK_est_fornecedor_codigo` (`codigo`),  
 
   -- campo de controle
   PRIMARY KEY (`id`),
@@ -1769,7 +1774,7 @@ CREATE TABLE `fis_distdfe`
   `proprio`               tinyint(1),
   `nota_fiscal_evento_id` bigint(20),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `fis_distdfe_nsu` (`nsu`,`documento`),
+  UNIQUE KEY `fis_distdfe_nsu` (`nsu`, `documento`),
   KEY `K_fis_distdfe_estabelecimento` (`estabelecimento_id`),
   KEY `K_fis_distdfe_user_inserted` (`user_inserted_id`),
   KEY `K_fis_distdfe_user_updated` (`user_updated_id`),

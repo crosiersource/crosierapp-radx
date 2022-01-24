@@ -15,6 +15,8 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +29,17 @@ class MovimentacaoAPagarReceberListController extends BaseController
 {
 
     private MovimentacaoBusiness $business;
+
+    private Pdf $knpSnappyPdf;
+
+    /**
+     * @required
+     * @param Pdf $knpSnappyPdf
+     */
+    public function setKnpSnappyPdf(Pdf $knpSnappyPdf): void
+    {
+        $this->knpSnappyPdf = $knpSnappyPdf;
+    }
 
     /**
      * @required
@@ -260,6 +273,137 @@ class MovimentacaoAPagarReceberListController extends BaseController
 
         gc_collect_cycles();
         gc_enable();
+
+    }
+
+    /**
+     *
+     * @Route("/fin/aPagarReceber/rel2", name="aPagarReceber_rel2")
+     *
+     * @param Request $request
+     * @return void
+     * @throws ViewException
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function rel2PDF(Request $request): Response
+    {
+        $content = json_decode($request->getContent(), true);
+        $tableData = json_decode($content['tableData'], true);
+        $filters = json_decode($content['filters'], true);
+        $somatorios = json_decode($content['somatorios'], true);
+        $params['totalGeral'] = $content['totalGeral'];
+        
+        $params['hoje'] = (new \DateTime())->format('d/m/Y H:i:s');
+        $params['dts'] = DateTimeUtils::parseDateStr($filters['dtVenctoEfetiva[after]'])->format('d/m/Y') . ' - ' .
+            DateTimeUtils::parseDateStr($filters['dtVenctoEfetiva[before]'])->format('d/m/Y');
+        $params['tableData'] = $tableData;
+
+        $dia = null;
+        $dias = [];
+        $i = -1;
+        
+        foreach ($tableData as $r) {
+            if ($r['dtVenctoEfetiva'] !== $dia) {
+                $i++;
+                $dia = $r['dtVenctoEfetiva'];
+                $dias[$i]['total'] = $somatorios[$r['dtVenctoEfetiva']];
+                $dias[$i]['dtVenctoEfetiva'] = $r['dtVenctoEfetiva'];
+            }
+            $dias[$i]['movs'][] = $r;
+        }
+                
+        $params['dias'] = $dias;
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('Financeiro/movimentacaoAPagarRel2.html.twig', $params);
+
+
+        $this->knpSnappyPdf->setOption('page-width', '12cm');
+        $this->knpSnappyPdf->setOption('page-height', '29cm');
+
+        return new Response(
+            base64_encode($this->knpSnappyPdf->getOutputFromHtml($html))
+        );
+
+    }
+    
+    /**
+     *
+     * @Route("/fin/aPagarReceber/rel3", name="aPagarReceber_rel3")
+     *
+     * @param Request $request
+     * @return void
+     * @throws ViewException
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function rel23DF(Request $request): Response
+    {
+        $content = json_decode($request->getContent(), true);
+        $tableData = json_decode($content['tableData'], true);
+        $filters = json_decode($content['filters'], true);
+        $somatorios = json_decode($content['somatorios'], true);
+        $params['totalGeral'] = $content['totalGeral'];
+        
+        $params['hoje'] = (new \DateTime())->format('d/m/Y H:i:s');
+        $params['dts'] = DateTimeUtils::parseDateStr($filters['dtVenctoEfetiva[after]'])->format('d/m/Y') . ' - ' .
+            DateTimeUtils::parseDateStr($filters['dtVenctoEfetiva[before]'])->format('d/m/Y');
+        $params['tableData'] = $tableData;
+
+        $dia = null;
+        $dias = [];
+        $i = -1;
+        
+        foreach ($tableData as $r) {
+            if ($r['dtVenctoEfetiva'] !== $dia) {
+                $i++;
+                $dia = $r['dtVenctoEfetiva'];
+                $dias[$i]['total'] = $somatorios[$r['dtVenctoEfetiva']];
+                $dias[$i]['dtVenctoEfetiva'] = $r['dtVenctoEfetiva'];
+            }
+            $dias[$i]['movs'][] = $r;
+        }
+                
+        $params['dias'] = $dias;
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('Financeiro/movimentacaoAPagarRel2.html.twig', $params);
+
+
+        gc_collect_cycles();
+        gc_disable();
+
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('enable_remote', true);
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        return new Response(
+            base64_encode($dompdf->output())
+        );
+//
+//        // Output the generated PDF to Browser (inline view)
+//        $dompdf->stream('aPagarReceber_rel.pdf', [
+//            'Attachment' => false
+//        ]);
+
+        gc_collect_cycles();
+        gc_enable();
+        
 
     }
 

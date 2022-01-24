@@ -1,5 +1,5 @@
 <template>
-  <CrosierListS titulo="Fornecedores" apiResource="/api/est/fornecedor" :formUrl="this.formUrl">
+  <CrosierListS titulo="Fornecedores" apiResource="/api/est/fornecedor">
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputText
@@ -23,6 +23,8 @@
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true"></Column>
 
+      <Column field="codigo" header="Código" :sortable="true"></Column>
+
       <Column field="documento" header="CPF/CNPJ" :sortable="true"></Column>
 
       <Column field="nome" header="Nome" :sortable="true"></Column>
@@ -34,7 +36,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="this.formUrl + '?id=' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <a
@@ -71,11 +73,6 @@ export default {
     Column,
     CrosierDropdown,
     CrosierInputText,
-  },
-  data() {
-    return {
-      formUrl: "/v/est/fornecedor/form",
-    };
   },
 
   methods: {

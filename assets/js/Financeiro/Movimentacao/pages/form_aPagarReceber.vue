@@ -2,14 +2,9 @@
   <Toast position="bottom-right" class="mt-5" />
   <ConfirmDialog></ConfirmDialog>
 
-  <CrosierFormS
-    listUrl="/fin/movimentacao/aPagarReceber/list"
-    formUrl="/fin/movimentacao/aPagarReceber/form"
-    @submitForm="this.submitForm"
-    titulo="Movimentação a Pagar/Receber"
-  >
+  <CrosierFormS @submitForm="this.submitForm" titulo="Movimentação a Pagar/Receber">
     <template #btns>
-      <div class="dropdown ml-2">
+      <div class="dropdown ml-2 float-right">
         <button
           v-if="this.fields.id"
           class="btn btn-secondary dropdown-toggle"
@@ -23,7 +18,7 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a
             class="dropdown-item"
-            :href="'/fin/movimentacao/form/recorrente/' + this.fields.id"
+            :href="'/v/fin/movimentacao/form/recorrente/' + this.fields.id"
             title="Transformar esta movimentação em recorrente"
           >
             <i class="fas fa-undo" aria-hidden="true"></i> Transformar em Recorrente
@@ -38,7 +33,7 @@
           </button>
           <a
             class="dropdown-item"
-            :href="'/fin/movimentacao/form/pagto/' + this.fields.id"
+            :href="'/v/fin/movimentacao/form/pagto/' + this.fields.id"
             role="button"
             title="Registrar pagamento desta movimentação"
           >

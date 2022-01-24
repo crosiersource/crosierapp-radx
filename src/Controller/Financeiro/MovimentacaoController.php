@@ -405,50 +405,7 @@ class MovimentacaoController extends FormListController
         return $this->doForm($request, $movimentacao, $params);
     }
 
-    /**
-     * @Route("/fin/movimentacao/form/aPagarReceber/{id}", name="fin_movimentacao_form_aPagarReceber", defaults={"id"=null}, requirements={"movimentacao"="\d+"})
-     * @param Request $request
-     * @param Movimentacao|null $movimentacao
-     * @return RedirectResponse|Response
-     * @throws \Exception
-     *
-     * @IsGranted("ROLE_FINAN", statusCode=403)
-     */
-    public function formPagarReceber(Request $request, Movimentacao $movimentacao = null)
-    {
-        $parcelamento = false;
-        if ($movimentacao) {
-            if ($movimentacao->dtPagto) {
-                return $this->edit($movimentacao);
-            }
-            $parcelamento = $movimentacao->parcelamento;
-        } else if ($request->get('parcelamento')) {
-            $parcelamento = true;
-        }
-        if (!$movimentacao) {
-            $movimentacao = new Movimentacao();
-            $movimentacao->carteira = ($this->getDoctrine()->getRepository(Carteira::class)->findOneBy(['codigo' => 99]));
-            $tipoLanctoCodigo = 20;
-            $movimentacao->tipoLancto = ($this->getDoctrine()->getRepository(TipoLancto::class)->findOneBy(['codigo' => $tipoLanctoCodigo]));
-            $movimentacao->status = 'ABERTA';
-        }
-
-        $params = [
-            'typeClass' => MovimentacaoAPagarReceberType::class,
-            'formRoute' => 'fin_movimentacao_form_aPagarReceber',
-            'formPageTitle' => 'Movimentação a Pagar/Receber',
-            'formView' => 'Financeiro/movimentacaoForm_aPagarReceber.html.twig'
-        ];
-
-        if (!$movimentacao->getId() && $parcelamento) {
-            $params['formView'] = 'Financeiro/movimentacaoForm_aPagarReceber_parcelamento.html.twig';
-            return $this->handleParcelamento($request, $movimentacao, $params);
-        }
-        // else
-
-        return $this->doForm($request, $movimentacao, $params);
-    }
-
+    
     /**
      * Form para movimentações do tipoLancto 40.
      *

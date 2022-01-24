@@ -2,7 +2,7 @@
   <div :class="'col-md-' + this.col">
     <div class="form-group">
       <label v-if="this.showLabel" :for="this.id">{{ label }}</label>
-      <Dropdown
+      <MultiSelect
         :class="'form-control ' + (this.error ? 'is-invalid' : '')"
         :id="this.id"
         :modelValue="modelValue"
@@ -17,6 +17,7 @@
         :filter="true"
         @focus="this.$emit('focus')"
         @blur="this.$emit('blur')"
+        display="chip"
       />
       <small v-if="this.helpText" :id="this.id + '_help'" class="form-text text-muted">{{
         this.helpText
@@ -29,16 +30,16 @@
 </template>
 
 <script>
-import Dropdown from "primevue/dropdown";
+import MultiSelect from "primevue/multiselect";
 import { mapMutations } from "vuex";
 // import api from "../../services/api";
 import { api } from "crosier-vue";
 
 export default {
-  name: "CrosierDropdownEntity",
+  name: "CrosierMultiSelectEntity",
 
   components: {
-    Dropdown,
+    MultiSelect,
   },
 
   emits: ["update:modelValue", "change", "focus", "blur"],

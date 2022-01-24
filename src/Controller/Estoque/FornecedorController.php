@@ -8,12 +8,14 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\FornecedorEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\FornecedorRepository;
+use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -28,40 +30,27 @@ use Symfony\Component\Routing\Annotation\Route;
 class FornecedorController extends FormListController
 {
 
-    private AppConfigEntityHandler $appConfigEntityHandler;
-
-    /**
-     * @required
-     * @param AppConfigEntityHandler $appConfigEntityHandler
-     */
-    public function setAppConfigEntityHandler(AppConfigEntityHandler $appConfigEntityHandler): void
-    {
-        $this->appConfigEntityHandler = $appConfigEntityHandler;
-    }
-
-    /**
-     * @required
-     * @param FornecedorEntityHandler $entityHandler
-     */
-    public function setEntityHandler(FornecedorEntityHandler $entityHandler): void
-    {
-        $this->entityHandler = $entityHandler;
-    }
-
-    /**
-     * @param array $params
-     * @return array
-     */
-    public function getFilterDatas(array $params): array
-    {
-        return [
-            new FilterData(['nome', 'nomeFantasia', 'documento'], 'LIKE', 'str', $params),
-        ];
-    }
-
     /**
      *
-     * @Route("/est/fornecedor/findByStr", name="est_fornecedor_findByStr")
+     * @Route("/api/est/fornecedor/findProxCodigo", name="api_est_fornecedor_findProxCodigo")
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findProxCodigo(Connection $conn): JsonResponse
+    {
+        try {
+            $rsProxCodigo = $conn->fetchAssociative('SELECT max(codigo)+1 as prox FROM est_fornecedor WHERE codigo < 2147483647');
+            return CrosierApiResponse::success($rsProxCodigo);
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error();
+        }
+    }
+    
+    /**
+     *
+     * @Route("/api/est/fornecedor/findByStr", name="api_est_fornecedor_findByStr")
      * @param Request $request
      * @return JsonResponse
      *

@@ -3788,10 +3788,10 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-crosier-vue@0.8.3:
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/crosier-vue/-/crosier-vue-0.8.3.tgz#75d447a63309f3c632cbe5d7703e95e1b966c744"
-  integrity sha512-mzl9xNgAZyS9g6PGIF8t3fkYf/NKwNej8trZjWUOoDYPhCrwncGI2M83fI+2Ia7AggS4ReDGK6Rm8yBF+ANrhQ==
+crosier-vue@0.8.6:
+  version "0.8.6"
+  resolved "https://registry.yarnpkg.com/crosier-vue/-/crosier-vue-0.8.6.tgz#56465fe27be97cda960ff568f780ff06d7444640"
+  integrity sha512-zLbbeY3MDKSEhQEbK1txFQ/E6Dx7wFqqtDtvBuw3crkKmhnbjgWyIJcgNCwjOMuy0ERYL0o9VaAXyDBpZ/eCqQ==
   dependencies:
     "@fullcalendar/core" "^5.6.0"
     "@fullcalendar/daygrid" "^5.5.0"
@@ -9579,7 +9579,7 @@ primevue@^3.8.1:
   resolved "https://registry.yarnpkg.com/primevue/-/primevue-3.8.2.tgz#c9c11ef912714e516c5ede19a8256d60848ccf01"
   integrity sha512-ToJYJad5wvrSydBjyIFHuDZzehor90XVioTzNHGyMqBat23XMwHqQSHsCmbOS91CCxTP9UjaAS8S6m4HjBGceQ==
 
-print-js@^1.0.63:
+print-js@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/print-js/-/print-js-1.6.0.tgz#692b046cf31992b46afa6c6d8a9db1c69d431d1f"
   integrity sha512-BfnOIzSKbqGRtO4o0rnj/K3681BSd2QUrsIZy/+WdCIugjIswjmx3lDEZpXB2ruGf9d4b3YNINri81+J0FsBWg==
@@ -11850,6 +11850,11 @@ vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
+
+vue-html-to-paper@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/vue-html-to-paper/-/vue-html-to-paper-1.4.4.tgz#98af39a81e5dc426fbf3e1575f220c76d233709d"
+  integrity sha512-5Stkm0jJDsC7A/WJWroxqxiASR1+9fcgVWy7AXv30uxdxTPOr7k1Z4KUklZJm7dkHR45tExVCMSOHuxrC22TEw==
 
 vue-json-editor@^1.4.3:
   version "1.4.3"

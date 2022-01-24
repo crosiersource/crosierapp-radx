@@ -25,7 +25,7 @@ class DefaultController extends BaseController
     }
 
     /**
-     * @Route("/v/{vuePage}", name="v_vuaPage", requirements={"vuePage"=".+"})
+     * @Route("/v/{vuePage}", name="v_vuePage", requirements={"vuePage"=".+"})
      */
     public function vuePage($vuePage): Response
     {
@@ -33,6 +33,17 @@ class DefaultController extends BaseController
             'jsEntry' => $vuePage
         ];
         return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
+    }
+
+    /**
+     * @Route("/r/{vueRel}", name="r_vueRel", requirements={"vueRel"=".+"})
+     */
+    public function vueRel($vueRel): Response
+    {
+        $params = [
+            'jsEntry' => $vueRel
+        ];
+        return $this->doRender('@CrosierLibBase/vue-app-rel.html.twig', $params);
     }
 
     /**

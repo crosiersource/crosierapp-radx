@@ -303,12 +303,12 @@ import {
   CrosierInputInt,
   CrosierInputText,
   CrosierListS,
+  CrosierDropdownEntity,
 } from "crosier-vue";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import moment from "moment";
-import CrosierDropdownEntity from "./CrosierDropdownEntity";
 
 export default {
   components: {
