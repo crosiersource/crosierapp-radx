@@ -1079,7 +1079,7 @@ class MovimentacaoController extends FormListController
         try {
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
-            $filiaisR = json_decode($repoAppConfig->findConfigByChaveAndAppNome('financeiro.filiais_prop.json', 'crosierapp-radx')->getValor(), true);
+            $filiaisR = json_decode($repoAppConfig->findConfigByChaveAndAppNome('financeiro.filiais_prop.json', 'crosierapp-radx')->valor, true);
             if (!$filiaisR) {
                 throw new \RuntimeException();
             }
