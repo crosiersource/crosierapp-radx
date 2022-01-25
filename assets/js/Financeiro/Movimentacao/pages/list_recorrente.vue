@@ -91,7 +91,7 @@
             <button
               type="button"
               class="ml-1 btn btn-info"
-              title="Próximo mês"
+              title="Mês anterior"
               @click="this.trocaMes(false)"
             >
               <i class="fas fa-angle-left"></i>
@@ -100,7 +100,7 @@
             <button
               type="button"
               class="ml-1 btn btn-info"
-              title="Mês anterior"
+              title="Próximo mês"
               @click="this.trocaMes(true)"
             >
               <i class="fas fa-angle-right"></i>
@@ -383,7 +383,7 @@ import axios from "axios";
 import CrosierMesAno from "./CrosierMesAno";
 
 export default {
-  name: "list_aPagarReceber",
+  name: "list_recorrente",
 
   components: {
     Checkbox,
@@ -465,7 +465,7 @@ export default {
       try {
         this.$store.commit(mutationName, filters);
       } catch (e) {
-        console.error(`aPagarReceberList: |${mutationName}| n/d`);
+        console.error(`list_recorrente: |${mutationName}| n/d`);
         console.error(e);
       }
     },
@@ -485,7 +485,7 @@ export default {
     async doFilter() {
       this.setLoading(true);
 
-      this.filters.mesAno = this.filters.mesAno ?? moment().format("YYYY-MM-DD");
+      this.filters.mesAno = this.filters.mesAno ?? `${moment().format("YYYY-MM")}-01`;
 
       this.filters["dtVencto[after]"] = `${moment(this.filters.mesAno).format(
         "YYYY-MM-DD"
@@ -724,11 +724,11 @@ export default {
     }),
 
     filtersOnLocalStorage() {
-      return "filters_list_aPagarReceber";
+      return "filters_list_recorrente";
     },
 
     dataTableStateKey() {
-      return "dt-state_list_aPagarReceber";
+      return "dt-state_list_recorrente";
     },
 
     isFiltering() {
