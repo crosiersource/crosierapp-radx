@@ -60,8 +60,6 @@ Encore
   .addEntry('Financeiro/registroConferenciaList', './assets/js/Financeiro/registroConferenciaList.js')
   .addEntry('Financeiro/movimentacaoList', './assets/js/Financeiro/movimentacaoList.js')
   .addEntry('Financeiro/movimentacaoExtratoList', './assets/js/Financeiro/movimentacaoExtratoList.js')
-  .addEntry('Financeiro/movimentacaoAPagarReceberList', './assets/js/Financeiro/movimentacaoAPagarReceberList.js')
-  .addEntry('Financeiro/movimentacaoRecorrentesList', './assets/js/Financeiro/movimentacaoRecorrentesList.js')
   .addEntry('Financeiro/movimentacaoCaixaList', './assets/js/Financeiro/movimentacaoCaixaList.js')
   .addEntry('Financeiro/movimentacaoImport', './assets/js/Financeiro/movimentacaoImport.js')
   .addEntry('Financeiro/movimentacaoForm_geral', './assets/js/Financeiro/movimentacaoForm_geral.js')
@@ -71,7 +69,6 @@ Encore
   .addEntry('Financeiro/movimentacaoForm_chequeProprio_parcelamento', './assets/js/Financeiro/movimentacaoForm_chequeProprio_parcelamento.js')
   .addEntry('Financeiro/movimentacaoForm_alterarEmLote', './assets/js/Financeiro/movimentacaoForm_alterarEmLote.js')
   .addEntry('Financeiro/movimentacaoForm_grupo', './assets/js/Financeiro/movimentacaoForm_grupo.js')
-  .addEntry('Financeiro/movimentacaoForm_recorrente', './assets/js/Financeiro/movimentacaoForm_recorrente.js')
   .addEntry('Financeiro/custoOperacional_relatorioMensal', './assets/js/Financeiro/custoOperacional_relatorioMensal.js')
 
   .addEntry('RH/colaborador_form', './assets/js/RH/colaborador_form.js')
@@ -90,6 +87,13 @@ Encore
   .addEntry('crm/cliente/list', './assets/js/CRM/Cliente/list.js')
   .addEntry('crm/cliente/form', './assets/js/CRM/Cliente/form.js')
 
+  
+  
+  .addEntry('est/fornecedor/list', './assets/js/Estoque/Fornecedor/list.js')
+  .addEntry('est/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')
+
+  
+  
   .addEntry('fin/banco/list', './assets/js/Financeiro/Banco/list.js')
   .addEntry('fin/banco/form', './assets/js/Financeiro/Banco/form.js')
   .addEntry('fin/bandeiraCartao/list', './assets/js/Financeiro/BandeiraCartao/list.js')
@@ -117,9 +121,10 @@ Encore
   .addEntry('fin/movimentacao/list', './assets/js/Financeiro/Movimentacao/list.js')
   .addEntry('fin/movimentacao/aPagarReceber/form', './assets/js/Financeiro/Movimentacao/form_aPagarReceber.js')
   .addEntry('fin/movimentacao/aPagarReceber/list', './assets/js/Financeiro/Movimentacao/list_aPagarReceber.js')
+  .addEntry('fin/movimentacao/recorrente/form', './assets/js/Financeiro/Movimentacao/form_recorrente.js')
+  .addEntry('fin/movimentacao/recorrente/list', './assets/js/Financeiro/Movimentacao/list_recorrente.js')
 
-  .addEntry('est/fornecedor/list', './assets/js/Estoque/Fornecedor/list.js')
-  .addEntry('est/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')
+  
   
   
   // --------------------------------------------

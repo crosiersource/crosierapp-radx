@@ -9,11 +9,10 @@ use App\Form\Financeiro\MovimentacaoGeralType;
 use App\Form\Financeiro\MovimentacaoPagtoType;
 use App\Form\Financeiro\MovimentacaoTransferenciaEntreCarteirasType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
@@ -23,23 +22,17 @@ use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\BandeiraCartao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Cadeia;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\CentroCusto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
-use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\BandeiraCartaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CentroCustoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\ModoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\OperadoraCartaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\TipoLanctoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -405,7 +398,7 @@ class MovimentacaoController extends FormListController
         return $this->doForm($request, $movimentacao, $params);
     }
 
-    
+
     /**
      * Form para movimentações do tipoLancto 40.
      *
@@ -781,6 +774,7 @@ class MovimentacaoController extends FormListController
         return $this->doForm($request, $movimentacao, $params);
     }
 
+
     /**
      * @Route("/fin/movimentacao/form/rapida/{id}", name="movimentacao_form_rapida", defaults={"id"=null})
      * @param Request $request
@@ -878,99 +872,6 @@ class MovimentacaoController extends FormListController
 
     /**
      *
-     * @Route("/fin/movimentacao/pesquisaList/", name="fin_movimentacao_pesquisaList")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     *
-     * @IsGranted("ROLE_FINAN", statusCode=403)
-     */
-    public function pesquisaList(Request $request): Response
-    {
-        $params = [
-            'listView' => 'Financeiro/movimentacao_pesquisa_list.html.twig',
-            'listRoute' => 'fin_movimentacao_pesquisaList'
-        ];
-
-
-        $fnGetFilterDatas = function (array $params): array {
-            return [
-                new FilterData(['id'], 'LIKE', 'id', $params),
-                new FilterData(['notafiscal_id'], 'EQ', 'notafiscal_id', $params, null, true),
-                new FilterData(['descricao'], 'LIKE', 'descricao', $params),
-                new FilterData(['carteira'], 'IN', 'carteira', $params),
-                new FilterData(['categoria'], 'IN', 'categoria', $params),
-                new FilterData(['centroCusto'], 'IN', 'centroCusto', $params),
-                new FilterData(['status'], 'EQ', 'status', $params),
-                new FilterData(['dtUtil'], 'BETWEEN_DATE_CONCAT', 'dts', $params),
-                new FilterData(['chequeNumCheque'], 'LIKE_END', 'chequeNumCheque', $params),
-                new FilterData(['operadoraCartao'], 'IN', 'operadoraCartao', $params),
-                new FilterData(['bandeiraCartao'], 'IN', 'bandeiraCartao', $params),
-                new FilterData(['recorrente'], 'EQ_BOOL', 'recorrente', $params),
-                new FilterData(['valor', 'valorTotal'], 'BETWEEN', 'valor', $params, 'decimal'),
-            ];
-        };
-
-
-        $params['limit'] = 200;
-
-        $filters = $request->get('filter');
-
-        /** @var ModoRepository $repoModo */
-        $repoModo = $this->getDoctrine()->getRepository(Modo::class);
-        $params['modos'] = $repoModo->getSelect2js($filters['modo'] ?? null);
-
-        /** @var CategoriaRepository $repoModo */
-        $repoCategoria = $this->getDoctrine()->getRepository(Categoria::class);
-        $params['categorias'] = $repoCategoria->getSelect2js($filters['categoria'] ?? null);
-
-        /** @var CarteiraRepository $repoCarteira */
-        $repoCarteira = $this->getDoctrine()->getRepository(Carteira::class);
-        $params['carteiras'] = $repoCarteira->getSelect2js($filters['carteiras'] ?? null);
-
-        /** @var CentroCustoRepository $repoCentroCusto */
-        $repoCentroCusto = $this->getDoctrine()->getRepository(CentroCusto::class);
-        $params['centrosCusto'] = $repoCentroCusto->getSelect2js($filters['centroCusto'] ?? null);
-
-        $params['status'] = json_encode([
-            ['id' => '', 'text' => '...', 'selected' => ($filters['status'] ?? '') === ''],
-            ['id' => 'ABERTA', 'text' => 'ABERTA', 'selected' => ($filters['status'] ?? '') === 'ABERTA'],
-            ['id' => 'REALIZADA', 'text' => 'REALIZADA', 'selected' => ($filters['status'] ?? '') === 'REALIZADA'],
-        ]);
-
-        if ($filters['dts'] ?? false) {
-            $dtIni = DateTimeUtils::parseDateStr(substr($filters['dts'], 0, 10));
-            $dtFim = DateTimeUtils::parseDateStr(substr($filters['dts'], 13, 10));
-            /** @var DiaUtilRepository $repoDiaUtil */
-            $repoDiaUtil = $this->getDoctrine()->getRepository(DiaUtil::class);
-            $prox = $repoDiaUtil->incPeriodo($dtIni, $dtFim, true);
-            $ante = $repoDiaUtil->incPeriodo($dtIni, $dtFim, false);
-            $params['antePeriodoI'] = $ante['dtIni'];
-            $params['antePeriodoF'] = $ante['dtFim'];
-            $params['proxPeriodoI'] = $prox['dtIni'];
-            $params['proxPeriodoF'] = $prox['dtFim'];
-        }
-
-        /** @var OperadoraCartaoRepository $repoOperadoraCartao */
-        $repoOperadoraCartao = $this->getDoctrine()->getRepository(OperadoraCartao::class);
-        $params['operadorasCartao'] = $repoOperadoraCartao->getSelect2js($filters['operadoraCartao'] ?? null);
-
-        /** @var BandeiraCartaoRepository $repoBandeiraCartao */
-        $repoBandeiraCartao = $this->getDoctrine()->getRepository(BandeiraCartao::class);
-        $params['bandeirasCartao'] = $repoBandeiraCartao->getSelect2js($filters['bandeirasCartao'] ?? null);
-
-        $fnHandleDadosList = function (array &$dados, int $totalRegistros) use ($params) {
-            if (count($dados) >= $params['limit'] && $totalRegistros > $params['limit']) {
-                $this->addFlash('warn', 'Retornando apenas ' . $params['limit'] . ' registros de um total de ' . $totalRegistros . '. Utilize os filtros!');
-            }
-        };
-
-        return $this->doListSimpl($request, $params, $fnGetFilterDatas, $fnHandleDadosList);
-    }
-
-
-    /**
-     *
      * @Route("/fin/movimentacao/filiais/", name="fin_movimentacao_filiais")
      * @return Response
      * @throws \Exception
@@ -1049,23 +950,6 @@ class MovimentacaoController extends FormListController
     }
 
 
-
-    // ------------------------------------ vue
-
-
-    /**
-     * @Route("/fin/movimentacao/aPagarReceber/form", name="fin_banco_form")
-     * @IsGranted("ROLE_FINAN_ADMIN", statusCode=403)
-     */
-    public function form(): Response
-    {
-        $params = [
-            'jsEntry' => 'Financeiro/Movimentacao/form_aPagarReceber'
-        ];
-        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
-    }
-
-    
     /**
      *
      * @Route("/api/fin/movimentacao/filiais/", name="api_fin_movimentacao_filiais")
@@ -1091,7 +975,7 @@ class MovimentacaoController extends FormListController
                     'value' => $str
                 ];
             }
-            
+
 
             return new JsonResponse(
                 [
@@ -1110,7 +994,7 @@ class MovimentacaoController extends FormListController
         }
     }
 
-    
+
     /**
      *
      * @Route("/api/fin/movimentacao/findSacadoOuCedente/", name="api_fin_movimentacao_findSacadoOuCedente")
@@ -1152,6 +1036,32 @@ class MovimentacaoController extends FormListController
             );
         }
 
+    }
+
+
+    /**
+     *
+     * @Route("/fin/movimentacao/recorrente/processar", name="fin_movimentacao_recorrente_processar")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function processar(Request $request): JsonResponse
+    {
+        try {
+            $movsSelecionadas = json_decode($request->getContent(), true);
+            $rMovs = [];
+            foreach ($movsSelecionadas as $mov) {
+                $rMovs[] = $this->getDoctrine()->getRepository(Movimentacao::class)->find($mov['id']);
+            }
+            $msgs = $this->business->processarRecorrentes($rMovs);
+            $sMsgs = explode("\r\n", $msgs);
+            return CrosierApiResponse::success(['msgs' => $sMsgs]);
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error($e, true);
+        }
     }
 
 

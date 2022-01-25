@@ -2,54 +2,66 @@
   <Toast position="bottom-right" class="mt-5" />
   <ConfirmDialog></ConfirmDialog>
 
-  <CrosierFormS @submitForm="this.submitForm" titulo="Movimentação a Pagar/Receber">
+  <CrosierFormS @submitForm="this.submitForm" titulo="Movimentação Recorrente">
     <template #btns>
-      <div class="dropdown ml-2 float-right">
-        <button
-          v-if="this.fields.id"
-          class="btn btn-secondary dropdown-toggle"
-          type="button"
-          id="dropdownMenuButton"
-          data-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <i class="fas fa-cog" aria-hidden="true"></i> Opções
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a
-            class="dropdown-item"
-            :href="'/v/fin/movimentacao/recorrente/form?id=' + this.fields.id"
-            title="Transformar esta movimentação em recorrente"
-          >
-            <i class="fas fa-undo" aria-hidden="true"></i> Transformar em Recorrente
-          </a>
-          <button
-            type="button"
-            class="dropdown-item"
-            @click="this.clonar"
-            title="Clonar esta movimentação"
-          >
-            <i class="far fa-clone"></i> Clonar
-          </button>
-          <a
-            class="dropdown-item"
-            :href="'/v/fin/movimentacao/form/pagto/' + this.fields.id"
-            role="button"
-            title="Registrar pagamento desta movimentação"
-          >
-            <i class="fas fa-dollar-sign"></i> Registrar pagamento
-          </a>
-          <button
-            type="button"
-            class="dropdown-item"
-            @click="this.deletar"
-            title="Deletar movimentação"
-          >
-            <i class="fa fa-trash" aria-hidden="true"></i> Deletar
-          </button>
+      <button
+        type="button"
+        class="btn btn-outline-danger ml-1"
+        @click="this.deletar"
+        title="Deletar movimentação"
+      >
+        <i class="fa fa-trash" aria-hidden="true"></i> Deletar
+      </button>
+    </template>
+
+    <div class="card mb-2">
+      <div class="card-body">
+        <h5 class="card-title">Dados sobre a recorrência...</h5>
+        <div class="form-row">
+          <CrosierInputInt
+            label="Dia"
+            col="3"
+            id="id"
+            v-model="this.fields.recorrDia"
+            :error="this.fieldsErrors.recorrDia"
+            helpText="Utilizar 32 para indicar o último dia do mês."
+          />
+
+          <CrosierDropdown
+            col="2"
+            v-model="this.fields.recorrFrequencia"
+            :options="[
+              { label: 'Mensal', value: 'MENSAL' },
+              { label: 'Semanal', value: 'SEMANAL' },
+              { label: 'Anual', value: 'ANUAL' },
+            ]"
+            :error="this.fieldsErrors.recorrFrequencia"
+            label="Frequência"
+            id="recorrFrequencia"
+          />
+
+          <CrosierDropdown
+            col="3"
+            v-model="this.fields.recorrTipoRepet"
+            :options="[
+              { label: 'Dia Fixo', value: 'DIA_FIXO' },
+              { label: 'Dia Útil', value: 'DIA_UTIL' },
+            ]"
+            :error="this.fieldsErrors.recorrTipoRepet"
+            label="Tipo de Repetição"
+            id="recorrTipoRepet"
+          />
+
+          <CrosierInputInt
+            label="Variação"
+            col="4"
+            id="recorrVariacao"
+            v-model="this.fields.recorrVariacao"
+            helpText="Variação em relação ao dia em que seria o vencimento. Exemplo: dia 32 com variação de -2 significa 2 dias antes do último dia do mês."
+          />
         </div>
       </div>
-    </template>
+    </div>
 
     <div class="form-row">
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
@@ -322,7 +334,6 @@ import Skeleton from "primevue/skeleton";
 import ConfirmDialog from "primevue/confirmdialog";
 import * as yup from "yup";
 import {
-  api,
   CrosierCurrency,
   CrosierDropdown,
   CrosierDropdownEntity,
@@ -341,11 +352,11 @@ import moment from "moment";
 export default {
   components: {
     CrosierDropdownEntity,
+    CrosierDropdown,
     CrosierCurrency,
     CrosierCalendar,
     Toast,
     CrosierFormS,
-    CrosierDropdown,
     CrosierInputText,
     CrosierInputInt,
     CrosierAutoComplete,
@@ -377,6 +388,9 @@ export default {
       dtVenctoEfetiva: yup.date().required().typeError(),
       valor: yup.number().required().typeError(),
       valorTotal: yup.number().required().typeError(),
+      recorrDia: yup.number().required().typeError(),
+      recorrFrequencia: yup.string().required().typeError(),
+      recorrTipoRepet: yup.string().required().typeError(),
     });
 
     const rs = await axios.get("/api/fin/movimentacao/filiais/", {
@@ -434,6 +448,7 @@ export default {
         formDataStateName: "fields",
         $toast: this.$toast,
         fnBeforeSave: (formData) => {
+          formData.recorrente = true;
           formData.categoria = formData.categoria["@id"];
           formData.carteira = formData.carteira["@id"];
           formData.modo = formData.modo["@id"];

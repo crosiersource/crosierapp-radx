@@ -67,7 +67,7 @@ VALUES (NULL, '1e5d6a55-a507-401a-aa02-91602081bae1', 'Estorno', 'fas fa-eraser'
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
-VALUES (NULL, '0558f998-b936-415b-a1b9-5f1ed6b54395', 'Recorrente', 'fas fa-redo-alt', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/fin/movimentacao/form/recorrente/', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
+VALUES (NULL, '0558f998-b936-415b-a1b9-5f1ed6b54395', 'Recorrente', 'fas fa-redo-alt', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/v/fin/movimentacao/recorrente/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
 
 SET @ordem = @ordem + 1;
 
@@ -154,7 +154,7 @@ WHERE uuid = '31b009a5-758b-4ee4-b47c-f42df678868d';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('31b009a5-758b-4ee4-b47c-f42df678868d', 'Recorrentes', 'fas fa-undo', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/movimentacaoRecorrente/list', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('31b009a5-758b-4ee4-b47c-f42df678868d', 'Recorrentes', 'fas fa-undo', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/movimentacao/recorrente/list', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Agrupadas

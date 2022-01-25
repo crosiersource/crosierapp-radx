@@ -1,6 +1,6 @@
 <template>
-  <ConfirmDialog group="confirmDialog_aPagarReceberList" />
-  <Toast group="toast_aPagarReceberList" class="mb-5" />
+  <ConfirmDialog />
+  <Toast class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
   <Sidebar class="p-sidebar-lg" v-model:visible="this.visibleRight" position="right">
@@ -21,38 +21,7 @@
           </div>
 
           <div class="form-row">
-            <CrosierCalendar
-              label="Desde..."
-              col="6"
-              inputClass="crsr-date"
-              id="dt"
-              :baseZIndex="10000"
-              v-model="this.filters['dtVenctoEfetiva[after]']"
-            />
-
-            <CrosierCalendar
-              label="até..."
-              col="6"
-              inputClass="crsr-date"
-              id="dt"
-              :baseZIndex="10000"
-              v-model="this.filters['dtVenctoEfetiva[before]']"
-            />
-          </div>
-          <div class="form-row">
-            <CrosierCurrency
-              label="Valor Total entre..."
-              col="6"
-              id="dt"
-              v-model="this.filters['valorTotal[gte]']"
-            />
-
-            <CrosierCurrency
-              label="e..."
-              col="6"
-              id="dt"
-              v-model="this.filters['valorTotal[lte]']"
-            />
+            <CrosierMesAno v-model="this.filters.mesAno" id="mesAno" />
           </div>
 
           <div class="row mt-3">
@@ -92,7 +61,11 @@
       <div class="card-header">
         <div class="d-flex flex-wrap align-items-center">
           <div class="mr-1">
-            <h3>Contas a Pagar/Receber</h3>
+            <h3>Movimentações Recorrentes</h3>
+            <h5 v-if="this.filters.mesAno">
+              {{ moment(this.filters["dtVencto[after]"]).format("MMMM") }} de
+              {{ moment(this.filters["dtVencto[after]"]).format("YYYY") }}
+            </h5>
           </div>
           <div class="d-sm-flex flex-nowrap ml-auto">
             <a type="button" class="btn btn-outline-info" href="form" title="Novo">
@@ -117,13 +90,31 @@
 
             <button
               type="button"
-              class="btn btn-outline-dark ml-1"
-              @click="this.imprimir"
-              value="Imprimir"
-              id="btnImprimir"
-              name="btnImprimir"
+              class="ml-1 btn btn-info"
+              title="Próximo mês"
+              @click="this.trocaMes(false)"
             >
-              <i class="fas fa-print"></i>
+              <i class="fas fa-angle-left"></i>
+            </button>
+
+            <button
+              type="button"
+              class="ml-1 btn btn-info"
+              title="Mês anterior"
+              @click="this.trocaMes(true)"
+            >
+              <i class="fas fa-angle-right"></i>
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-success ml-1"
+              @click="this.processar"
+              title="Processar"
+              id="btnProcessar"
+              name="btnProcessar"
+            >
+              <i class="fas fa-cog"></i>
             </button>
           </div>
         </div>
@@ -131,7 +122,7 @@
       <div class="card-body">
         <DataTable
           rowGroupMode="subheader"
-          groupRowsBy="dtVenctoEfetiva"
+          groupRowsBy="dtVencto"
           stateStorage="local"
           class="p-datatable-sm p-datatable-striped"
           :stateKey="this.dataTableStateKey"
@@ -244,14 +235,14 @@
             </template>
           </Column>
 
-          <!-- Não sei pq se colocar a dtVenctoEfetiva ele não renderiza a coluna -->
-          <Column field="dtVencto" header="Dt Vencto">
+          <!-- Não sei pq se colocar a dtVencto ele não renderiza a coluna -->
+          <Column field="id" header="Dt Vencto">
             <template #body="r">
               <div
                 class="text-center"
                 :title="'Dt Vencto: ' + new Date(r.data.dtVencto).toLocaleString().substring(0, 10)"
               >
-                {{ new Date(r.data.dtVenctoEfetiva).toLocaleString().substring(0, 10) }}
+                {{ new Date(r.data.dtVencto).toLocaleString().substring(0, 10) }}
                 <div class="clearfix"></div>
                 <span
                   v-if="r.data.status === 'REALIZADA'"
@@ -314,7 +305,7 @@
                   role="button"
                   class="btn btn-danger btn-sm ml-1"
                   title="Deletar registro"
-                  @click="this.$refs.dt.deletar(r.data.id)"
+                  @click="this.deletar(r.data.id)"
                   ><i class="fas fa-trash" aria-hidden="true"></i
                 ></a>
               </div>
@@ -331,7 +322,7 @@
           </Column>
 
           <template #groupheader="r">
-            <h4>{{ new Date(r.data.dtVenctoEfetiva).toLocaleString().substring(0, 10) }}</h4>
+            <h4>{{ new Date(r.data.dtVencto).toLocaleString().substring(0, 10) }}</h4>
           </template>
 
           <template #groupfooter="r">
@@ -342,11 +333,11 @@
               class="text-right"
               :style="
                 'font-weight: bolder; color: ' +
-                (this.somatorios.get(r.data.dtVenctoEfetiva) >= 0 ? 'blue' : 'red')
+                (this.somatorios.get(r.data.dtVencto) >= 0 ? 'blue' : 'red')
               "
             >
               {{
-                parseFloat(this.somatorios.get(r.data.dtVenctoEfetiva)).toLocaleString("pt-BR", {
+                parseFloat(this.somatorios.get(r.data.dtVencto)).toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 })
@@ -386,15 +377,10 @@ import ConfirmDialog from "primevue/confirmdialog";
 import InlineMessage from "primevue/inlinemessage";
 import Sidebar from "primevue/sidebar";
 import { mapGetters, mapMutations } from "vuex";
-import {
-  api,
-  CrosierBlock,
-  CrosierCalendar,
-  CrosierCurrency,
-  CrosierMultiSelectEntity,
-} from "crosier-vue";
+import { api, CrosierBlock, CrosierMultiSelectEntity } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
+import CrosierMesAno from "./CrosierMesAno";
 
 export default {
   name: "list_aPagarReceber",
@@ -409,8 +395,7 @@ export default {
     Toast,
     Sidebar,
     CrosierMultiSelectEntity,
-    CrosierCalendar,
-    CrosierCurrency,
+    CrosierMesAno,
   },
 
   emits: [
@@ -490,15 +475,24 @@ export default {
       this.visibleRight = !this.visibleRight;
     },
 
+    trocaMes(proximo) {
+      this.filters.mesAno = proximo
+        ? moment(this.filters.mesAno).add(1, "M")
+        : moment(this.filters.mesAno).subtract(1, "M");
+      this.doFilter();
+    },
+
     async doFilter() {
       this.setLoading(true);
 
-      this.filters["dtVenctoEfetiva[after]"] = this.filters["dtVenctoEfetiva[after]"]
-        ? `${moment(this.filters["dtVenctoEfetiva[after]"]).format("YYYY-MM-DD")}T00:00:00-03:00`
-        : `${this.moment().format("YYYY-MM")}-01T00:00:00-03:00`;
-      this.filters["dtVenctoEfetiva[before]"] = this.filters["dtVenctoEfetiva[before]"]
-        ? `${moment(this.filters["dtVenctoEfetiva[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
-        : `${this.moment().endOf("month").format("YYYY-MM-DD")}T23:59:59-03:00`;
+      this.filters.mesAno = this.filters.mesAno ?? moment().format("YYYY-MM-DD");
+
+      this.filters["dtVencto[after]"] = `${moment(this.filters.mesAno).format(
+        "YYYY-MM-DD"
+      )}T00:00:00-03:00`;
+      this.filters["dtVencto[before]"] = `${moment(this.filters.mesAno)
+        .endOf("month")
+        .format("YYYY-MM-DD")}T23:59:59-03:00`;
 
       const rows = Number.MAX_SAFE_INTEGER;
       const page = 1;
@@ -507,7 +501,7 @@ export default {
         apiResource: this.apiResource,
         page,
         rows,
-        order: { dtVenctoEfetiva: "ASC", "categoria.codigoSuper": "ASC", valor: "ASC" },
+        order: { dtVencto: "ASC", "categoria.codigoSuper": "ASC", valor: "ASC" },
         filters: this.filters,
         defaultFilters: this.defaultFilters,
         properties: [
@@ -516,7 +510,7 @@ export default {
           "status",
           "descricaoMontada",
           "dtVencto",
-          "dtVenctoEfetiva",
+          "dtVencto",
           "valorFormatted",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
@@ -541,9 +535,9 @@ export default {
       this.somatorios = new Map();
 
       this.tableData.forEach((m) => {
-        const total = this.somatorios.get(m.dtVenctoEfetiva) || 0;
+        const total = this.somatorios.get(m.dtVencto) || 0;
         const valor = m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
-        this.somatorios.set(m.dtVenctoEfetiva, total + valor);
+        this.somatorios.set(m.dtVencto, total + valor);
       });
 
       this.tableData.forEach((m) => {
@@ -564,6 +558,8 @@ export default {
         this.visibleRight = false;
       }
 
+      this.visibleRight = false;
+
       this.setLoading(false);
     },
 
@@ -572,6 +568,7 @@ export default {
       localStorage.setItem(this.filtersOnLocalStorage, null);
       this.$refs.dt.resetPage();
       this.doFilter({ event: { first: 0 } });
+      this.visibleRight = false;
     },
 
     tudoSelecionadoClick() {
@@ -616,18 +613,16 @@ export default {
         message: "Confirmar a operação?",
         header: "Atenção!",
         icon: "pi pi-exclamation-triangle",
-        group: "confirmDialog_aPagarReceberList",
         accept: async () => {
           this.setLoading(true);
           try {
-            const deleteUrl = `${this.apiResource}${id}`;
+            const deleteUrl = `${this.apiResource}/${id}`;
             const rsDelete = await api.delete(deleteUrl);
             if (!rsDelete) {
               throw new Error("rsDelete n/d");
             }
             if (rsDelete?.status === 204) {
               this.$toast.add({
-                group: "mainToast",
                 severity: "success",
                 summary: "Sucesso",
                 detail: "Registro deletado com sucesso",
@@ -644,10 +639,56 @@ export default {
           } catch (e) {
             console.error(e);
             this.$toast.add({
-              group: "mainToast",
               severity: "error",
               summary: "Erro",
               detail: "Ocorreu um erro ao deletar",
+              life: 5000,
+            });
+          }
+          this.setLoading(false);
+        },
+      });
+    },
+
+    processar() {
+      if (!this.selection || this.selection.length < 1) {
+        this.$toast.add({
+          severity: "error",
+          summary: "Erro",
+          detail: "Nenhuma movimentação selecionada para processar",
+          life: 5000,
+        });
+        return;
+      }
+      this.$confirm.require({
+        acceptLabel: "Sim",
+        rejectLabel: "Não",
+        message: "Confirmar a operação?",
+        header: "Atenção!",
+        icon: "pi pi-exclamation-triangle",
+        accept: async () => {
+          this.setLoading(true);
+          try {
+            const processarUrl = "/fin/movimentacao/recorrente/processar";
+            const rs = await api.post(processarUrl, this.selection);
+
+            if (rs?.status === 200) {
+              this.$toast.add({
+                severity: "success",
+                summary: "Sucesso",
+                detail: "Movimentações processadas com sucesso",
+                life: 5000,
+              });
+              await this.doFilter();
+            } else {
+              throw new Error("Erro ao processar (status <> 200)");
+            }
+          } catch (e) {
+            console.error(e);
+            this.$toast.add({
+              severity: "error",
+              summary: "Erro",
+              detail: "Ocorreu um erro ao processar",
               life: 5000,
             });
           }
