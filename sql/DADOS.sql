@@ -743,10 +743,10 @@ INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `movime
 VALUES (4, 4, 'CHEQUE TERCEIROS', 0, 0, 1, 1, 0, 1, now(), now(), 2, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
-VALUES (9, 9, 'RECEB. CARTÃO CRÉDITO', 0, 0, 0, 1, 1, 0, now(), now(), 1, 1, 1, 1);
+VALUES (9, 9, 'RECEB. CARTÃO CRÉDITO', 0, 0, 0, 0 1, 0, now(), now(), 1, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
-VALUES (10, 10, 'RECEB. CARTÃO DÉBITO', 0, 0, 0, 1, 1, 0, now(), now(), 1, 1, 1, 1);
+VALUES (10, 10, 'RECEB. CARTÃO DÉBITO', 0, 0, 0, 0, 1, 0, now(), now(), 1, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
  `user_inserted_id`, `user_updated_id`)
 VALUES (11, 11, 'TRANSF. ENTRE CONTAS', 0, 0, 1, 1, 0, 0, now(), now(), 0, 1, 1, 1);

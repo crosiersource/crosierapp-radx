@@ -957,7 +957,7 @@ CREATE TABLE `fin_categoria`
   UNIQUE KEY `UK_fin_categoria_codigo` (`codigo`),
   UNIQUE KEY `UK_fin_categoria_codigo_ord` (`codigo_ord`),
   KEY `K_fin_categoria_pai` (`pai_id`),
-  CONSTRAINT `FK_fin_categoria_pai` FOREIGN KEY (`pai_id`) REFERENCES `fin_categoria` (`id`),
+  CONSTRAINT `FK_fin_categoria_pai` FOREIGN KEY (`pai_id`) REFERENCES `fin_categoria` (`id`) ON UPDATE CASCADE,
 
   KEY `K_fin_categoria_estabelecimento` (`estabelecimento_id`),
   KEY `K_fin_categoria_user_inserted` (`user_inserted_id`),
@@ -1025,8 +1025,8 @@ CREATE TABLE `fin_grupo`
   UNIQUE KEY `UK_fin_grupo_descricao` (`descricao`),
   KEY `K_fin_grupo_carteira_pagante` (`carteira_pagante_id`),
   KEY `K_fin_grupo_categoria_padrao` (`categoria_padrao_id`),
-  CONSTRAINT `FK_fin_grupo_categoria_padrao` FOREIGN KEY (`categoria_padrao_id`) REFERENCES `fin_categoria` (`id`),
-  CONSTRAINT `FK_fin_grupo_carteira_pagante` FOREIGN KEY (`carteira_pagante_id`) REFERENCES `fin_carteira` (`id`),
+  CONSTRAINT `FK_fin_grupo_categoria_padrao` FOREIGN KEY (`categoria_padrao_id`) REFERENCES `fin_categoria` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_fin_grupo_carteira_pagante` FOREIGN KEY (`carteira_pagante_id`) REFERENCES `fin_carteira` (`id`) ON UPDATE CASCADE,
 
   KEY `K_fin_grupo_estabelecimento` (`estabelecimento_id`),
   KEY `K_fin_grupo_user_inserted` (`user_inserted_id`),
@@ -1282,7 +1282,7 @@ CREATE TABLE `fin_movimentacao`
   CONSTRAINT `FK_fin_movimentacao_carteira_destino` FOREIGN KEY (`carteira_destino_id`) REFERENCES `fin_carteira` (`id`),
 
   KEY `K_fin_movimentacao_categoria` (`categoria_id`),
-  CONSTRAINT `FK_fin_movimentacao_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `fin_categoria` (`id`),
+  CONSTRAINT `FK_fin_movimentacao_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `fin_categoria` (`id`) ON UPDATE CASCADE,
 
   KEY `K_fin_movimentacao_centrocusto` (`centrocusto_id`),
   CONSTRAINT `FK_fin_movimentacao_centrocusto` FOREIGN KEY (`centrocusto_id`) REFERENCES `fin_centrocusto` (`id`),
@@ -1420,7 +1420,7 @@ CREATE TABLE `fin_regra_import_linha`
   CONSTRAINT `FK_fin_regra_import_linha_tipo_lancto` FOREIGN KEY (`tipo_lancto_id`) REFERENCES `fin_tipo_lancto` (`id`),
   CONSTRAINT `FK_fin_regra_import_linha_carteira` FOREIGN KEY (`carteira_id`) REFERENCES `fin_carteira` (`id`),
   CONSTRAINT `FK_fin_regra_import_linha_centrocusto` FOREIGN KEY (`centrocusto_id`) REFERENCES `fin_centrocusto` (`id`),
-  CONSTRAINT `FK_fin_regra_import_linha_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `fin_categoria` (`id`),
+  CONSTRAINT `FK_fin_regra_import_linha_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `fin_categoria` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `FK_fin_regra_import_linha_modo` FOREIGN KEY (`modo_id`) REFERENCES `fin_modo` (`id`),
   CONSTRAINT `FK_fin_regra_import_linha_cheque_banco` FOREIGN KEY (`cheque_banco_id`) REFERENCES `fin_banco` (`id`),
   CONSTRAINT `FK_fin_regra_import_linha_carteira_destino` FOREIGN KEY (`carteira_destino_id`) REFERENCES `fin_carteira` (`id`),

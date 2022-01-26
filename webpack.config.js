@@ -123,6 +123,7 @@ Encore
   .addEntry('fin/movimentacao/aPagarReceber/list', './assets/js/Financeiro/Movimentacao/list_aPagarReceber.js')
   .addEntry('fin/movimentacao/recorrente/form', './assets/js/Financeiro/Movimentacao/form_recorrente.js')
   .addEntry('fin/movimentacao/recorrente/list', './assets/js/Financeiro/Movimentacao/list_recorrente.js')
+  .addEntry('fin/movimentacao/transfEntreCarteiras/form', './assets/js/Financeiro/Movimentacao/form_transfEntreCarteiras.js')
   
 
   
