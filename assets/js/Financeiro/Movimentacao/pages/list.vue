@@ -7,7 +7,6 @@
     titulo="Movimentações"
     subtitulo="Pesquisa"
     apiResource="/api/fin/movimentacao/"
-    :formUrl="this.formUrl"
     ref="dt"
     dtStateName="movimentacaoPesquisaList"
     :ativarSelecao="true"
@@ -268,7 +267,7 @@
               role="button"
               class="btn btn-primary btn-sm ml-1"
               title="Editar registro"
-              :href="this.formUrl + '?id=' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <a
@@ -325,7 +324,6 @@ export default {
   },
   data() {
     return {
-      formUrl: "/fin/banco/form",
       movimentacoesSelecionadas: null,
     };
   },
