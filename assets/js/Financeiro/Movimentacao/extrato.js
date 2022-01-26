@@ -5,7 +5,7 @@ import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
 import { createStore } from "vuex";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
-import Page from "./pages/list_extrato";
+import Page from "./pages/extrato";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/saga-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
@@ -25,7 +25,7 @@ const store = createStore({
       loading: 0,
       filters: {},
       defaultFilters: {
-        recorrente: true,
+        status: "REALIZADA",
       },
     };
   },
@@ -40,11 +40,11 @@ const store = createStore({
     },
 
     setFilters(state, filters) {
-      state.filters["dtVencto[after]"] = state.filters["dtVencto[after]"]
-        ? new Date(state.filters["dtVencto[after]"])
+      state.filters["dtPagto[after]"] = state.filters["dtPagto[after]"]
+        ? new Date(state.filters["dtPagto[after]"])
         : null;
-      state.filters["dtVencto[before]"] = state.filters["dtVencto[before]"]
-        ? new Date(state.filters["dtVencto[before]"])
+      state.filters["dtPagto[before]"] = state.filters["dtPagto[before]"]
+        ? new Date(state.filters["dtPagto[before]"])
         : null;
       state.filters = filters;
     },

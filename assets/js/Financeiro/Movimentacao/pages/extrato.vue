@@ -13,15 +13,32 @@
               v-model="this.filters.carteira"
               entity-uri="/api/fin/carteira"
               optionLabel="descricaoMontada"
+              :optionValue="null"
               :orderBy="{ codigo: 'ASC' }"
-              :filters="{ abertas: true }"
+              :filters="{ concreta: true }"
               label="Carteira"
               id="carteira"
             />
           </div>
 
           <div class="form-row">
-            <CrosierMesAno v-model="this.filters.mesAno" id="mesAno" />
+            <CrosierCalendar
+              label="Desde..."
+              col="6"
+              inputClass="crsr-date"
+              id="dt"
+              :baseZIndex="10000"
+              v-model="this.filters['dtPagto[after]']"
+            />
+
+            <CrosierCalendar
+              label="até..."
+              col="6"
+              inputClass="crsr-date"
+              id="dt"
+              :baseZIndex="10000"
+              v-model="this.filters['dtPagto[before]']"
+            />
           </div>
 
           <div class="row mt-3">
@@ -61,13 +78,66 @@
       <div class="card-header">
         <div class="d-flex flex-wrap align-items-center">
           <div class="mr-1">
-            <h3>Movimentações Recorrentes</h3>
-            <h5 v-if="this.filters.mesAno">
-              {{ moment(this.filters["dtVencto[after]"]).format("MMMM") }} de
-              {{ moment(this.filters["dtVencto[after]"]).format("YYYY") }}
-            </h5>
+            <h3>Extrato</h3>
           </div>
-          <div class="d-sm-flex flex-nowrap ml-auto">
+
+          <div class="ml-auto"></div>
+          <div>
+            <CrosierCalendar
+              @date-select="this.doFilterNextTick"
+              col="8"
+              label="Desde..."
+              inputClass="crsr-date"
+              id="dt"
+              :baseZIndex="10000"
+              v-model="this.filters['dtPagto[after]']"
+            />
+          </div>
+          <div>
+            <CrosierCalendar
+              @date-select="this.doFilterNextTick"
+              col="8"
+              label="até..."
+              inputClass="crsr-date"
+              id="dt"
+              :baseZIndex="10000"
+              v-model="this.filters['dtPagto[before]']"
+            />
+          </div>
+          <div>
+            <button
+              type="button"
+              class="ml-1 btn btn-info"
+              title="Período anterior"
+              @click="this.trocaPeriodo(false)"
+            >
+              <i class="fas fa-angle-left"></i>
+            </button>
+
+            <button
+              type="button"
+              class="ml-1 btn btn-info"
+              title="Próximo período"
+              @click="this.trocaPeriodo(true)"
+            >
+              <i class="fas fa-angle-right"></i>
+            </button>
+          </div>
+          <div>
+            <CrosierDropdownEntity
+              v-model="this.filters.carteira"
+              entity-uri="/api/fin/carteira"
+              optionLabel="descricaoMontada"
+              :optionValue="null"
+              :orderBy="{ codigo: 'ASC' }"
+              :filters="{ concreta: true }"
+              label="Carteira"
+              id="carteira"
+              @change="this.doFilterNextTick"
+            />
+          </div>
+
+          <div class="d-sm-flex flex-nowrap">
             <a type="button" class="btn btn-outline-info" href="form" title="Novo">
               <i class="fas fa-file" aria-hidden="true"></i>
             </a>
@@ -87,42 +157,13 @@
             >
               <i class="fas fa-sync-alt"></i>
             </button>
-
-            <button
-              type="button"
-              class="ml-1 btn btn-info"
-              title="Mês anterior"
-              @click="this.trocaMes(false)"
-            >
-              <i class="fas fa-angle-left"></i>
-            </button>
-
-            <button
-              type="button"
-              class="ml-1 btn btn-info"
-              title="Próximo mês"
-              @click="this.trocaMes(true)"
-            >
-              <i class="fas fa-angle-right"></i>
-            </button>
-
-            <button
-              type="button"
-              class="btn btn-outline-success ml-1"
-              @click="this.processar"
-              title="Processar"
-              id="btnProcessar"
-              name="btnProcessar"
-            >
-              <i class="fas fa-cog"></i>
-            </button>
           </div>
         </div>
       </div>
       <div class="card-body">
         <DataTable
           rowGroupMode="subheader"
-          groupRowsBy="dtVencto"
+          groupRowsBy="dtPagto"
           stateStorage="local"
           class="p-datatable-sm p-datatable-striped"
           :stateKey="this.dataTableStateKey"
@@ -163,11 +204,9 @@
             </template>
           </Column>
 
-          <Column field="carteira.codigo">
-            <template #header> Carteira<br />Categoria<br />Modo</template>
+          <Column field="id">
+            <template #header>Categoria<br />Modo</template>
             <template class="text-right" #body="r">
-              <b>{{ r.data.carteira.descricaoMontada }}</b
-              ><br />
               {{ r.data.categoria.descricaoMontada }}<br />
               {{ r.data.modo.descricaoMontada }}
             </template>
@@ -204,7 +243,7 @@
                     >
                   </template>
 
-                  <template v-if="r.data?.cadeia?.id">
+                  <template v-if="r.data?.cadeia?.id && !r.data.recorrente && !r.data.parcelamento">
                     <a
                       class="ml-1 badge badge-pill badge-success"
                       :href="'/fin/movimentacao/listCadeia/' + r.data?.cadeia?.id"
@@ -235,12 +274,13 @@
             </template>
           </Column>
 
-          <!-- Não sei pq se colocar a dtVencto ele não renderiza a coluna -->
           <Column field="id" header="Dt Vencto">
             <template #body="r">
               <div
                 class="text-center"
-                :title="'Dt Vencto: ' + new Date(r.data.dtVencto).toLocaleString().substring(0, 10)"
+                :title="
+                  'Dt Vencto: ' + new Date(r.data.dtVenctoEfetiva).toLocaleString().substring(0, 10)
+                "
               >
                 {{ new Date(r.data.dtVencto).toLocaleString().substring(0, 10) }}
                 <div class="clearfix"></div>
@@ -322,45 +362,38 @@
           </Column>
 
           <template #groupheader="r">
-            <h4>{{ new Date(r.data.dtVencto).toLocaleString().substring(0, 10) }}</h4>
+            <h5 style="font-weight: bolder">
+              {{ new Date(r.data.dtPagto).toLocaleString().substring(0, 10) }}
+            </h5>
           </template>
 
           <template #groupfooter="r">
             <td colspan="4">
-              <div class="text-right">Total:</div>
+              <div class="text-right h5">Saldo:</div>
             </td>
             <td
-              class="text-right"
+              class="text-right h5"
               :style="
                 'font-weight: bolder; color: ' +
-                (this.somatorios.get(r.data.dtVencto) >= 0 ? 'blue' : 'red')
+                (this.saldos.get(this.moment(r.data.dtVencto).format('YYYY-MM-DD'))[
+                  'SALDO_POSTERIOR_REALIZADAS'
+                ] >= 0
+                  ? 'blue'
+                  : 'red')
               "
             >
               {{
-                parseFloat(this.somatorios.get(r.data.dtVencto)).toLocaleString("pt-BR", {
+                parseFloat(
+                  this.saldos.get(this.moment(r.data.dtVencto).format("YYYY-MM-DD"))[
+                    "SALDO_POSTERIOR_REALIZADAS"
+                  ]
+                ).toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 })
               }}
             </td>
             <td></td>
-          </template>
-
-          <template #footer v-if="this.somatorios.size > 1">
-            <div class="h5 text-right">
-              Total Geral:
-              <span
-                class="text-right"
-                :style="'font-weight: bolder; color: ' + (this.totalGeral >= 0 ? 'blue' : 'red')"
-              >
-                {{
-                  parseFloat(this.totalGeral).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })
-                }}
-              </span>
-            </div>
           </template>
         </DataTable>
       </div>
@@ -377,7 +410,7 @@ import ConfirmDialog from "primevue/confirmdialog";
 import InlineMessage from "primevue/inlinemessage";
 import Sidebar from "primevue/sidebar";
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierBlock, CrosierMultiSelectEntity, CrosierMesAno } from "crosier-vue";
+import { api, CrosierBlock, CrosierDropdownEntity, CrosierCalendar } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
 
@@ -393,8 +426,8 @@ export default {
     InlineMessage,
     Toast,
     Sidebar,
-    CrosierMultiSelectEntity,
-    CrosierMesAno,
+    CrosierDropdownEntity,
+    CrosierCalendar,
   },
 
   emits: [
@@ -411,8 +444,7 @@ export default {
       savedFilter: {},
       totalRecords: 0,
       tableData: null,
-      somatorios: new Map(),
-      totalGeral: 0,
+      saldos: new Map(),
       firstRecordIndex: 0,
       multiSortMeta: [],
       accordionActiveIndex: null,
@@ -431,6 +463,9 @@ export default {
 
   async mounted() {
     this.setLoading(true);
+
+    this.saldos = new Map();
+
     const uri = window.location.search.substring(1);
     const params = new URLSearchParams(uri);
 
@@ -444,8 +479,6 @@ export default {
         console.error(e);
       }
     }
-
-    localStorage.removeItem(this.dataTableStateKey);
 
     await this.doFilter();
     this.accordionActiveIndex = this.isFiltering ? 0 : null;
@@ -474,24 +507,60 @@ export default {
       this.visibleRight = !this.visibleRight;
     },
 
-    trocaMes(proximo) {
-      this.filters.mesAno = proximo
-        ? moment(this.filters.mesAno).add(1, "M")
-        : moment(this.filters.mesAno).subtract(1, "M");
+    async trocaPeriodo(proximo) {
+      const ini = moment(this.filters["dtPagto[after]"]).format("YYYY-MM-DD");
+      const fim = moment(this.filters["dtPagto[before]"]).format("YYYY-MM-DD");
+
+      const rs = await axios.get(
+        `/base/diaUtil/incPeriodo/?ini=${ini}&fim=${fim}&futuro=${proximo}&comercial=false&financeiro=false`
+      );
+
+      this.filters["dtPagto[after]"] = new Date(`${rs.data.dtIni}T00:00:00-03:00`);
+      this.filters["dtPagto[before]"] = new Date(`${rs.data.dtFim}T23:59:59-03:00`);
+
       this.doFilter();
+    },
+
+    doFilterNextTick() {
+      this.$nextTick(() => {
+        this.doFilter();
+      });
     },
 
     async doFilter() {
       this.setLoading(true);
 
-      this.filters.mesAno = this.filters.mesAno ?? `${moment().format("YYYY-MM")}-01`;
+      if (!this.filters["dtPagto[after]"]) {
+        this.filters["dtPagto[after]"] = `${this.moment()
+          .subtract(7, "days")
+          .format("YYYY-MM-DD")}T00:00:00-03:00`;
+      } else {
+        this.filters["dtPagto[after]"] = `${this.moment(this.filters["dtPagto[after]"]).format(
+          "YYYY-MM-DD"
+        )}T00:00:00-03:00`;
+      }
 
-      this.filters["dtVencto[after]"] = `${moment(this.filters.mesAno).format(
-        "YYYY-MM-DD"
-      )}T00:00:00-03:00`;
-      this.filters["dtVencto[before]"] = `${moment(this.filters.mesAno)
-        .endOf("month")
-        .format("YYYY-MM-DD")}T23:59:59-03:00`;
+      if (!this.filters["dtPagto[before]"]) {
+        this.filters["dtPagto[before]"] = `${this.moment().format("YYYY-MM-DD")}T23:59:59-03:00`;
+      } else {
+        this.filters["dtPagto[before]"] = `${this.moment(this.filters["dtPagto[before]"]).format(
+          "YYYY-MM-DD"
+        )}T23:59:59-03:00`;
+      }
+
+      if (!this.filters.carteira) {
+        const rsCarteiras = await api.get({
+          apiResource: "/api/fin/carteira",
+          allRows: true,
+          order: { codigo: "ASC" },
+          filters: { concreta: true },
+          properties: ["id", "descricaoMontada"],
+        });
+        this.filters.carteira = rsCarteiras.data["hydra:member"][0];
+      }
+
+      const filters = { ...this.filters };
+      filters.carteira = filters.carteira["@id"];
 
       const rows = Number.MAX_SAFE_INTEGER;
       const page = 1;
@@ -500,8 +569,8 @@ export default {
         apiResource: this.apiResource,
         page,
         rows,
-        order: { dtVencto: "ASC", "categoria.codigoSuper": "ASC", valor: "ASC" },
-        filters: this.filters,
+        order: { dtPagto: "ASC", "categoria.codigoSuper": "ASC", valor: "ASC" },
+        filters,
         defaultFilters: this.defaultFilters,
         properties: [
           "id",
@@ -509,7 +578,9 @@ export default {
           "status",
           "descricaoMontada",
           "dtVencto",
-          "dtVencto",
+          "dtVenctoEfetiva",
+          "dtUtil",
+          "dtPagto",
           "valorFormatted",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
@@ -531,17 +602,17 @@ export default {
       this.totalRecords = response.data["hydra:totalItems"];
       this.tableData = response.data["hydra:member"];
 
-      this.somatorios = new Map();
-
-      this.tableData.forEach((m) => {
-        const total = this.somatorios.get(m.dtVencto) || 0;
-        const valor = m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
-        this.somatorios.set(m.dtVencto, total + valor);
+      this.tableData.forEach(async (m) => {
+        const dtPagtoF = this.moment(m.dtPagto).format("YYYY-MM-DD");
+        this.saldos.set(dtPagtoF, {});
       });
 
-      this.tableData.forEach((m) => {
-        this.totalGeral += m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
-      });
+      for (const [key, value] of this.saldos.entries()) {
+        const rsSaldo = await axios.get(
+          `/api/fin/movimentacao/extrato/saldos/${this.filters.carteira.id}/${key}`
+        );
+        this.saldos.set(key, rsSaldo?.data?.DATA);
+      }
 
       // salva os filtros no localStorage
       localStorage.setItem(this.filtersOnLocalStorage, JSON.stringify(this.filters));
@@ -701,10 +772,9 @@ export default {
       const pdf = await axios.post("/fin/movimentacao/aPagarReceber/rel", {
         tableData: JSON.stringify(this.tableData),
         filters: JSON.stringify(this.filters),
-        somatorios: JSON.stringify(Object.fromEntries(this.somatorios)),
+        saldos: JSON.stringify(Object.fromEntries(this.saldos)),
         totalGeral: this.totalGeral,
       });
-      console.log(pdf);
       printJS({
         printable: pdf.data,
         type: "pdf",

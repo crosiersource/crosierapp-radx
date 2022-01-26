@@ -59,7 +59,6 @@ Encore
   .addEntry('Financeiro/grupoItemListMovs', './assets/js/Financeiro/grupoItemListMovs.js')
   .addEntry('Financeiro/registroConferenciaList', './assets/js/Financeiro/registroConferenciaList.js')
   .addEntry('Financeiro/movimentacaoList', './assets/js/Financeiro/movimentacaoList.js')
-  .addEntry('Financeiro/movimentacaoExtratoList', './assets/js/Financeiro/movimentacaoExtratoList.js')
   .addEntry('Financeiro/movimentacaoCaixaList', './assets/js/Financeiro/movimentacaoCaixaList.js')
   .addEntry('Financeiro/movimentacaoImport', './assets/js/Financeiro/movimentacaoImport.js')
   .addEntry('Financeiro/movimentacaoForm_geral', './assets/js/Financeiro/movimentacaoForm_geral.js')
@@ -119,10 +118,12 @@ Encore
   .addEntry('fin/cliente/form', './assets/js/CRM/Cliente/form.js')
 
   .addEntry('fin/movimentacao/list', './assets/js/Financeiro/Movimentacao/list.js')
+  .addEntry('fin/movimentacao/extrato', './assets/js/Financeiro/Movimentacao/extrato.js')
   .addEntry('fin/movimentacao/aPagarReceber/form', './assets/js/Financeiro/Movimentacao/form_aPagarReceber.js')
   .addEntry('fin/movimentacao/aPagarReceber/list', './assets/js/Financeiro/Movimentacao/list_aPagarReceber.js')
   .addEntry('fin/movimentacao/recorrente/form', './assets/js/Financeiro/Movimentacao/form_recorrente.js')
   .addEntry('fin/movimentacao/recorrente/list', './assets/js/Financeiro/Movimentacao/list_recorrente.js')
+  
 
   
   

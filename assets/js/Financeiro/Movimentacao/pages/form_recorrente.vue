@@ -424,13 +424,10 @@ export default {
     },
 
     async pesquisarSacadoOuCedente(event) {
-      console.log(event);
       try {
         const response = await axios.get(
           `/api/fin/movimentacao/findSacadoOuCedente/?term=${event.query}`
         );
-
-        console.log(response);
         if (response.status === 200) {
           this.sacadosOuCedentes = response.data.DATA;
         }

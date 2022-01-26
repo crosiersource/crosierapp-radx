@@ -180,7 +180,7 @@
                 >
               </template>
 
-              <template v-if="r.data?.cadeia?.id">
+              <template v-if="r.data?.cadeia?.id && !r.data.recorrente && !r.data.parcelamento">
                 <a
                   class="ml-1 badge badge-pill badge-success"
                   :href="'/fin/movimentacao/listCadeia/' + r.data?.cadeia?.id"

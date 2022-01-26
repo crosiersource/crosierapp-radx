@@ -204,7 +204,7 @@
                     >
                   </template>
 
-                  <template v-if="r.data?.cadeia?.id">
+                  <template v-if="r.data?.cadeia?.id && !r.data.recorrente && !r.data.parcelamento">
                     <a
                       class="ml-1 badge badge-pill badge-success"
                       :href="'/fin/movimentacao/listCadeia/' + r.data?.cadeia?.id"
@@ -444,8 +444,6 @@ export default {
         console.error(e);
       }
     }
-
-    localStorage.removeItem(this.dataTableStateKey);
 
     await this.doFilter();
     this.accordionActiveIndex = this.isFiltering ? 0 : null;
@@ -704,7 +702,6 @@ export default {
         somatorios: JSON.stringify(Object.fromEntries(this.somatorios)),
         totalGeral: this.totalGeral,
       });
-      console.log(pdf);
       printJS({
         printable: pdf.data,
         type: "pdf",

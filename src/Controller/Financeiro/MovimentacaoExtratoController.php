@@ -5,15 +5,18 @@ namespace App\Controller\Financeiro;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
+use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Vendas\VendaRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -38,6 +41,27 @@ class MovimentacaoExtratoController extends FormListController
     }
 
     /**
+     *
+     * @Route("/api/fin/movimentacao/extrato/saldos/{carteira}/{dt}", name="api_fin_movimentacao_extrato_saldos")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function saldos(Carteira $carteira, \DateTime $dt): JsonResponse
+    {
+        try {
+            $saldos = $this->business->calcularSaldos($dt, $carteira);
+            return CrosierApiResponse::success($saldos);
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error($e);
+        }
+    }
+    
+    
+    /**
+        }
      *
      * @Route("/fin/movimentacao/extrato/", name="movimentacao_extrato")
      * @param Request $request
@@ -167,6 +191,9 @@ class MovimentacaoExtratoController extends FormListController
             new FilterData('status', 'IN', 'status', $params),
         ];
     }
+    
+    
+    
 
 
 }

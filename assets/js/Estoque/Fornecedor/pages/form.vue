@@ -189,8 +189,6 @@ export default {
 
     consultaCep(rs) {
       if (rs) {
-        console.log("oi");
-        console.log(rs);
         this.fields.jsonData = {
           ...this.fields.jsonData,
           ...{
