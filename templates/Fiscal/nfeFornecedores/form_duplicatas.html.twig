@@ -100,7 +100,7 @@
 
                             {% if notaFiscal.jsonData.fatura.fatura_id|default(false) %}
                                 <a role="button" title="Visualizar Fatura" class="btn btn-outline-info"
-                                   href="{{ url('fin_movimentacao_pesquisaList', {'filter': {'notafiscal_id': notaFiscal.id}}) }}">
+                                   href="/fin/fatura/visualizaFatura/{{ notaFiscal.id }}">
                                     <i class="fas fa-money-check-alt"></i> Visualizar Fatura
                                 </a>
                             {% else %}
