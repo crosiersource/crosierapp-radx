@@ -91,7 +91,7 @@ function getDatatablesColumns() {
 
                 let pdfUrl = Routing.generate('fis_emissaonfe_imprimir', {'notaFiscal': data.id});
 
-                let faturaUrl = Routing.generate('fin_movimentacao_pesquisaList', {'filter': {'notafiscal_id': data.id}});
+                let faturaUrl = '/fin/fatura/visualizarFatura/' + data.id;
 
                 let fatura_id = data.jsonData?.fatura?.fatura_id ?? null;
 
