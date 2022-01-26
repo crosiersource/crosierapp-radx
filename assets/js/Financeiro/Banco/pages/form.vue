@@ -20,7 +20,12 @@
         :error="this.formErrors.nome"
       />
 
-      <CrosierDropdown label="Utilizado" col="2" id="utilizado" v-model="this.fields.utilizado" />
+      <CrosierDropdownBoolean
+        label="Utilizado"
+        col="2"
+        id="utilizado"
+        v-model="this.fields.utilizado"
+      />
     </div>
   </CrosierFormS>
 </template>
@@ -31,7 +36,7 @@ import * as yup from "yup";
 import {
   CrosierFormS,
   submitForm,
-  CrosierDropdown,
+  CrosierDropdownBoolean,
   CrosierInputText,
   CrosierInputInt,
 } from "crosier-vue";
@@ -41,7 +46,7 @@ export default {
   components: {
     Toast,
     CrosierFormS,
-    CrosierDropdown,
+    CrosierDropdownBoolean,
     CrosierInputText,
     CrosierInputInt,
   },

@@ -11,7 +11,7 @@
 
         <CrosierInputText label="Nome" col="5" id="nome" v-model="this.filters.nome" />
 
-        <CrosierDropdown
+        <CrosierDropdownBoolean
           label="Utilizado"
           col="4"
           id="utilizado"
@@ -64,14 +64,14 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierDropdown, CrosierInputText, CrosierListS } from "crosier-vue";
+import { CrosierDropdownBoolean, CrosierInputText, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
 
 export default {
   components: {
     CrosierListS,
     Column,
-    CrosierDropdown,
+    CrosierDropdownBoolean,
     CrosierInputText,
   },
 

@@ -2,33 +2,23 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog />
 
-  <CrosierListS titulo="Bancos" apiResource="/api/fin/banco/" ref="dt">
-    <template v-slot:filter-fields>
-      <div class="form-row">
-        <CrosierInputInt
-          label="Código"
-          col="3"
-          id="codigoBanco"
-          v-model="this.filters.codigoBanco"
-        />
-
-        <CrosierInputText label="Nome" col="5" id="nome" v-model="this.filters.nome" />
-
-        <CrosierDropdownBoolean
-          label="Utilizado"
-          col="4"
-          id="utilizado"
-          v-model="this.filters.utilizado"
-        />
-      </div>
-    </template>
-
+  <CrosierListS titulo="Grupos de Movimentação" apiResource="/api/fin/grupo/" ref="dt">
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true"></Column>
 
-      <Column field="codigoBanco" header="Código" :sortable="true"></Column>
+      <Column field="descricao" header="Descrição" :sortable="true"></Column>
 
-      <Column field="nome" header="Nome" :sortable="true"></Column>
+      <Column field="carteiraPagantePadrao" header="Carteira Padrão" :sortable="true">
+        <template class="text-right" #body="r">
+          {{ r.data.carteiraPagantePadrao.descricaoMontada }}
+        </template>
+      </Column>
+
+      <Column field="ativo" header="Utilizado" :sortable="true">
+        <template class="text-right" #body="r">
+          {{ r.data.ativo ? "Sim" : "Não" }}
+        </template>
+      </Column>
 
       <Column field="updated" header="" :sortable="true">
         <template class="text-right" #body="r">
@@ -65,12 +55,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import {
-  CrosierDropdownBoolean,
-  CrosierInputInt,
-  CrosierInputText,
-  CrosierListS,
-} from "crosier-vue";
+import { CrosierDropdown, CrosierInputInt, CrosierInputText, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -79,7 +64,7 @@ export default {
   components: {
     CrosierListS,
     Column,
-    CrosierDropdownBoolean,
+    CrosierDropdown,
     CrosierInputText,
     CrosierInputInt,
     Toast,

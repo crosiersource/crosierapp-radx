@@ -57,28 +57,18 @@ VALUES (NULL, 'fadc7b3e-f2f3-42cd-9ebc-0652cdade206', 'Transf entre Carteiras', 
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
-VALUES (NULL, '88281506-754e-4d54-bd68-299593918e03', 'Em Grupo', 'far fa-object-group', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/fin/movimentacao/form/grupo/', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
+VALUES (NULL, '88281506-754e-4d54-bd68-299593918e03', 'Em Grupo', 'far fa-object-group', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/v/fin/movimentacao/grupo/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
 
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
-VALUES (NULL, '1e5d6a55-a507-401a-aa02-91602081bae1', 'Estorno', 'fas fa-eraser', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/fin/movimentacao/form/estorno/', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
+VALUES (NULL, '1e5d6a55-a507-401a-aa02-91602081bae1', 'Estorno', 'fas fa-eraser', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/v/fin/movimentacao/estorno/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
 
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
 VALUES (NULL, '0558f998-b936-415b-a1b9-5f1ed6b54395', 'Recorrente', 'fas fa-redo-alt', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/v/fin/movimentacao/recorrente/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
 
-SET @ordem = @ordem + 1;
-
-INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
-VALUES (NULL, 'b5adceda-84db-46ec-aee6-43df24e4ce42', 'Cheque Terceiros (Parcelamento)', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/fin/movimentacao/form/chequeTerceiros/?parcelamento=true', '9121ea11-dc5d-4a22-9596-187f5452f95a',
-        '');
-
-SET @ordem = @ordem + 1;
-
-INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
-VALUES (NULL, '4a3625d7-92ef-4a26-aeaf-f9c5d16b615c', 'Cheque Próprio (Parcelamento)', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/fin/movimentacao/form/chequeProprio/?parcelamento=true', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
 
 
 -- Extrato de Contas a Pagar/Receber
@@ -165,7 +155,7 @@ WHERE uuid = 'd75b1eb9-3f15-4eb9-a87d-d1ebb33172ff';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('d75b1eb9-3f15-4eb9-a87d-d1ebb33172ff', 'Agrupadas', 'fas fa-layer-group', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/grupoItem/listMovs/', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('d75b1eb9-3f15-4eb9-a87d-d1ebb33172ff', 'Agrupadas', 'fas fa-layer-group', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/movimentacao/grupo/list', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Cadastros
@@ -221,7 +211,7 @@ WHERE uuid = 'db8eea41-44c2-49dc-b850-fb0b0a8631bd';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('db8eea41-44c2-49dc-b850-fb0b0a8631bd', 'Grupos', 'fas fa-sitemap', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/grupo/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('db8eea41-44c2-49dc-b850-fb0b0a8631bd', 'Grupos', 'fas fa-sitemap', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/grupo/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Modos de Movimentação

@@ -14,7 +14,7 @@
           v-model="this.filters.descricao"
         />
 
-        <CrosierDropdown
+        <CrosierDropdownBoolean
           label="Utilizado"
           col="4"
           id="utilizado"
@@ -65,7 +65,12 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierDropdown, CrosierInputInt, CrosierInputText, CrosierListS } from "crosier-vue";
+import {
+  CrosierDropdownBoolean,
+  CrosierInputInt,
+  CrosierInputText,
+  CrosierListS,
+} from "crosier-vue";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -74,7 +79,7 @@ export default {
   components: {
     CrosierListS,
     Column,
-    CrosierDropdown,
+    CrosierDropdownBoolean,
     CrosierInputText,
     CrosierInputInt,
     Toast,
