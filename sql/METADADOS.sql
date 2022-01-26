@@ -1051,7 +1051,7 @@ CREATE TABLE `fin_grupo_item`
   `valor_informado`         double,
   `anterior_id`             bigint(20),
   `carteira_pagante_id`     bigint(20)  NOT NULL,
-  `movimentacao_pagante_id` bigint(20)  NOT NULL,
+  `movimentacao_pagante_id` bigint(20),
   `grupo_pai_id`            bigint(20)  NOT NULL,
   `proximo_id`              bigint(20),
 

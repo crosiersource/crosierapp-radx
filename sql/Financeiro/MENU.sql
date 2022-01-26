@@ -211,7 +211,7 @@ WHERE uuid = 'db8eea41-44c2-49dc-b850-fb0b0a8631bd';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('db8eea41-44c2-49dc-b850-fb0b0a8631bd', 'Grupos', 'fas fa-sitemap', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/grupo/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('db8eea41-44c2-49dc-b850-fb0b0a8631bd', 'Grupos', 'fas fa-object-group', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/grupo/list', '', 'a2f6c378-71c8-426b-8974-804187e8776a', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Modos de Movimentação

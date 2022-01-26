@@ -14,6 +14,7 @@ use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\GrupoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\GrupoItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\GrupoItemRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
@@ -43,11 +44,11 @@ class GrupoItemController extends FormListController
      *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
-    public function gerarNovo(Request $request, Grupo $pai, GrupoBusiness $grupoBusiness): JsonResponse
+    public function gerarNovo(Request $request, Grupo $pai, GrupoEntityHandler $grupoEntityHandler): JsonResponse
     {
         try {
             $prox = $request->get('prox');
-            $grupoBusiness->gerarNovo($pai, $prox);
+            $grupoEntityHandler->gerarNovo($pai, $prox);
         } catch (\Exception $e) {
             $msg = ExceptionUtils::treatException($e);
             $this->addFlash('error', $msg);
