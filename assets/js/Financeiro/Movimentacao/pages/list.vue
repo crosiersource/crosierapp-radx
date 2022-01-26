@@ -301,8 +301,8 @@ import {
   CrosierDropdown,
   CrosierInputInt,
   CrosierInputText,
-  CrosierListS,
   CrosierDropdownEntity,
+  CrosierListS,
 } from "crosier-vue";
 import Column from "primevue/column";
 import Toast from "primevue/toast";

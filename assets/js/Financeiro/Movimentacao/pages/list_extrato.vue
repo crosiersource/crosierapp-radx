@@ -9,14 +9,14 @@
         <h5 class="card-title"><i class="fas fa-search"></i> Filtros</h5>
         <form @submit.prevent="this.doFilter()" class="notSubmit">
           <div class="form-row">
-            <CrosierMultiSelectEntity
+            <CrosierDropdownEntity
               v-model="this.filters.carteira"
               entity-uri="/api/fin/carteira"
               optionLabel="descricaoMontada"
               :orderBy="{ codigo: 'ASC' }"
               :filters="{ abertas: true }"
-              label="Carteiras"
-              id="carteiras"
+              label="Carteira"
+              id="carteira"
             />
           </div>
 
