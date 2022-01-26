@@ -28,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class NFesFornecedoresController extends FormListController
 {
 
-    /** @var NotaFiscalEntityHandler */
+    /** @var NotaFiscalEntityHandler $entityHandler  */
     protected $entityHandler;
 
     private NFeUtils $nfeUtils;

@@ -91,11 +91,12 @@ function getDatatablesColumns() {
 
                 let pdfUrl = Routing.generate('fis_emissaonfe_imprimir', {'notaFiscal': data.id});
 
-                let faturaUrl = '/fin/fatura/visualizarFatura/' + data.id;
+                
 
                 let fatura_id = data.jsonData?.fatura?.fatura_id ?? null;
 
                 if (fatura_id) {
+                  let faturaUrl = '/fin/fatura/visualizarFatura/' + fatura_id;
                     colHtml += '<a role="button" title="Visualizar Fatura" class="btn btn-sm btn-outline-warning mr-1"' +
                         ' href="' + faturaUrl + '">' +
                         ' <i class="fas fa-money-check-alt"></i></a>';

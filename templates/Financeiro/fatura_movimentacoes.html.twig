@@ -14,12 +14,7 @@
                         <h3>Fatura</h3>
                         <h6>Movimentações</h6>
                     </div>
-                    <div class="col-4 text-right">
-                        <a role="button" class="btn btn-outline-secondary" href="{{ url('fin_carteira_list') }}"
-                           title="Listar">
-                            <i class="fas fa-list" aria-hidden="true"></i>
-                        </a>
-                    </div>
+                    
                 </div>
 
             </div>
@@ -74,25 +69,12 @@
                                         {{ mov.valorTotal|number_format(2,',','.') }}
                                     </td>
                                     <td class="text-right">
-                                        {% if mov.status == 'ABERTA' %}
-                                            <a class="btn btn-sm btn-outline-danger"
-                                               href="{{ url('movimentacao_form_pagto', {'id':mov.id, 'reftoback': true}) }}"
-                                               role="button" title="Registro de Pagamento">
-                                                <i class="fas fa-dollar-sign"></i>
-                                            </a>
-                                        {% endif %}
 
-
-                                        <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="window.location.href='{{ url('movimentacao_edit', {id: mov.id}) }}'">
+                                        <a role="button" class="btn btn-sm btn-primary"
+                                                href="/v/fin/movimentacao/aPagarReceber/form?id={{ mov.id }}">
                                             <i class="fas fa-wrench" aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger"
-                                                data-url="{{ url('movimentacao_delete', {id: mov.id}) }}"
-                                                data-token="{{ csrf_token('delete') }}"
-                                                data-target="#confirmationModal" data-toggle="modal">
-                                            <i class="fa fa-trash" aria-hidden="true"></i>
-                                        </button>
+                                        </a>
+                                        
                                         <br/>
                                         <span class="badge badge-secondary">{{ mov.updated|date('d/m/Y H:i:s') }}</span>
                                     </td>
