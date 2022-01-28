@@ -32,7 +32,7 @@ Encore
   .addEntry('Fiscal/emissaoNFe/form', './assets/js/Fiscal/emissaoNFe/form.js')
   .addEntry('Fiscal/emissaoNFe/formItem', './assets/js/Fiscal/emissaoNFe/formItem.js')
   .addEntry('Fiscal/emissaoNFe/list', './assets/js/Fiscal/emissaoNFe/list.js')
-  .addEntry('Fiscal/NotaFiscal/nfEntradaList', './assets/js/Fiscal/NotaFiscal/nfEntradaList.js')
+  
   .addEntry('Fiscal/distDFeList', './assets/js/Fiscal/distDFeList.js')
 
   
@@ -77,6 +77,9 @@ Encore
   .addEntry('fin/movimentacao/recorrente/form', './assets/js/Financeiro/Movimentacao/form_recorrente.js')
   .addEntry('fin/movimentacao/recorrente/list', './assets/js/Financeiro/Movimentacao/list_recorrente.js')
   .addEntry('fin/movimentacao/transfEntreCarteiras/form', './assets/js/Financeiro/Movimentacao/form_transfEntreCarteiras.js')
+
+
+  .addEntry('fis/notaFiscal/nfEntrada/list', './assets/js/Fiscal/NotaFiscal/nfEntradaList.js')
   
   // --------------------------------------------
 
