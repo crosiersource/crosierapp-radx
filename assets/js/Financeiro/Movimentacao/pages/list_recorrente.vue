@@ -551,10 +551,6 @@ export default {
       this.$emit("afterFilter", this.tableData);
       this.handleTudoSelecionado();
 
-      if (this.filtrosNaSidebar) {
-        this.visibleRight = false;
-      }
-
       this.visibleRight = false;
 
       this.setLoading(false);

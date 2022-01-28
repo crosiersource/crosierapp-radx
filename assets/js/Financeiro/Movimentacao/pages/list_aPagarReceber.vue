@@ -3,27 +3,33 @@
   <Toast group="toast_aPagarReceberList" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
-  <Sidebar class="p-sidebar-lg" v-model:visible="this.visibleRight" position="right">
+  <Sidebar
+    class="p-sidebar-lg"
+    :baseZIndex="1000"
+    v-model:visible="this.visibleRight"
+    position="right"
+  >
     <div class="card">
       <div class="card-body">
         <h5 class="card-title"><i class="fas fa-search"></i> Filtros</h5>
         <form @submit.prevent="this.doFilter()" class="notSubmit">
           <div class="form-row">
             <CrosierMultiSelectEntity
+              style="z-index: 99999"
               v-model="this.filters.carteira"
               entity-uri="/api/fin/carteira"
               optionLabel="descricaoMontada"
               :orderBy="{ codigo: 'ASC' }"
               :filters="{ abertas: true }"
               label="Carteiras"
-              id="modo"
+              id="carteiras"
             />
           </div>
 
           <div class="form-row">
             <CrosierCalendar
               label="Desde..."
-              col="6"
+              col="5"
               inputClass="crsr-date"
               id="dt"
               :baseZIndex="10000"
@@ -32,12 +38,38 @@
 
             <CrosierCalendar
               label="até..."
-              col="6"
+              col="5"
               inputClass="crsr-date"
               id="dt"
               :baseZIndex="10000"
               v-model="this.filters['dtVenctoEfetiva[before]']"
             />
+            <div class="col-1">
+              <div class="form-group">
+                <label for="btnAnterior" style="color: transparent">.</label>
+                <button
+                  type="button"
+                  class="ml-1 btn btn-sm btn-info btn-block"
+                  title="Mês anterior"
+                  @click="this.trocaPeriodo(false)"
+                >
+                  <i class="fas fa-angle-left"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-1">
+              <div class="form-group">
+                <label for="btnAnterior" style="color: transparent">.</label>
+                <button
+                  type="button"
+                  class="ml-1 btn btn-sm btn-info btn-block"
+                  title="Próximo mês"
+                  @click="this.trocaPeriodo(true)"
+                >
+                  <i class="fas fa-angle-right"></i>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="form-row">
             <CrosierCurrency
@@ -558,9 +590,7 @@ export default {
       this.$emit("afterFilter", this.tableData);
       this.handleTudoSelecionado();
 
-      if (this.filtrosNaSidebar) {
-        this.visibleRight = false;
-      }
+      this.visibleRight = false;
 
       this.setLoading(false);
     },
@@ -670,6 +700,20 @@ export default {
       });
       this.setLoading(false);
     },
+
+    async trocaPeriodo(proximo) {
+      const ini = moment(this.filters["dtVenctoEfetiva[after]"]).format("YYYY-MM-DD");
+      const fim = moment(this.filters["dtVenctoEfetiva[before]"]).format("YYYY-MM-DD");
+
+      const rs = await axios.get(
+        `/base/diaUtil/incPeriodo/?ini=${ini}&fim=${fim}&futuro=${proximo}&comercial=false&financeiro=false`
+      );
+
+      this.filters["dtVenctoEfetiva[after]"] = new Date(`${rs.data.dtIni}T00:00:00-03:00`);
+      this.filters["dtVenctoEfetiva[before]"] = new Date(`${rs.data.dtFim}T23:59:59-03:00`);
+
+      this.doFilter();
+    },
   },
 
   computed: {
@@ -701,3 +745,13 @@ export default {
   },
 };
 </script>
+<style>
+.p-multiselect .p-multiselect-label {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.p-multiselect.p-multiselect-chip .p-multiselect-token {
+  padding: 0 0.5rem 0 0.5rem !important;
+}
+</style>

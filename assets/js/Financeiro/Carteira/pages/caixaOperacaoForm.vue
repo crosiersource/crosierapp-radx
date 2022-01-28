@@ -162,7 +162,7 @@ export default {
               setUrlId: false,
               fnBeforeSave: (formData) => {
                 formData.carteira = formData.carteira["@id"];
-                formData.responsavel = `/api/core/security/user/${formData.responsavel.id}`;
+                formData.responsavel = `/api/sec/user/${formData.responsavel.id}`;
               },
             })
           ) {
