@@ -413,6 +413,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { api, CrosierBlock, CrosierDropdownEntity, CrosierCalendar } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
+import printJS from "print-js";
 
 export default {
   name: "list_recorrente",

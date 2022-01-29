@@ -308,6 +308,7 @@ import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import moment from "moment";
+import printJS from "print-js";
 
 export default {
   components: {
