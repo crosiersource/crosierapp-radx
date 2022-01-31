@@ -1,6 +1,6 @@
 <template>
   <ConfirmDialog group="confirmDialog_aPagarReceberList" />
-  <Toast group="toast_aPagarReceberList" class="mb-5" />
+  <Toast class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
   <Sidebar
@@ -125,6 +125,10 @@
         <div class="d-flex flex-wrap align-items-center">
           <div class="mr-1">
             <h3>Contas a Pagar/Receber</h3>
+            <h6>
+              Entre {{ moment(this.filters["dtVenctoEfetiva[after]"]).format("DD/MM/YYYY") }} e
+              {{ moment(this.filters["dtVenctoEfetiva[before]"]).format("DD/MM/YYYY") }}
+            </h6>
           </div>
           <div class="d-sm-flex flex-nowrap ml-auto">
             <a type="button" class="btn btn-outline-info" href="form" title="Novo">
@@ -151,11 +155,22 @@
               type="button"
               class="btn btn-outline-dark ml-1"
               @click="this.imprimir"
-              value="Imprimir"
+              title="Imprimir listagem"
               id="btnImprimir"
               name="btnImprimir"
             >
               <i class="fas fa-print"></i>
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-dark ml-1"
+              @click="this.imprimirFicha"
+              title="Imprimir fichas de movimentação"
+              id="btnImprimirFicha"
+              name="btnImprimirFicha"
+            >
+              <i class="far fa-file-alt"></i>
             </button>
           </div>
         </div>
@@ -531,6 +546,25 @@ export default {
         ? `${moment(this.filters["dtVenctoEfetiva[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
         : `${this.moment().endOf("month").format("YYYY-MM-DD")}T23:59:59-03:00`;
 
+      const diff = moment(this.filters["dtVenctoEfetiva[before]"]).diff(
+        moment(this.filters["dtVenctoEfetiva[after]"]),
+        "days"
+      );
+      if (diff > 31) {
+        this.filters["dtVenctoEfetiva[after]"] = `${this.moment().format(
+          "YYYY-MM"
+        )}-01T00:00:00-03:00`;
+        this.filters["dtVenctoEfetiva[before]"] = `${this.moment()
+          .endOf("month")
+          .format("YYYY-MM-DD")}T23:59:59-03:00`;
+        this.$toast.add({
+          severity: "warn",
+          summary: "Atenção",
+          detail: "Não é possível pesquisar com período superior a 31 dias",
+          life: 5000,
+        });
+      }
+
       const rows = Number.MAX_SAFE_INTEGER;
       const page = 1;
 
@@ -656,7 +690,6 @@ export default {
             }
             if (rsDelete?.status === 204) {
               this.$toast.add({
-                group: "mainToast",
                 severity: "success",
                 summary: "Sucesso",
                 detail: "Registro deletado com sucesso",
@@ -673,7 +706,6 @@ export default {
           } catch (e) {
             console.error(e);
             this.$toast.add({
-              group: "mainToast",
               severity: "error",
               summary: "Erro",
               detail: "Ocorreu um erro ao deletar",
@@ -692,6 +724,20 @@ export default {
         filters: JSON.stringify(this.filters),
         somatorios: JSON.stringify(Object.fromEntries(this.somatorios)),
         totalGeral: this.totalGeral,
+      });
+      printJS({
+        printable: pdf.data,
+        type: "pdf",
+        base64: true,
+        targetStyles: "*",
+      });
+      this.setLoading(false);
+    },
+
+    async imprimirFicha() {
+      this.setLoading(true);
+      const pdf = await axios.post("/fin/movimentacao/aPagarReceber/fichaMovimentacao", {
+        movsSelecionadas: JSON.stringify(this.selection),
       });
       printJS({
         printable: pdf.data,

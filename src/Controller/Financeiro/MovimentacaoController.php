@@ -17,23 +17,17 @@ use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
-use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
-use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Cadeia;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
-use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CarteiraRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\CategoriaRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\ModoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoRepository;
-use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\TipoLanctoRepository;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -177,7 +171,6 @@ class MovimentacaoController extends FormListController
     }
 
 
-
     /**
      * @param Request $request
      * @param Movimentacao $movimentacao
@@ -243,7 +236,6 @@ class MovimentacaoController extends FormListController
         return $this->doRender($params['formView'], $params);
     }
 
-   
 
     /**
      * @param Request $request
@@ -502,7 +494,6 @@ class MovimentacaoController extends FormListController
     }
 
 
-
     /**
      *
      * @Route("/api/fin/movimentacao/extrato/saldos/{carteira}/{dt}", name="api_fin_movimentacao_extrato_saldos")
@@ -520,6 +511,126 @@ class MovimentacaoController extends FormListController
         } catch (\Exception $e) {
             return CrosierApiResponse::error($e);
         }
+    }
+
+
+    /**
+     *
+     * @Route("/fin/movimentacao/aPagarReceber/fichaMovimentacao", name="fin_movimentacao_aPagarReceber_fichaMovimentacao")
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function fichaMovimentacaoPDF(Request $request): Response
+    {
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+        $movsSel = json_decode(json_decode($request->getContent(), true)['movsSelecionadas'], true);
+
+        $movs = [];
+        foreach ($movsSel as $mov) {
+            $movs[] = $this->getDoctrine()->getRepository(Movimentacao::class)->find($mov['id']);
+        }
+
+        gc_collect_cycles();
+        gc_disable();
+
+        $html = $this->renderView('Financeiro/fichaMovimentacao.html.twig', ['movs' => $movs]);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        gc_collect_cycles();
+        gc_enable();
+
+        return new Response(
+            base64_encode($dompdf->output())
+        );
+    }
+
+
+    /**
+     *
+     * @Route("/fin/movimentacao/aPagarReceber/rel", name="fin_movimentacoa_aPagarReceber_rel")
+     *
+     * @param Request $request
+     * @return void
+     * @throws ViewException
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function rel(Request $request): Response
+    {
+        $content = json_decode($request->getContent(), true);
+        $tableData = json_decode($content['tableData'], true);
+        $filters = json_decode($content['filters'], true);
+        $somatorios = json_decode($content['somatorios'], true);
+        $params['totalGeral'] = $content['totalGeral'];
+
+        $params['hoje'] = (new \DateTime())->format('d/m/Y H:i:s');
+
+        $filters['dtVenctoEfetiva[after]'] = $filters['dtVenctoEfetiva[after]'] ?? '0001-01-01';
+        $filters['dtVenctoEfetiva[before]'] = $filters['dtVenctoEfetiva[before]'] ?? '9999-01-01';
+
+        $params['dts'] = DateTimeUtils::parseDateStr($filters['dtVenctoEfetiva[after]'])->format('d/m/Y') . ' - ' .
+            DateTimeUtils::parseDateStr($filters['dtVenctoEfetiva[before]'])->format('d/m/Y');
+        $params['tableData'] = $tableData;
+
+        $dia = null;
+        $dias = [];
+        $i = -1;
+
+        foreach ($tableData as $r) {
+            if ($r['dtVenctoEfetiva'] !== $dia) {
+                $i++;
+                $dia = $r['dtVenctoEfetiva'];
+                $dias[$i]['total'] = $somatorios[$r['dtVenctoEfetiva']];
+                $dias[$i]['dtVenctoEfetiva'] = $r['dtVenctoEfetiva'];
+            }
+            $dias[$i]['movs'][] = $r;
+        }
+
+        $params['dias'] = $dias;
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('Financeiro/movimentacaoAPagarRel2.html.twig', $params);
+
+
+        gc_collect_cycles();
+        gc_disable();
+
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('enable_remote', true);
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        return new Response(
+            base64_encode($dompdf->output())
+        );
+
+        gc_collect_cycles();
+        gc_enable();
+
+
     }
 
 
