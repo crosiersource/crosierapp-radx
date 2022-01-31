@@ -148,7 +148,7 @@
               title="Limpar filtros"
               @click="this.doClearFilters"
             >
-              <i class="fas fa-sync-alt"></i>
+              <i class="fas fa-backspace"></i>
             </button>
 
             <button
@@ -627,6 +627,8 @@ export default {
 
       this.visibleRight = false;
 
+      this.selection = null;
+
       this.setLoading(false);
     },
 
@@ -735,6 +737,15 @@ export default {
     },
 
     async imprimirFicha() {
+      if (!this.selection || this.selection.length < 1) {
+        this.$toast.add({
+          severity: "warn",
+          summary: "Atenção",
+          detail: "Nenhuma movimentação selecionada",
+          life: 5000,
+        });
+        return;
+      }
       this.setLoading(true);
       const pdf = await axios.post("/fin/movimentacao/aPagarReceber/fichaMovimentacao", {
         movsSelecionadas: JSON.stringify(this.selection),

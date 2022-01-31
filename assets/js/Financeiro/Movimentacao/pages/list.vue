@@ -1,5 +1,5 @@
 <template>
-  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <Toast position="bottom-right" class="mb-5" />
   <ConfirmDialog />
 
   <CrosierListS
@@ -39,6 +39,30 @@
       'transferenciaEntreCarteiras',
     ]"
   >
+    <template v-slot:headerButtons>
+      <button
+        type="button"
+        class="btn btn-outline-dark ml-1"
+        @click="this.imprimir"
+        title="Imprimir listagem"
+        id="btnImprimir"
+        name="btnImprimir"
+      >
+        <i class="fas fa-print"></i>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-outline-dark ml-1"
+        @click="this.imprimirFicha"
+        title="Imprimir fichas de movimentação"
+        id="btnImprimirFicha"
+        name="btnImprimirFicha"
+      >
+        <i class="far fa-file-alt"></i>
+      </button>
+    </template>
+
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputInt col="3" label="Id" id="id" v-model="this.filters.id" />
@@ -309,6 +333,7 @@ import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import moment from "moment";
 import printJS from "print-js";
+import axios from "axios";
 
 export default {
   components: {
@@ -343,6 +368,47 @@ export default {
       this.filters["dtUtil[before]"] = this.filters["dtUtil[before]"]
         ? `${moment(this.filters["dtUtil[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
         : null;
+      this.movimentacoesSelecionadas = null;
+    },
+
+    async imprimir() {
+      this.setLoading(true);
+      const pdf = await axios.post("/fin/movimentacao/aPagarReceber/rel", {
+        tableData: JSON.stringify(this.tableData),
+        filters: JSON.stringify(this.filters),
+        somatorios: JSON.stringify(Object.fromEntries(this.somatorios)),
+        totalGeral: this.totalGeral,
+      });
+      printJS({
+        printable: pdf.data,
+        type: "pdf",
+        base64: true,
+        targetStyles: "*",
+      });
+      this.setLoading(false);
+    },
+
+    async imprimirFicha() {
+      if (!this.movimentacoesSelecionadas || this.movimentacoesSelecionadas.length < 1) {
+        this.$toast.add({
+          severity: "warn",
+          summary: "Atenção",
+          detail: "Nenhuma movimentação selecionada",
+          life: 5000,
+        });
+        return;
+      }
+      this.setLoading(true);
+      const pdf = await axios.post("/fin/movimentacao/aPagarReceber/fichaMovimentacao", {
+        movsSelecionadas: JSON.stringify(this.movimentacoesSelecionadas),
+      });
+      printJS({
+        printable: pdf.data,
+        type: "pdf",
+        base64: true,
+        targetStyles: "*",
+      });
+      this.setLoading(false);
     },
   },
 
