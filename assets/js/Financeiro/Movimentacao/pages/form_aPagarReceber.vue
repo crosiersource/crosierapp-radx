@@ -6,7 +6,6 @@
     <template #btns>
       <div class="dropdown ml-2 float-right">
         <button
-          v-if="this.fields.id"
           class="btn btn-secondary dropdown-toggle"
           type="button"
           id="dropdownMenuButton"
@@ -15,15 +14,29 @@
         >
           <i class="fas fa-cog" aria-hidden="true"></i> Opções
         </button>
+
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a
+            v-if="this.fields.id"
             class="dropdown-item"
             :href="'/v/fin/movimentacao/recorrente/form?id=' + this.fields.id"
             title="Transformar esta movimentação em recorrente"
           >
             <i class="fas fa-undo" aria-hidden="true"></i> Transformar em Recorrente
           </a>
+
           <button
+            type="button"
+            class="dropdown-item"
+            role="button"
+            title="Exibe os campos para lançamento de Cheque"
+            @click="this.exibirCamposCheque = true"
+          >
+            <i class="fas fa-dollar-sign"></i> Lançamento de Cheque
+          </button>
+
+          <button
+            v-if="this.fields.id"
             type="button"
             class="dropdown-item"
             @click="this.clonar"
@@ -31,15 +44,20 @@
           >
             <i class="far fa-clone"></i> Clonar
           </button>
-          <a
+
+          <button
+            v-if="this.fields.id"
+            type="button"
             class="dropdown-item"
-            :href="'/v/fin/movimentacao/form/pagto/' + this.fields.id"
             role="button"
             title="Registrar pagamento desta movimentação"
+            @click="this.exibirDtPagto = true"
           >
             <i class="fas fa-dollar-sign"></i> Registrar pagamento
-          </a>
+          </button>
+
           <button
+            v-if="this.fields.id"
             type="button"
             class="dropdown-item"
             @click="this.deletar"
@@ -198,6 +216,46 @@
       />
     </div>
 
+    <div class="card mt-3 mb-3" v-if="this.exibirCamposCheque">
+      <div class="card-body">
+        <h5 class="card-title">Cheque</h5>
+
+        <div class="form-row">
+          <CrosierDropdownEntity
+            col="4"
+            v-model="this.fields.chequeBanco"
+            entity-uri="/api/fin/banco"
+            optionLabel="descricaoMontada"
+            :optionValue="null"
+            :orderBy="{ codigo: 'ASC' }"
+            label="Banco"
+            id="chequeBanco"
+          />
+
+          <CrosierInputText
+            label="Agência"
+            col="2"
+            id="chequeAgencia"
+            v-model="this.fields.chequeAgencia"
+          />
+
+          <CrosierInputText
+            label="Conta"
+            col="3"
+            id="chequeConta"
+            v-model="this.fields.chequeConta"
+          />
+
+          <CrosierInputText
+            label="Número"
+            col="3"
+            id="chequeNumCheque"
+            v-model="this.fields.chequeNumCheque"
+          />
+        </div>
+      </div>
+    </div>
+
     <div class="form-row">
       <CrosierInputText
         label="Descrição"
@@ -245,6 +303,19 @@
                 id="dtVenctoEfetiva"
                 v-model="this.fields.dtVenctoEfetiva"
                 :error="this.fieldsErrors.dtVenctoEfetiva"
+              />
+            </div>
+
+            <div class="form-row form-group camposEmpilhados" v-if="this.exibirDtPagto">
+              <label class="col-form-label col-sm-3" for="dtPagto">Dt Pagto</label>
+              <CrosierCalendar
+                :showLabel="false"
+                @focus="this.onFocusDtPagto"
+                col="9"
+                id="dtPagto"
+                v-model="this.fields.dtPagto"
+                :error="this.fieldsErrors.dtPagto"
+                helpText="Movimentação com Dt Pagto é considerada como 'REALIZADA'"
               />
             </div>
           </div>
@@ -360,6 +431,8 @@ export default {
       sacadosOuCedentes: null,
       filiais: null,
       dtVencto_cache: null,
+      exibirDtPagto: false,
+      exibirCamposCheque: false,
     };
   },
 
@@ -397,6 +470,11 @@ export default {
         detail: rs?.data?.MSG,
         life: 5000,
       });
+    }
+
+    const rPagamento = new URLSearchParams(window.location.search.substring(1)).get("rPagamento");
+    if (rPagamento) {
+      this.exibirDtPagto = true;
     }
 
     this.setLoading(false);

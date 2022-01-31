@@ -39,15 +39,16 @@ WHERE pai_uuid = '3984a4f5-cd55-4525-87b9-01212fb1952c';
 INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
 VALUES (NULL, '52b3799e-f70e-4adf-8052-88f41ec1834e', 'Conta a Pagar/Receber', 'fas fa-file-invoice-dollar', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/v/fin/movimentacao/aPagarReceber/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
 
-SET @ordem = @ordem + 1;
-
-INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
-VALUES (NULL, 'aaa28528-43b5-4066-9ccc-9a083cd88a1a', 'Cheque Próprio', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/v/fin/movimentacao/form/chequeProprio/', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
 
 SET @ordem = @ordem + 1;
 
+DELETE
+FROM cfg_entmenu
+WHERE pai_uuid = '90f8f184-82c1-11ec-89e9-ff3a06779272';
+
 INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
-VALUES (NULL, '4b847e88-f16c-4b78-8d8a-10d1cfbbb0b1', 'Cheque Terceiros', 'fas fa-money-check', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/fin/movimentacao/form/chequeTerceiros/', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
+VALUES (NULL, '90f8f184-82c1-11ec-89e9-ff3a06779272', 'Parcelamento', 'fas fa-coins', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/v/fin/movimentacao/aPagarReceber/formParcelamento', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
+
 
 SET @ordem = @ordem + 1;
 

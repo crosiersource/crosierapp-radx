@@ -344,7 +344,7 @@
                   v-if="r.data.status === 'ABERTA'"
                   role="button"
                   class="btn btn-warning btn-sm"
-                  :href="'/fin/movimentacao/pagto/' + r.data.id"
+                  :href="'/v/fin/movimentacao/aPagarReceber/form?id=' + r.data.id + '&rPagamento=s'"
                   title="Registro de Pagamento"
                 >
                   <i class="fas fa-dollar-sign"></i
@@ -354,7 +354,7 @@
                   role="button"
                   class="btn btn-primary btn-sm ml-1"
                   title="Editar registro"
-                  :href="'form?id=' + r.data.id"
+                  :href="'/v/fin/movimentacao/aPagarReceber/form?id=' + r.data.id"
                   ><i class="fas fa-wrench" aria-hidden="true"></i
                 ></a>
                 <a
