@@ -1,6 +1,6 @@
 <template>
-  <Toast position="bottom-right" class="mb-5" />
-  <ConfirmDialog />
+  <Toast position="bottom-right" class="mb-5" group="mainToast" />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
 
   <CrosierListS
     :filtrosNaSidebar="true"
@@ -176,7 +176,7 @@
       <Column field="descricao" header="Descrição" :sortable="true">
         <template class="text-right" #body="r">
           <div style="max-width: 50em; white-space: pre-wrap">
-            <b>{{ r.data.descricaoMontada }}</b>
+            <b><div v-html="r.data.descricaoMontada"></div></b>
 
             <div v-if="r.data.categoria.codigoSuper === 1 && r.data.sacado">
               <small>{{ r.data.sacado }}</small>
@@ -281,7 +281,7 @@
               v-if="r.data.status === 'ABERTA'"
               role="button"
               class="btn btn-warning btn-sm"
-              :href="'/fin/movimentacao/pagto/' + r.data.id"
+              :href="'/v/fin/movimentacao/aPagarReceber/form?rPagamento=S&id=' + r.data.id"
               title="Registro de Pagamento"
             >
               <i class="fas fa-dollar-sign"></i
@@ -291,16 +291,17 @@
               role="button"
               class="btn btn-primary btn-sm ml-1"
               title="Editar registro"
-              :href="'form?id=' + r.data.id"
+              :href="'/v/fin/movimentacao/aPagarReceber/form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
-            <a
-              role="button"
+            <button
+              type="button"
               class="btn btn-danger btn-sm ml-1"
               title="Deletar registro"
               @click="this.$refs.dt.deletar(r.data.id)"
-              ><i class="fas fa-trash" aria-hidden="true"></i
-            ></a>
+            >
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>
           </div>
           <div class="d-flex justify-content-end mt-1">
             <span

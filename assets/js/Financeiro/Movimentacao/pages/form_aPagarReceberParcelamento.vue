@@ -588,7 +588,6 @@ export default {
     gerarParcelas() {
       this.parcelas.splice(1);
       const valorParcela = this.valorParcela ?? this.valorTotal / this.parcelas[0].cadeiaQtde;
-      console.log(valorParcela);
       this.parcelas[0].valor = valorParcela;
       this.parcelas[0].cadeiaOrdem = 1;
       this.parcelas[0].descricao = this.parcelas[0].descricao
@@ -613,7 +612,6 @@ export default {
     },
 
     calcTotalParcelas() {
-      console.log("vou");
       this.totalParcelas = this.parcelas.reduce((sum, e) => sum + e.valor, 0);
     },
 

@@ -393,7 +393,6 @@ import Skeleton from "primevue/skeleton";
 import ConfirmDialog from "primevue/confirmdialog";
 import * as yup from "yup";
 import {
-  api,
   CrosierCurrency,
   CrosierDropdown,
   CrosierDropdownEntity,
@@ -404,6 +403,7 @@ import {
   CrosierInputTextarea,
   CrosierCalendar,
   submitForm,
+  SetFocus,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
@@ -475,6 +475,7 @@ export default {
     const rPagamento = new URLSearchParams(window.location.search.substring(1)).get("rPagamento");
     if (rPagamento) {
       this.exibirDtPagto = true;
+      SetFocus("dtPagto", 80);
     }
 
     this.setLoading(false);
@@ -583,6 +584,12 @@ export default {
     onDtMovimentFocus() {
       if (!this.fields.dtMoviment) {
         this.fields.dtMoviment = new Date();
+      }
+    },
+
+    onFocusDtPagto() {
+      if (!this.fields.dtPagto) {
+        this.fields.dtPagto = new Date();
       }
     },
 

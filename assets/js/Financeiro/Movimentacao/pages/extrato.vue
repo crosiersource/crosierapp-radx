@@ -1,5 +1,5 @@
 <template>
-  <ConfirmDialog />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
   <Toast class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
@@ -328,7 +328,7 @@
                   v-if="r.data.status === 'ABERTA'"
                   role="button"
                   class="btn btn-warning btn-sm"
-                  :href="'/fin/movimentacao/pagto/' + r.data.id"
+                  :href="'/v/fin/movimentacao/aPagarReceber/form?rPagamento=S&id=' + r.data.id"
                   title="Registro de Pagamento"
                 >
                   <i class="fas fa-dollar-sign"></i

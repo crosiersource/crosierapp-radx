@@ -1,6 +1,6 @@
 <template>
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
-  <ConfirmDialog />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
 
   <CrosierListS titulo="Grupos de Movimentação" apiResource="/api/fin/grupo/" ref="dt">
     <template v-slot:columns>
