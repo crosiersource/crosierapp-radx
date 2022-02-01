@@ -596,6 +596,7 @@ export default {
 
           const rs = await submitForm({
             setUrlId: false,
+            commitFormDataAfterSave: false,
             apiResource: "/api/fin/movimentacao",
             $store: this.$store,
             formDataStateName: "fields",
@@ -649,9 +650,19 @@ export default {
             },
           });
 
-          if (rs.data.status === 201) {
-            window.location = `v/fin/cadeia/exibirMovimentacoes?id=${rs.data.cadeia.id}`;
+
+
+          if (rs?.status === 201) {
+            window.location = `/v/fin/cadeia/exibirMovimentacoes?id=${rs.data.cadeia.id}`;
           } else {
+            console.error(rs);
+            this.$toast.add({
+              severity: "error",
+              summary: "Erro",
+              detail: "Ocorreu um erro ao salvar",
+              life: 5000,
+            });
+
             this.setLoading(false);
           }
         },

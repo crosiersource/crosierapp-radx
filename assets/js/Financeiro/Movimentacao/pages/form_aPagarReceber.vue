@@ -557,7 +557,7 @@ export default {
     }
 
     const rPagamento = new URLSearchParams(window.location.search.substring(1)).get("rPagamento");
-    if (rPagamento) {
+    if (rPagamento || this.fields.dtPagto) {
       this.setarParaPagto();
     }
 
