@@ -66,8 +66,8 @@
         col="3"
         id="cheque"
         helpText="A carteira possui talão de cheques"
-        v-model="this.fields.cheques"
-        :error="this.formErrors.cheques"
+        v-model="this.fields.cheque"
+        :error="this.formErrors.cheque"
       />
     </div>
 
@@ -151,7 +151,7 @@ export default {
   async mounted() {
     this.setLoading(true);
 
-    this.$store.dispatch("loadData");
+    await this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
       codigo: yup.string().required().typeError(),
       descricao: yup.string().required().typeError(),

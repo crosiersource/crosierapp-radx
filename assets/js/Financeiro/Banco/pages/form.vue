@@ -61,7 +61,7 @@ export default {
   async mounted() {
     this.setLoading(true);
 
-    this.$store.dispatch("loadData");
+    await this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
       codigoBanco: yup.number().required().typeError(),
       nome: yup.string().required().typeError(),

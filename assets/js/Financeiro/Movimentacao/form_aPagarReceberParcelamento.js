@@ -34,6 +34,7 @@ const store = createStore({
 
     // RTA p/ funcionar com o submitForm
     getFields: (state) => state.parcelas[0],
+    getFieldsErrors: (state) => state.parcelasErrors[0],
 
     getParcelasErrors: (state) => state.parcelasErrors,
   },

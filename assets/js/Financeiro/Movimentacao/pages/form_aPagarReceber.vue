@@ -2,7 +2,7 @@
   <Toast position="bottom-right" class="mt-5" />
   <ConfirmDialog></ConfirmDialog>
 
-  <CrosierFormS @submitForm="this.submitForm" titulo="Movimentação a Pagar/Receber">
+  <CrosierFormS @submitForm="this.submitForm" :titulo="this.titulo" :subtitulo="this.subtitulo">
     <template #btns>
       <div class="dropdown ml-2 float-right">
         <button
@@ -29,10 +29,30 @@
             type="button"
             class="dropdown-item"
             role="button"
-            title="Exibe os campos para lançamento de Cheque"
-            @click="this.exibirCamposCheque = true"
+            title="Exibe os campos lançamento normal"
+            @click="this.setLanctoNormal"
           >
-            <i class="fas fa-dollar-sign"></i> Lançamento de Cheque
+            <i class="fas fa-dollar-sign"></i> Lançamento Normal
+          </button>
+
+          <button
+            type="button"
+            class="dropdown-item"
+            role="button"
+            title="Exibe os campos para lançamento de cheque de terceiros"
+            @click="this.setExibirCamposChequeTerceiros"
+          >
+            <i class="fas fa-money-check"></i> Lançamento de Cheque de Terceiros
+          </button>
+
+          <button
+            type="button"
+            class="dropdown-item"
+            role="button"
+            title="Exibe os campos para lançamento de cheque próprio"
+            @click="this.setExibirCamposChequeProprio"
+          >
+            <i class="fas fa-money-check-alt"></i> Lançamento de Cheque de Próprio
           </button>
 
           <button
@@ -87,6 +107,7 @@
 
     <div class="form-row">
       <CrosierDropdownEntity
+        v-if="!this.exibirCamposChequeProprio"
         col="6"
         v-model="this.fields.carteira"
         :error="this.fieldsErrors.carteira"
@@ -100,6 +121,29 @@
       />
 
       <CrosierDropdownEntity
+        v-if="this.exibirCamposChequeProprio"
+        col="4"
+        v-model="this.fields.carteira"
+        :error="this.fieldsErrors.carteira"
+        entity-uri="/api/fin/carteira"
+        optionLabel="descricaoMontada"
+        :optionValue="null"
+        :orderBy="{ codigo: 'ASC' }"
+        :filters="{ cheque: true }"
+        label="Carteira"
+        id="carteira"
+      />
+
+      <CrosierInputText
+        v-if="this.exibirCamposChequeProprio"
+        label="Núm Cheque"
+        col="2"
+        id="chequeNumCheque"
+        v-model="this.fields.chequeNumCheque"
+      />
+
+      <CrosierDropdownEntity
+        v-if="!this.exibirCamposChequeProprio && !this.exibirCamposChequeTerceiros"
         col="3"
         v-model="this.fields.modo"
         :error="this.fieldsErrors.modo"
@@ -107,6 +151,32 @@
         :optionValue="null"
         optionLabel="descricaoMontada"
         :orderBy="{ codigo: 'ASC' }"
+        label="Modo"
+        id="modo"
+      />
+
+      <CrosierDropdownEntity
+        v-if="this.exibirCamposChequeProprio"
+        :filters="{ codigo: 3 }"
+        col="3"
+        v-model="this.fields.modo"
+        :error="this.fieldsErrors.modo"
+        entity-uri="/api/fin/modo"
+        :optionValue="null"
+        optionLabel="descricaoMontada"
+        label="Modo"
+        id="modo"
+      />
+
+      <CrosierDropdownEntity
+        v-if="this.exibirCamposChequeTerceiros"
+        :filters="{ codigo: 4 }"
+        col="3"
+        v-model="this.fields.modo"
+        :error="this.fieldsErrors.modo"
+        entity-uri="/api/fin/modo"
+        :optionValue="null"
+        optionLabel="descricaoMontada"
         label="Modo"
         id="modo"
       />
@@ -216,7 +286,7 @@
       />
     </div>
 
-    <div class="card mt-3 mb-3" v-if="this.exibirCamposCheque">
+    <div class="card mt-3 mb-3" v-if="this.exibirCamposChequeTerceiros">
       <div class="card-body">
         <h5 class="card-title">Cheque</h5>
 
@@ -432,14 +502,16 @@ export default {
       filiais: null,
       dtVencto_cache: null,
       exibirDtPagto: false,
-      exibirCamposCheque: false,
+      exibirCamposChequeTerceiros: false,
+      exibirCamposChequeProprio: false,
+      carteiraChequeProprio: null,
     };
   },
 
   async mounted() {
     this.setLoading(true);
 
-    this.$store.dispatch("loadData");
+    await this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
       categoria: yup.mixed().required().typeError(),
       carteira: yup.mixed().required().typeError(),
@@ -527,6 +599,11 @@ export default {
               ? formData.centroCusto["@id"]
               : null;
 
+          formData.chequeBanco =
+            formData.chequeBanco && formData.chequeBanco["@id"]
+              ? formData.chequeBanco["@id"]
+              : null;
+
           if (formData.cedente && formData.cedente.text) {
             formData.cedente = formData.cedente.text;
           }
@@ -610,11 +687,49 @@ export default {
       });
     },
 
+    setExibirCamposChequeTerceiros() {
+      this.exibirCamposChequeTerceiros = true;
+      this.exibirCamposChequeProprio = false;
+    },
+
+    setExibirCamposChequeProprio() {
+      this.exibirCamposChequeTerceiros = false;
+      this.exibirCamposChequeProprio = true;
+    },
+
+    setLanctoNormal() {
+      this.exibirCamposChequeTerceiros = false;
+      this.exibirCamposChequeProprio = false;
+    },
+
     deletar() {},
   },
 
   computed: {
     ...mapGetters({ fields: "getFields", fieldsErrors: "getFieldsErrors" }),
+
+    titulo() {
+      if (!this.fields.categoria) {
+        return "Conta a Pagar/Receber";
+      }
+      if (this.fields.categoria.codigoSuper === 1) {
+        return "Conta a Receber";
+      }
+      return "Conta a Pagar";
+    },
+
+    subtitulo() {
+      if (this.exibirCamposChequeProprio) {
+        return "Lançamento de Cheque Próprio";
+      }
+      if (this.exibirCamposChequeTerceiros) {
+        return "Lançamento de Cheque de Terceiros";
+      }
+      if (this.exibirDtPagto) {
+        return "Registro de Pagamento";
+      }
+      return "Lançamento de Movimentação";
+    },
   },
 };
 </script>

@@ -145,7 +145,7 @@ export default {
   async mounted() {
     this.setLoading(true);
 
-    this.$store.dispatch("loadData");
+    await this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
       carteira: yup.mixed().required().typeError(),
       carteiraDestino: yup.mixed().required().typeError(),
