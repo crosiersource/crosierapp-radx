@@ -53,7 +53,7 @@ VALUES (NULL, '90f8f184-82c1-11ec-89e9-ff3a06779272', 'Parcelamento', 'fas fa-co
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url, app_uuid, roles)
-VALUES (NULL, 'fadc7b3e-f2f3-42cd-9ebc-0652cdade206', 'Transf entre Carteiras', 'fas fa-exchange-alt', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/fin/movimentacao/form/transferenciaEntreCarteiras/', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
+VALUES (NULL, 'fadc7b3e-f2f3-42cd-9ebc-0652cdade206', 'Transf entre Carteiras', 'fas fa-exchange-alt', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(), 1, 1, 1, '/v/fin/movimentacao/transfEntreCarteiras/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', '');
 
 SET @ordem = @ordem + 1;
 
@@ -134,7 +134,7 @@ WHERE uuid = 'e31a61ee-22f6-11ec-b802-2f8810a1181b';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('e31a61ee-22f6-11ec-b802-2f8810a1181b', 'Abertura e Fechamento de Caixa', 'fas fa-book-open', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/carteira/caixaOperacaoForm', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('e31a61ee-22f6-11ec-b802-2f8810a1181b', 'Abertura e Fechamento de Caixa', 'fas fa-book-open', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/carteira/caixaOperacaoForm', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
 
 
 -- Recorrentes

@@ -51,7 +51,7 @@
             class="dropdown-item"
             role="button"
             title="Registrar pagamento desta movimentação"
-            @click="this.exibirDtPagto = true"
+            @click="this.setarParaPagto"
           >
             <i class="fas fa-dollar-sign"></i> Registrar pagamento
           </button>
@@ -474,8 +474,7 @@ export default {
 
     const rPagamento = new URLSearchParams(window.location.search.substring(1)).get("rPagamento");
     if (rPagamento) {
-      this.exibirDtPagto = true;
-      SetFocus("dtPagto", 80);
+      this.setarParaPagto();
     }
 
     this.setLoading(false);
@@ -585,6 +584,11 @@ export default {
       if (!this.fields.dtMoviment) {
         this.fields.dtMoviment = new Date();
       }
+    },
+
+    setarParaPagto() {
+      this.exibirDtPagto = true;
+      SetFocus("dtPagto", 80);
     },
 
     onFocusDtPagto() {

@@ -23,7 +23,21 @@
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true"></Column>
 
-      <Column field="documento" header="CPF/CNPJ" :sortable="true"></Column>
+      <Column field="documento" header="CPF/CNPJ" :sortable="true">
+        <template class="text-right" #body="r">
+          {{
+            (r.data?.documento ?? "").length === 11
+              ? String(r.data?.documento ?? "").replace(
+                  /(\d{3})(\d{3})(\d{3})(\d{2})/g,
+                  "\$1.\$2.\$3\-\$4"
+                )
+              : String(r.data?.documento ?? "").replace(
+                  /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,
+                  "$1.$2.$3/$4-$5"
+                )
+          }}
+        </template>
+      </Column>
 
       <Column field="nome" header="Nome" :sortable="true"></Column>
 
