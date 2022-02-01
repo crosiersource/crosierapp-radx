@@ -371,6 +371,7 @@ export default {
             formData.sacado = formData.sacado.text;
           }
 
+          delete formData.cadeia;
           delete formData.tipoLancto;
         },
       });

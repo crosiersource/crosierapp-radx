@@ -85,6 +85,17 @@
           >
             <i class="fa fa-trash" aria-hidden="true"></i> Deletar
           </button>
+
+          <button
+            type="button"
+            class="dropdown-item"
+            @click="this.imprimirFicha"
+            title="Imprimir ficha de movimentação"
+            id="btnImprimirFicha"
+            name="btnImprimirFicha"
+          >
+            <i class="far fa-file-alt"></i> Imprimir ficha
+          </button>
         </div>
       </div>
     </template>
@@ -478,6 +489,7 @@ import {
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 import moment from "moment";
+import printJS from "print-js";
 
 export default {
   components: {
@@ -549,6 +561,12 @@ export default {
       this.setarParaPagto();
     }
 
+    if (this.fields.modo.codigo === 3) {
+      this.setExibirCamposChequeProprio();
+    } else if (this.fields.modo.codigo === 4) {
+      this.setExibirCamposChequeTerceiros();
+    }
+
     this.setLoading(false);
   },
 
@@ -613,6 +631,7 @@ export default {
           }
 
           delete formData.tipoLancto;
+          delete formData.cadeia;
         },
       });
       this.setLoading(false);
@@ -703,6 +722,20 @@ export default {
     },
 
     deletar() {},
+
+    async imprimirFicha() {
+      this.setLoading(true);
+      const pdf = await axios.post("/fin/movimentacao/aPagarReceber/fichaMovimentacao", {
+        movsSelecionadas: JSON.stringify([this.fields]),
+      });
+      printJS({
+        printable: pdf.data,
+        type: "pdf",
+        base64: true,
+        targetStyles: "*",
+      });
+      this.setLoading(false);
+    },
   },
 
   computed: {

@@ -119,7 +119,7 @@
             <template v-if="r.data?.cadeia?.id && !r.data.recorrente && !r.data.parcelamento">
               <a
                 class="badge badge-pill badge-success"
-                :href="'/fin/movimentacao/listCadeia/' + r.data?.cadeia?.id"
+                :href="'/v/fin/cadeia/exibirMovimentacoes?id=' + r.data?.cadeia?.id"
                 target="_blank"
                 style="text-decoration: none; color: white"
                 ><i class="fas fa-link"></i> Em cadeia</a
