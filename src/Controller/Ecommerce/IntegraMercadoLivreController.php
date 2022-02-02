@@ -4,7 +4,9 @@ namespace App\Controller\Ecommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Messenger\Ecommerce\Message\MlNotification;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -42,6 +44,41 @@ class IntegraMercadoLivreController extends BaseController
         
         $this->syslog->info('ecomm_mercadoLivre_authCallback', implode(PHP_EOL, $r));   
         return new Response('OK <hr /><pre>' . implode('<br />', $r) . '</pre>');
+    }
+    
+    /**
+     * @Route("/ecomm/mercadolivre/authcallbackrouter", name="ecomm_mercadoLivre_authcallbackrouter")
+     */
+    public function authcallbackrouter(Request $request): RedirectResponse
+    {
+        $mlCode = $request->query->get('code');
+        $mlState = $request->query->get('state');
+
+        $mlCode = $request->query->get('code'); // token_tg
+        if (!$mlCode) {
+            throw new ViewException('mlCode n/d');
+        }
+        $mlState = $request->query->get('state'); // clienteConfig.UUID
+        if (!$mlState) {
+            throw new ViewException('mlState n/d');
+        }
+
+        $mlStateDecoded = json_decode(base64_decode($mlState), true);
+
+        if (!($mlStateDecoded['route'] ?? false)) {
+            throw new ViewException('mlState.route n/d');
+        }
+        $route = $mlStateDecoded['route'];
+        unset($mlStateDecoded['route']);
+
+        $queryParams = '';
+        foreach ($mlStateDecoded as $k => $v) {
+            $queryParams .= $k . '=' . $v . '&';
+        }
+        
+        $url = $route . '?' . $queryParams . 'mlCode=' . $mlCode;
+        
+        return new RedirectResponse($url);
     }
 
     /**

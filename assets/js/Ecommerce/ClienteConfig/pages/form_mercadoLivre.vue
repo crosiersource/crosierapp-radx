@@ -17,9 +17,7 @@
                 type="text"
                 v-model="mlConfig['token_tg']"
               />
-              <a
-                :href="`https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=1976314946902083&state=${this.clienteConfig.UUID}&redirect_uri=https://radx.crosier.conectamaisvc.com.br/api/ecommerce/clienteConfig/autorizarNoMercadoLivre?i=${i}`"
-              >
+              <a :href="this.gerarUrl(i)">
                 <small class="form-text">Autorizar</small>
               </a>
             </div>
@@ -135,11 +133,18 @@ export default {
     return {
       schemaValidator: {},
       validDate: new Date(),
+      serverParams: "",
     };
   },
 
   async mounted() {
     this.setLoading(true);
+    try {
+      this.serverParams = JSON.parse(document.getElementById("serverParams").innerHTML);
+    } catch (e) {
+      console.error("JSON.parse ... serverParams");
+    }
+
     this.setLoading(false);
   },
 
@@ -207,6 +212,24 @@ export default {
           this.setLoading(false);
         },
       });
+    },
+
+    gerarUrl(i) {
+      const state = JSON.stringify({
+        route: `${this.serverParams.radxURL}/api/ecommerce/clienteConfig/registrarAutorizacaoMercadoLivre`,
+        UUID: this.clienteConfig.UUID,
+        i,
+      });
+      console.log(state);
+      return (
+        `${
+          "https://auth.mercadolivre.com.br/authorization?" +
+          "response_type=code&" +
+          "client_id=1976314946902083&" +
+          "state="
+        }${btoa(state)}&` +
+        `redirect_uri=https://radx.demo.crosier.com.br/ecomm/mercadolivre/authcallbackrouter`
+      );
     },
 
     adicionar() {

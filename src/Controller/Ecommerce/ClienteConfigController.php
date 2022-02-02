@@ -11,6 +11,7 @@ use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\TrayBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\ClienteConfig;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -43,28 +44,29 @@ class ClienteConfigController extends BaseController
 
 
     /**
-     * @Route("/api/ecommerce/clienteconfig/autorizarnomercadolivre", name="ecommerce_clienteConfig_autorizarNoMercadoLivre")
+     * @Route("/api/ecommerce/clienteConfig/registrarAutorizacaoMercadoLivre", name="ecommerce_clienteConfig_registrarAutorizacaoMercadoLivre")
      * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
      * @throws ViewException
      */
-    public function autorizarNoMercadoLivre(Request $request, ClienteConfig $clienteConfig): JsonResponse
+    public function registrarAutorizacaoMercadoLivre(Request $request): JsonResponse
     {
-
         $i = $request->get('i');
-        $mlCode = $request->query->get('code'); // token_tg
-        $mlState = $request->query->get('state'); // clienteConfig.UUID
-        
-        $r = [
-            'clienteIp: ' . $request->getClientIp(),
-            'host: ' . $request->getHost(),
-            'ml_code: ' . $mlCode,
-            'ml_state: ' . $mlState,
-            'i: ' . $request->get('i'),
-        ];
-        
-        
+        $mlCode = $request->query->get('mlCode'); // token_tg
+        if (!$mlCode) {
+            throw new ViewException('mlCode n/d');
+        }
+        $uuid = $request->query->get('UUID'); // clienteConfig.UUID
+        if (!$uuid) {
+            throw new ViewException('UUID n/d');
+        }
+        $i = $request->query->get('i'); // clienteConfig.UUID
+        if (!$i) {
+            throw new ViewException('i n/d');
+        }
+
+      
         $repoClienteConfig = $this->getDoctrine()->getRepository(ClienteConfig::class);
-        $clienteConfig = $repoClienteConfig->findOneByUUID($request->query->get('state'));
+        $clienteConfig = $repoClienteConfig->findOneByFiltersSimpl([['UUID', 'EQ', $uuid]]);
         if (!$clienteConfig) {
             throw new ViewException('clienteConfig n/d');
         }
