@@ -11,6 +11,7 @@ use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\TrayBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\ClienteConfig;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -48,9 +49,9 @@ class ClienteConfigController extends BaseController
      * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
      * @throws ViewException
      */
-    public function registrarAutorizacaoMercadoLivre(Request $request): JsonResponse
+    public function registrarAutorizacaoMercadoLivre(Request $request): RedirectResponse
     {
-        $i = $request->get('i');
+        $i = (int)$request->get('i');
         $mlCode = $request->query->get('mlCode'); // token_tg
         if (!$mlCode) {
             throw new ViewException('mlCode n/d');
@@ -60,12 +61,13 @@ class ClienteConfigController extends BaseController
             throw new ViewException('UUID n/d');
         }
         $i = $request->query->get('i'); // clienteConfig.UUID
-        if (!$i) {
+        if (!isset($i)) {
             throw new ViewException('i n/d');
         }
 
       
         $repoClienteConfig = $this->getDoctrine()->getRepository(ClienteConfig::class);
+        /** @var ClienteConfig $clienteConfig */
         $clienteConfig = $repoClienteConfig->findOneByFiltersSimpl([['UUID', 'EQ', $uuid]]);
         if (!$clienteConfig) {
             throw new ViewException('clienteConfig n/d');
@@ -75,16 +77,11 @@ class ClienteConfigController extends BaseController
             throw new ViewException('clienteConfig.jsonData.mercadolivre.$i n/d');
         }
         
-        $clienteConfig->jsonData['mercadolivre']['token_tg'] = $mlCode;
-        
-        $this->mercadoLivreBusiness->autorizarApp($clienteConfig);
+        $clienteConfig->jsonData['mercadolivre'][$i]['token_tg'] = $mlCode;
 
-        return new JsonResponse(
-            [
-                'RESULT' => 'OK',
-                'MSG' => 'Executado com sucesso',
-            ]
-        );
+        $this->mercadoLivreBusiness->autorizarApp($clienteConfig, $i);
+
+        return new RedirectResponse('/v/ecommerce/clienteConfig/form?id=' . $clienteConfig->getId());
     }
 
     /**

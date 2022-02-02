@@ -61,6 +61,7 @@ security:
         - { path: ^/ecomm/mercadoLivre/authCallback, roles: PUBLIC_ACCESS }
         - { path: ^/ecomm/tray/endpoint, roles: PUBLIC_ACCESS }
         - { path: ^/ecomm/mercadolivre/endpoint, roles: PUBLIC_ACCESS }
+        - { path: ^/ecomm/mercadolivre/authcallbackrouter, roles: PUBLIC_ACCESS }
         # but, definitely allow /login to be accessible anonymously
         # - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         # if you wanted to force EVERY URL to be protected

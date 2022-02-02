@@ -86,49 +86,6 @@ class MercadoLivrePerguntaController extends BaseController
 
 
 
-    /**
-     * @Route("/ecommerce/mercadolivre/authcallback", name="ecommerce_mercadolivre_authcallback")
-     */
-    public function authcallback(ClienteConfigEntityHandler $clienteConfigEntityHandler, Connection $conn, Request $request)
-    {
-        $r = [];
-        $r[] = 'Cliente IP: ' . $request->getClientIp();
-        $r[] = 'Host: ' . $request->getHost();
-        $r[] = '<hr />';
-        $r[] = 'Content:';
-        $r[] = $request->getContent();
-        $r[] = '--------------------------------';
-        $r[] = 'Query';
-        foreach ($request->query->all() as $k => $v) {
-            $r[] = $k . ': ' . print_r($v, true);
-        }
-        $r[] = '--------------------------------';
-        $r[] = 'Request';
-        foreach ($request->request->all() as $k => $v) {
-            $r[] = $k . ': ' . print_r($v, true);
-        }
-        $r[] = '--------------------------------';
-        $r[] = 'Headers';
-        foreach ($request->headers->all() as $k => $v) {
-            $r[] = $k . ': ' . print_r($v, true);
-        }
-
-        $this->syslog->setApp('conecta')->setComponent(self::class);
-        $this->syslog->info('ecommerce_mercadolivre_authcallback', implode(PHP_EOL, $r));
-
-        $uuid = $request->get('state');
-        $ml_code = $request->get('code');
-        $rs = $conn->fetchAssociative('SELECT id FROM cnct_cliente_config WHERE uuid = :uuid', ['uuid' => $uuid]);
-        if ($rs['id'] ?? false) {
-            $repoClienteConfig = $this->getDoctrine()->getRepository(ClienteConfig::class);
-            $clienteConfig = $repoClienteConfig->find($rs['id']);
-            $clienteConfig->jsonData['mercadolivre']['token_tg'] = $ml_code;
-            $clienteConfigEntityHandler->save($clienteConfig);
-            return $this->redirectToRoute('ecommerce_clienteConfig_form', ['id' => $rs['id']]);
-        } // else
-
-        return new Response(implode('<br />', $r));
-    }
 
 
 }
