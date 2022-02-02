@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller\ECommerce;
+namespace App\Controller\Ecommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorSimplo7;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorSimplo7;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -179,7 +179,7 @@ class IntegraSimplo7Controller extends BaseController
         }
         $params['id'] = $id;
         $params['dtPagto'] = $dtPagto ? $dtPagto->format('d/m/Y') : null;
-        return $this->doRender('ECommerce/atualizaDtPagtoPedido.html.twig', $params);
+        return $this->doRender('Ecommerce/atualizaDtPagtoPedido.html.twig', $params);
     }
 
 

@@ -2,7 +2,7 @@
 
 namespace App\Messenger;
 
-use CrosierSource\CrosierLibRadxBundle\Messenger\ECommerce\Message\MlNotification;
+use CrosierSource\CrosierLibRadxBundle\Messenger\Ecommerce\Message\MlNotification;
 use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 

@@ -5,7 +5,7 @@ namespace App\Controller\Estoque;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
-use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorWebStorm;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;

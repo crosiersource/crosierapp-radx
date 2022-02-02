@@ -85,6 +85,13 @@ Encore
 
   .addEntry('fis/notaFiscal/nfEntrada/list', './assets/js/Fiscal/NotaFiscal/nfEntradaList.js')
   
+  
+  .addEntry('ecommerce/clienteConfig/list', './assets/js/Ecommerce/ClienteConfig/list.js')
+  .addEntry('ecommerce/clienteConfig/form', './assets/js/Ecommerce/ClienteConfig/form.js')
+  
+  .addEntry('ecommerce/trayVenda/list', './assets/js/Ecommerce/TrayVenda/list.js')
+  .addEntry('ecommerce/mercadoLivrePergunta/list', './assets/js/Ecommerce/MercadoLivrePergunta/list.js')
+  
   // --------------------------------------------
 
   .splitEntryChunks()

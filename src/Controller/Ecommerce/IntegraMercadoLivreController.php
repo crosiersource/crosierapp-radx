@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller\ECommerce;
+namespace App\Controller\Ecommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
-use CrosierSource\CrosierLibRadxBundle\Messenger\ECommerce\Message\MlNotification;
+use CrosierSource\CrosierLibRadxBundle\Messenger\Ecommerce\Message\MlNotification;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;

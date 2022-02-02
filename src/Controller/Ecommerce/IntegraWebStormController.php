@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller\ECommerce;
+namespace App\Controller\Ecommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorWebStorm;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -151,7 +151,7 @@ class IntegraWebStormController extends BaseController
 
     /**
      *
-     * @Route("/est/integraWebStorm/integrarVendaParaECommerce/{venda}", name="est_integraWebStorm_integrarVendaParaECommerce")
+     * @Route("/est/integraWebStorm/integrarVendaParaEcommerce/{venda}", name="est_integraWebStorm_integrarVendaParaEcommerce")
      *
      * @param IntegradorWebStorm $integraWebStormBusiness
      * @param Venda|null $venda
@@ -159,9 +159,9 @@ class IntegraWebStormController extends BaseController
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      * @throws ViewException
      */
-    public function integrarVendaParaECommerce(IntegradorWebStorm $integraWebStormBusiness, Venda $venda): Response
+    public function integrarVendaParaEcommerce(IntegradorWebStorm $integraWebStormBusiness, Venda $venda): Response
     {
-        $integraWebStormBusiness->integrarVendaParaECommerce($venda);
+        $integraWebStormBusiness->integrarVendaParaEcommerce($venda);
         return new Response('OK');
     }
 

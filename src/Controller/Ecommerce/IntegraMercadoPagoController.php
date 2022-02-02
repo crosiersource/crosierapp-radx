@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller\ECommerce;
+namespace App\Controller\Ecommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
-use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorMercadoPago;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorMercadoPago;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\VendaPagto;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;

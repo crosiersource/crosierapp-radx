@@ -14,7 +14,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
-use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorECommerceFactory;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorEcommerceFactory;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Vendas\VendaBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
@@ -570,13 +570,13 @@ class VendaController extends FormListController
      *
      * @Route("/ven/venda/ecommerceForm/{id}", name="ven_venda_ecommerceForm", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
-     * @param IntegradorECommerceFactory $integradorBusinessFactory
+     * @param IntegradorEcommerceFactory $integradorBusinessFactory
      * @param Venda|null $venda
      * @return RedirectResponse|Response
      * @throws ViewException
      * @IsGranted("ROLE_VENDAS", statusCode=403)
      */
-    public function ecommerceForm(Request $request, IntegradorECommerceFactory $integradorBusinessFactory, Venda $venda = null)
+    public function ecommerceForm(Request $request, IntegradorEcommerceFactory $integradorBusinessFactory, Venda $venda = null)
     {
         $params = [
             'listRoute' => 'ven_venda_listVendasPorDiaComEcommerce',
@@ -597,7 +597,7 @@ class VendaController extends FormListController
         }
 
         $fnHandleRequestOnValid = function (Request $request, $venda) use ($integradorBusinessFactory): void {
-            $this->integrarVendaParaECommerce($venda, $integradorBusinessFactory);
+            $this->integrarVendaParaEcommerce($venda, $integradorBusinessFactory);
         };
 
         $params['permiteFinalizarVenda'] = $this->vendaBusiness->permiteFinalizarVenda($venda);
@@ -756,17 +756,17 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/est/venda/integrarVendaParaECommerce/{venda}", name="est_venda_integrarVendaParaECommerce")
+     * @Route("/est/venda/integrarVendaParaEcommerce/{venda}", name="est_venda_integrarVendaParaEcommerce")
      *
      * @param Venda|null $venda
-     * @param IntegradorECommerceFactory $integradorBusinessFactory
+     * @param IntegradorEcommerceFactory $integradorBusinessFactory
      * @IsGranted("ROLE_VENDAS_ADMIN", statusCode=403)
      */
-    public function integrarVendaParaECommerce(Venda $venda, IntegradorECommerceFactory $integradorBusinessFactory)
+    public function integrarVendaParaEcommerce(Venda $venda, IntegradorEcommerceFactory $integradorBusinessFactory)
     {
         try {
             $integrador = $integradorBusinessFactory->getIntegrador();
-            $integrador->integrarVendaParaECommerce($venda);
+            $integrador->integrarVendaParaEcommerce($venda);
             $this->addFlash('success', 'Venda integrada com sucesso');
             $this->getSyslog()->info('Venda integrada com sucesso (id: ' . $venda->getId() . ')');
         } catch (\Exception $e) {
@@ -875,7 +875,7 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/ven/venda/listVendasPorDiaComECommerce", name="ven_venda_listVendasPorDiaComEcommerce")
+     * @Route("/ven/venda/listVendasPorDiaComEcommerce", name="ven_venda_listVendasPorDiaComEcommerce")
      * @param Request $request
      * @return Response
      *
@@ -901,8 +901,8 @@ class VendaController extends FormListController
 
         $status = $jsonMetadata['status']['opcoes'] ?? [];
         $params['statuss'] = json_encode(Select2JsUtils::arrayToSelect2Data(array_combine($status, $status)));
-        $statusECommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
-        $params['statusECommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusECommerce));
+        $statusEcommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
+        $params['statusEcommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusEcommerce));
 
 
         $filter = $request->get('filter');
@@ -1023,17 +1023,17 @@ class VendaController extends FormListController
 
     /**
      *
-     * @Route("/ven/venda/obterVendasECommerce/{dtVenda}", name="ven_venda_obterVendasECommerce", defaults={"dtVenda": null})
+     * @Route("/ven/venda/obterVendasEcommerce/{dtVenda}", name="ven_venda_obterVendasEcommerce", defaults={"dtVenda": null})
      * @ParamConverter("dtVenda", options={"format": "Y-m-d"})
      *
      * @param Request $request
-     * @param IntegradorECommerceFactory $integradorBusinessFactory
+     * @param IntegradorEcommerceFactory $integradorBusinessFactory
      * @param \DateTime $dtVenda
      * @return RedirectResponse
      * @throws \Exception
      * @IsGranted("ROLE_VENDAS_ADMIN", statusCode=403)
      */
-    public function obterVendasECommerce(Request $request, IntegradorECommerceFactory $integradorBusinessFactory, ?\DateTime $dtVenda = null): RedirectResponse
+    public function obterVendasEcommerce(Request $request, IntegradorEcommerceFactory $integradorBusinessFactory, ?\DateTime $dtVenda = null): RedirectResponse
     {
         if (!$dtVenda) {
             $dtVenda = new \DateTime();
@@ -1079,12 +1079,12 @@ class VendaController extends FormListController
         $sugestoes = array_combine($sugestoes, $sugestoes);
         $params['canais'] = json_encode(Select2JsUtils::arrayToSelect2Data($sugestoes, null, '...'));
 
-        $statusECommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
-        $arrStatusECommerce = [];
-        foreach ($statusECommerce as $s) {
-            $arrStatusECommerce[] = $s;
+        $statusEcommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
+        $arrStatusEcommerce = [];
+        foreach ($statusEcommerce as $s) {
+            $arrStatusEcommerce[] = $s;
         }
-        $params['statusECommerce'] = implode(',', $arrStatusECommerce);
+        $params['statusEcommerce'] = implode(',', $arrStatusEcommerce);
 
         $coresStatus = json_decode($repoAppConfig->findByChave('ecomm_info.status.json'), true);
         $params['coresStatus'] = $coresStatus;

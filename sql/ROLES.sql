@@ -64,4 +64,13 @@ INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id,
 VALUES (null, now(), now(), 'ROLE_VENDAS_ADMIN', 'ROLE_VENDAS_ADMIN', 1, 1, 1);
 
 
+
+INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (null, now(), now(), 'ROLE_ECOMM', 'ROLE_ECOMM', 1, 1, 1);
+
+INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (null, now(), now(), 'ROLE_ECOMM_ADMIN', 'ROLE_ECOMM_ADMIN', 1, 1, 1);
+
+
+
 COMMIT;

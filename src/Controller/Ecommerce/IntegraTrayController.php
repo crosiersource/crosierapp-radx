@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller\ECommerce;
+namespace App\Controller\Ecommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibRadxBundle\Business\ECommerce\IntegradorTray;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorTray;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -48,7 +48,7 @@ class IntegraTrayController extends BaseController
     /**
      * Método exposto para receber o "code" da tray.
      *
-     * @Route("/ecommIntegra/tray/endpoint", name="ecommIntegra_tray_endpoint")
+     * @Route("/ecommerce/tray/endpoint", name="ecommerce_tray_endpoint")
      * @throws ViewException
      */
     public function trayEndpoint(Request $request): Response
@@ -91,7 +91,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/ecommIntegra/tray/webhook", name="ecommIntegra_tray_webhook")
+     * @Route("/ecommerce/tray/webhook", name="ecommerce_tray_webhook")
      */
     public function trayWebhook(Request $request): Response
     {
@@ -107,7 +107,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/api/ecommIntegra/tray/autorizarNaTray/{storeId}", name="api_ecommIntegra_tray_autorizarNaTray")
+     * @Route("/api/ecommerce/tray/autorizarNaTray/{storeId}", name="api_ecommerce_tray_autorizarNaTray")
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
@@ -125,7 +125,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/api/ecommIntegra/tray/renewAccessToken/{id}", name="api_ecommIntegra_tray_renewAccessToken")
+     * @Route("/api/ecommerce/tray/renewAccessToken/{id}", name="api_ecommerce_tray_renewAccessToken")
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
@@ -142,7 +142,7 @@ class IntegraTrayController extends BaseController
     }
     
     /**
-     * @Route("/api/ecommIntegra/tray/renewAllAccessTokens", name="api_ecommIntegra_tray_renewAllAccessTokens")
+     * @Route("/api/ecommerce/tray/renewAllAccessTokens", name="api_ecommerce_tray_renewAllAccessTokens")
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
     public function renewAllAccessTokens(): JsonResponse
@@ -158,7 +158,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/ecommIntegra/tray/integraCategoria/{depto}", name="ecommIntegra_tray_integraCategoria", requirements={"depto"="\d+"})
+     * @Route("/ecommerce/tray/integraCategoria/{depto}", name="ecommerce_tray_integraCategoria", requirements={"depto"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
     public function integraCategoria(Depto $depto): Response
@@ -171,7 +171,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/ecommIntegra/tray/integraProduto/{produto}", name="ecommIntegra_tray_integraProduto", requirements={"produto"="\d+"})
+     * @Route("/ecommerce/tray/integraProduto/{produto}", name="ecommerce_tray_integraProduto", requirements={"produto"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
     public function integraProduto(Produto $produto): Response
@@ -184,7 +184,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/ecommIntegra/tray/integraVariacaoProduto/{produto}", name="ecommIntegra_tray_integraVariacaoProduto", requirements={"produto"="\d+"})
+     * @Route("/ecommerce/tray/integraVariacaoProduto/{produto}", name="ecommerce_tray_integraVariacaoProduto", requirements={"produto"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
     public function integraVariacaoProduto(Produto $produto): Response
@@ -197,7 +197,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/ecommIntegra/tray/obterPedido/{id}", name="ecommIntegra_tray_obterPedido", requirements={"id"="\d+"})
+     * @Route("/ecommerce/tray/obterPedido/{id}", name="ecommerce_tray_obterPedido", requirements={"id"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
     public function obterPedido(int $numPedido): Response
@@ -210,20 +210,20 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/ecommIntegra/tray/integrarVendaParaECommerce/{numPedido}", name="ecommIntegra_tray_integrarVendaParaECommerce", requirements={"numPedido"="\d+"})
+     * @Route("/ecommerce/tray/integrarVendaParaEcommerce/{numPedido}", name="ecommerce_tray_integrarVendaParaEcommerce", requirements={"numPedido"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
-    public function integrarVendaParaECommerce(int $numPedido): Response
+    public function integrarVendaParaEcommerce(int $numPedido): Response
     {
 //        $integradorTray->endpoint = $clienteConfig->jsonData['url_loja'];
 //        $integradorTray->accessToken = $clienteConfig->jsonData['tray']['access_token'];
-//        $integradorTray->integrarVendaParaECommerce2($numPedido);
+//        $integradorTray->integrarVendaParaEcommerce2($numPedido);
         return new Response('Pedido integrado com sucesso');
     }
 
     /**
      *
-     * @Route("/ecommIntegra/tray/obterVendasPorPeriodo/{dtIni}", name="ecommIntegra_tray_obterVendasPorPeriodo", defaults={"dtIni": null})
+     * @Route("/ecommerce/tray/obterVendasPorPeriodo/{dtIni}", name="ecommerce_tray_obterVendasPorPeriodo", defaults={"dtIni": null})
      * @ParamConverter("dtIni", options={"format": "Y-m-d"})
      *
      * @param Request $request
@@ -247,7 +247,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/ecommIntegra/tray/atualizaDadosEnvio/{numPedido}", name="ecommIntegra_tray_atualizaDadosEnvio", requirements={"numPedido"="\d+"})
+     * @Route("/ecommerce/tray/atualizaDadosEnvio/{numPedido}", name="ecommerce_tray_atualizaDadosEnvio", requirements={"numPedido"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
     public function atualizaDadosEnvio(int $numPedido): Response
@@ -260,7 +260,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/ecommIntegra/tray/cancelarPedido/{numPedido}", name="ecommIntegra_tray_cancelarPedido", requirements={"numPedido"="\d+"})
+     * @Route("/ecommerce/tray/cancelarPedido/{numPedido}", name="ecommerce_tray_cancelarPedido", requirements={"numPedido"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
     public function cancelarPedido(int $numPedido): Response
@@ -273,7 +273,7 @@ class IntegraTrayController extends BaseController
 
 
     /**
-     * @Route("/ecommIntegra/tray/gerarNFeParaVenda/{codVenda}", name="ecommIntegra_tray_gerarNFeParaVenda")
+     * @Route("/ecommerce/tray/gerarNFeParaVenda/{codVenda}", name="ecommerce_tray_gerarNFeParaVenda")
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
     public function gerarNFeParaVenda(string $codVenda): Response
@@ -289,7 +289,7 @@ class IntegraTrayController extends BaseController
     }
 
     /**
-     * @Route("/ecommIntegra/tray/integrarDadosFiscaisNoPedido/{codVenda}", name="ecommIntegra_tray_integrarDadosFiscaisNoPedido")
+     * @Route("/ecommerce/tray/integrarDadosFiscaisNoPedido/{codVenda}", name="ecommerce_tray_integrarDadosFiscaisNoPedido")
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
     public function integrarDadosFiscaisNoPedido(string $codVenda): Response

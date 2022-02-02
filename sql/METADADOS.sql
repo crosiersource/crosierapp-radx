@@ -2034,5 +2034,160 @@ CREATE TABLE `ven_venda_pagto`
 
 
 
-# ALTER TABLE fis_distdfe DROP KEY `fis_distdfe_nsu`;
-# ALTER TABLE fis_distdfe ADD UNIQUE KEY `fis_distdfe_nsu` (`nsu`,`documento`);
+
+
+
+DROP TABLE IF EXISTS `ecomm_cliente_config`;
+
+CREATE TABLE `ecomm_cliente_config`
+(
+  `id`                       bigint   NOT NULL AUTO_INCREMENT,
+  `uuid`                     char(36) NOT NULL,
+  `cliente_id`               bigint   NOT NULL,
+  `ativo`                    tinyint  NOT NULL,
+  `json_data`                json,
+  `tray_dt_exp_access_token` datetime,
+  `mercadolivre_expira_em`   datetime,
+
+  UNIQUE KEY `UK_ecomm_cliente_config_uuid` (`uuid`),
+
+  UNIQUE KEY `UK_ecomm_cliente_config_cliente` (`cliente_id`),
+  CONSTRAINT `FK_ecomm_cliente_config_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `crm_cliente` (`id`) ON UPDATE CASCADE ON DELETE RESTRICT,
+
+  -- campo de controle
+  PRIMARY KEY (`id`),
+  `inserted`                 datetime NOT NULL,
+  `updated`                  datetime NOT NULL,
+  `version`                  int,
+  `estabelecimento_id`       bigint   NOT NULL,
+  `user_inserted_id`         bigint   NOT NULL,
+  `user_updated_id`          bigint   NOT NULL,
+  KEY `K_ecomm_cliente_config_estabelecimento` (`estabelecimento_id`),
+  KEY `K_ecomm_cliente_config_user_inserted` (`user_inserted_id`),
+  KEY `K_ecomm_cliente_config_user_updated` (`user_updated_id`),
+  CONSTRAINT `FK_ecomm_cliente_config_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_ecomm_cliente_config_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+  CONSTRAINT `FK_ecomm_cliente_config_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+) ENGINE = InnoDB;
+
+
+
+DROP TABLE IF EXISTS `ecomm_tray_venda`;
+
+CREATE TABLE `ecomm_tray_venda`
+(
+  `id`                 bigint      NOT NULL AUTO_INCREMENT,
+  `uuid`               char(36)    NOT NULL,
+  `cliente_config_id`  bigint      NOT NULL,
+  `id_tray`            bigint      NOT NULL,
+  `dt_venda`           datetime    NOT NULL,
+  `status`             varchar(50) NOT NULL,
+  `point_sale`         varchar(50) NOT NULL,
+  `valor_total`        decimal(15, 2),
+  `cliente_id`         varchar(50),
+  `cliente_nome`       varchar(255),
+  `json_data`          json,
+
+  UNIQUE KEY `UK_ecomm_tray_venda_uuid` (`uuid`),
+  UNIQUE KEY `UK_ecomm_tray_venda` (`cliente_config_id`, `id_tray`),
+
+  KEY `UK_ecomm_tray_venda_cliente_config` (`cliente_config_id`),
+  CONSTRAINT `FK_ecomm_tray_venda_cliente_config` FOREIGN KEY (`cliente_config_id`) REFERENCES `ecomm_cliente_config` (`id`) ON UPDATE CASCADE ON DELETE RESTRICT,
+
+  -- campo de controle
+  PRIMARY KEY (`id`),
+  `inserted`           datetime    NOT NULL,
+  `updated`            datetime    NOT NULL,
+  `version`            int,
+  `estabelecimento_id` bigint      NOT NULL,
+  `user_inserted_id`   bigint      NOT NULL,
+  `user_updated_id`    bigint      NOT NULL,
+  KEY `K_ecomm_tray_venda_estabelecimento` (`estabelecimento_id`),
+  KEY `K_ecomm_tray_venda_user_inserted` (`user_inserted_id`),
+  KEY `K_ecomm_tray_venda_user_updated` (`user_updated_id`),
+  CONSTRAINT `FK_ecomm_tray_venda_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_ecomm_tray_venda_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+  CONSTRAINT `FK_ecomm_tray_venda_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+) ENGINE = InnoDB;
+
+
+
+DROP TABLE IF EXISTS `ecomm_ml_item`;
+
+CREATE TABLE `ecomm_ml_item`
+(
+  `id`                 bigint       NOT NULL AUTO_INCREMENT,
+  `uuid`               char(36)     NOT NULL,
+  `cliente_config_id`  bigint       NOT NULL,
+  `mercadolivre_id`    varchar(50)  NOT NULL, -- id do item no ml
+  `descricao`          varchar(255) NOT NULL,
+  `preco_venda`        decimal(15, 2),
+  `json_data`          json,
+
+  UNIQUE KEY `UK_ecomm_ml_item_uuid` (`uuid`),
+  UNIQUE KEY `UK_ecomm_ml_item_mercadolivre_id` (`mercadolivre_id`),
+
+  KEY `UK_ecomm_ml_item_cliente_config` (`cliente_config_id`),
+  CONSTRAINT `FK_ecomm_ml_item_cliente_config` FOREIGN KEY (`cliente_config_id`) REFERENCES `ecomm_cliente_config` (`id`) ON UPDATE CASCADE ON DELETE RESTRICT,
+
+  -- campo de controle
+  PRIMARY KEY (`id`),
+  `inserted`           datetime     NOT NULL,
+  `updated`            datetime     NOT NULL,
+  `version`            int,
+  `estabelecimento_id` bigint       NOT NULL,
+  `user_inserted_id`   bigint       NOT NULL,
+  `user_updated_id`    bigint       NOT NULL,
+  KEY `K_ecomm_ml_item_estabelecimento` (`estabelecimento_id`),
+  KEY `K_ecomm_ml_item_user_inserted` (`user_inserted_id`),
+  KEY `K_ecomm_ml_item_user_updated` (`user_updated_id`),
+  CONSTRAINT `FK_ecomm_ml_item_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_ecomm_ml_item_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+  CONSTRAINT `FK_ecomm_ml_item_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+) ENGINE = InnoDB;
+
+
+
+DROP TABLE IF EXISTS `ecomm_ml_pergunta`;
+
+CREATE TABLE `ecomm_ml_pergunta`
+(
+  `id`                 bigint      NOT NULL AUTO_INCREMENT,
+  `uuid`               char(36)    NOT NULL,
+  `mercadolivre_id`    bigint      NOT NULL, -- id da pergunta no ml
+  `ml_item_id`         bigint      NOT NULL,
+  `dt_pergunta`        datetime    NOT NULL,
+  `status`             varchar(50) NOT NULL,
+  `json_data`          json,
+
+  UNIQUE KEY `UK_ecomm_ml_pergunta_uuid` (`uuid`),
+  UNIQUE KEY `UK_ecomm_ml_pergunta_mercadolivre_id` (`mercadolivre_id`),
+
+  KEY `UK_ecomm_ml_pergunta_item` (`ml_item_id`),
+  CONSTRAINT `FK_ecomm_ml_pergunta_item` FOREIGN KEY (`ml_item_id`) REFERENCES `ecomm_ml_item` (`id`) ON UPDATE CASCADE ON DELETE RESTRICT,
+
+  -- campo de controle
+  PRIMARY KEY (`id`),
+  `inserted`           datetime    NOT NULL,
+  `updated`            datetime    NOT NULL,
+  `version`            int,
+  `estabelecimento_id` bigint      NOT NULL,
+  `user_inserted_id`   bigint      NOT NULL,
+  `user_updated_id`    bigint      NOT NULL,
+  KEY `K_ecomm_ml_pergunta_estabelecimento` (`estabelecimento_id`),
+  KEY `K_ecomm_ml_pergunta_user_inserted` (`user_inserted_id`),
+  KEY `K_ecomm_ml_pergunta_user_updated` (`user_updated_id`),
+  CONSTRAINT `FK_ecomm_ml_pergunta_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_ecomm_ml_pergunta_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+  CONSTRAINT `FK_ecomm_ml_pergunta_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+) ENGINE = InnoDB;
+
+
+
+
+
+
+
+
+
+

@@ -17,5 +17,5 @@ framework:
             # sync: 'sync://'
         routing:
             # Route your messages to the transports
-            'CrosierSource\CrosierLibRadxBundle\Messenger\ECommerce\Message\IntegrarProdutoEcommerceMessage': async
-            'CrosierSource\CrosierLibRadxBundle\Messenger\ECommerce\Message\MlNotification': notreat
+            'CrosierSource\CrosierLibRadxBundle\Messenger\Ecommerce\Message\IntegrarProdutoEcommerceMessage': async
+            'CrosierSource\CrosierLibRadxBundle\Messenger\Ecommerce\Message\MlNotification': notreat
