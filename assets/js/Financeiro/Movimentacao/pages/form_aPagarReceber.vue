@@ -230,7 +230,6 @@
         v-model="this.fields.cedente"
         :options="this.filiais"
         :optionValue="id"
-        :orderBy="{ codigo: 'ASC' }"
         label="Cedente"
         id="dd_cedente"
         helpText="Quem recebe o valor"
@@ -270,7 +269,6 @@
         v-model="this.fields.sacado"
         :options="this.filiais"
         :optionValue="id"
-        :orderBy="{ codigo: 'ASC' }"
         label="Sacado"
         id="sacado"
         helpText="Quem paga o valor"
@@ -561,9 +559,9 @@ export default {
       this.setarParaPagto();
     }
 
-    if (this.fields.modo.codigo === 3) {
+    if (this.fields?.modo?.codigo === 3) {
       this.setExibirCamposChequeProprio();
-    } else if (this.fields.modo.codigo === 4) {
+    } else if (this.fields?.modo?.codigo === 4) {
       this.setExibirCamposChequeTerceiros();
     }
 
@@ -742,10 +740,10 @@ export default {
     ...mapGetters({ fields: "getFields", fieldsErrors: "getFieldsErrors" }),
 
     titulo() {
-      if (!this.fields.categoria) {
+      if (!this.fields?.categoria) {
         return "Conta a Pagar/Receber";
       }
-      if (this.fields.categoria.codigoSuper === 1) {
+      if (this.fields?.categoria?.codigoSuper === 1) {
         return "Conta a Receber";
       }
       return "Conta a Pagar";
