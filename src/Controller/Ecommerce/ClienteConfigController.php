@@ -65,18 +65,18 @@ class ClienteConfigController extends BaseController
             throw new ViewException('i n/d');
         }
 
-      
+
         $repoClienteConfig = $this->getDoctrine()->getRepository(ClienteConfig::class);
         /** @var ClienteConfig $clienteConfig */
         $clienteConfig = $repoClienteConfig->findOneByFiltersSimpl([['UUID', 'EQ', $uuid]]);
         if (!$clienteConfig) {
             throw new ViewException('clienteConfig n/d');
         }
-        
+
         if (!($clienteConfig->jsonData['mercadolivre'][$i] ?? false)) {
             throw new ViewException('clienteConfig.jsonData.mercadolivre.$i n/d');
         }
-        
+
         $clienteConfig->jsonData['mercadolivre'][$i]['token_tg'] = $mlCode;
 
         $this->mercadoLivreBusiness->autorizarApp($clienteConfig, $i);
@@ -103,13 +103,13 @@ class ClienteConfigController extends BaseController
 
 
     /**
-     * @Route("/api/ecommerce/clienteConfig/renewAccessTokenMercadoLivre/{id}", name="ecommerce_clienteConfig_renewAccessTokenMercadoLivre", requirements={"id"="\d+"})
+     * @Route("/api/ecommerce/clienteConfig/renewAccessTokenMercadoLivre/{id}/{i}", name="ecommerce_clienteConfig_renewAccessTokenMercadoLivre", requirements={"id"="\d+", "i"="\d+"})
      * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
      * @throws ViewException
      */
-    public function renewAccessTokenMercadoLivre(ClienteConfig $clienteConfig): JsonResponse
+    public function renewAccessTokenMercadoLivre(ClienteConfig $clienteConfig, int $i): JsonResponse
     {
-        $this->mercadoLivreBusiness->handleAccessToken($clienteConfig);
+        $this->mercadoLivreBusiness->renewAccessToken($clienteConfig, $i);
 
         return new JsonResponse(
             [

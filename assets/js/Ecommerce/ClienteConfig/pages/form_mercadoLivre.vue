@@ -52,7 +52,11 @@
                 disabled="disabled"
                 id="mercadolivre_expira_em"
                 type="text"
-                v-model="this.clienteConfig.mercadolivreExpiraEm"
+                :value="
+                  this.moment(mlConfig['autorizado_em'])
+                    .add(mlConfig['expires_in'], 'seconds')
+                    .format('llll')
+                "
               />
             </div>
           </div>
@@ -71,7 +75,7 @@
               type="button"
               v-if="mlConfig['token_tg'] && mlConfig['refresh_token'] && mlConfig['access_token']"
               class="btn btn-block btn-sm btn-warning mt-4"
-              @click="this.renewAccessTokenMercadoLivre"
+              @click="this.renewAccessTokenMercadoLivre(i)"
             >
               <i class="fas fa-sync-alt"></i>
               Refresh Token
@@ -120,6 +124,7 @@
 <script>
 import InputText from "primevue/inputtext";
 import axios from "axios";
+import moment from "moment";
 import { CrosierInputText } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 
@@ -150,6 +155,11 @@ export default {
 
   methods: {
     ...mapMutations(["setLoading", "setNewClienteConfig", "setClienteConfig"]),
+
+    moment(date) {
+      moment.locale("pt-br");
+      return moment(date);
+    },
 
     async reautorizarNoMercadoLivre() {
       this.$confirm.require({
@@ -183,7 +193,7 @@ export default {
       });
     },
 
-    async renewAccessTokenMercadoLivre() {
+    async renewAccessTokenMercadoLivre(i) {
       this.$confirm.require({
         message: "Confirmar operação?",
         header: "Confirmação",
@@ -192,7 +202,7 @@ export default {
           this.setLoading(true);
           const rs = await axios.get(
             // eslint-disable-next-line max-len
-            `/api/ecommerce/clienteConfig/renewAccessTokenMercadoLivre/${this.clienteConfig.id}`,
+            `/api/ecommerce/clienteConfig/renewAccessTokenMercadoLivre/${this.clienteConfig.id}/${i}`,
             {
               validateStatus(status) {
                 return status < 500;

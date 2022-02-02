@@ -2047,7 +2047,6 @@ CREATE TABLE `ecomm_cliente_config`
   `ativo`                    tinyint  NOT NULL,
   `json_data`                json,
   `tray_dt_exp_access_token` datetime,
-  `mercadolivre_expira_em`   datetime,
 
   UNIQUE KEY `UK_ecomm_cliente_config_uuid` (`uuid`),
 
