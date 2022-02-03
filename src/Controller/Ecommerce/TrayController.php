@@ -71,7 +71,7 @@ class TrayController extends BaseController
         $this->syslog->info('ecomm_tray_endpoint', implode(PHP_EOL, $r));
 
         $storeId = $request->get('store');
-        $rs = $conn->fetchAssociative('SELECT id FROM cnct_cliente_config WHERE json_data->>"$.tray.store_id" = :storeId', ['storeId' => $storeId]);
+        $rs = $conn->fetchAssociative('SELECT id FROM ecomm_cliente_config WHERE json_data->>"$.tray.store_id" = :storeId', ['storeId' => $storeId]);
         if ($rs['id'] ?? false) {
             /** @var ClienteConfigRepository $repoClienteConfig */
             $repoClienteConfig = $this->getDoctrine()->getRepository(ClienteConfig::class);

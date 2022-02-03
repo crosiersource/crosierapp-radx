@@ -92,6 +92,8 @@ Encore
   .addEntry('ecommerce/trayVenda/list', './assets/js/Ecommerce/TrayVenda/list.js')
   .addEntry('ecommerce/mercadoLivrePergunta/list', './assets/js/Ecommerce/MercadoLivrePergunta/list.js')
   
+  .addEntry('ecommerce/dashboard/1', './assets/js/Ecommerce/dashboards/dashboard1.js')
+  
   // --------------------------------------------
 
   .splitEntryChunks()
