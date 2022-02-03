@@ -111,20 +111,14 @@ const store = createStore({
             apiResource: `/api/ecommerce/clienteConfig/${id}}`,
           });
 
-          console.log("oi");
-
           if (response.data["@id"]) {
             const clienteConfig = deepmerge.all([context.state.origClienteConfig, response.data]);
 
-            console.log("vamos verificar");
-            console.log(clienteConfig);
             if (
               clienteConfig.jsonData?.mercadolivre &&
               !Array.isArray(clienteConfig.jsonData?.mercadolivre)
             ) {
               const vAnterior = { ...clienteConfig.jsonData.mercadolivre };
-              console.log("vAnterior");
-              console.log(vAnterior);
               clienteConfig.jsonData.mercadolivre = [];
               clienteConfig.jsonData.mercadolivre.push(vAnterior);
             }

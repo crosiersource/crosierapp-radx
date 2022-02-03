@@ -382,7 +382,6 @@ export default {
               },
             }
           );
-          console.log(rs);
           if (rs.status === 400) {
             this.$toast.add({
               severity: "error",

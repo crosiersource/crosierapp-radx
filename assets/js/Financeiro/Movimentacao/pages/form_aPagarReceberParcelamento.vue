@@ -650,8 +650,6 @@ export default {
             },
           });
 
-
-
           if (rs?.status === 201) {
             window.location = `/v/fin/cadeia/exibirMovimentacoes?id=${rs.data.cadeia.id}`;
           } else {
@@ -699,8 +697,6 @@ export default {
         this.onFocusDtVenctoEfet(i);
       }
       if (this.valorTotal && totalSomado !== this.valorTotal) {
-        console.log(`totalSomado: ${totalSomado}`);
-        console.log(`this.valorTotal: ${this.valorTotal}`);
         this.parcelas[0].valor =
           Number(this.parcelas[0].valor) + Number((this.valorTotal - totalSomado).toFixed(2));
         this.parcelas[0].valorTotal = this.parcelas[0].valor;

@@ -230,7 +230,6 @@ export default {
         UUID: this.clienteConfig.UUID,
         i,
       });
-      console.log(state);
       return (
         `${
           "https://auth.mercadolivre.com.br/authorization?" +
