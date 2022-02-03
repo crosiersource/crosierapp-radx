@@ -264,7 +264,7 @@ export default {
             }
           );
           if (rs?.data?.RESULT === "OK") {
-            window.location = "/ecommerce/mercadoLivrePergunta/list";
+            window.location = "/v/ecommerce/mercadoLivrePergunta/list";
           } else {
             console.error(rs);
             this.$toast.add({
