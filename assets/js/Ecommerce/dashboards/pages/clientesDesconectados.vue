@@ -47,7 +47,7 @@ export default {
     this.setLoading(true);
 
     const rs = await api.get({
-      apiResource: "/api/ecomm/clienteConfig",
+      apiResource: "/api/ecommerce/clienteConfig",
       allRows: true,
       filters: { ativo: false },
       order: { updated: "desc" },
