@@ -41,11 +41,11 @@ class IntegraMercadoLivreController extends BaseController
             'ml_code: ' . $request->query->get('code'),
             'ml_state: ' . $request->query->get('state'),
         ];
-        
-        $this->syslog->info('ecomm_mercadoLivre_authCallback', implode(PHP_EOL, $r));   
+
+        $this->syslog->info('ecomm_mercadoLivre_authCallback', implode(PHP_EOL, $r));
         return new Response('OK <hr /><pre>' . implode('<br />', $r) . '</pre>');
     }
-    
+
     /**
      * @Route("/ecomm/mercadolivre/authcallbackrouter", name="ecomm_mercadoLivre_authcallbackrouter")
      */
@@ -75,9 +75,9 @@ class IntegraMercadoLivreController extends BaseController
         foreach ($mlStateDecoded as $k => $v) {
             $queryParams .= $k . '=' . $v . '&';
         }
-        
+
         $url = $route . '?' . $queryParams . 'mlCode=' . $mlCode;
-        
+
         return new RedirectResponse($url);
     }
 
@@ -102,8 +102,9 @@ class IntegraMercadoLivreController extends BaseController
         }
 
         $this->syslog->info('ecomm_mercadoLivre_endpoint', implode(PHP_EOL, $r));
-        
+
         return new Response(implode('<br />', $r));
     }
+
 
 }
