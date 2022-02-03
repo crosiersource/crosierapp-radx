@@ -455,7 +455,7 @@ CREATE TABLE `est_fornecedor`
   `json_data`          json,
 
 
-  UNIQUE KEY `UK_est_fornecedor_codigo` (`codigo`),  
+  UNIQUE KEY `UK_est_fornecedor_codigo` (`codigo`),
 
   -- campo de controle
   PRIMARY KEY (`id`),
@@ -2034,9 +2034,6 @@ CREATE TABLE `ven_venda_pagto`
 
 
 
-
-
-
 DROP TABLE IF EXISTS `ecomm_cliente_config`;
 
 CREATE TABLE `ecomm_cliente_config`
@@ -2115,13 +2112,14 @@ DROP TABLE IF EXISTS `ecomm_ml_item`;
 
 CREATE TABLE `ecomm_ml_item`
 (
-  `id`                 bigint       NOT NULL AUTO_INCREMENT,
-  `uuid`               char(36)     NOT NULL,
-  `cliente_config_id`  bigint       NOT NULL,
-  `mercadolivre_id`    varchar(50)  NOT NULL, -- id do item no ml
-  `descricao`          varchar(255) NOT NULL,
-  `preco_venda`        decimal(15, 2),
-  `json_data`          json,
+  `id`                   bigint       NOT NULL AUTO_INCREMENT,
+  `uuid`                 char(36)     NOT NULL,
+  `cliente_config_id`    bigint       NOT NULL,
+  `mercadolivre_user_id` varchar(50)  NOT NULL, -- id do user no ml (para achar dentro do clienteConfig.jsonData['mercadolivre'][$i]['me']['id']
+  `mercadolivre_id`      varchar(50)  NOT NULL, -- id do item no ml
+  `descricao`            varchar(255) NOT NULL,
+  `preco_venda`          decimal(15, 2),
+  `json_data`            json,
 
   UNIQUE KEY `UK_ecomm_ml_item_uuid` (`uuid`),
   UNIQUE KEY `UK_ecomm_ml_item_mercadolivre_id` (`mercadolivre_id`),
@@ -2131,12 +2129,12 @@ CREATE TABLE `ecomm_ml_item`
 
   -- campo de controle
   PRIMARY KEY (`id`),
-  `inserted`           datetime     NOT NULL,
-  `updated`            datetime     NOT NULL,
-  `version`            int,
-  `estabelecimento_id` bigint       NOT NULL,
-  `user_inserted_id`   bigint       NOT NULL,
-  `user_updated_id`    bigint       NOT NULL,
+  `inserted`             datetime     NOT NULL,
+  `updated`              datetime     NOT NULL,
+  `version`              int,
+  `estabelecimento_id`   bigint       NOT NULL,
+  `user_inserted_id`     bigint       NOT NULL,
+  `user_updated_id`      bigint       NOT NULL,
   KEY `K_ecomm_ml_item_estabelecimento` (`estabelecimento_id`),
   KEY `K_ecomm_ml_item_user_inserted` (`user_inserted_id`),
   KEY `K_ecomm_ml_item_user_updated` (`user_updated_id`),

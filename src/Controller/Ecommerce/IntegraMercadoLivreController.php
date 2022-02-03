@@ -5,7 +5,13 @@ namespace App\Controller\Ecommerce;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\MercadoLivreBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\ClienteConfig;
+use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\MercadoLivreItem;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Ecommerce\ClienteConfigEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Ecommerce\MercadoLivreItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Messenger\Ecommerce\Message\MlNotification;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -106,5 +112,35 @@ class IntegraMercadoLivreController extends BaseController
         return new Response(implode('<br />', $r));
     }
 
+
+    /**
+     * @Route("/corrigir", name="corrigir")
+     */
+    public function corrigir(Connection $conn, MercadoLivreBusiness $biz): Response
+    {
+        try {
+            $itens = $this->getDoctrine()->getRepository(MercadoLivreItem::class)->findAll();
+            foreach ($itens as $item) {
+                if ($item->mercadolivreUserId) {
+                    continue;
+                }
+                if (!($item->clienteConfig->jsonData['mercadolivre'][0]['me'] ?? false)) {
+                    $biz->handleAccessToken($item->clienteConfig, 0);
+                }
+                if (!$item->mercadolivreUserId) {
+                    if (count($item->clienteConfig->jsonData['mercadolivre']) > 1) {
+                        $true = 1;
+                    }
+                    $conn->update('ecomm_ml_item', [
+                        'mercadolivre_user_id' => $item->clienteConfig->jsonData['mercadolivre'][0]['me']['id'] 
+                    ], ['id' => $item->getId()]);
+                }
+            }
+        } catch (ViewException $e) {
+            $erro = 1;
+        }
+        return new Response('ok');
+
+    }
 
 }
