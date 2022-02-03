@@ -2,7 +2,7 @@
   <div v-for="(mlConfig, i) in this.clienteConfig.jsonData.mercadolivre">
     <div class="card mt-3">
       <div class="card-body">
-        <h5 class="card-title">Mercado Livre</h5>
+        <h5 class="card-title">Mercado Livre #{{ i + 1 }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">Configurações</h6>
         <div class="form-row mt-3">
           <CrosierInputText id="descricao" label="Descrição" v-model="mlConfig['descricao']" />
