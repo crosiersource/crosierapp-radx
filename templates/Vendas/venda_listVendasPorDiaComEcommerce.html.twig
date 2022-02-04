@@ -188,8 +188,8 @@
                             <td class="text-right" style="background-color: lightsteelblue">{{ dia.total|number_format(2,',','.') }}</td>
                             <td class="text-right" style="background-color: lightsteelblue">
                                 {% if ecomm_info_integra %}
-                                    <button type="button" class="btn btn-sm btn-warning" id="btnObterVendasECommerce"
-                                            data-url="{{ url('ven_venda_obterVendasECommerce') ~ '/' ~ dia.dtVenda|date('Y-m-d') }}"
+                                    <button type="button" class="btn btn-sm btn-warning" id="btnObterVendasEcommerce"
+                                            data-url="{{ url('ven_venda_obterVendasEcommerce') ~ '/' ~ dia.dtVenda|date('Y-m-d') }}"
                                             data-target="#confirmationModal" data-toggle="modal"
                                             title="Obter vendas do e-commerce">
                                         <i class="fas fa-cloud-download-alt"></i>
