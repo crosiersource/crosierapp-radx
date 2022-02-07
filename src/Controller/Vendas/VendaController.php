@@ -901,8 +901,8 @@ class VendaController extends FormListController
 
         $status = $jsonMetadata['status']['opcoes'] ?? [];
         $params['statuss'] = json_encode(Select2JsUtils::arrayToSelect2Data(array_combine($status, $status)));
-        $statusEcommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
-        $params['statusEcommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusEcommerce));
+        $statusECommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
+        $params['statusECommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusECommerce));
 
 
         $filter = $request->get('filter');
@@ -1079,12 +1079,12 @@ class VendaController extends FormListController
         $sugestoes = array_combine($sugestoes, $sugestoes);
         $params['canais'] = json_encode(Select2JsUtils::arrayToSelect2Data($sugestoes, null, '...'));
 
-        $statusEcommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
+        $statusECommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
         $arrStatusEcommerce = [];
-        foreach ($statusEcommerce as $s) {
+        foreach ($statusECommerce as $s) {
             $arrStatusEcommerce[] = $s;
         }
-        $params['statusEcommerce'] = implode(',', $arrStatusEcommerce);
+        $params['statusECommerce'] = implode(',', $arrStatusEcommerce);
 
         $coresStatus = json_decode($repoAppConfig->findByChave('ecomm_info.status.json'), true);
         $params['coresStatus'] = $coresStatus;

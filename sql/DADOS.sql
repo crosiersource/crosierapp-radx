@@ -563,6 +563,13 @@ VALUES (null, 0.894, 136, 1999999999, now(), now(), 0, 1, 1, 1);
 
 
 
+TRUNCATE TABLE est_unidade;
+
+insert into est_unidade values(null,'UNIDADE','UN',3,1,null,null,now(),now(),0,1,1,1);
+insert into est_unidade values(null,'METRO','MT',3,1,null,null,now(),now(),0,1,1,1);
+insert into est_unidade values(null,'KIT','KIT',0,1,null,null,now(),now(),0,1,1,1);
+
+
 TRUNCATE TABLE fin_centrocusto;
 
 INSERT INTO `fin_centrocusto` (`id`, `codigo`, `descricao`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
