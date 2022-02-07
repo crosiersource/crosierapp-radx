@@ -12,6 +12,7 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Ecommerce\ClienteConfigEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
