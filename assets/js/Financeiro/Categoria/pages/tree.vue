@@ -1,6 +1,6 @@
 <template>
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
-  <ConfirmDialog group="confirmDialog_crosierListS" />
+  <ConfirmDialog />
 
   <div class="container">
     <div class="card" style="margin-bottom: 50px">

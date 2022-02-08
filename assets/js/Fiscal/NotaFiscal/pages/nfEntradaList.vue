@@ -1,5 +1,5 @@
 <template>
-  <ConfirmDialog group="confirmDialog_crosierListS" />
+  <ConfirmDialog />
   <Toast class="mt-4" />
   <CrosierListS
     titulo="NFs Entrada"

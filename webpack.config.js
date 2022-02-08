@@ -93,6 +93,9 @@ Encore
   .addEntry('ecommerce/mercadoLivrePergunta/list', './assets/js/Ecommerce/MercadoLivrePergunta/list.js')
   
   .addEntry('ecommerce/dashboard/1', './assets/js/Ecommerce/dashboards/dashboard1.js')
+
+
+  .addEntry('ven/vendas/resultMensal', './assets/js/Vendas/resultMensal.js')
   
   // --------------------------------------------
 

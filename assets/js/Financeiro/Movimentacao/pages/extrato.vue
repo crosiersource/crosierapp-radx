@@ -1,5 +1,5 @@
 <template>
-  <ConfirmDialog group="confirmDialog_crosierListS" />
+  <ConfirmDialog />
   <Toast class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 

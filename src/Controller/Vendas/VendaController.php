@@ -8,6 +8,7 @@ use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
@@ -1576,6 +1577,68 @@ class VendaController extends FormListController
         }
 
         return new Response('OK<hr>' . implode('<br>', $resp));
+    }
+
+
+    /**
+     * @Route("/api/ven/vendasResults/vendasPorPeriodo", name="ven_vendasResults_vendasPorPeriodo")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function vendasPorPeriodo(Request $request): JsonResponse
+    {
+        try {
+            $parameters = $request->query->all();
+            if (!array_key_exists('codVendedor', $parameters)) {
+                $parameters['codVendedor']['i'] = 0;
+                $parameters['codVendedor']['f'] = 99;
+            }
+            
+            $dtIni = DateTimeUtils::parseDateStr($parameters['dtVenda']['after']);
+            $dtFim = DateTimeUtils::parseDateStr($parameters['dtVenda']['before']);
+            $codVendedorIni = $parameters['codVendedor']['i'];
+            $codVendedorFim = $parameters['codVendedor']['f'];
+            
+            $repoVendas = $this->getDoctrine()->getRepository(Venda::class);
+            
+            $dados = $repoVendas->findTotalVendasPorPeriodoVendedores($dtIni, $dtFim, $codVendedorIni, $codVendedorFim);
+            
+            $r['dados'] = $dados;
+            
+            $tt = 8;
+            
+            for ($i=0;$i<$tt;$i++) {
+                $dados = $repoVendas->findTotalVendasPorPeriodoVendedores($dtIni, $dtFim, $codVendedorIni, $codVendedorFim);
+                $r['compa'][] = [
+                    'periodo' => 'Entre ' . $dtIni->format('d/m/Y') . ' e ' . $dtFim->format('d/m/Y'),
+                    'dados' => $dados,
+                ];
+                
+                $dtIni = DateTimeUtils::incMes($dtIni, -12);
+                $dtFim = DateTimeUtils::incMes($dtFim, -12);
+                
+            }
+            
+            for ($i=0 ; $i < $tt-1 ; $i++) {
+                $fator = null;
+                try {
+                    $dFator = bcdiv($r['compa'][$i]['dados']['total'], $r['compa'][$i + 1]['dados']['total'], 4);
+                    $fator = $dFator < 1 ?
+                        'Queda de ' . bcmul((bcsub(1, $dFator, 4)), 100, 2) . '%' :
+                        'Aumento de ' . bcmul((bcsub($dFator, 1, 4)), 100, 2) . '%';
+                } catch (\Exception $e) {
+                    $e->getTraceAsString();
+                }
+                
+                $r['compa'][$i]['dados']['fator'] = $fator;
+            }
+            
+            
+            return CrosierApiResponse::success($r);
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error();
+        }
     }
 
 

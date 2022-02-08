@@ -1,6 +1,6 @@
 <template>
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
-  <ConfirmDialog group="confirmDialog_crosierListS" />
+  <ConfirmDialog />
 
   <CrosierListS titulo="Bancos" apiResource="/api/fin/banco/" ref="dt">
     <template v-slot:filter-fields>
