@@ -63,7 +63,7 @@ export default {
 
     onRowClick($event) {
       this.setLoading(true);
-      window.location = `/ecommerce/clienteConfig/form?id=${$event.data.id}`;
+      window.location = `/v/ecommerce/clienteConfig/form?id=${$event.data.id}`;
     },
   },
 };
