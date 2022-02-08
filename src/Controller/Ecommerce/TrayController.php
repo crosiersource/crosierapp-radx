@@ -151,7 +151,7 @@ class TrayController extends BaseController
     public function renewAccessTokenTray(ClienteConfig $clienteConfig): JsonResponse
     {
         try {
-            $this->trayBusiness->renewAccessTokenTray($clienteConfig);
+            $this->trayBusiness->renewAccessToken($clienteConfig);
             return CrosierApiResponse::success();
         } catch (\Exception $e) {
             return CrosierApiResponse::error();

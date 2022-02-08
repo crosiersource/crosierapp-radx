@@ -63,8 +63,6 @@
       </div>
     </div>
 
-    <MercadoLivre v-if="Array.isArray(this.clienteConfig?.jsonData?.mercadolivre)" />
-
     <div class="card mt-3">
       <div class="card-body">
         <h5 class="card-title">Tray</h5>
@@ -209,6 +207,8 @@
         </div>
       </div>
     </div>
+
+    <MercadoLivre v-if="Array.isArray(this.clienteConfig?.jsonData?.mercadolivre)" />
   </CrosierFormS>
 </template>
 
@@ -344,7 +344,7 @@ export default {
           this.setLoading(true);
           const rs = await axios.get(
             // eslint-disable-next-line max-len
-            `/api/ecommerce/clienteConfig/renewAccessTokenTray/${this.clienteConfig.id}`,
+            `/api/ecommerce/tray/renewAccessToken/${this.clienteConfig.id}`,
             {
               validateStatus(status) {
                 return status < 500;
