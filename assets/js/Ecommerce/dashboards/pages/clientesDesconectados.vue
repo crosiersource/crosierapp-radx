@@ -63,7 +63,7 @@ export default {
 
     onRowClick($event) {
       this.setLoading(true);
-      window.location = `/ecommIntegra/clienteConfig/form?id=${$event.data.id}`;
+      window.location = `/ecommerce/clienteConfig/form?id=${$event.data.id}`;
     },
   },
 };
