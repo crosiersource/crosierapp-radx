@@ -5,6 +5,7 @@ namespace App\Controller\Ecommerce;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorTray;
 use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\TrayBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\ClienteConfig;
@@ -29,6 +30,8 @@ class TrayController extends BaseController
     private ClienteConfigEntityHandler $clienteConfigEntityHandler;
 
     protected IntegradorTray $integradorTray;
+    
+    private TrayBusiness $trayBusiness;
 
     /**
      * @required
@@ -48,6 +51,17 @@ class TrayController extends BaseController
     {
         $this->integradorTray = $integradorTray;
     }
+
+    /**
+     * @required
+     * @param TrayBusiness $trayBusiness
+     */
+    public function setTrayBusiness(TrayBusiness $trayBusiness): void
+    {
+        $this->trayBusiness = $trayBusiness;
+    }
+    
+    
 
 
     /**
@@ -130,20 +144,18 @@ class TrayController extends BaseController
 
 
     /**
-     * @Route("/api/ecommerce/tray/renewAccessToken/{id}", name="api_ecommerce_tray_renewAccessToken")
+     * @Route("/api/ecommerce/tray/renewAccessToken/{clienteConfig}", name="api_ecommerce_tray_renewAccessToken")
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
-    public function renewAccessTokenTray(?string $storeId = null): JsonResponse
+    public function renewAccessTokenTray(ClienteConfig $clienteConfig): JsonResponse
     {
-        $store = $this->integradorTray->getStore($storeId);
-        $this->integradorTray->renewAccessToken($store);
-        return new JsonResponse(
-            [
-                'RESULT' => 'OK',
-                'MSG' => 'Executado com sucesso',
-            ]
-        );
+        try {
+            $this->trayBusiness->renewAccessTokenTray($clienteConfig);
+            return CrosierApiResponse::success();
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error();
+        }
     }
 
     /**
