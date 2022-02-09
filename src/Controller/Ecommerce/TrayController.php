@@ -15,6 +15,7 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Ecommerce\ClienteConfigEnti
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,7 +31,7 @@ class TrayController extends BaseController
     private ClienteConfigEntityHandler $clienteConfigEntityHandler;
 
     protected IntegradorTray $integradorTray;
-    
+
     private TrayBusiness $trayBusiness;
 
     /**
@@ -60,18 +61,27 @@ class TrayController extends BaseController
     {
         $this->trayBusiness = $trayBusiness;
     }
-    
-    
 
 
     /**
      * Método exposto para receber o "code" da tray.
      *
-     * @Route("/ecommerce/tray/endpoint", name="ecommerce_tray_endpoint")
+     * @Route("/ecommerce/tray/endpoint/{clienteConfig}", name="ecommerce_tray_endpoint")
      * @throws ViewException
      */
-    public function trayEndpoint(Request $request): Response
+    public function trayEndpoint(Request $request, ClienteConfig $clienteConfig): RedirectResponse
     {
+
+        /**
+         * https://radx.../ecommerce/tray/endpoint/14?
+         * adm_user=mdcosmeticos&
+         * user_id=1&
+         * code=b2aee6adf2565d3d372f60802a9ed3b2b04f3fd70ac3cc3e67acdf7bcea80450&
+         * api_address=https%3A%2F%2Fwww.cosmeticosmd.com.br%2Fweb_api&
+         * store=987203&
+         * store_host=https%3A%2F%2Fwww.cosmeticosmd.com.br
+         */
+
         $r = [];
         $r[] = 'Cliente IP: ' . $request->getClientIp();
         $r[] = 'Host: ' . $request->getHost();
@@ -97,15 +107,10 @@ class TrayController extends BaseController
         $this->syslog->info('ecomm_tray_endpoint', implode(PHP_EOL, $r));
 
         if ($request->get("code")) {
-            $storeId = $request->get('store');
-            $store = $this->integradorTray->getStore($storeId);
-            $store['code'] = $request->get("code");
-
-            $this->integradorTray->saveStoreConfig($store);
-            return new Response(implode('<br/>', $r));
-        } else {
-            return new Response('"code" não retornado pela tray');
+            $clienteConfig->jsonData['tray']['code'] = $request->get("code");
+            $this->clienteConfigEntityHandler->save($clienteConfig);
         }
+        return new RedirectResponse('/v/ecommerce/clienteConfig/form?id=' . $clienteConfig->getId());
     }
 
 

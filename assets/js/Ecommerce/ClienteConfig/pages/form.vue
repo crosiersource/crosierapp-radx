@@ -92,14 +92,14 @@
                 >Retorno da chamada 'auth'</small
               >
               <a
-                v-if="!this.clienteConfig.jsonData['tray']['code']"
                 :href="
                   this.clienteConfig.jsonData['url_loja'] +
                   // eslint-disable-next-line max-len
-                  '/auth.php?response_type=code&consumer_key=941cf91385f289a72cf395e8b5272ef77f730650418b1257ac4193bd567f0463&callback=https://conecta.crosier.conectamaisvc.com.br/ecommerce/tray/endpoint'
+                  'auth.php?response_type=code&consumer_key=941cf91385f289a72cf395e8b5272ef77f730650418b1257ac4193bd567f0463&callback=https://radx.crosier.conectamaisvc.com.br/ecommerce/tray/endpoint/' +
+                  this.clienteConfig.id
                 "
               >
-                <small class="form-text">Obter código</small></a
+                <small class="form-text">Obter novo código</small></a
               >
             </div>
           </div>
@@ -122,10 +122,7 @@
           <div class="col-md-2">
             <button
               type="button"
-              v-if="
-                this.clienteConfig.jsonData['tray']['code'] &&
-                !this.clienteConfig.jsonData['tray']['access_token']
-              "
+              v-if="this.clienteConfig.jsonData['tray']['code']"
               class="btn btn-block btn-sm btn-danger mt-4"
               @click="this.autorizarNaTray"
             >
@@ -311,26 +308,7 @@ export default {
         accept: async () => {
           this.setLoading(true);
           this.submitForm();
-          const rs = await axios.get(
-            // eslint-disable-next-line max-len
-            `/api/ecommerce/clienteConfig/autorizarNaTray/${this.clienteConfig.id}`,
-            {
-              validateStatus(status) {
-                return status < 500;
-              },
-            }
-          );
-          if (rs?.data?.RESULT === "OK") {
-            window.location = `form?id=${this.clienteConfig.id}`;
-          } else {
-            this.$toast.add({
-              severity: "error",
-              summary: "Erro",
-              detail: "Erro ao autorizar na tray",
-              life: 5000,
-            });
-          }
-          this.setLoading(false);
+          window.location = `/api/ecommerce/clienteConfig/autorizarNaTray/${this.clienteConfig.id}`;
         },
       });
     },

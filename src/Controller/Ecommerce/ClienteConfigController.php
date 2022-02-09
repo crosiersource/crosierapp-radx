@@ -125,15 +125,14 @@ class ClienteConfigController extends BaseController
      * @IsGranted("ROLE_ECOMM_ADMIN", statusCode=403)
      * @throws ViewException
      */
-    public function autorizarNaTray(ClienteConfig $clienteConfig): JsonResponse
+    public function autorizarNaTray(ClienteConfig $clienteConfig): RedirectResponse
     {
-        $this->trayBusiness->autorizarApp($clienteConfig);
-        return new JsonResponse(
-            [
-                'RESULT' => 'OK',
-                'MSG' => 'Executado com sucesso',
-            ]
-        );
+        try {
+            $this->trayBusiness->autorizarApp($clienteConfig);
+        } catch (ViewException $e) {
+            $this->syslog->err("Erro ao tentar autorizarNaTray: " . $clienteConfig->jsonData['url_loja'], $e->getTraceAsString());
+        }
+        return new RedirectResponse('/v/ecommerce/clienteConfig/form?id=' . $clienteConfig->getId());
     }
 
 
