@@ -1,6 +1,7 @@
 <template>
-  <ConfirmDialog />
-  <Toast class="mb-5" />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
+
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
   <Sidebar class="p-sidebar-lg" v-model:visible="this.visibleRight" position="right">
@@ -487,20 +488,10 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["setLoading"]),
+    ...mapMutations(["setLoading", "setFilters"]),
 
     moment(date) {
       return moment(date);
-    },
-
-    setFilters(filters) {
-      const mutationName = "setFilters";
-      try {
-        this.$store.commit(mutationName, filters);
-      } catch (e) {
-        console.error(`list_recorrente: |${mutationName}| n/d`);
-        console.error(e);
-      }
     },
 
     toggleFiltros() {
@@ -530,6 +521,11 @@ export default {
 
     async doFilter() {
       this.setLoading(true);
+
+      if (typeof this.filters.carteira === "string" || this.filters.carteira instanceof String) {
+        const rCarteira = await axios.get(this.filters.carteira);
+        this.filters.carteira = rCarteira.data;
+      }
 
       if (!this.filters["dtPagto[after]"]) {
         this.filters["dtPagto[after]"] = `${this.moment()
@@ -680,6 +676,7 @@ export default {
         message: "Confirmar a operação?",
         header: "Atenção!",
         icon: "pi pi-exclamation-triangle",
+        group: "confirmDialog_crosierListS",
         accept: async () => {
           this.setLoading(true);
           try {
@@ -733,6 +730,7 @@ export default {
         message: "Confirmar a operação?",
         header: "Atenção!",
         icon: "pi pi-exclamation-triangle",
+        group: "confirmDialog_crosierListS",
         accept: async () => {
           this.setLoading(true);
           try {

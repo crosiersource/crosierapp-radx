@@ -1,6 +1,6 @@
 <template>
-  <Toast position="bottom-right" class="mb-5" group="mainToast" />
-  <ConfirmDialog />
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
 
   <CrosierListS
     :filtrosNaSidebar="true"

@@ -1,6 +1,6 @@
 <template>
-  <ConfirmDialog />
-  <Toast class="mb-5" />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
   <Sidebar class="p-sidebar-lg" v-model:visible="this.visibleRight" position="right">
@@ -607,6 +607,7 @@ export default {
         message: "Confirmar a operação?",
         header: "Atenção!",
         icon: "pi pi-exclamation-triangle",
+        group: "confirmDialog_crosierListS",
         accept: async () => {
           this.setLoading(true);
           try {

@@ -1,10 +1,16 @@
 <template>
-  <Toast position="bottom-right" class="mt-5" />
+  <Toast position="bottom-right" class="mb-5" />
   <CrosierFormS @submitForm="this.submitForm" titulo="Centro de Custo">
     <div class="form-row">
       <CrosierInputInt label="Id" col="3" id="id" v-model="this.fields.id" :disabled="true" />
 
-      <CrosierInputInt label="Código" col="3" id="id" v-model="this.fields.codigo" />
+      <CrosierInputInt
+        label="Código"
+        col="3"
+        id="id"
+        v-model="this.fields.codigo"
+        :error="this.formErrors.codigo"
+      />
 
       <CrosierInputText
         label="Descrição"

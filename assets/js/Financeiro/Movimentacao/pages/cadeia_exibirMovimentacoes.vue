@@ -1,6 +1,6 @@
 <template>
-  <ConfirmDialog />
-  <Toast class="mb-5" />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
   <div class="container-fluid">

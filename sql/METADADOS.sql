@@ -1258,6 +1258,13 @@ CREATE TABLE `fin_movimentacao`
 
   PRIMARY KEY (`id`),
 
+  KEY `K_fin_movimentacao_dt_vencto_efetiva` (`dt_vencto_efetiva`),
+  KEY `K_fin_movimentacao_dt_pagto` (`dt_pagto`),
+  KEY `K_fin_movimentacao_dt_util` (`dt_util`),
+  KEY `K_fin_movimentacao_valor` (`valor`),
+  KEY `K_fin_movimentacao_valor_total` (`valor_total`),
+  KEY `K_fin_movimentacao_status` (`status`),
+
   KEY `K_fin_movimentacao_fatura` (`fatura_id`),
   CONSTRAINT `FK_fin_movimentacao_fatura` FOREIGN KEY (`fatura_id`) REFERENCES `fin_fatura` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 
@@ -1303,6 +1310,7 @@ CREATE TABLE `fin_movimentacao`
   KEY `K_fin_movimentacao_estabelecimento_id` (`estabelecimento_id`),
   KEY `K_fin_movimentacao_user_inserted_id` (`user_inserted_id`),
   KEY `K_fin_movimentacao_user_updated_id` (`user_updated_id`),
+  KEY `K_fin_movimentacao_updated` (`updated`),
   CONSTRAINT `FK_fin_movimentacao_estabelecimento_id` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
   CONSTRAINT `FK_fin_movimentacao_user_inserted_id` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
   CONSTRAINT `FK_fin_movimentacao_user_updated_id` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)

@@ -31,10 +31,7 @@ const store = createStore({
 
   getters: {
     isLoading: (state) => state.loading > 0,
-    getFields(state) {
-      const { fields } = state;
-      return fields;
-    },
+    getFields: (state) => state.fields,
     getFieldsErrors: (state) => state.fieldsErrors,
   },
 

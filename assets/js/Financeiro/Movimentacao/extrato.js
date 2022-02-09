@@ -39,7 +39,7 @@ const store = createStore({
       }
     },
 
-    setFilters(state, filters) {
+    async setFilters(state, filters) {
       state.filters["dtPagto[after]"] = state.filters["dtPagto[after]"]
         ? new Date(state.filters["dtPagto[after]"])
         : null;

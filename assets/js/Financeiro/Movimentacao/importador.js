@@ -5,11 +5,13 @@ import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
 import { createStore } from "vuex";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
-import Page from "./pages/list";
+import Page from "./pages/importador";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/saga-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
 import "primeicons/primeicons.css";
+
+import "crosier-vue/src/yup.locale.pt-br.js";
 
 const app = createApp(Page);
 
@@ -22,8 +24,17 @@ const store = createStore({
   state() {
     return {
       loading: 0,
+      fields: {},
+      fieldsErrors: {},
       filters: {},
     };
+  },
+
+  getters: {
+    isLoading: (state) => state.loading > 0,
+    getFields: (state) => state.fields,
+    getFieldsErrors: (state) => state.fieldsErrors,
+    getFilters: (state) => state.filters,
   },
 
   mutations: {
@@ -35,6 +46,17 @@ const store = createStore({
       }
     },
 
+    setFields(state, fields) {
+      fields.dtMoviment = fields.dtMoviment ? new Date(fields.dtMoviment) : null;
+      fields.dtVencto = fields.dtVencto ? new Date(fields.dtVencto) : null;
+      fields.dtVenctoEfetiva = fields.dtVenctoEfetiva ? new Date(fields.dtVenctoEfetiva) : null;
+      state.fields = fields;
+    },
+
+    setFieldsErrors(state, formErrors) {
+      state.fieldsErrors = formErrors;
+    },
+
     setFilters(state, filters) {
       state.filters["dtUtil[after]"] = state.filters["dtUtil[after]"]
         ? new Date(state.filters["dtUtil[after]"])
@@ -44,12 +66,6 @@ const store = createStore({
         : null;
       state.filters = filters;
     },
-  },
-
-  getters: {
-    isLoading: (state) => state.loading > 0,
-
-    getFilters: (state) => state.filters,
   },
 });
 

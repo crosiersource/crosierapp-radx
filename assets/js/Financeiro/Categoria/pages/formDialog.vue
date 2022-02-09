@@ -1,5 +1,5 @@
 <template>
-  <Toast position="bottom-right" class="mt-5" />
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <Dialog
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
     :style="{ width: '50vw' }"

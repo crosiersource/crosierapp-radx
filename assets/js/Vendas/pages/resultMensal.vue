@@ -1,6 +1,6 @@
 <template>
   <ConfirmDialog />
-  <Toast class="mb-5" />
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
   <Sidebar class="p-sidebar-lg" v-model:visible="this.visibleRight" position="right">

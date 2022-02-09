@@ -1,6 +1,6 @@
 <template>
   <ConfirmDialog group="confirmDialog_aPagarReceberList" />
-  <Toast class="mb-5" />
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
   <Sidebar
@@ -361,7 +361,7 @@
                   role="button"
                   class="btn btn-danger btn-sm ml-1"
                   title="Deletar registro"
-                  @click="this.$refs.dt.deletar(r.data.id)"
+                  @click="this.deletar(r.data.id)"
                   ><i class="fas fa-trash" aria-hidden="true"></i
                 ></a>
               </div>

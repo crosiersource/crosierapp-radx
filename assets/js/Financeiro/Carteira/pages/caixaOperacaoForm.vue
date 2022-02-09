@@ -1,5 +1,5 @@
 <template>
-  <Toast position="bottom-right" class="mt-5" />
+  <Toast position="bottom-right" class="mb-5" />
 
   <ConfirmDialog></ConfirmDialog>
 

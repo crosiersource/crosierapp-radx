@@ -1,6 +1,6 @@
 <template>
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
-  <ConfirmDialog />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
 
   <CrosierListS
     titulo="Regras de Importação"

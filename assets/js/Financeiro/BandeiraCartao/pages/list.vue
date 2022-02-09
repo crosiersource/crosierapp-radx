@@ -1,6 +1,6 @@
 <template>
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
-  <ConfirmDialog />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
 
   <CrosierListS titulo="Bandeiras Cartões" apiResource="/api/fin/bandeiraCartao/" ref="dt">
     <template v-slot:columns>

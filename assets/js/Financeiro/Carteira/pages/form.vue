@@ -1,5 +1,5 @@
 <template>
-  <Toast position="bottom-right" class="mt-5" />
+  <Toast position="bottom-right" class="mb-5" />
   <CrosierFormS @submitForm="this.submitForm" titulo="Carteira">
     <div class="form-row">
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
@@ -29,7 +29,13 @@
         :error="this.formErrors.dtConsolidado"
       />
 
-      <CrosierDropdownBoolean label="Atual" col="2" id="atual" v-model="this.fields.atual" />
+      <CrosierDropdownBoolean
+        label="Atual"
+        col="2"
+        id="atual"
+        v-model="this.fields.atual"
+        :error="this.formErrors.atual"
+      />
     </div>
 
     <div class="form-row">
