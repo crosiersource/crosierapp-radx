@@ -45,9 +45,9 @@ class MovimentacaoImporter
     private EntityManagerInterface $doctrine;
 
     private ?string $stringExtrato = null;
-    
+
     private ?array $linhas = [];
-    
+
     private ?array $linhasAImportar = [];
 
     /**
@@ -65,7 +65,6 @@ class MovimentacaoImporter
      */
     private array $movsJaImportadas = [];
 
-    
 
     private ?string $tipoExtrato = null;
 
@@ -95,6 +94,14 @@ class MovimentacaoImporter
 
     private MovimentacaoEntityHandler $movimentacaoEntityHandler;
 
+    private ?string $uuidLote = null;
+
+    private array $duplicacoes = [];
+
+    private ?\DateTime $menorDt = null;
+
+    private ?\DateTime $maiorDt = null;
+
 
     public function __construct(EntityManagerInterface $doctrine, MovimentacaoEntityHandler $movimentacaoEntityHandler)
     {
@@ -118,6 +125,7 @@ class MovimentacaoImporter
                              ?bool $identificarPorCabecalho = false,
                              ?bool $gerarAConferir = true): ?array
     {
+        $this->uuidLote = StringUtils::guidv4();
         $this->tipoExtrato = $tipoExtrato;
         $this->stringExtrato = $linhasExtrato;
         $this->carteiraExtrato = $carteiraExtrato;
@@ -174,7 +182,7 @@ class MovimentacaoImporter
 
         $linhasImportadas = []; // para exibir no resultado final
         $linhasNaoImportadas = []; // para exibir no resultado final
-        
+
         $this->linhasAImportar = [];
 
         $this->linhas = explode("\n", $this->stringExtrato);
@@ -188,11 +196,12 @@ class MovimentacaoImporter
 
 
         for ($i = 0; $i < $qtdeLinhas; $i++) {
+            $linha = trim($this->linhas[$i]);
             if ($this->identificarPorCabecalho && $this->arrayCabecalho && $i === 0) {
+                $linhasNaoImportadas[] = $linha . ' (CABEÇALHO?)';
                 // pula o cabeçalho
                 continue;
             }
-            $linha = trim($this->linhas[$i]);
 
             // Verifica se é uma linha (de descrição) complementar já importada
             if (in_array($i, $this->linhasComplementares, true)) {
@@ -201,10 +210,12 @@ class MovimentacaoImporter
             }
 
             if (!$linha || trim($linha) === TXT_LINHA_IMPORTADA || trim($linha) === TXT_LINHA_NAO_IMPORTADA) {
+                $linhasNaoImportadas[] = $linha;
                 continue;
             }
 
             if ($this->tipoExtrato === 'EXTRATO_SIMPLES' && !$this->ehLinhaExtratoSimplesOuSaldo($linha)) {
+                $linhasNaoImportadas[] = $linha . ' (NÃO É LINHA DE EXTRATO?)';
                 continue;
             }
 
@@ -212,7 +223,7 @@ class MovimentacaoImporter
         }
 
         $this->checkDuplicacoes($this->linhasAImportar);
-        
+
         foreach ($this->linhasAImportar as $i => $linha) {
             try {
                 $camposLinha = $this->obterCamposLinha($i);
@@ -220,24 +231,25 @@ class MovimentacaoImporter
 
                 if ($movimentacao) {
                     $movimentacao->jsonData['importacao_linha'] = $linha;
+                    $movimentacao->jsonData['uuid_lote'] = $this->uuidLote;
                     $this->movimentacaoEntityHandler->save($movimentacao);
                     $this->movsJaImportadas[] = $movimentacao;
                     $linhasImportadas[] = $linha;
                 } else {
-                    $linhasNaoImportadas[] = $linha;
+                    $linhasNaoImportadas[] = $linha . ' (NÃO GEROU NOVA MOVIMENTAÇÃO)';
                 }
             } catch (ViewException $e) {
                 $r['err'][] = [
                     'linha' => $linha,
                     'errMsg' => $e->getMessage()
                 ];
-                $linhasNaoImportadas[] = $linha;
+                $linhasNaoImportadas[] = $linha . ' (ERRO AO IMPORTAR: ' . $e->getMessage() . ')';
             } catch (\Throwable $e) {
                 $r['err'][] = [
                     'linha' => $linha,
                     'errMsg' => 'Erro geral ao processar linha: ' . $linha
                 ];
-                $linhasNaoImportadas[] = $linha;
+                $linhasNaoImportadas[] = $linha . ' (ERRO AO IMPORTAR!)';
             }
         }
 
@@ -250,50 +262,31 @@ class MovimentacaoImporter
             implode("\n", $linhasImportadas);
 
         $r['movs'] = $this->movsJaImportadas;
-        
-        if ($r['movs']) {
-            $menorDt = null;
-            $maiorDt = null;
-            /** @var Movimentacao $mov */
-            foreach ($r['movs'] as $mov) {
-                if (!$menorDt) {
-                    $menorDt = $mov->dtPagto;
-                }
-                if (!$maiorDt) {
-                    $maiorDt = $mov->dtPagto;
-                }
-                if (DateTimeUtils::diffInDias($menorDt, $mov->dtPagto) > 0) {
-                    $menorDt = $mov->dtPagto;
-                }
-                if (DateTimeUtils::diffInDias($maiorDt, $mov->dtPagto) < 0) {
-                    $maiorDt = $mov->dtPagto;
-                }
-            }
 
-            $r['menorData'] = $menorDt->format('Y-m-d');
-            $r['maiorData'] = $maiorDt->format('Y-m-d');
-        }
+        
+        $r['menorData'] = $this->menorDt ? $this->menorDt->format('Y-m-d') : null;
+        $r['maiorData'] = $this->maiorDt ? $this->maiorDt->format('Y-m-d') : null;
+
         return $r;
     }
 
 
     private function checkDuplicacoes(array &$linhas): void
     {
-        $duplicacoes = [];
-        $cValues = array_count_values($linhas);
-        foreach ($cValues as $linha => $qtde) {
-            if ($qtde > 1) {
-                $camposLinha = $this->obterCamposLinha(array_search($linha, $this->linhasAImportar, true));
-                $qtdeJaImportadas = $this->verificarLinhasJaImportadas($camposLinha);
-                if ($qtdeJaImportadas) {
-                    $this->removerLinha($linhas, $linha, $qtdeJaImportadas);
-                }
-            }
+        $this->duplicacoes = [];
+
+        foreach ($linhas as $linha) {
+            $camposLinha = $this->obterCamposLinha(array_search($linha, $this->linhasAImportar, true));
+            $dtMovimentF = $camposLinha['dtMoviment']->format('d-m-Y');
+            $chave = $dtMovimentF . '___' . $camposLinha['valorTotal'];
+            $this->duplicacoes[$chave] = $this->duplicacoes[$chave] ?? 0;
+            $this->duplicacoes[$chave]++;
         }
     }
-    
-    private function removerLinha(array &$linhas, $linha, ?int $qtde = null) {
-        $i=0;
+
+    private function removerLinha(array &$linhas, $linha, ?int $qtde = null)
+    {
+        $i = 0;
         while (true) {
             $index = array_search($linha, $linhas, true);
             if ($index === FALSE) break;
@@ -302,31 +295,7 @@ class MovimentacaoImporter
             array_splice($linhas, $index, 1);
         }
     }
-
-    /**
-     * Caso encontre exatamente a mesma linha já importada, já retornada a movimentação para
-     * melhorar a eficiência.
-     *
-     * @param array $camposLinha
-     * @throws Exception
-     */
-    private function verificarLinhasJaImportadas(array $camposLinha): int
-    {
-        $movs = $this->doctrine->getConnection()->fetchAllAssociative(
-            'SELECT id FROM fin_movimentacao WHERE ' .
-            'carteira_id = :carteiraId AND ' .
-            'json_data->>"$.importacao_linha" = :linha AND ' .
-            '(dt_moviment = :dtMoviment OR dt_vencto_efetiva = :dtMoviment)',
-            [
-                'carteiraId' => $this->carteiraExtrato->getId(),
-                'linha' => $camposLinha['linha'],
-                'dtMoviment' => $camposLinha['dtMoviment']->format('Y-m-d'),
-            ]
-        );
-        
-        return count($movs);
-    }
-    
+   
 
     private function obterCamposLinha(int $numLinha): ?array
     {
@@ -344,6 +313,13 @@ class MovimentacaoImporter
         $valorStr = ($matches['SINAL_I'] ?: $matches['SINAL_F'] ?: '') . $matches['money'];
 
         $dtVenctoEfetiva = DateTimeUtils::parseDateStr($dataStr);
+        
+        if (!$this->menorDt || DateTimeUtils::diffInDias($dtVenctoEfetiva, $this->menorDt) < 0) {
+            $this->menorDt = $dtVenctoEfetiva;
+        }
+        if (!$this->maiorDt || DateTimeUtils::diffInDias($dtVenctoEfetiva, $this->maiorDt) > 0) {
+            $this->maiorDt = $dtVenctoEfetiva;
+        }
 
         $valor = StringUtils::parseFloat($valorStr, true);
 
@@ -411,19 +387,41 @@ class MovimentacaoImporter
 
         $dtMoviment = $camposLinha['dtMoviment'];
 
+        $movs = $this->doctrine->getConnection()->fetchAssociative(
+            'SELECT count(m.id) as qt FROM fin_movimentacao m, fin_categoria c WHERE ' .
+            'm.carteira_id = :carteiraId AND ' .
+            'm.categoria_id = c.id AND ' .
+            'm.valor_total = :valor AND ' .
+            'm.dt_pagto = :dtPagto AND ' . // ou seja, só considera as realizadas
+            'c.codigo_super = :codigoSuper',
+            [
+                'valor' => abs($valorTotal),
+                'dtPagto' => $dtMoviment->format('Y-m-d'),
+                'codigoSuper' => $valorNegativo ? 2 : 1,
+                'carteiraId' => $this->carteiraExtrato->getId(),
+            ]
+        );
+        $valorReal = (abs($valorTotal) * ($valorNegativo ? -1 : 1));
+        $chaveDuplicacao = $dtMoviment->format('d-m-Y') . '___' . $valorReal;
+        if ($movs && ((int)($movs['qt'] ?? 0) >= ($this->duplicacoes[$chaveDuplicacao] ?? 0))) {
+            return null;
+        }
+
         /** @var \DateTime $dtVenctoEfetiva */
         $dtVenctoEfetiva = $camposLinha['dtVenctoEfetiva'];
         // $entradaOuSaida = $camposLinha['entradaOuSaida'];
 
         $planoPagtoCartao = $camposLinha['planoPagtoCartao'];
         $bandeiraCartao = $camposLinha['bandeiraCartao'];
+
+
         $numCheque = null;
 
+        /** @var RegraImportacaoLinhaRepository $repoRegraImportacaoLinha */
+        $repoRegraImportacaoLinha = $this->doctrine->getRepository(RegraImportacaoLinha::class);
 
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPPRADX_UUID'] . '.MovimentacaoImporter', 36000, $_SERVER['CROSIER_SESSIONS_FOLDER']);
-        $regras = $cache->get('regrasPorCarteira', function (ItemInterface $item) {
-            /** @var RegraImportacaoLinhaRepository $repoRegraImportacaoLinha */
-            $repoRegraImportacaoLinha = $this->doctrine->getRepository(RegraImportacaoLinha::class);
+        $regras = $cache->get('regrasPorCarteira', function (ItemInterface $item) use ($repoRegraImportacaoLinha) {
             return $repoRegraImportacaoLinha->findAllBy($this->carteiraExtrato);
         });
 
@@ -437,7 +435,7 @@ class MovimentacaoImporter
                     if ($r->sinalValor === 0 ||
                         ($r->sinalValor === -1 && $valorNegativo) ||
                         ($r->sinalValor === 1 && !$valorNegativo)) {
-                        $regra = $r;
+                        $regra = $repoRegraImportacaoLinha->find($r->getId());
                         break;
                     }
                 }
@@ -451,8 +449,6 @@ class MovimentacaoImporter
             }
         }
 
-        $movsAbertasDiasAnteriores = [];
-
         // Se é uma linha de cheque
         if ($numCheque) {
             if ($valorNegativo) {
@@ -463,80 +459,28 @@ class MovimentacaoImporter
                 ['chequeNumCheque', 'LIKE_ONLY', $numCheque]
             ];
             $movsAbertasMesmoDia = $this->repoMovimentacao->findByFiltersSimpl($filterByCheque, null, 0, -1);
-        } else {
-
-            // Primeiro tenta encontrar movimentações em aberto de qualquer carteira, com o mesmo valor e dtVencto
-            // Depois tenta encontrar movimentações de qualquer status somente da carteira do extrato
-            // Junto os dois resultados
-            $filtersSimplAbertasMesmoDia = [
-                ['dtVenctoEfetiva', 'EQ', $dtVenctoEfetiva->format('Y-m-d')],
-                ['valor', 'EQ', $valor],
-                ['status', 'EQ', 'ABERTA']
-            ];
-            $movsAbertasMesmoDia = $this->repoMovimentacao->findByFiltersSimpl($filtersSimplAbertasMesmoDia, null, 0, -1);
-
-            // Depois de pesquisar nas movimentações abertas do mesmo dia, pesquisará dos últimos 5 dias.
-            $umDiaAntes = (clone $dtVenctoEfetiva)->setDate($dtVenctoEfetiva->format('Y'), $dtVenctoEfetiva->format('m'), $dtVenctoEfetiva->format('d') - 1);
-            $seisDiasAntes = (clone $dtVenctoEfetiva)->setDate($dtVenctoEfetiva->format('Y'), $dtVenctoEfetiva->format('m'), $dtVenctoEfetiva->format('d') - 6);
-            $filtersSimplAbertasDiasAnteriores = [
-                ['dtVenctoEfetiva', 'BETWEEN_DATE', [$seisDiasAntes->format('Y-m-d'), $umDiaAntes->format('Y-m-d')]],
-                ['valor', 'EQ', $valor],
-                ['status', 'EQ', 'ABERTA']
-            ];
-            $movsAbertasDiasAnteriores = $this->repoMovimentacao->findByFiltersSimpl($filtersSimplAbertasDiasAnteriores, ['dtVenctoEfetiva' => 'DESC'], 0, -1);
-        }
-
-        $filtersSimplTodas = [
-            ['dtUtil', 'EQ', $dtVenctoEfetiva->format('Y-m-d')],
-            ['valorTotal', 'EQ', $valor],
-            ['carteira', 'EQ', $this->carteiraExtrato]
-        ];
-
-        $movsTodas = $this->repoMovimentacao->findByFiltersSimpl($filtersSimplTodas, null, 0, -1);
-
-        // array para atribuir a união dos outros dois
-        $movs = [];
-        /** @var Movimentacao $mov */
-        foreach ($movsAbertasMesmoDia as $mov) {
-            if ((!$this->checkJaImportada($mov)) && !in_array($mov->getId(), $movs, true)) {
-                $movs[] = $mov->getId();
-            }
-        }
-        // array para atribuir a união dos outros dois
-        /** @var Movimentacao $mov */
-        foreach ($movsAbertasDiasAnteriores as $mov) {
-            if ((!$this->checkJaImportada($mov)) && !in_array($mov->getId(), $movs, true)) {
-                $movs[] = $mov->getId();
-            }
-        }
-        /** @var Movimentacao $mov */
-        foreach ($movsTodas as $mov) {
-            if ((!$this->checkJaImportada($mov)) && !in_array($mov->getId(), $movs, true)) {
-                $movs[] = $mov->getId();
+            foreach ($movsAbertasMesmoDia as $mov) {
+                if ((!$this->checkJaImportada($mov)) && !in_array($mov->getId(), $movs, true)) {
+                    $movimentacao = $this->repoMovimentacao->find($mov->getId());
+                    if (!$movimentacao->UUID) {
+                        $movimentacao->UUID = StringUtils::guidv4();
+                    }
+                    $movimentacao->dtPagto = ($dtVenctoEfetiva);
+                    $movimentacao->status = ('REALIZADA');
+                    $movimentacao->carteira = ($this->carteiraExtrato);
+                    return $movimentacao;
+                }
             }
         }
 
 
-        // Se achou alguma movimentação já lançada, pega a primeira
-        if (count($movs) > 0) {
-            /** @var Movimentacao $movimentacao */
-            $movimentacao = $this->repoMovimentacao->find($movs[0]);
-            if (!$movimentacao->UUID) {
-                $movimentacao->UUID = StringUtils::guidv4();
-            }
-            $movimentacao->dtPagto = ($dtVenctoEfetiva);
-            $movimentacao->status = ('REALIZADA');
-            $movimentacao->carteira = ($this->carteiraExtrato);
-            return $movimentacao;
-        }
-        // else
         if ($regra) {
             $movimentacao = new Movimentacao();
 
             $movimentacao->UUID = StringUtils::guidv4();
 
             $carteiraOrigem = $regra->carteira ? $regra->carteira : $this->carteiraExtrato;
-            $carteiraDestino = $regra->carteiraDestino ? $regra->carteiraDestino : $this->carteiraDestino;
+            $carteiraDestino = $regra->carteiraDestino ?? null;
 
             $movimentacao->carteira = ($carteiraOrigem);
             $movimentacao->carteiraDestino = ($carteiraDestino);
@@ -577,7 +521,7 @@ class MovimentacaoImporter
 
                     // Se achou a movimentação deste cheque, só seta a dtPagto
                     if ($movimentacao) {
-                        $movimentacao->setDtPagto($dtVenctoEfetiva);
+                        $movimentacao->dtPagto = $dtVenctoEfetiva;
                         return $movimentacao;
                     }
                     // else
@@ -724,8 +668,8 @@ class MovimentacaoImporter
             }
 
             if ($importada && !$importada->dtPagto) {
-                $importada->setStatus('REALIZADA');
-                $importada->setDtPagto($dtVenctoEfetiva);
+                $importada->status = 'REALIZADA';
+                $importada->dtPagto = $dtVenctoEfetiva;
             } else {
 
                 $importada = new Movimentacao();
@@ -810,7 +754,6 @@ class MovimentacaoImporter
     }
 
 
-
     private function checkJaImportada(Movimentacao $movimentacao): bool
     {
         if ($movimentacao->getId()) {
@@ -823,9 +766,6 @@ class MovimentacaoImporter
         }
         return false;
     }
-
-
-    
 
 
     public function buildArrayCabecalho(): void

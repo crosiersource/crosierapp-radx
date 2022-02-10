@@ -1319,6 +1319,46 @@ CREATE TABLE `fin_movimentacao`
 
 
 
+DROP TABLE IF EXISTS `fin_saldo`;
+
+
+CREATE TABLE `fin_saldo`
+(
+  `id`                  bigint(20)     NOT NULL AUTO_INCREMENT,
+
+  `carteira_id`         bigint(20)     NOT NULL,
+  `dt_saldo`            date           NOT NULL,
+  `total_realizadas`    decimal(15, 2) NOT NULL,
+  `total_pendencias`    decimal(15, 2) NOT NULL,
+
+
+  `inserted`            datetime       NOT NULL,
+  `updated`             datetime       NOT NULL,
+  `version`             int(11),
+  `estabelecimento_id`  bigint(20)     NOT NULL,
+  `user_inserted_id`    bigint(20)     NOT NULL,
+  `user_updated_id`     bigint(20)     NOT NULL,
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `UK_fin_saldo` (`dt_saldo`,`carteira_id`),
+  KEY `K_fin_saldo_dt_saldo` (`dt_saldo`),
+
+  KEY `K_fin_saldo_carteira` (`carteira_id`),
+  CONSTRAINT `FK_fin_saldo_carteira` FOREIGN KEY (`carteira_id`) REFERENCES `fin_carteira` (`id`),
+
+  KEY `K_fin_saldo_estabelecimento_id` (`estabelecimento_id`),
+  KEY `K_fin_saldo_user_inserted_id` (`user_inserted_id`),
+  KEY `K_fin_saldo_user_updated_id` (`user_updated_id`),
+  KEY `K_fin_saldo_updated` (`updated`),
+  CONSTRAINT `FK_fin_saldo_estabelecimento_id` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+  CONSTRAINT `FK_fin_saldo_user_inserted_id` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_fin_saldo_user_updated_id` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
+) ENGINE = InnoDB;
+
+
+
 DROP TABLE IF EXISTS `fin_operadora_cartao`;
 
 

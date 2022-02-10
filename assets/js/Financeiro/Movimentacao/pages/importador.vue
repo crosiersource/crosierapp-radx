@@ -79,7 +79,12 @@
 
             <pre>{{ this.results.LINHAS_RESULT }}</pre>
 
-            <button type="button" class="btn btn-secondary" @click="this.visualizarMovimentacoes">
+            <button
+              v-if="this.retornouAsDatas"
+              type="button"
+              class="btn btn-secondary"
+              @click="this.visualizarMovimentacoes"
+            >
               <i class="fas fa-link"></i> Visualizar movimentações
             </button>
           </div>
@@ -98,7 +103,6 @@ import {
   CrosierInputTextarea,
   submitForm,
 } from "crosier-vue";
-import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import moment from "moment";
@@ -106,7 +110,6 @@ import * as yup from "yup";
 
 export default {
   components: {
-    Column,
     Toast,
     ConfirmDialog,
     CrosierBlock,
@@ -117,8 +120,7 @@ export default {
 
   data() {
     return {
-      movimentacoesImportadas: null,
-      movimentacoesSelecionadas: null,
+      retornouAsDatas: false,
       results: null,
     };
   },
@@ -166,6 +168,7 @@ export default {
               throw new Error();
             }
             this.results = rs.data.DATA;
+            this.retornouAsDatas = this.results.menorData && this.results.maiorData;
           } catch (e) {
             console.error("Eroooooo");
             console.error(e);

@@ -369,6 +369,24 @@ export default {
       this.filters["dtUtil[before]"] = this.filters["dtUtil[before]"]
         ? `${moment(this.filters["dtUtil[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
         : null;
+
+      const diff = moment(this.filters["dtUtil[before]"]).diff(
+        moment(this.filters["dtUtil[after]"]),
+        "days"
+      );
+      if (diff > 62) {
+        this.filters["dtUtil[after]"] = `${this.moment().format("YYYY-MM")}-01T00:00:00-03:00`;
+        this.filters["dtUtil[before]"] = `${this.moment()
+          .endOf("month")
+          .format("YYYY-MM-DD")}T23:59:59-03:00`;
+        this.$toast.add({
+          severity: "warn",
+          summary: "Atenção",
+          detail: "Não é possível pesquisar com período superior a 2 meses",
+          life: 5000,
+        });
+      }
+
       this.movimentacoesSelecionadas = null;
     },
 

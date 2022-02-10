@@ -85,8 +85,6 @@
           <div class="ml-auto"></div>
           <div>
             <CrosierCalendar
-              @date-select="this.doFilterNextTick"
-              col="8"
               label="Desde..."
               inputClass="crsr-date"
               id="dt"
@@ -97,7 +95,6 @@
           <div>
             <CrosierCalendar
               @date-select="this.doFilterNextTick"
-              col="8"
               label="até..."
               inputClass="crsr-date"
               id="dt"
@@ -191,6 +188,7 @@
           ref="dt"
           :rowHover="true"
         >
+          <template #empty> Nenhum dado a exibir. </template>
           <Column field="id">
             <template #header>
               <Checkbox
@@ -365,13 +363,7 @@
 
           <template #header>
             <div class="h5 text-right">
-              {{
-                parseFloat(
-                  this.saldos.get(
-                    this.moment(this.tableData[0].dtPagto).subtract(1, "days").format("YYYY-MM-DD")
-                  )["SALDO_POSTERIOR_REALIZADAS"]
-                ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
-              }}
+              {{ this.getSaldoFormatted("ANTERIOR") }}
             </div>
           </template>
 
@@ -386,12 +378,9 @@
               class="h5 text-right"
               colspan="4"
               :style="
-                'font-weight: bolder; color: ' +
-                (this.saldos.get(this.moment(r.data.dtPagto).format('YYYY-MM-DD'))[
-                  'SALDO_POSTERIOR_REALIZADAS'
-                ] >= 0
+                'font-weight: bolder; color: ' + (this.getSaldo(r.data.dtPagto) >= 0)
                   ? 'blue'
-                  : 'red')
+                  : 'red'
               "
             >
               Saldo em {{ this.moment(r.data.dtPagto).format("DD/MM/YYYY") }}:
@@ -399,21 +388,12 @@
             <td
               class="text-right h5"
               :style="
-                'font-weight: bolder; color: ' +
-                (this.saldos.get(this.moment(r.data.dtPagto).format('YYYY-MM-DD'))[
-                  'SALDO_POSTERIOR_REALIZADAS'
-                ] >= 0
+                'font-weight: bolder; color: ' + (this.getSaldo(r.data.dtPagto) >= 0)
                   ? 'blue'
-                  : 'red')
+                  : 'red'
               "
             >
-              {{
-                parseFloat(
-                  this.saldos.get(this.moment(r.data.dtPagto).format("YYYY-MM-DD"))[
-                    "SALDO_POSTERIOR_REALIZADAS"
-                  ]
-                ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
-              }}
+              {{ this.getSaldoFormatted(r.data.dtPagto) }}
             </td>
             <td></td>
           </template>
@@ -564,6 +544,24 @@ export default {
         )}T23:59:59-03:00`;
       }
 
+      const diff = moment(this.filters["dtPagto[before]"]).diff(
+        moment(this.filters["dtPagto[after]"]),
+        "days"
+      );
+      if (diff > 62) {
+        this.filters["dtPagto[after]"] = `${this.moment().format("YYYY-MM")}-01T00:00:00-03:00`;
+        this.filters["dtPagto[before]"] = `${this.moment()
+          .endOf("month")
+          .format("YYYY-MM-DD")}T23:59:59-03:00`;
+        this.$toast.add({
+          severity: "warn",
+          summary: "Atenção",
+          group: "mainToast",
+          detail: "Não é possível pesquisar com período superior a 2 meses",
+          life: 5000,
+        });
+      }
+
       if (!this.filters.carteira) {
         const rsCarteiras = await api.get({
           apiResource: "/api/fin/carteira",
@@ -618,31 +616,11 @@ export default {
       this.totalRecords = response.data["hydra:totalItems"];
       this.tableData = response.data["hydra:member"];
 
-      const saldos = new Map();
-      this.saldos = null;
-
-      this.tableData.forEach(async (m) => {
-        const dtPagtoF = this.moment(m.dtPagto).format("YYYY-MM-DD");
-        saldos.set(dtPagtoF, {});
-      });
-
-      for (const [key, value] of saldos.entries()) {
-        const rsSaldo = await axios.get(
-          `/api/fin/movimentacao/extrato/saldos/${this.filters.carteira.id}/${key}`
-        );
-        saldos.set(key, rsSaldo?.data?.DATA);
-      }
-
-      const dtAnteriorSaldo = this.moment(this.tableData[0].dtPagto)
-        .subtract(1, "days")
-        .format("YYYY-MM-DD");
-
-      const rsSaldoInicial = await axios.get(
-        `/api/fin/movimentacao/extrato/saldos/${this.filters.carteira.id}/${dtAnteriorSaldo}`
+      const rsSaldos = await axios.get(
+        `/api/fin/saldo?carteira=${this.filters.carteira["@id"]}&dtSaldo[after]=${this.filters["dtPagto[after]"]}&dtSaldo[before]=${this.filters["dtPagto[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
       );
-      saldos.set(dtAnteriorSaldo, rsSaldoInicial?.data?.DATA);
 
-      this.saldos = saldos;
+      this.saldos = rsSaldos.data["hydra:member"];
 
       // salva os filtros no localStorage
       localStorage.setItem(this.filtersOnLocalStorage, JSON.stringify(this.filters));
@@ -723,6 +701,7 @@ export default {
                 severity: "success",
                 summary: "Sucesso",
                 detail: "Registro deletado com sucesso",
+                group: "mainToast",
                 life: 5000,
               });
               await this.doFilter();
@@ -739,6 +718,7 @@ export default {
               severity: "error",
               summary: "Erro",
               detail: "Ocorreu um erro ao deletar",
+              group: "mainToast",
               life: 5000,
             });
           }
@@ -753,6 +733,7 @@ export default {
           severity: "error",
           summary: "Erro",
           detail: "Nenhuma movimentação selecionada para processar",
+          group: "mainToast",
           life: 5000,
         });
         return;
@@ -775,6 +756,7 @@ export default {
                 severity: "success",
                 summary: "Sucesso",
                 detail: "Movimentações processadas com sucesso",
+                group: "mainToast",
                 life: 5000,
               });
               await this.doFilter();
@@ -787,6 +769,7 @@ export default {
               severity: "error",
               summary: "Erro",
               detail: "Ocorreu um erro ao processar",
+              group: "mainToast",
               life: 5000,
             });
           }
@@ -810,6 +793,37 @@ export default {
         targetStyles: "*",
       });
       this.setLoading(false);
+    },
+
+    /**
+     * Pode pegar o saldo através de um Date ou da string 'ANTERIOR' para o saldo anterior.
+     *
+     * @param d
+     * @returns {*|number|null}
+     */
+    getSaldo(d) {
+      let saldo = null;
+      if (d === "ANTERIOR") {
+        if (this.tableData && this.tableData[0] && this.tableData[0].dtPagto) {
+          saldo = this.saldos.find(
+            (e) =>
+              this.moment(e.dtSaldo).format("YYYY-MM-DD") ===
+              this.moment(this.tableData[0].dtPagto).subtract(1, "days").format("YYYY-MM-DD")
+          );
+        }
+      } else {
+        saldo = this.saldos.find(
+          (e) => this.moment(e.dtSaldo).format("YYYY-MM-DD") === this.moment(d).format("YYYY-MM-DD")
+        );
+      }
+      return saldo?.totalRealizadas ?? 0;
+    },
+
+    getSaldoFormatted(saldo) {
+      return parseFloat(this.getSaldo(saldo)).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      });
     },
   },
 
