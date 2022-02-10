@@ -1,10 +1,11 @@
 <template>
-  <Toast group="mainToast" position="bottom-right" class="mb-5" />
-  <ConfirmDialog></ConfirmDialog>
+  <Toast position="bottom-right" class="mb-5" />
+  <ConfirmDialog />
 
   <CrosierFormS @submitForm="this.submitForm" titulo="Movimentação Recorrente">
     <template #btns>
       <button
+        v-if="this.fields.id"
         type="button"
         class="btn btn-outline-danger ml-1"
         @click="this.deletar"
@@ -344,6 +345,7 @@ import {
   CrosierInputTextarea,
   CrosierCalendar,
   submitForm,
+  api,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
@@ -536,7 +538,50 @@ export default {
       });
     },
 
-    deletar() {},
+    deletar() {
+      this.$confirm.require({
+        acceptLabel: "Sim",
+        rejectLabel: "Não",
+        message: "Confirmar a operação?",
+        header: "Atenção!",
+        icon: "pi pi-exclamation-triangle",
+        group: "confirmDialog_crosierListS",
+        accept: async () => {
+          this.setLoading(true);
+          try {
+            const deleteUrl = `${this.apiResource}/${this.fields.id}`;
+            const rsDelete = await api.delete(deleteUrl);
+            if (!rsDelete) {
+              throw new Error("rsDelete n/d");
+            }
+            if (rsDelete?.status === 204) {
+              this.$toast.add({
+                severity: "success",
+                summary: "Sucesso",
+                detail: "Registro deletado com sucesso",
+                life: 5000,
+              });
+              await this.doFilter();
+            } else if (rsDelete?.data && rsDelete.data["hydra:description"]) {
+              throw new Error(`status !== 204: ${rsDelete?.data["hydra:description"]}`);
+            } else if (rsDelete?.statusText) {
+              throw new Error(`status !== 204: ${rsDelete?.statusText}`);
+            } else {
+              throw new Error("Erro ao deletar (erro n/d, status !== 204)");
+            }
+          } catch (e) {
+            console.error(e);
+            this.$toast.add({
+              severity: "error",
+              summary: "Erro",
+              detail: "Ocorreu um erro ao deletar",
+              life: 5000,
+            });
+          }
+          this.setLoading(false);
+        },
+      });
+    },
   },
 
   computed: {

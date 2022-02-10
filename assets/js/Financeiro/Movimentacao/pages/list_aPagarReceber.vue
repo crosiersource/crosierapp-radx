@@ -378,7 +378,7 @@
           </Column>
 
           <template #groupheader="r">
-            <h4>{{ new Date(r.data.dtVenctoEfetiva).toLocaleString().substring(0, 10) }}</h4>
+            <h5>{{ new Date(r.data.dtVenctoEfetiva).toLocaleString().substring(0, 10) }}</h5>
           </template>
 
           <template #groupfooter="r">

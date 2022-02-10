@@ -163,6 +163,7 @@
       </div>
       <div class="card-body">
         <DataTable
+          v-if="this.saldos"
           rowGroupMode="subheader"
           groupRowsBy="dtPagto"
           stateStorage="local"
@@ -362,37 +363,50 @@
             </template>
           </Column>
 
+          <template #header>
+            <div class="h5 text-right">
+              {{
+                parseFloat(
+                  this.saldos.get(
+                    this.moment(this.tableData[0].dtPagto).subtract(1, "days").format("YYYY-MM-DD")
+                  )["SALDO_POSTERIOR_REALIZADAS"]
+                ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+              }}
+            </div>
+          </template>
+
           <template #groupheader="r">
-            <h5 style="font-weight: bolder">
+            <div class="h5 float-left" style="font-weight: bolder">
               {{ new Date(r.data.dtPagto).toLocaleString().substring(0, 10) }}
-            </h5>
+            </div>
           </template>
 
           <template #groupfooter="r">
             <td colspan="4">
-              <div class="text-right h5">Saldo:</div>
+              <div class="text-right h5">
+                Saldo em {{ this.moment(r.data.dtPagto).format("YYYY-MM-DD") }}:
+              </div>
             </td>
-            <td
-              class="text-right h5"
-              :style="
-                'font-weight: bolder; color: ' +
-                (this.saldos.get(this.moment(r.data.dtVencto).format('YYYY-MM-DD'))[
-                  'SALDO_POSTERIOR_REALIZADAS'
-                ] >= 0
-                  ? 'blue'
-                  : 'red')
-              "
-            >
-              {{
-                parseFloat(
-                  this.saldos.get(this.moment(r.data.dtVencto).format("YYYY-MM-DD"))[
-                    "SALDO_POSTERIOR_REALIZADAS"
-                  ]
-                ).toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                })
-              }}
+            <td class="text-right h5">
+              <span
+                v-if="this.saldos.get(this.moment(r.data.dtPagto).format('YYYY-MM-DD'))"
+                :style="
+                  'font-weight: bolder; color: ' +
+                  (this.saldos.get(this.moment(r.data.dtPagto).format('YYYY-MM-DD'))[
+                    'SALDO_POSTERIOR_REALIZADAS'
+                  ] >= 0
+                    ? 'blue'
+                    : 'red')
+                "
+              >
+                {{
+                  parseFloat(
+                    this.saldos.get(this.moment(r.data.dtPagto).format("YYYY-MM-DD"))[
+                      "SALDO_POSTERIOR_REALIZADAS"
+                    ]
+                  ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                }}
+              </span>
             </td>
             <td></td>
           </template>
@@ -446,7 +460,7 @@ export default {
       savedFilter: {},
       totalRecords: 0,
       tableData: null,
-      saldos: new Map(),
+      saldos: null, // deve ficar como null até ser preenchido para poder exibir a DataTable corretamente
       firstRecordIndex: 0,
       multiSortMeta: [],
       accordionActiveIndex: null,
@@ -465,8 +479,6 @@ export default {
 
   async mounted() {
     this.setLoading(true);
-
-    this.saldos = new Map();
 
     const uri = window.location.search.substring(1);
     const params = new URLSearchParams(uri);
@@ -599,17 +611,31 @@ export default {
       this.totalRecords = response.data["hydra:totalItems"];
       this.tableData = response.data["hydra:member"];
 
+      const saldos = new Map();
+      this.saldos = null;
+
       this.tableData.forEach(async (m) => {
         const dtPagtoF = this.moment(m.dtPagto).format("YYYY-MM-DD");
-        this.saldos.set(dtPagtoF, {});
+        saldos.set(dtPagtoF, {});
       });
 
-      for (const [key, value] of this.saldos.entries()) {
+      for (const [key, value] of saldos.entries()) {
         const rsSaldo = await axios.get(
           `/api/fin/movimentacao/extrato/saldos/${this.filters.carteira.id}/${key}`
         );
-        this.saldos.set(key, rsSaldo?.data?.DATA);
+        saldos.set(key, rsSaldo?.data?.DATA);
       }
+
+      const dtAnteriorSaldo = this.moment(this.tableData[0].dtPagto)
+        .subtract(1, "days")
+        .format("YYYY-MM-DD");
+
+      const rsSaldoInicial = await axios.get(
+        `/api/fin/movimentacao/extrato/saldos/${this.filters.carteira.id}/${dtAnteriorSaldo}`
+      );
+      saldos.set(dtAnteriorSaldo, rsSaldoInicial?.data?.DATA);
+
+      this.saldos = saldos;
 
       // salva os filtros no localStorage
       localStorage.setItem(this.filtersOnLocalStorage, JSON.stringify(this.filters));
