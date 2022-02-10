@@ -276,7 +276,7 @@
             </template>
           </Column>
 
-          <Column field="id" header="Dt Vencto">
+          <Column field="id" header="Dt Vencto" style="width: 1% !important">
             <template #body="r">
               <div
                 class="text-center"
@@ -304,7 +304,7 @@
             </template>
           </Column>
 
-          <Column field="valor" header="Valor">
+          <Column field="valor" header="Valor" style="width: 1% !important">
             <template #body="r">
               <div
                 class="text-right"
@@ -323,7 +323,7 @@
             </template>
           </Column>
 
-          <Column field="updated" header="">
+          <Column field="updated" header="" style="width: 1% !important">
             <template class="text-right" #body="r">
               <div class="d-flex justify-content-end">
                 <a
@@ -382,31 +382,38 @@
           </template>
 
           <template #groupfooter="r">
-            <td colspan="4">
-              <div class="text-right h5">
-                Saldo em {{ this.moment(r.data.dtPagto).format("YYYY-MM-DD") }}:
-              </div>
+            <td
+              class="h5 text-right"
+              colspan="4"
+              :style="
+                'font-weight: bolder; color: ' +
+                (this.saldos.get(this.moment(r.data.dtPagto).format('YYYY-MM-DD'))[
+                  'SALDO_POSTERIOR_REALIZADAS'
+                ] >= 0
+                  ? 'blue'
+                  : 'red')
+              "
+            >
+              Saldo em {{ this.moment(r.data.dtPagto).format("DD/MM/YYYY") }}:
             </td>
-            <td class="text-right h5">
-              <span
-                v-if="this.saldos.get(this.moment(r.data.dtPagto).format('YYYY-MM-DD'))"
-                :style="
-                  'font-weight: bolder; color: ' +
-                  (this.saldos.get(this.moment(r.data.dtPagto).format('YYYY-MM-DD'))[
-                    'SALDO_POSTERIOR_REALIZADAS'
-                  ] >= 0
-                    ? 'blue'
-                    : 'red')
-                "
-              >
-                {{
-                  parseFloat(
-                    this.saldos.get(this.moment(r.data.dtPagto).format("YYYY-MM-DD"))[
-                      "SALDO_POSTERIOR_REALIZADAS"
-                    ]
-                  ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
-                }}
-              </span>
+            <td
+              class="text-right h5"
+              :style="
+                'font-weight: bolder; color: ' +
+                (this.saldos.get(this.moment(r.data.dtPagto).format('YYYY-MM-DD'))[
+                  'SALDO_POSTERIOR_REALIZADAS'
+                ] >= 0
+                  ? 'blue'
+                  : 'red')
+              "
+            >
+              {{
+                parseFloat(
+                  this.saldos.get(this.moment(r.data.dtPagto).format("YYYY-MM-DD"))[
+                    "SALDO_POSTERIOR_REALIZADAS"
+                  ]
+                ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+              }}
             </td>
             <td></td>
           </template>

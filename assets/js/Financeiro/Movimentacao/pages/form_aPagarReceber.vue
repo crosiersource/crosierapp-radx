@@ -1,5 +1,5 @@
 <template>
-  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <Toast position="bottom-right" class="mb-5" />
   <ConfirmDialog></ConfirmDialog>
 
   <CrosierFormS @submitForm="this.submitForm" :titulo="this.titulo" :subtitulo="this.subtitulo">
