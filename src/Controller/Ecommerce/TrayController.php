@@ -131,13 +131,13 @@ class TrayController extends BaseController
 
 
     /**
-     * @Route("/api/ecommerce/tray/autorizarNaTray/{storeId}", name="api_ecommerce_tray_autorizarNaTray")
+     * @Route("/api/ecommerce/tray/reautorizarNaTray", name="api_ecommerce_tray_reautorizarNaTray")
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      * @throws ViewException
      */
-    public function autorizarNaTray(?string $storeId = null): JsonResponse
+    public function reautorizarNaTray(): JsonResponse
     {
-        $this->integradorTray->autorizarApp($storeId);
+        $this->integradorTray->autorizarApp();
 
         return new JsonResponse(
             [

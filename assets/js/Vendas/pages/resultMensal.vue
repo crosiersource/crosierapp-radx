@@ -359,8 +359,6 @@ export default {
         `/api/ven/vendasResults/vendasPorPeriodo?dtVenda[after]=${this.filters["dtVenda[after]"]}&dtVenda[before]=${this.filters["dtVenda[before]"]}&codVendedor[i]=${this.filters["codVendedor[i]"]}&codVendedor[f]=${this.filters["codVendedor[f]"]}`
       );
 
-      console.log(response);
-
       this.tableData = response.data.DATA.dados.rs;
       this.total = response.data.DATA.dados.total;
       this.compas = response.data.DATA.compa;
