@@ -4,7 +4,6 @@
         "@fullcalendar/daygrid": "^5.5.0",
         "@fullcalendar/interaction": "^5.6.0",
         "@fullcalendar/timegrid": "^5.6.0",
-        "vue3-autocounter": "^1.0.6",
         "axios": "^0.21.0",
         "axios-extensions": "^3.1.3",
         "chart.js": "^3.3.2",
@@ -21,6 +20,7 @@
         "summernote": "0.8.16",
         "vue": "^3.0.0",
         "vue-json-editor": "^1.4.3",
+        "vue3-autocounter": "^1.0.6",
         "vuex": "^4.0.0-rc.2",
         "yup": "^0.32.8"
     },
