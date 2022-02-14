@@ -33,7 +33,7 @@ class TrayCommand extends Command
     protected function configure()
     {
         $this->setName('crosierappradx:tray');
-        $this->addArgument('tipoIntegracao', InputArgument::REQUIRED, 'Tipo de Integração: "renewAllAccessTokens"');
+        $this->addArgument('tipoIntegracao', InputArgument::REQUIRED, 'Tipo de Integração: "renewAccessToken"');
         $this->addArgument('dtBase', InputArgument::OPTIONAL, 'Data Base');
     }
 
@@ -43,9 +43,9 @@ class TrayCommand extends Command
         $tipoIntegracao = $input->getArgument('tipoIntegracao');
 
         switch ($tipoIntegracao) {
-            case 'renewAllAccessTokens':
-                $output->writeln('renewAllAccessTokens');
-                $this->integradorTray->renewAllAccessTokens();
+            case 'renewAccessToken':
+                $output->writeln('renewAccessToken');
+                $this->integradorTray->renewAccessToken();
                 break;
             default:
                 throw new \RuntimeException('tipoIntegracao desconhecido: ' . $tipoIntegracao);
