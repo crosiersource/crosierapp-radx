@@ -6,7 +6,7 @@ import ConfirmationService from "primevue/confirmationservice";
 import { createStore } from "vuex";
 import axios from "axios";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
-import Page from "./pages/nfEntradaList";
+import Page from "./pages/emitidasList";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/saga-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
@@ -26,7 +26,7 @@ const store = createStore({
       loading: 0,
       filters: {
         xNomeEmitente: null,
-        documentoDestinatario: null,
+        documentoEmitente: null,
       },
       contribuintes: [],
     };
@@ -41,7 +41,7 @@ const store = createStore({
       }
     },
 
-    setFilters(state, filters) {
+    setEmitidasFilters(state, filters) {
       filters["dtEmissao[after]"] = filters["dtEmissao[after]"]
         ? new Date(filters["dtEmissao[after]"])
         : null;
@@ -49,21 +49,21 @@ const store = createStore({
         ? new Date(filters["dtEmissao[before]"])
         : null;
 
-      if (!state.filters.documentoDestinatario && state.contribuintes[0]) {
-        state.filters.documentoDestinatario = state.contribuintes[0].cnpj;
+      if (!state.filters.documentoEmitente && state.contribuintes[0]) {
+        state.filters.documentoEmitente = state.contribuintes[0].cnpj;
       }
 
       state.filters = filters;
     },
 
     setContribuintes(state, contribuintes) {
-      if (!state.filters.documentoDestinatario) {
+      if (!state.filters.documentoEmitente) {
         let cnpj = contribuintes[0].cnpj;
-        const ls = JSON.parse(localStorage.getItem("filters/api/fis/notaFiscal/_filters"));
-        if (ls.documentoDestinatario) {
-          cnpj = ls.documentoDestinatario;
+        const ls = JSON.parse(localStorage.getItem("filters/api/fis/notaFiscal/_emitidasFilters"));
+        if (ls?.documentoEmitente) {
+          cnpj = ls.documentoEmitente;
         }
-        state.filters.documentoDestinatario = cnpj;
+        state.filters.documentoEmitente = cnpj;
       }
       state.contribuintes = contribuintes;
     },
@@ -74,7 +74,7 @@ const store = createStore({
       return state.loading > 0;
     },
 
-    getFilters(state) {
+    getEmitidasFilters(state) {
       return state.filters;
     },
 

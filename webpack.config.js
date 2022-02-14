@@ -85,7 +85,10 @@ Encore
   
 
 
-  .addEntry('fis/notaFiscal/nfEntrada/list', './assets/js/Fiscal/NotaFiscal/nfEntradaList.js')
+  .addEntry('fis/notaFiscal/recebidas/list', './assets/js/Fiscal/NotaFiscal/recebidasList.js')
+  .addEntry('fis/notaFiscal/emitidas/list', './assets/js/Fiscal/NotaFiscal/emitidasList.js')
+  .addEntry('fis/notaFiscal/distdfe/list', './assets/js/Fiscal/NotaFiscal/distDFesList.js')
+  .addEntry('fis/selecaoContribuinte', './assets/js/Fiscal/NotaFiscal/selecaoContribuinte.js')
   
   
   .addEntry('ecommerce/clienteConfig/list', './assets/js/Ecommerce/ClienteConfig/list.js')

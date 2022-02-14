@@ -134,49 +134,7 @@ class NFesFornecedoresController extends FormListController
         ];
     }
 
-    /**
-     *
-     * @Route("/fis/nfesFornecedores/list/", name="nfesFornecedores_list")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
-    public function list(Request $request): Response
-    {
-        $nfeConfigs = $this->nfeUtils->getNFeConfigsEmUso();
-        $empresa = StringUtils::mascararCnpjCpf($nfeConfigs['cnpj']) . ' - ' . $nfeConfigs['razaosocial'];
-        $params =
-            [
-                'listView' => 'Fiscal/nfeFornecedores/nfesFornecedoresList.html.twig',
-                'listRoute' => 'nfesFornecedores_list',
-                'listRouteAjax' => 'nfesFornecedores_datatablesJsList',
-                'listPageTitle' => 'NFe Entrada',
-                'listId' => 'nfesFornecedoresList',
-                'page_subTitle' => $empresa
-            ];
-
-
-        return $this->doList($request, $params);
-    }
-
-    /**
-     *
-     * @Route("/fis/nfesFornecedores/datatablesJsList/", name="nfesFornecedores_datatablesJsList")
-     * @param Request $request
-     * @return Response
-     * @throws ViewException
-     */
-    public function datatablesJsList(Request $request): Response
-    {
-        $rParams = $request->request->all();
-        if (isset($rParams['formPesquisar'])) {
-            parse_str($rParams['formPesquisar'], $formPesquisar);
-        }
-        $defaultFilters['filter']['documentoDestinatario'] = preg_replace("/[^0-9]/", '', $this->nfeUtils->getNFeConfigsEmUso()['cnpj']);
-        // $defaultFilters['filter']['tipoNotaFiscal'] = 'NFE';
-        return $this->doDatatablesJsList($request, $defaultFilters);
-    }
-
+    
 
     /**
      *
@@ -234,8 +192,6 @@ class NFesFornecedoresController extends FormListController
         }
         return $this->redirectToRoute('nfesFornecedores_list');
     }
-
-
     
 
 
