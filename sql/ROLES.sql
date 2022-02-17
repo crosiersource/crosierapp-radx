@@ -2,6 +2,7 @@ START TRANSACTION;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
+TRUNCATE TABLE sec_role;
 
 INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, now(), now(), 'ROLE_CRM', 'ROLE_CRM', 1, 1, 1);
@@ -70,6 +71,10 @@ VALUES (null, now(), now(), 'ROLE_ECOMM', 'ROLE_ECOMM', 1, 1, 1);
 
 INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, now(), now(), 'ROLE_ECOMM_ADMIN', 'ROLE_ECOMM_ADMIN', 1, 1, 1);
+
+
+INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (null, now(), now(), 'ROLE_UPLOAD', 'ROLE_UPLOAD', 1, 1, 1);
 
 
 

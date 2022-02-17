@@ -411,15 +411,11 @@ CREATE TABLE `est_produto_saldo`
 (
   `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
   `produto_id`         bigint(20)     NOT NULL,
-  `unidade_id`         bigint(20)     NOT NULL,
   `qtde`               decimal(15, 2) NOT NULL,
   `json_data`          json,
 
   KEY `K_est_produto_saldo_produto` (`produto_id`),
   CONSTRAINT `FK_est_produto_saldo_produto` FOREIGN KEY (`produto_id`) REFERENCES `est_produto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-
-  KEY `K_est_produto_saldo_unidade` (`unidade_id`),
-  CONSTRAINT `FK_est_produto_saldo_unidade` FOREIGN KEY (`unidade_id`) REFERENCES `est_unidade` (`id`),
 
   -- campo de controle
   PRIMARY KEY (`id`),
