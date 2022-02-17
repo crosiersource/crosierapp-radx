@@ -181,7 +181,7 @@ class UploadProdutoCsv
             $iBatch = 0;
             $this->produtoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
 
-            for ($i = 1; $i < $totalRegistros; $i++) {
+            for ($i = 1; $i <= $totalRegistros; $i++) {
                 $linha = $linhas[$i];
                 if (!trim($linha)) {
                     continue;

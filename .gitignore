@@ -37,3 +37,5 @@ crosierapp-radx.env.local.txt
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+uploads/*

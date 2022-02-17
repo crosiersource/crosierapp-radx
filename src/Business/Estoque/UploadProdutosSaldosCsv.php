@@ -98,6 +98,11 @@ class UploadProdutosSaldosCsv
             $linhas = explode(PHP_EOL, $conteudo);
             $totalRegistros = count($linhas) - 2;
 
+            if ($totalRegistros < 1) {
+                $this->syslog->info('Nenhum registro para processar na est_produto_saldo');
+                return 0;
+            }
+            
             $alterados = 0;
             $naoAlterados = 0;
 
@@ -108,14 +113,14 @@ class UploadProdutosSaldosCsv
 
             $conn = $this->produtoSaldoEntityHandler->getDoctrine()->getConnection();
 
-            $batchSize = 50;
+            $batchSize = 500;
             $iBatch = 0;
             $this->produtoSaldoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
             
             $repoProdutoSaldo = $this->produtoSaldoEntityHandler->getDoctrine()->getRepository(ProdutoSaldo::class); 
             $repoProduto = $this->produtoSaldoEntityHandler->getDoctrine()->getRepository(Produto::class); 
 
-            for ($i = 1; $i < $totalRegistros; $i++) {
+            for ($i = 1; $i <= $totalRegistros; $i++) {
                 try {
                     $linha = $linhas[$i];
                     if (!trim($linha)) {
@@ -132,7 +137,7 @@ class UploadProdutosSaldosCsv
                     $campos['saldo'] = (float)$campos['saldo'];
 
                     if (!($this->estProdutos[$campos['erp_codigo']] ?? false)) {
-                        $this->syslog->info('Impossível atualizar est_produto_saldo', 'Não existe registro para erp_codigo: ' . $campos['erp_codigo']);
+                        $this->syslog->err($i . '/' . $totalRegistros . ' - Impossível atualizar est_produto_saldo', 'Não existe registro para erp_codigo: ' . $campos['erp_codigo']);
                         continue;
                     }
 
@@ -149,10 +154,11 @@ class UploadProdutosSaldosCsv
 
                     if (!$rsProdutoSaldo || ((float)$rsProdutoSaldo['qtde'] !== $campos['saldo'])) {
                         $produtoSaldo->qtde = $campos['saldo'];
-                        $this->produtoSaldoEntityHandler->save($produtoSaldo);
+                        $this->produtoSaldoEntityHandler->save($produtoSaldo, false);
                         $alterados++;
-                        $this->syslog->info($alterados . ') est_produto_saldo alterado para ' . $campos['erp_codigo']);
+                        $this->syslog->info($i . '/' . $totalRegistros . ' - est_produto_saldo alterado para ' . $campos['erp_codigo']);
                     } else {
+                        $this->syslog->info($i . '/' . $totalRegistros . ' - nada a alterar para ' . $campos['erp_codigo']);
                         $naoAlterados++;
                     }
 
