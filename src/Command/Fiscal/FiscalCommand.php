@@ -126,7 +126,8 @@ class FiscalCommand extends Command
      */
     public function obterDistDFes(OutputInterface $output, int $primeiroNSU = null)
     {
-        $cnpjs = $this->nfeUtils->getNFeConfigsCNPJs();
+        // $cnpjs = $this->nfeUtils->getNFeConfigsCNPJs();
+        $cnpjs = ['04669397000321'];
         foreach ($cnpjs as $cnpj) {
             $output->writeln('Obtendo DistDFes para o CNPJ: ' . $cnpj);
             try {
@@ -137,7 +138,7 @@ class FiscalCommand extends Command
                 }
                 $output->writeln($q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
                 $output->writeln('Processando obtidos...');
-                $this->distDFeBusiness->processarDistDFesObtidos();
+                $this->distDFeBusiness->processarDistDFesObtidos($cnpj);
                 $output->writeln('OK');
             } catch (ViewException $e) {
                 $output->writeln('Erro ao obter e processar DistDFes para o CNPJ: ' . $cnpj);
