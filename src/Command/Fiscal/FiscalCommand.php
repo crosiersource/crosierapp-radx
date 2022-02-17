@@ -126,8 +126,7 @@ class FiscalCommand extends Command
      */
     public function obterDistDFes(OutputInterface $output, int $primeiroNSU = null)
     {
-        // $cnpjs = $this->nfeUtils->getNFeConfigsCNPJs();
-        $cnpjs = ['04669397000321'];
+        $cnpjs = $this->nfeUtils->getNFeConfigsCNPJs();
         foreach ($cnpjs as $cnpj) {
             $output->writeln('Obtendo DistDFes para o CNPJ: ' . $cnpj);
             try {
