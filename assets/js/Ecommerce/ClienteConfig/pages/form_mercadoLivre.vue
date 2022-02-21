@@ -18,7 +18,11 @@
                 v-model="mlConfig['token_tg']"
               />
               <a :href="this.gerarUrl(i)">
-                <small class="form-text">Autorizar</small>
+                <small class="form-text">Autorizar (interno)</small>
+              </a>
+
+              <a :href="this.gerarUrl(i, true)">
+                <small class="form-text">Autorizar (externo via e-mail)</small>
               </a>
             </div>
           </div>
@@ -224,12 +228,17 @@ export default {
       });
     },
 
-    gerarUrl(i) {
-      const state = JSON.stringify({
+    gerarUrl(i, externa = false) {
+      const state = {
         route: `${this.serverParams.radxURL}/api/ecommerce/clienteConfig/registrarAutorizacaoMercadoLivre`,
         UUID: this.clienteConfig.UUID,
+        nomeCliente: this.clienteConfig.cliente.nome,
         i,
-      });
+      };
+      if (externa) {
+        state.mailDests = this.clienteConfig.jsonData.mailDests;
+      }
+      const stateStr = JSON.stringify(state);
       return (
         `${
           "https://auth.mercadolivre.com.br/authorization?" +

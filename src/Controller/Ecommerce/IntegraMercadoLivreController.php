@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -71,18 +72,38 @@ class IntegraMercadoLivreController extends BaseController
 
         $mlStateDecoded = json_decode(base64_decode($mlState), true);
 
+
         if (!($mlStateDecoded['route'] ?? false)) {
             throw new ViewException('mlState.route n/d');
         }
         $route = $mlStateDecoded['route'];
         unset($mlStateDecoded['route']);
-
+        
         $queryParams = '';
         foreach ($mlStateDecoded as $k => $v) {
             $queryParams .= $k . '=' . $v . '&';
         }
 
         $url = $route . '?' . $queryParams . 'mlCode=' . $mlCode;
+        
+        $mailDests = $mlStateDecoded['mailDests'] ?? null;
+        if ($mailDests) {
+            $nomeCliente = $mlStateDecoded['nomeCliente'] ?? null;
+            $mailDests = explode(',', $mailDests);
+            $body = 'O cliente ' . $nomeCliente . ' reativou o Crosier no MercadoLivre. Certifique-se de que está logado no Crosier e ' .
+                'clique <a href="'. $url . '">aqui</a> para finalizar a configuração.';
+            
+            $email = (new Email())
+                ->from('mailer@crosier.com.br')
+                ->subject('Ativação de clientes ML' . ($nomeCliente ? ' (' . $nomeCliente . ')' : ''))
+                ->html($body);
+            
+            foreach ($mailDests as $mailDest) {
+                $email->addTo($mailDest);
+            }
+            
+            $mailer->send($email);
+        }
 
         return new RedirectResponse($url);
     }
