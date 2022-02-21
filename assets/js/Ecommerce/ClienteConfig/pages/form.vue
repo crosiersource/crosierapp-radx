@@ -43,7 +43,7 @@
       </div>
     </div>
     <div class="form-row">
-      <div class="col-md-12">
+      <div class="col-md-8">
         <div class="form-group">
           <label for="name">URL Loja</label>
           <InputText
@@ -61,6 +61,15 @@
           </div>
         </div>
       </div>
+
+      <CrosierInputText
+        col="4"
+        label="E-mails dos Responsáveis (Crosier)"
+        id="emailsResponsaveis"
+        v-model="this.clienteConfig.jsonData['emailDests']"
+        helpText="Separados por vírgulas"
+        inputClass="lowercase"
+      />
     </div>
 
     <div class="card mt-3">
@@ -219,7 +228,7 @@ import Calendar from "primevue/calendar";
 import * as yup from "yup";
 import axios from "axios";
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierFormS, submitForm } from "crosier-vue";
+import { api, CrosierFormS, submitForm, CrosierInputText } from "crosier-vue";
 import MercadoLivre from "./form_mercadoLivre";
 
 export default {
@@ -232,6 +241,7 @@ export default {
     Dropdown,
     Toast,
     MercadoLivre,
+    CrosierInputText,
   },
 
   data() {

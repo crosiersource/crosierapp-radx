@@ -238,6 +238,7 @@ export default {
       if (externa) {
         state.mailDests = this.clienteConfig.jsonData.mailDests;
       }
+
       const stateStr = JSON.stringify(state);
       return (
         `${
@@ -245,7 +246,7 @@ export default {
           "response_type=code&" +
           "client_id=1976314946902083&" +
           "state="
-        }${btoa(state)}&` +
+        }${btoa(stateStr)}&` +
         `redirect_uri=https://radx.demo.crosier.com.br/ecomm/mercadolivre/authcallbackrouter`
       );
     },
