@@ -70,7 +70,7 @@ class IntegraMercadoLivreController extends BaseController
             throw new ViewException('mlState n/d');
         }
 
-        $mlStateDecoded = json_decode(base64_decode(urldecode($mlState)), true);
+        $mlStateDecoded = json_decode(utf8_decode(base64_decode($mlState)), true);
 
 
         if (!($mlStateDecoded['route'] ?? false)) {
