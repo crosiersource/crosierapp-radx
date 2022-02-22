@@ -68,7 +68,8 @@ class IntegraMercadoLivreController extends BaseController
             throw new ViewException('mlState n/d');
         }
 
-        $mlStateDecoded = json_decode(utf8_decode(base64_decode($mlState)), true);
+        $mlStateUtf8Decoded = utf8_decode(base64_decode($mlState));
+        $mlStateDecoded = json_decode($mlStateUtf8Decoded, true);
 
 
         if (!($mlStateDecoded['route'] ?? false)) {
@@ -84,7 +85,7 @@ class IntegraMercadoLivreController extends BaseController
 
         $url = $route . '?' . $queryParams . 'mlCode=' . $mlCode;
 
-        $this->syslog->info('authcallbackrouter', sprintf('mlCode: %s - mlStateDecoded: %s', $mlCode, $mlStateDecoded));
+        $this->syslog->info('authcallbackrouter', sprintf('mlCode: %s \n url: %s \n mlStateDecoded: %s', $mlCode, $url, $mlStateUtf8Decoded));
 
         $mailDests = $mlStateDecoded['mailDests'] ?? null;
         if ($mailDests) {
