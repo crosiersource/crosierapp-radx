@@ -1,7 +1,6 @@
 <template>
   <CrosierListS
     apiResource="/api/ecommerce/clienteConfig/"
-    formUrl="/ecommerce/clienteConfig/form"
     titulo="Configurações"
     subtitulo="Clientes"
   >
@@ -35,7 +34,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="'/ecommerce/clienteConfig/form?id=' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
           </div>
