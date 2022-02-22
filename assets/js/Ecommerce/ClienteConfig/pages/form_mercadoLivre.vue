@@ -236,7 +236,7 @@ export default {
         i,
       };
       if (externa) {
-        state.mailDests = this.clienteConfig.jsonData.mailDests;
+        state.mailDests = this.clienteConfig.jsonData.emailDests;
       }
 
       const stateStr = JSON.stringify(state);
