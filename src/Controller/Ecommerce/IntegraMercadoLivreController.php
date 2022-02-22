@@ -15,6 +15,7 @@ use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
@@ -56,7 +57,7 @@ class IntegraMercadoLivreController extends BaseController
     /**
      * @Route("/ecomm/mercadolivre/authcallbackrouter", name="ecomm_mercadoLivre_authcallbackrouter")
      */
-    public function authcallbackrouter(Request $request): RedirectResponse
+    public function authcallbackrouter(Request $request, Mailer $mailer): RedirectResponse
     {
         $mlCode = $request->query->get('code');
         $mlState = $request->query->get('state');
@@ -77,19 +78,25 @@ class IntegraMercadoLivreController extends BaseController
             throw new ViewException('mlState.route n/d');
         }
         $route = $mlStateDecoded['route'];
-        unset($mlStateDecoded['route']);
-        
+        unset($mlStateDecoded['route']); // para não cair ali no foreach
+
         $queryParams = '';
         foreach ($mlStateDecoded as $k => $v) {
             $queryParams .= $k . '=' . $v . '&';
         }
 
         $url = $route . '?' . $queryParams . 'mlCode=' . $mlCode;
+
+        $this->syslog->info('authcallbackrouter', sprintf('mlCode: %s - mlStateDecoded: %s', $mlCode, $mlStateDecoded));
         
         $mailDests = $mlStateDecoded['mailDests'] ?? null;
         if ($mailDests) {
             $nomeCliente = $mlStateDecoded['nomeCliente'] ?? null;
+
+            $this->syslog->info('authcallbackrouter - mail', 'Para ' . $mailDests);
+            
             $mailDests = explode(',', $mailDests);
+            
             $body = 'O cliente ' . $nomeCliente . ' reativou o Crosier no MercadoLivre. Certifique-se de que está logado no Crosier e ' .
                 'clique <a href="'. $url . '">aqui</a> para finalizar a configuração.';
             
