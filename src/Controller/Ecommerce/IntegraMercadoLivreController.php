@@ -6,16 +6,13 @@ use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\MercadoLivreBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\ClienteConfig;
 use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\MercadoLivreItem;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Ecommerce\ClienteConfigEntityHandler;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Ecommerce\MercadoLivreItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Messenger\Ecommerce\Message\MlNotification;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,7 +54,7 @@ class IntegraMercadoLivreController extends BaseController
     /**
      * @Route("/ecomm/mercadolivre/authcallbackrouter", name="ecomm_mercadoLivre_authcallbackrouter")
      */
-    public function authcallbackrouter(Request $request, Mailer $mailer): RedirectResponse
+    public function authcallbackrouter(Request $request, MailerInterface $mailer): RedirectResponse
     {
         $mlCode = $request->query->get('code');
         $mlState = $request->query->get('state');
@@ -88,27 +85,27 @@ class IntegraMercadoLivreController extends BaseController
         $url = $route . '?' . $queryParams . 'mlCode=' . $mlCode;
 
         $this->syslog->info('authcallbackrouter', sprintf('mlCode: %s - mlStateDecoded: %s', $mlCode, $mlStateDecoded));
-        
+
         $mailDests = $mlStateDecoded['mailDests'] ?? null;
         if ($mailDests) {
             $nomeCliente = $mlStateDecoded['nomeCliente'] ?? null;
 
             $this->syslog->info('authcallbackrouter - mail', 'Para ' . $mailDests);
-            
+
             $mailDests = explode(',', $mailDests);
-            
+
             $body = 'O cliente ' . $nomeCliente . ' reativou o Crosier no MercadoLivre. Certifique-se de que está logado no Crosier e ' .
-                'clique <a href="'. $url . '">aqui</a> para finalizar a configuração.';
-            
+                'clique <a href="' . $url . '">aqui</a> para finalizar a configuração.';
+
             $email = (new Email())
                 ->from('mailer@crosier.com.br')
                 ->subject('Ativação de clientes ML' . ($nomeCliente ? ' (' . $nomeCliente . ')' : ''))
                 ->html($body);
-            
+
             foreach ($mailDests as $mailDest) {
                 $email->addTo($mailDest);
             }
-            
+
             $mailer->send($email);
         }
 
@@ -160,7 +157,7 @@ class IntegraMercadoLivreController extends BaseController
                         $true = 1;
                     }
                     $conn->update('ecomm_ml_item', [
-                        'mercadolivre_user_id' => $item->clienteConfig->jsonData['mercadolivre'][0]['me']['id'] 
+                        'mercadolivre_user_id' => $item->clienteConfig->jsonData['mercadolivre'][0]['me']['id']
                     ], ['id' => $item->getId()]);
                 }
             }
