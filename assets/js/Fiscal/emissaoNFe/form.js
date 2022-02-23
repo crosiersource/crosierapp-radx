@@ -124,14 +124,15 @@ $(document).ready(function () {
       dataType: 'json',
       success: function (res) {
         if (res.result === 'OK') {
-          $xNomeDestinatario.val(res.dados.razaoSocial);
-          $inscricaoEstadualDestinatario.val(res.dados.IE);
-          $cepDestinatario.val(res.dados.CEP);
-          $logradouroDestinatario.val(res.dados.logradouro);
-          $numeroDestinatario.val(res.dados.numero);
-          $bairroDestinatario.val(res.dados.bairro);
-          $cidadeDestinatario.val(res.dados.cidade);
-          $estadoDestinatario.val(res.dados.UF).change();
+          console.log(res);
+          $xNomeDestinatario.val(res.dados.razaoSocial[0]);
+          $inscricaoEstadualDestinatario.val(res.dados.IE[0]);
+          $cepDestinatario.val(res.dados.CEP[0]);
+          $logradouroDestinatario.val(res.dados.logradouro[0]);
+          $numeroDestinatario.val(res.dados.numero[0]);
+          $bairroDestinatario.val(res.dados.bairro[0]);
+          $cidadeDestinatario.val(res.dados.cidade[0]);
+          $estadoDestinatario.val(res.dados.UF[0]).change();
           CrosierMasks.maskAll();
         } else {
           toastrr.error(res.msg ? res.msg : 'Erro ao consultar CNPJ');
@@ -153,10 +154,11 @@ $(document).ready(function () {
       dataType: 'json',
       success: function (res) {
         if (res.result === 'OK') {
-          $transpNome.val(res.dados.razaoSocial);
-          $transpEndereco.val(res.dados.logradouro + ', ' + res.dados.numero + ' - ' + res.dados.bairro);
-          $transpCidade.val(res.dados.cidade);
-          $transpEstado.val(res.dados.UF).change();
+          console.log(res);
+          $transpNome.val(res.dados.razaoSocial[0]);
+          $transpEndereco.val(res.dados.logradouro[0] + ', ' + res.dados.numero[0] + ' - ' + res.dados.bairro[0]);
+          $transpCidade.val(res.dados.cidade[0]);
+          $transpEstado.val(res.dados.UF[0]).change();
           CrosierMasks.maskAll();
         } else {
           toastrr.error(res.msg ? res.msg : 'Erro ao consultar CNPJ');
