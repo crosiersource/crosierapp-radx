@@ -14,10 +14,17 @@
                         <h3>Emissão de NFe</h3>
                     </div>
                     <div class="col-4 text-right">
-                        <button type="button" class="btn btn-primary"
-                                onclick="window.location.href='{{ url('fis_emissaonfe_form') }}'">
-                            <i class="fas fa-file" aria-hidden="true"></i> Novo
-                        </button>
+                        <a role="button" href="/fis/emissaonfe/form" class="btn btn-primary">
+                            <i class="fas fa-file" aria-hidden="true"></i>
+                        </a>
+                        <a
+                            role="button"
+                            class="btn btn-outline-secondary"
+                            href="/v/fis/notaFiscal/emitidas/list"
+                            title="Listar"
+                        >
+                            <i class="fas fa-list"></i>
+                        </a>
                     </div>
                 </div>
 

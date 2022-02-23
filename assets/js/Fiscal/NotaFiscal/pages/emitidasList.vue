@@ -4,7 +4,7 @@
   <CrosierListS
     titulo="Emitidas"
     apiResource="/api/fis/notaFiscal/"
-    :formUrl="this.formUrl"
+    formUrl="/fis/emissaonfe/form"
     @beforeFilter="this.beforeFilter"
     v-model:selection="this.selection"
     filtersStoreName="emitidasFilters"
@@ -197,7 +197,7 @@
               role="button"
               class="ml-1 btn btn-primary btn-sm"
               title="Editar registro"
-              :href="'/fis/nfesFornecedores/form/' + r.data.id"
+              :href="'/fis/emissaonfe/form/' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
           </div>
