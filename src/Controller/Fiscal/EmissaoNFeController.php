@@ -750,7 +750,7 @@ class EmissaoNFeController extends FormListController
 
     /**
      *
-     * @Route("/fis/emissaonfe/downloadXMLsMesAno/", name="fis_emissaonfe_downloadXMLsMesAno/")
+     * @Route("/fis/emissaonfe/downloadXMLsMesAno", name="fis_emissaonfe_downloadXMLsMesAno/")
      *
      * @param Request $request
      * @return Response
@@ -776,12 +776,18 @@ class EmissaoNFeController extends FormListController
         /** @var NotaFiscalRepository $repoNotasFiscais */
         $repoNotasFiscais = $this->getDoctrine()->getRepository(NotaFiscal::class);
 
-        $nfes = $repoNotasFiscais->findByFiltersSimpl([
+        $filters = [
             ['dtEmissao', 'BETWEEN_DATE', DateTimeUtils::getDatasMesAno($mesano)],
             ['documentoEmitente', 'EQ', $nfeConfigs['cnpj']],
             ['numero', 'IS_NOT_EMPTY'],
             ['ambiente', 'EQ', 'PROD']
-        ], ['serie' => 'ASC', 'numero' => 'ASC'], 0, -1);
+        ];
+        
+        if ($request->get('estadoDestinatario')) {
+            $filters[] = ['estadoDestinatario', 'EQ', $request->get('estadoDestinatario')];
+        }
+        
+        $nfes = $repoNotasFiscais->findByFiltersSimpl($filters, ['serie' => 'ASC', 'numero' => 'ASC'], 0, -1);
 
         // homologadas
         $nfes100 = [];
