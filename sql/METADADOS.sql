@@ -43,6 +43,7 @@ CREATE TABLE `est_unidade`
   `descricao`          varchar(255) NOT NULL,
   `label`              varchar(10)  NOT NULL,
   `casas_decimais`     int          NOT NULL,
+  `fator`              int,
   `atual`              tinyint(1)   NOT NULL,
   `json_info`          varchar(3000), -- informações sobre conversões (não são montados campos customizados aqui)
   `json_data`          json,          -- campo padrão caso sejam necessários campos customizados para algum cliente
@@ -1320,24 +1321,24 @@ DROP TABLE IF EXISTS `fin_saldo`;
 
 CREATE TABLE `fin_saldo`
 (
-  `id`                  bigint(20)     NOT NULL AUTO_INCREMENT,
+  `id`                 bigint(20)     NOT NULL AUTO_INCREMENT,
 
-  `carteira_id`         bigint(20)     NOT NULL,
-  `dt_saldo`            date           NOT NULL,
-  `total_realizadas`    decimal(15, 2) NOT NULL,
-  `total_pendencias`    decimal(15, 2) NOT NULL,
+  `carteira_id`        bigint(20)     NOT NULL,
+  `dt_saldo`           date           NOT NULL,
+  `total_realizadas`   decimal(15, 2) NOT NULL,
+  `total_pendencias`   decimal(15, 2) NOT NULL,
 
 
-  `inserted`            datetime       NOT NULL,
-  `updated`             datetime       NOT NULL,
-  `version`             int(11),
-  `estabelecimento_id`  bigint(20)     NOT NULL,
-  `user_inserted_id`    bigint(20)     NOT NULL,
-  `user_updated_id`     bigint(20)     NOT NULL,
+  `inserted`           datetime       NOT NULL,
+  `updated`            datetime       NOT NULL,
+  `version`            int(11),
+  `estabelecimento_id` bigint(20)     NOT NULL,
+  `user_inserted_id`   bigint(20)     NOT NULL,
+  `user_updated_id`    bigint(20)     NOT NULL,
 
   PRIMARY KEY (`id`),
 
-  UNIQUE KEY `UK_fin_saldo` (`dt_saldo`,`carteira_id`),
+  UNIQUE KEY `UK_fin_saldo` (`dt_saldo`, `carteira_id`),
   KEY `K_fin_saldo_dt_saldo` (`dt_saldo`),
 
   KEY `K_fin_saldo_carteira` (`carteira_id`),

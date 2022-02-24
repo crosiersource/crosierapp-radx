@@ -1,5 +1,6 @@
 <template>
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <Toast position="bottom-right" class="mb-5" />
   <ConfirmDialog></ConfirmDialog>
 
   <CrosierFormS
@@ -60,7 +61,7 @@
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
 
       <CrosierDropdownEntity
-        col="10"
+        col="7"
         v-model="this.fields.categoria"
         :error="this.fieldsErrors.categoria"
         entity-uri="/api/fin/categoria"
@@ -69,47 +70,6 @@
         :orderBy="{ codigoOrd: 'ASC' }"
         label="Categoria"
         id="categoria"
-      />
-    </div>
-
-    <div class="form-row">
-      <CrosierDropdownEntity
-        col="6"
-        v-model="this.grupo"
-        entity-uri="/api/fin/grupo"
-        optionLabel="descricao"
-        :optionValue="null"
-        :orderBy="{ descricao: 'ASC' }"
-        :filters="{ ativo: true }"
-        label="Grupo"
-        id="grupo"
-      />
-    </div>
-
-    <div class="form-row">
-      <CrosierDropdownEntity
-        col="6"
-        v-model="this.fields.carteira"
-        :error="this.fieldsErrors.carteira"
-        entity-uri="/api/fin/carteira"
-        optionLabel="descricaoMontada"
-        :optionValue="null"
-        :orderBy="{ codigo: 'ASC' }"
-        :filters="{ abertas: true }"
-        label="Carteira"
-        id="carteira"
-      />
-
-      <CrosierDropdownEntity
-        col="3"
-        v-model="this.fields.modo"
-        :error="this.fieldsErrors.modo"
-        entity-uri="/api/fin/modo"
-        :optionValue="null"
-        optionLabel="descricaoMontada"
-        :orderBy="{ codigo: 'ASC' }"
-        label="Modo"
-        id="modo"
       />
 
       <CrosierDropdownEntity
@@ -121,6 +81,33 @@
         :orderBy="{ codigo: 'ASC' }"
         label="Centro de Custo"
         id="centroCusto"
+      />
+    </div>
+
+    <div class="form-row">
+      <CrosierDropdownEntity
+        col="6"
+        v-model="this.aux.grupo"
+        entity-uri="/api/fin/grupo"
+        optionLabel="descricao"
+        :orderBy="{ descricao: 'ASC' }"
+        :filters="{ ativo: true }"
+        label="Grupo"
+        id="grupo"
+      />
+
+      <CrosierDropdownEntity
+        v-if="this.aux.grupo"
+        col="6"
+        v-model="this.fields.grupoItem"
+        :error="this.fieldsErrors.grupoItem"
+        entity-uri="/api/fin/grupoItem"
+        optionLabel="descricaoMontada"
+        :orderBy="{ dtVencto: 'DESC' }"
+        :filters="{ pai: this.aux.grupo }"
+        id="grupoItem"
+        @change="this.doFilterNextTick"
+        label="Fatura"
       />
     </div>
 
@@ -274,7 +261,6 @@ export default {
       schemaValidator: {},
       sacadosOuCedentes: null,
       filiais: null,
-      grupo: null,
       dtVencto_cache: null,
     };
   },
@@ -285,13 +271,8 @@ export default {
     await this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
       categoria: yup.mixed().required().typeError(),
-      carteira: yup.mixed().required().typeError(),
-      modo: yup.mixed().required().typeError(),
       descricao: yup.mixed().required().typeError(),
       dtMoviment: yup.date().required().typeError(),
-      dtVencto: yup.date().required().typeError(),
-      dtVenctoEfetiva: yup.date().required().typeError(),
-      valor: yup.number().required().typeError(),
       valorTotal: yup.number().required().typeError(),
     });
 
@@ -348,17 +329,8 @@ export default {
         formDataStateName: "fields",
         $toast: this.$toast,
         fnBeforeSave: (formData) => {
+          formData.tipoLancto = "/api/fin/tipoLancto/20";
           formData.categoria = formData.categoria["@id"];
-          formData.carteira = formData.carteira["@id"];
-          formData.modo = formData.modo["@id"];
-          formData.centroCusto =
-            formData.centroCusto && formData.centroCusto["@id"]
-              ? formData.centroCusto["@id"]
-              : null;
-          formData.documentoBanco =
-            formData.documentoBanco && formData.documentoBanco["@id"]
-              ? formData.documentoBanco["@id"]
-              : null;
 
           formData.centroCusto =
             formData.centroCusto && formData.centroCusto["@id"]
@@ -374,31 +346,11 @@ export default {
           }
 
           delete formData.cadeia;
-          delete formData.tipoLancto;
+          delete formData.carteira;
+          delete formData.modo;
         },
       });
       this.setLoading(false);
-    },
-
-    calcPeloValor() {
-      this.$nextTick(() => {
-        this.fields.valorTotal =
-          this.fields.valor - (this.fields.descontos || 0) + (this.fields.acrescimos || 0);
-      });
-    },
-
-    calcPeloValorTotal() {
-      this.$nextTick(() => {
-        this.fields.descontos = 0;
-        this.fields.acrescimos = 0;
-        if (this.fields.valorTotal > this.fields.valor) {
-          this.fields.acrescimos = this.fields.valorTotal - this.fields.valor;
-        } else if (this.fields.valorTotal < this.fields.valor) {
-          this.fields.descontos = this.fields.valor - this.fields.valorTotal;
-        } else {
-          this.fields.valor = this.fields.valorTotal;
-        }
-      });
     },
 
     async onFocusDtVenctoEfet() {
@@ -485,7 +437,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters({ fields: "getFields", fieldsErrors: "getFieldsErrors" }),
+    ...mapGetters({ fields: "getFields", fieldsErrors: "getFieldsErrors", aux: "getAux" }),
   },
 };
 </script>

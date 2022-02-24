@@ -20,6 +20,8 @@
         id="diaVencto"
         v-model="this.fields.diaVencto"
         :error="this.formErrors.diaVencto"
+        :min="1"
+        :max="31"
       />
 
       <CrosierInputInt
@@ -28,6 +30,9 @@
         id="diaInicioAprox"
         v-model="this.fields.diaInicioAprox"
         :error="this.formErrors.diaInicioAprox"
+        :min="1"
+        :max="31"
+        helpText="Informe o dia posterior ao dia de fechamento da fatura"
       />
 
       <CrosierDropdownBoolean
@@ -42,6 +47,7 @@
       <CrosierDropdownEntity
         col="5"
         v-model="this.fields.carteiraPagantePadrao"
+        :error="this.formErrors.carteiraPagantePadrao"
         entity-uri="/api/fin/carteira"
         optionLabel="descricaoMontada"
         :optionValue="null"
@@ -53,6 +59,7 @@
       <CrosierDropdownEntity
         col="7"
         v-model="this.fields.categoriaPadrao"
+        :error="this.formErrors.categoriaPadrao"
         entity-uri="/api/fin/categoria"
         optionLabel="descricaoMontadaTree"
         :optionValue="null"
@@ -104,6 +111,8 @@ export default {
       diaVencto: yup.number().required().typeError(),
       diaInicioAprox: yup.number().required().typeError(),
       ativo: yup.boolean().required().typeError(),
+      categoriaPadrao: yup.mixed().required().typeError(),
+      carteiraPagantePadrao: yup.mixed().required().typeError(),
     });
 
     SetFocus("descricao", 40);
@@ -123,8 +132,14 @@ export default {
         formDataStateName: "fields",
         $toast: this.$toast,
         fnBeforeSave: (formData) => {
-          formData.categoriaPadrao = formData.categoriaPadrao["@id"];
-          formData.carteiraPagantePadrao = formData.carteiraPagantePadrao["@id"];
+          formData.categoriaPadrao =
+            formData.categoriaPadrao && "@id" in formData.categoriaPadrao
+              ? formData.categoriaPadrao["@id"]
+              : null;
+          formData.carteiraPagantePadrao =
+            formData.carteiraPagantePadrao && "@id" in formData.carteiraPagantePadrao
+              ? formData.carteiraPagantePadrao["@id"]
+              : null;
         },
       });
       this.setLoading(false);

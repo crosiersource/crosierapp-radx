@@ -25,17 +25,21 @@ const store = createStore({
     return {
       loading: 0,
       fields: {},
+      aux: { pai: null },
       fieldsErrors: {},
     };
   },
 
   getters: {
     isLoading: (state) => state.loading > 0,
+
     getFields(state) {
       const { fields } = state;
       return fields;
     },
+
     getFieldsErrors: (state) => state.fieldsErrors,
+    getAux: (state) => state.aux,
   },
 
   mutations: {
@@ -51,6 +55,9 @@ const store = createStore({
       fields.dtMoviment = fields.dtMoviment ? new Date(fields.dtMoviment) : null;
       fields.dtVencto = fields.dtVencto ? new Date(fields.dtVencto) : null;
       fields.dtVenctoEfetiva = fields.dtVenctoEfetiva ? new Date(fields.dtVenctoEfetiva) : null;
+
+      state.aux.grupo = fields?.grupoItem?.pai ? fields?.grupoItem?.pai["@id"] : null;
+      fields.grupoItem = fields.grupoItem["@id"];
       state.fields = fields;
     },
 

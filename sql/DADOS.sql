@@ -565,9 +565,21 @@ VALUES (null, 0.894, 136, 1999999999, now(), now(), 0, 1, 1, 1);
 
 TRUNCATE TABLE est_unidade;
 
-insert into est_unidade values(null,'UNIDADE','UN',3,1,null,null,now(),now(),0,1,1,1);
-insert into est_unidade values(null,'METRO','MT',3,1,null,null,now(),now(),0,1,1,1);
-insert into est_unidade values(null,'KIT','KIT',0,1,null,null,now(),now(),0,1,1,1);
+insert into est_unidade(id,descricao,label,casas_decimais,fator,atual,inserted,updated,version,estabelecimento_id,user_inserted_id,user_updated_id) 
+  values 
+        (1,'UNIDADE','UN',0,1,1,now(),now(),0,1,1,1),
+        (2,'QUILO','KG',3,1,1,now(),now(),0,1,1,1),
+        (3,'CONJUNTO','CJ',0,1,1,now(),now(),0,1,1,1),
+        (4,'PAR','PAR',0,1,1,now(),now(),0,1,1,1),
+        (5,'PACOTE COM 3','PCT3',0,3,0,now(),now(),0,1,1,1),
+        (6,'MEIA DÚZIA','MDZ',0,6,0,now(),now(),0,1,1,1),
+        (7,'DÚZIA','DZ',0,12,0,now(),now(),0,1,1,1),
+        (8,'METRO','MT',2,1,1,now(),now(),0,1,1,1),
+        (9,'PACOTE COM 5','PCT5',0,5,0,now(),now(),0,1,1,1),
+        (10,'ROLO COM 30 METROS','30M',0,30,0,now(),now(),0,1,1,1),
+        (11,'CAIXA','CX',0,1,1,now(),now(),0,1,1,1),
+        (12,'PACOTE COM 15','PCT15',0,5,0,now(),now(),0,1,1,1),
+        (13,'JOGO OU KIT','JG',0,1,0,now(),now(),0,1,1,1);
 
 
 TRUNCATE TABLE fin_centrocusto;

@@ -81,6 +81,9 @@ Encore
   .addEntry('fin/movimentacao/recorrente/list', './assets/js/Financeiro/Movimentacao/list_recorrente.js')
   .addEntry('fin/movimentacao/transfEntreCarteiras/form', './assets/js/Financeiro/Movimentacao/form_transfEntreCarteiras.js')
   
+  .addEntry('fin/movimentacao/grupo/form', './assets/js/Financeiro/Movimentacao/form_emGrupo.js')
+  .addEntry('fin/movimentacao/grupo/list', './assets/js/Financeiro/Movimentacao/list_emGrupo.js')
+  
   .addEntry('fin/cadeia/exibirMovimentacoes', './assets/js/Financeiro/Movimentacao/cadeia_exibirMovimentacoes.js')
   
 
