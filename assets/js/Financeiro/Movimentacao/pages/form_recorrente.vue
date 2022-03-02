@@ -460,11 +460,6 @@ export default {
               ? formData.documentoBanco["@id"]
               : null;
 
-          formData.centroCusto =
-            formData.centroCusto && formData.centroCusto["@id"]
-              ? formData.centroCusto["@id"]
-              : null;
-
           if (formData.cedente && formData.cedente.text) {
             formData.cedente = formData.cedente.text;
           }

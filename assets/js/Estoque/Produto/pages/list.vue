@@ -1,20 +1,26 @@
 <template>
-  <Toast group="mainToast" position="bottom-right" class="mb-5" />
-  <ConfirmDialog group="confirmDialog_crosierListS" />
+  <CrosierListS
+    titulo="Produto"
+    apiResource="/api/est/produto"
+    :formUrl="null"
+    :filtrosNaSidebar="true"
+  >
+    <template v-slot:filter-fields>
+      <div class="form-row">
+        <CrosierInputText label="Código" id="codigo" v-model="this.filters.codigo" />
 
-  <CrosierListS titulo="Operadoras de Cartões" apiResource="/api/fin/operadoraCartao/" ref="dt">
+        <CrosierInputText label="Nome" id="nome" v-model="this.filters.nome" />
+
+        <CrosierDropdownBoolean label="Ativo" id="ativo" v-model="this.filters.ativo" />
+      </div>
+    </template>
+
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true"></Column>
 
-      <Column field="descricao" header="Descrição" :sortable="true"></Column>
+      <Column field="codigo" header="Código" :sortable="true"></Column>
 
-      <Column field="carteira.descricaoMontada" header="Carteira" :sortable="true"></Column>
-
-      <Column field="ativa" header="Ativa" :sortable="true">
-        <template class="text-center" #body="r">
-          {{ r.data.ativa ? "Sim" : "Não" }}
-        </template>
-      </Column>
+      <Column field="nome" header="Nome" :sortable="true"></Column>
 
       <Column field="updated" header="" :sortable="true">
         <template class="text-right" #body="r">
@@ -23,7 +29,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="'form?id=' + r.data.id"
+              :href="'/est/produto/form/' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <a
@@ -51,17 +57,15 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierListS } from "crosier-vue";
+import { CrosierDropdownBoolean, CrosierInputText, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
-import Toast from "primevue/toast";
-import ConfirmDialog from "primevue/confirmdialog";
 
 export default {
   components: {
     CrosierListS,
     Column,
-    Toast,
-    ConfirmDialog,
+    CrosierDropdownBoolean,
+    CrosierInputText,
   },
 
   methods: {

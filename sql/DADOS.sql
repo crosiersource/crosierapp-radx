@@ -16,6 +16,16 @@ VALUES (null, '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 'crosierapp-
 
 DELETE
 FROM cfg_app_config
+WHERE chave = 'URL_devlocal';
+
+INSERT INTO `cfg_app_config` (id, chave, valor, is_json, app_uuid, inserted, updated,
+                              estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (1, 'URL_devlocal', 'https://radx.crosier.dev', false,
+        '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 1, 1, 1);
+
+
+DELETE
+FROM cfg_app_config
 WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
  AND chave = 'financeiro.filiais_prop.json';
 
@@ -23,6 +33,18 @@ INSERT INTO cfg_app_config
  (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
 VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'financeiro.filiais_prop.json', 
         '{ "00000000000000": "EMPRESA TESTE LTDA" }');
+
+
+DELETE
+FROM cfg_app_config
+WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
+  AND chave = 'fin.extratos_cartoes.padroes_cabecalhos';
+
+INSERT INTO cfg_app_config
+(id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'fin.extratos_cartoes.padroes_cabecalhos',
+        '[ { "descricao": "Stone Recebimentos 2022", "cabecalho": "STONECODE\tDOCUMENTO\tNOME FANTASIA\tCATEGORIA\tHORA DA VENDA\tDATA DE VENCIMENTO\tTIPO\tNº DA PARCELA\tQTD DE PARCELAS\tBANDEIRA\tSTONE ID\tN° CARTÃO\tVALOR BRUTO\tVALOR LÍQUIDO\tDESCONTO DE ANTECIPAÇÃO\tDESCONTO DE MDR\tÚLTIMO STATUS\tDATA DO ÚLTIMO STATUS\tCHAVE EXTERNA", "campos": { "status": "ÚLTIMO STATUS", "dtMoviment": "HORA DA VENDA", "dtVencto": "DATA DE VENCIMENTO", "debitoOuCredito": "TIPO", "qtdeParcelasCartao": "QTD DE PARCELAS", "cadeiaOrdem": "Nº DA PARCELA", "bandeira": "BANDEIRA", "numCartao": "N° CARTÃO", "idTransacaoCartao": "STONE ID", "valor": "VALOR BRUTO", "descontoMdr": "DESCONTO DE MDR", "descontoAntecip": "DESCONTO DE ANTECIPAÇÃO" } }, { "descricao": "Stone Vendas 2022", "cabecalho": "HORA DA VENDA\tTIPO\tBANDEIRA\tMEIO DE CAPTURA\tSTONE ID\tVALOR BRUTO\tVALOR LÍQUIDO\tN° CARTÃO\tSERIAL NUMBER\tÚLTIMO STATUS\tDATA DO ÚLTIMO STATUS\tSTONE CODE", "campos": { "status": "ÚLTIMO STATUS", "dtMoviment": "HORA DA VENDA", "dtVencto": "DATA DE VENCIMENTO", "debitoOuCredito": "TIPO", "bandeira": "BANDEIRA", "idTransacaoCartao": "STONE ID", "valor": "VALOR BRUTO", "numCartao": "N° CARTÃO" } } ]');
+
 
 DELETE
 FROM cfg_app_config
@@ -512,6 +534,7 @@ VALUES (null, 'est_fornecedor_json_metadata', '9121ea11-dc5d-4a22-9596-187f5452f
  }');
 
 
+TRUNCATE TABLE est_lista_preco;
 
 insert into est_lista_preco
 values (1, 'VAREJO', '1900-01-01', null, now(), now(), 0, 1, 1, 1);
@@ -538,7 +561,7 @@ VALUES (null, uuid(), @lastInsertId, '00', 'INDEFINIDO', NULL, now(), now(), 0, 
 
 
 
-
+TRUNCATE TABLE est_depreciacao_preco;
 
 INSERT INTO est_depreciacao_preco(id, porcentagem, prazo_ini, prazo_fim, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, 1, 0, 15, now(), now(), 0, 1, 1, 1);

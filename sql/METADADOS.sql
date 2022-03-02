@@ -1364,6 +1364,7 @@ CREATE TABLE `fin_operadora_cartao`
   `id`                 bigint(20)  NOT NULL AUTO_INCREMENT,
   `descricao`          varchar(40) NOT NULL,
   `carteira_id`        bigint(20)  NOT NULL,
+  `ativa`              tinyint(1),
 
   `inserted`           datetime    NOT NULL,
   `updated`            datetime    NOT NULL,
@@ -1374,6 +1375,7 @@ CREATE TABLE `fin_operadora_cartao`
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_fin_operadora_cartao_descricao` (`descricao`),
+  
   KEY `K_fin_operadora_cartao_carteira` (`carteira_id`),
   CONSTRAINT `FK_fin_operadora_cartao_carteira` FOREIGN KEY (`carteira_id`) REFERENCES `fin_carteira` (`id`),
 

@@ -69,7 +69,7 @@ class TrayController extends BaseController
      * @Route("/ecommerce/tray/endpoint/{clienteConfig}", name="ecommerce_tray_endpoint")
      * @throws ViewException
      */
-    public function trayEndpoint(Request $request, ClienteConfig $clienteConfig): RedirectResponse
+    public function trayEndpoint(Request $request, ?ClienteConfig $clienteConfig = null): Response
     {
 
         /**
@@ -107,10 +107,16 @@ class TrayController extends BaseController
         $this->syslog->info('ecomm_tray_endpoint', implode(PHP_EOL, $r));
 
         if ($request->get("code")) {
-            $clienteConfig->jsonData['tray']['code'] = $request->get("code");
-            $this->clienteConfigEntityHandler->save($clienteConfig);
+            if ($clienteConfig) {
+                $clienteConfig->jsonData['tray']['code'] = $request->get("code");
+                $this->clienteConfigEntityHandler->save($clienteConfig);
+            }
         }
-        return new RedirectResponse('/v/ecommerce/clienteConfig/form?id=' . $clienteConfig->getId());
+        if ($clienteConfig) {
+            return new RedirectResponse('/v/ecommerce/clienteConfig/form?id=' . $clienteConfig->getId());
+        } else {
+            return new Response(implode('<br/>', $r));
+        }
     }
 
 

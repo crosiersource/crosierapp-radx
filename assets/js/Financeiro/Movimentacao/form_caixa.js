@@ -5,7 +5,7 @@ import { createStore } from "vuex";
 import { api } from "crosier-vue";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
 import ConfirmationService from "primevue/confirmationservice";
-import Page from "./pages/form";
+import Page from "./pages/form_caixa";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
@@ -28,14 +28,13 @@ const store = createStore({
       fieldsErrors: {},
     };
   },
+
   getters: {
     isLoading: (state) => state.loading > 0,
-    getFields(state) {
-      const { fields } = state;
-      return fields;
-    },
+    getFields: (state) => state.fields,
     getFieldsErrors: (state) => state.fieldsErrors,
   },
+
   mutations: {
     setLoading(state, loading) {
       if (loading) {
@@ -46,6 +45,9 @@ const store = createStore({
     },
 
     setFields(state, fields) {
+      fields.dtMoviment = fields.dtMoviment ? new Date(fields.dtMoviment) : null;
+      fields.dtVencto = fields.dtVencto ? new Date(fields.dtVencto) : null;
+      fields.dtVenctoEfetiva = fields.dtVenctoEfetiva ? new Date(fields.dtVenctoEfetiva) : null;
       state.fields = fields;
     },
 
@@ -61,17 +63,7 @@ const store = createStore({
       if (id) {
         try {
           const response = await api.get({
-            apiResource: `/api/fin/grupo/${id}`,
-            properties: [
-              "id",
-              "descricao",
-              "ativo",
-              "carteiraPagantePadrao",
-              "categoriaPadrao",
-              "diaInicioAprox",
-              "diaVencto",
-              "updated",
-            ],
+            apiResource: `/api/fin/movimentacao/${id}`,
           });
 
           if (response.data["@id"]) {

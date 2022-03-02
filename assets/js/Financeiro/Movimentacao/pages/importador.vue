@@ -26,12 +26,13 @@
               :options="[
                 { label: 'Extrato Simples', value: 'EXTRATO_SIMPLES' },
                 { label: 'Extrato de Cartão', value: 'EXTRATO_CARTAO' },
-                { label: 'Lista de Movimentações Agrupadas', value: 'MOVS_AGRUPADAS' },
+                { label: 'Extrato de Grupo', value: 'EXTRATO_GRUPO' },
               ]"
               id="tipoImportacao"
             />
 
             <CrosierDropdownEntity
+              v-if="this.fields.tipoImportacao === 'EXTRATO_SIMPLES'"
               col="5"
               v-model="this.fields.carteira"
               :error="this.fieldsErrors.carteira"
@@ -44,6 +45,27 @@
               id="carteira"
             />
 
+            <CrosierDropdownEntity
+              v-if="this.fields.tipoImportacao === 'EXTRATO_CARTAO'"
+              col="5"
+              v-model="this.fields.operadoraCartao"
+              :error="this.fieldsErrors.operadoraCartao"
+              entity-uri="/api/fin/operadoraCartao"
+              optionLabel="descricao"
+              :optionValue="null"
+              :orderBy="{ descricao: 'ASC' }"
+              :filters="{ ativa: true }"
+              label="Operadora"
+              id="operadoraCartao"
+            />
+
+            <div class="col-md-5" v-else>
+              <div class="form-group">
+                <label class="transparente">.</label>
+                <Skeleton class="form-control" height="2rem" />
+              </div>
+            </div>
+
             <div class="col-2">
               <label for="btnImportar" class="transparente">...</label>
               <button
@@ -54,6 +76,39 @@
               >
                 <i class="fas fa-file-import"></i> Importar
               </button>
+            </div>
+          </div>
+
+          <div class="form-row" v-if="this.fields.tipoImportacao === 'EXTRATO_GRUPO'">
+            <CrosierDropdownEntity
+              col="6"
+              v-model="this.filters.grupo"
+              entity-uri="/api/fin/grupo"
+              optionLabel="descricao"
+              :orderBy="{ descricao: 'ASC' }"
+              :filters="{ ativo: true }"
+              :properties="['id', 'descricao']"
+              id="grupo"
+              label="Grupo"
+            />
+            <CrosierDropdownEntity
+              col="6"
+              v-if="this.filters.grupo"
+              v-model="this.filters.grupoItem"
+              entity-uri="/api/fin/grupoItem"
+              optionLabel="descricaoMontada"
+              :optionValue="null"
+              :orderBy="{ dtVencto: 'DESC' }"
+              :filters="{ pai: this.filters.grupo }"
+              :properties="['id', 'descricaoMontada', 'pai']"
+              id="grupoItem"
+              label="Fatura"
+            />
+            <div class="col-md-6" v-else>
+              <div class="form-group">
+                <label>Fatura</label>
+                <Skeleton class="form-control" height="2rem" />
+              </div>
             </div>
           </div>
 
@@ -71,9 +126,19 @@
             <div class="alert alert-success d-flex align-items-center" role="alert">
               <h3><i class="far fa-check-circle"></i> Sucesso!</h3>
             </div>
-            <p class="card-text">
-              {{ this.results.movs.length }} movimentações importadas para a carteira
+            <p class="card-text" v-if="this.fields.tipoImportacao === 'EXTRATO_SIMPLES'">
+              {{ this.results.qtdeImportadas }} movimentações importadas para a carteira
               <b>{{ this.fields.carteira.descricaoMontada }}</b
+              >.
+            </p>
+            <p class="card-text" v-if="this.fields.tipoImportacao === 'EXTRATO_CARTAO'">
+              {{ this.results.qtdeImportadas }} movimentações importadas para a operadora
+              <b>{{ this.fields.operadoraCartao.descricao }}</b
+              >.
+            </p>
+            <p class="card-text" v-if="this.fields.tipoImportacao === 'EXTRATO_GRUPO'">
+              {{ this.results.qtdeImportadas }} movimentações importadas para a operadora
+              <b>{{ this.fields.grupoItem.descricaoMontada }}</b
               >.
             </p>
 
@@ -104,6 +169,7 @@ import {
   submitForm,
 } from "crosier-vue";
 import Toast from "primevue/toast";
+import Skeleton from "primevue/skeleton";
 import ConfirmDialog from "primevue/confirmdialog";
 import moment from "moment";
 import * as yup from "yup";
@@ -111,6 +177,7 @@ import * as yup from "yup";
 export default {
   components: {
     Toast,
+    Skeleton,
     ConfirmDialog,
     CrosierBlock,
     CrosierDropdownEntity,
@@ -123,17 +190,6 @@ export default {
       retornouAsDatas: false,
       results: null,
     };
-  },
-
-  async mounted() {
-    this.setLoading(true);
-
-    this.schemaValidator = yup.object().shape({
-      tipoImportacao: yup.string().required(),
-      carteira: yup.mixed().required(),
-    });
-
-    this.setLoading(false);
   },
 
   methods: {
@@ -161,16 +217,27 @@ export default {
               setUrlId: false,
               commitFormDataAfterSave: false,
               fnBeforeSave: (formData) => {
-                formData.carteira = formData.carteira.id;
+                formData.carteira =
+                  formData.carteira && formData.carteira["@id"] ? formData.carteira["@id"] : null;
+
+                formData.operadoraCartao =
+                  formData.operadoraCartao && formData.operadoraCartao["@id"]
+                    ? formData.operadoraCartao["@id"]
+                    : null;
+
+                formData.grupoItem =
+                  formData.grupoItem && formData.grupoItem["@id"]
+                    ? formData.grupoItem["@id"]
+                    : null;
               },
             });
+            console.log(rs);
             if (!rs?.data?.RESULT === "OK") {
               throw new Error();
             }
             this.results = rs.data.DATA;
             this.retornouAsDatas = this.results.menorData && this.results.maiorData;
           } catch (e) {
-            console.error("Eroooooo");
             console.error(e);
             this.$toast.add({
               group: "mainToast",
@@ -200,6 +267,29 @@ export default {
       fields: "getFields",
       fieldsErrors: "getFieldsErrors",
     }),
+
+    schemaValidator() {
+      if (this.fields.tipoImportacao === "EXTRATO_SIMPLES") {
+        return yup.object().shape({
+          tipoImportacao: yup.string().required(),
+          carteira: yup.mixed().required(),
+        });
+      }
+      if (this.fields.tipoImportacao === "EXTRATO_CARTAO") {
+        return yup.object().shape({
+          tipoImportacao: yup.string().required(),
+          operadoraCartao: yup.mixed().required(),
+        });
+      }
+      if (this.fields.tipoImportacao === "EXTRATO_GRUPO") {
+        return yup.object().shape({
+          tipoImportacao: yup.string().required(),
+          grupoItem: yup.mixed().required(),
+        });
+      }
+
+      return null;
+    },
   },
 };
 </script>

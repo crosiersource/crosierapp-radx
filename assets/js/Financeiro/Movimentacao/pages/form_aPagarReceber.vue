@@ -611,11 +611,6 @@ export default {
               ? formData.documentoBanco["@id"]
               : null;
 
-          formData.centroCusto =
-            formData.centroCusto && formData.centroCusto["@id"]
-              ? formData.centroCusto["@id"]
-              : null;
-
           formData.chequeBanco =
             formData.chequeBanco && formData.chequeBanco["@id"]
               ? formData.chequeBanco["@id"]

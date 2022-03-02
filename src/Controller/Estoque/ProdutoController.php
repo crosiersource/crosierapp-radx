@@ -14,6 +14,8 @@ use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorEcommerceFactory;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ListaPreco;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
@@ -1045,6 +1047,35 @@ class ProdutoController extends FormListController
 
         $vs = Select2JsUtils::arrayToSelect2DataKeyEqualValue($vs);
         return new JsonResponse(['results' => $vs]);
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/ecommerce/integrarProduto/{produto}", name="est_produto_ecommerce_integrarProduto")
+     * @param Request $request
+     * @param IntegradorWebStorm $integraWebStormBusiness
+     * @param Produto $produto
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     * @return RedirectResponse
+     */
+    public function integrarProduto(Request $request, IntegradorEcommerceFactory $integradorEcommerceFactory, Produto $produto): RedirectResponse
+    {
+        try {
+            $start = microtime(true);
+            $integrarImagens = null;
+            if ($request->query->has('integrarImagens')) {
+                $integrarImagens = filter_var($request->query->get('integrarImagens'), FILTER_VALIDATE_BOOLEAN);
+            } else {
+                $integrarImagens = true;
+            }
+            $integradorEcommerceFactory->getIntegrador()->integraProduto($produto, $integrarImagens);
+            $tt = (int)(microtime(true) - $start);
+            $this->addFlash('success', 'Produto integrado com sucesso (em ' . $tt . 's)');
+        } catch (ViewException $e) {
+            $this->addFlash('error', 'Erro ao integrar produto (' . $e->getMessage() . ')');
+        }
+        return $this->redirectToRoute('est_produto_form', ['id' => $produto->getId(), '_fragment' => 'ecommerce']);
     }
 
 

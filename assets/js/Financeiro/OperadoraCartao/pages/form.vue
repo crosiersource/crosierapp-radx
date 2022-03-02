@@ -2,11 +2,11 @@
   <Toast position="bottom-right" class="mb-5" />
   <CrosierFormS @submitForm="this.submitForm" titulo="Operadora Cartão">
     <div class="form-row">
-      <CrosierInputInt label="Id" col="3" id="id" v-model="this.fields.id" :disabled="true" />
+      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
 
       <CrosierInputText
         label="Descrição"
-        col="5"
+        col="4"
         id="descricao"
         v-model="this.fields.descricao"
         :error="this.formErrors.descricao"
@@ -22,6 +22,14 @@
         label="Carteira"
         id="carteira"
       />
+
+      <CrosierDropdownBoolean
+        label="Ativa"
+        col="2"
+        id="ativa"
+        v-model="this.fields.ativa"
+        :error="this.formErrors.ativa"
+      />
     </div>
   </CrosierFormS>
 </template>
@@ -35,6 +43,7 @@ import {
   CrosierDropdownEntity,
   CrosierInputText,
   CrosierInputInt,
+  CrosierDropdownBoolean,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 
@@ -44,6 +53,7 @@ export default {
     CrosierFormS,
     CrosierDropdownEntity,
     CrosierInputText,
+    CrosierDropdownBoolean,
     CrosierInputInt,
   },
 

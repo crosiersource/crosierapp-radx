@@ -208,11 +208,9 @@ class UploadProdutoCsv
 
                 $produto = new Produto();
 
-
                 $produto->codigo = $campos['erp_codigo'];
                 $produto->jsonData['erp_codigo'] = $campos['erp_codigo'];
                 $produto->jsonData['referencias_extras'] = $campos['erp_referencia'];
-
 
                 $this->handleDeptoGrupoSubgrupo($produto, $campos);
                 $this->handleFornecedor($produto, $campos);
@@ -225,8 +223,7 @@ class UploadProdutoCsv
 
                 $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'] ?? 0.0;
                 $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'] ?? null;
-
-
+                
                 ksort($produto->jsonData);
 
                 $produto = $this->produtoEntityHandler->save($produto, false);

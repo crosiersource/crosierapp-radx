@@ -1,17 +1,38 @@
 <template>
-  <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <Toast position="bottom-right" class="mb-5" />
   <ConfirmDialog></ConfirmDialog>
 
   <CrosierFormS
     @submitForm="this.submitForm"
-    titulo="Movimentação"
-    subtitulo="Lançamento para grupo de movimentações"
+    formUrl="caixa"
+    :listUrl="null"
+    titulo="Movimentação em Caixa"
   >
+    <template #divCima>
+      <div>
+        <CrosierDropdownEntity
+          v-model="this.fields.carteira"
+          entity-uri="/api/fin/carteira"
+          optionLabel="descricaoMontada"
+          :orderBy="{ codigo: 'ASC' }"
+          :filters="{ caixa: true }"
+          :noLabel="true"
+          :selectFirst="true"
+          id="carteira"
+        />
+      </div>
+      <div>
+        <CrosierCalendar
+          :showLabel="false"
+          id="dtMoviment"
+          v-model="this.fields.dtMoviment"
+          :error="this.fieldsErrors.dtMoviment"
+        />
+      </div>
+    </template>
     <template #btns>
       <div class="dropdown ml-2 float-right">
         <button
-          v-if="this.fields.id"
           class="btn btn-secondary dropdown-toggle"
           type="button"
           id="dropdownMenuButton"
@@ -20,22 +41,18 @@
         >
           <i class="fas fa-cog" aria-hidden="true"></i> Opções
         </button>
+
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a
-            class="dropdown-item"
-            :href="'/v/fin/movimentacao/recorrente/form?id=' + this.fields.id"
-            title="Transformar esta movimentação em recorrente"
-          >
-            <i class="fas fa-undo" aria-hidden="true"></i> Transformar em Recorrente
-          </a>
           <button
             type="button"
             class="dropdown-item"
-            @click="this.clonar"
-            title="Clonar esta movimentação"
+            role="button"
+            title="Exibe os campos para lançamento de cheque de terceiros"
+            @click="this.setExibirCamposChequeTerceiros"
           >
-            <i class="far fa-clone"></i> Clonar
+            <i class="fas fa-money-check"></i> Lançamento de Cheque de Terceiros
           </button>
+
           <button
             v-if="this.fields.id"
             type="button"
@@ -64,6 +81,38 @@
         id="categoria"
       />
 
+      <CrosierCurrency
+        col="3"
+        id="valor"
+        label="Valor"
+        v-model="this.fields.valor"
+        :error="this.fieldsErrors.valor"
+      />
+    </div>
+
+    <div class="form-row">
+      <CrosierDropdownEntity
+        col="3"
+        v-model="this.fields.modo"
+        :error="this.fieldsErrors.modo"
+        entity-uri="/api/fin/modo"
+        :optionValue="null"
+        optionLabel="descricaoMontada"
+        :filters="[
+          { 'codigo[]': 1 }, // EM ESPÉCIE
+          { 'codigo[]': 4 }, // CHEQUE TERCEIROS
+          { 'codigo[]': 5 }, // DEPÓSITO BANCÁRIO
+          { 'codigo[]': 7 }, // TRANSF. OU PIX
+          { 'codigo[]': 9 }, // CARTÃO DE CRÉDITO
+          { 'codigo[]': 10 }, // CARTÃO DE DÉBITO
+          { 'codigo[]': 11 }, // TRANSF. ENTRE CONTAS
+        ]"
+        :orderBy="{ codigo: 'ASC' }"
+        label="Modo"
+        id="modo"
+        @update:modelValue="this.onChangeModo"
+      />
+
       <CrosierDropdownEntity
         col="3"
         v-model="this.fields.centroCusto"
@@ -74,32 +123,13 @@
         label="Centro de Custo"
         id="centroCusto"
       />
-    </div>
 
-    <div class="form-row">
-      <CrosierDropdownEntity
+      <CrosierInputText
         col="6"
-        v-model="this.aux.grupo"
-        entity-uri="/api/fin/grupo"
-        optionLabel="descricao"
-        :orderBy="{ descricao: 'ASC' }"
-        :filters="{ ativo: true }"
-        label="Grupo"
-        id="grupo"
-      />
-
-      <CrosierDropdownEntity
-        v-if="this.aux.grupo"
-        col="6"
-        v-model="this.fields.grupoItem"
-        :error="this.fieldsErrors.grupoItem"
-        entity-uri="/api/fin/grupoItem"
-        optionLabel="descricaoMontada"
-        :orderBy="{ descricao: 'ASC' }"
-        :filters="{ pai: this.aux.grupo }"
-        id="grupoItem"
-        @change="this.doFilterNextTick"
-        label="Fatura"
+        label="Descrição"
+        id="descricao"
+        v-model="this.fields.descricao"
+        :error="this.fieldsErrors.descricao"
       />
     </div>
 
@@ -129,7 +159,6 @@
         v-model="this.fields.cedente"
         :options="this.filiais"
         :optionValue="id"
-        :orderBy="{ codigo: 'ASC' }"
         label="Cedente"
         id="dd_cedente"
         helpText="Quem recebe o valor"
@@ -169,39 +198,97 @@
         v-model="this.fields.sacado"
         :options="this.filiais"
         :optionValue="id"
-        :orderBy="{ codigo: 'ASC' }"
         label="Sacado"
         id="sacado"
         helpText="Quem paga o valor"
       />
     </div>
 
-    <div class="form-row">
-      <CrosierInputText
-        label="Descrição"
-        id="descricao"
-        v-model="this.fields.descricao"
-        :error="this.fieldsErrors.descricao"
-      />
+    <div class="card mt-3 mb-3" v-if="this.fields?.modo?.codigo === 4">
+      <div class="card-body">
+        <h5 class="card-title">Cheque</h5>
+
+        <div class="form-row">
+          <CrosierDropdownEntity
+            col="4"
+            v-model="this.fields.chequeBanco"
+            entity-uri="/api/fin/banco"
+            optionLabel="descricaoMontada"
+            :optionValue="null"
+            :orderBy="{ codigo: 'ASC' }"
+            label="Banco"
+            id="chequeBanco"
+          />
+
+          <CrosierInputText
+            label="Agência"
+            col="2"
+            id="chequeAgencia"
+            v-model="this.fields.chequeAgencia"
+          />
+
+          <CrosierInputText
+            label="Conta"
+            col="3"
+            id="chequeConta"
+            v-model="this.fields.chequeConta"
+          />
+
+          <CrosierInputText
+            label="Número"
+            col="3"
+            id="chequeNumCheque"
+            v-model="this.fields.chequeNumCheque"
+          />
+        </div>
+      </div>
     </div>
 
-    <div class="form-row">
-      <CrosierCalendar
-        label="Dt Moviment"
-        col="7"
-        id="dtMoviment"
-        v-model="this.fields.dtMoviment"
-        :error="this.fieldsErrors.dtMoviment"
-        @focus="this.onDtMovimentFocus"
-      />
+    <div class="card mt-3 mb-3" v-show="[9, 10].includes(this.fields?.modo?.codigo)">
+      <div class="card-body">
+        <h5 class="card-title">Dados Cartão</h5>
 
-      <CrosierCurrency
-        label="Valor"
-        col="5"
-        id="valorTotal"
-        v-model="this.fields.valorTotal"
-        :error="this.fieldsErrors.valorTotal"
-      />
+        <div class="form-row">
+          <CrosierDropdownEntity
+            :col="this.fields?.modo?.codigo === 9 ? 3 : 5"
+            v-model="this.fields.operadoraCartao"
+            entity-uri="/api/fin/operadoraCartao"
+            optionLabel="descricao"
+            :optionValue="null"
+            :orderBy="{ descricao: 'ASC' }"
+            label="Operadora"
+            id="operadoraCartao"
+          />
+
+          <CrosierDropdownEntity
+            ref="bandeiraCartao"
+            :col="this.fields?.modo?.codigo === 9 ? 3 : 4"
+            v-model="this.fields.bandeiraCartao"
+            entity-uri="/api/fin/bandeiraCartao"
+            optionLabel="descricao"
+            :optionValue="null"
+            :filters="{ modo: this.fields?.modo ? this.fields?.modo['@id'] : null }"
+            :orderBy="{ descricao: 'ASC' }"
+            label="Bandeira"
+            id="bandeiraCartao"
+          />
+
+          <CrosierInputText
+            label="Últ 4 Dígitos"
+            col="3"
+            id="numCartao"
+            v-model="this.fields.numCartao"
+          />
+
+          <CrosierInputInt
+            v-if="this.fields?.modo?.codigo === 9"
+            label="Parcelas"
+            col="3"
+            id="qtdeParcelas"
+            v-model="this.fields.qtdeParcelas"
+          />
+        </div>
+      </div>
     </div>
 
     <div class="form-row mt-2">
@@ -216,17 +303,17 @@ import Skeleton from "primevue/skeleton";
 import ConfirmDialog from "primevue/confirmdialog";
 import * as yup from "yup";
 import {
+  api,
+  CrosierAutoComplete,
+  CrosierCalendar,
   CrosierCurrency,
   CrosierDropdown,
   CrosierDropdownEntity,
-  CrosierAutoComplete,
   CrosierFormS,
   CrosierInputInt,
   CrosierInputText,
   CrosierInputTextarea,
-  CrosierCalendar,
   submitForm,
-  api,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
@@ -253,7 +340,6 @@ export default {
       schemaValidator: {},
       sacadosOuCedentes: null,
       filiais: null,
-      dtVencto_cache: null,
     };
   },
 
@@ -261,11 +347,18 @@ export default {
     this.setLoading(true);
 
     await this.$store.dispatch("loadData");
+
+    if (!this.fields.dtMoviment) {
+      this.fields.dtMoviment = new Date();
+    }
+
     this.schemaValidator = yup.object().shape({
       categoria: yup.mixed().required().typeError(),
+      carteira: yup.mixed().required().typeError(),
+      modo: yup.mixed().required().typeError(),
       descricao: yup.mixed().required().typeError(),
       dtMoviment: yup.date().required().typeError(),
-      valorTotal: yup.number().required().typeError(),
+      valor: yup.number().required().typeError(),
     });
 
     const rs = await axios.get("/api/fin/movimentacao/filiais/", {
@@ -312,61 +405,69 @@ export default {
       }
     },
 
+    onChangeModo() {
+      this.$nextTick(async () => {
+        await this.$refs.bandeiraCartao.load();
+      });
+    },
+
     async submitForm() {
       this.setLoading(true);
-      await submitForm({
-        apiResource: "/api/fin/movimentacao",
-        schemaValidator: this.schemaValidator,
-        $store: this.$store,
-        formDataStateName: "fields",
-        $toast: this.$toast,
-        fnBeforeSave: (formData) => {
-          formData.tipoLancto = "/api/fin/tipoLancto/20";
-          formData.categoria = formData.categoria["@id"];
+      try {
+        await submitForm({
+          apiResource: "/api/fin/movimentacao",
+          schemaValidator: this.schemaValidator,
+          $store: this.$store,
+          formDataStateName: "fields",
+          $toast: this.$toast,
+          fnBeforeSave: (formData) => {
+            formData.categoria = formData.categoria["@id"];
+            formData.modo = formData.modo["@id"];
 
-          formData.centroCusto =
-            formData.centroCusto && formData.centroCusto["@id"]
-              ? formData.centroCusto["@id"]
-              : null;
+            formData.centroCusto =
+              formData.centroCusto && formData.centroCusto["@id"]
+                ? formData.centroCusto["@id"]
+                : null;
 
-          if (formData.cedente && formData.cedente.text) {
-            formData.cedente = formData.cedente.text;
-          }
+            formData.operadoraCartao =
+              formData.operadoraCartao && formData.operadoraCartao["@id"]
+                ? formData.operadoraCartao["@id"]
+                : null;
 
-          if (formData.sacado && formData.sacado.text) {
-            formData.sacado = formData.sacado.text;
-          }
+            if (formData.operadoraCartao) {
+              formData.tipoLancto = "/api/fin/tipoLancto/63";
+            }
 
-          delete formData.cadeia;
-          delete formData.carteira;
-          delete formData.modo;
-        },
-      });
-      this.setLoading(false);
-    },
+            formData.bandeiraCartao =
+              formData.bandeiraCartao && formData.bandeiraCartao["@id"]
+                ? formData.bandeiraCartao["@id"]
+                : null;
 
-    async onFocusDtVenctoEfet() {
-      if (this.fields.dtVencto) {
-        if (this.fields.dtVencto === this.dtVencto_cache) return;
-        this.dtVencto_cache = this.fields.dtVencto;
-        const route = `/base/diaUtil/findDiaUtil/?financeiro=true&dt=${moment(
-          this.fields.dtVencto
-        ).format("YYYY-MM-DD")}`;
-        const rs = await axios.get(route, {
-          cache: {
-            maxAge: 2 * 60 * 1000,
+            formData.documentoBanco =
+              formData.documentoBanco && formData.documentoBanco["@id"]
+                ? formData.documentoBanco["@id"]
+                : null;
+
+            formData.chequeBanco =
+              formData.chequeBanco && formData.chequeBanco["@id"]
+                ? formData.chequeBanco["@id"]
+                : null;
+
+            if (formData.cedente && formData.cedente.text) {
+              formData.cedente = formData.cedente.text;
+            }
+
+            if (formData.sacado && formData.sacado.text) {
+              formData.sacado = formData.sacado.text;
+            }
+
+            delete formData.cadeia;
           },
         });
-        if (rs?.data?.diaUtil) {
-          this.fields.dtVenctoEfetiva = new Date(moment(rs.data.diaUtil));
-        }
+      } catch (e) {
+        console.error(e);
       }
-    },
-
-    onDtMovimentFocus() {
-      if (!this.fields.dtMoviment) {
-        this.fields.dtMoviment = new Date();
-      }
+      this.setLoading(false);
     },
 
     clonar() {
@@ -429,7 +530,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters({ fields: "getFields", fieldsErrors: "getFieldsErrors", aux: "getAux" }),
+    ...mapGetters({ fields: "getFields", fieldsErrors: "getFieldsErrors" }),
   },
 };
 </script>

@@ -2,7 +2,12 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
-  <CrosierListS titulo="Grupos de Movimentação" apiResource="/api/fin/grupo/" ref="dt">
+  <CrosierListS
+    titulo="Grupos de Movimentação"
+    apiResource="/api/fin/grupo/"
+    ref="dt"
+    :properties="['id', 'descricao', 'carteiraPagantePadrao', 'ativo', 'updated']"
+  >
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true"></Column>
 

@@ -15,7 +15,7 @@
                     <div class="col text-right">
                         <button type="button" class="btn btn-outline-danger" value="Integrar"
                                 title="Integrar produto ao ecommerce"
-                                data-url="{{ url('est_integraWebStorm_integrarProduto', {'produto': e.id}) }}"
+                                data-url="/est/produto/ecommerce/integrarProduto/{{ e.id }}"
                                 data-target="#confirmationModal" data-toggle="modal">
                             <i class="fas fa-cloud-upload-alt"></i> Integrar
                         </button>
@@ -23,7 +23,7 @@
                         {% if e.jsonData['ecommerce_id']|default('') != '' %}
                             <button type="button" class="ml-2 btn btn-outline-warning" value="Integrar sem imagens"
                                     title="Integrar produto ao ecommerce (não reenviar imagens)"
-                                    data-url="{{ url('est_integraWebStorm_integrarProduto', {'produto': e.id, 'integrarImagens': false}) }}"
+                                    data-url="/est/produto/ecommerce/integrarProduto/{{ e.id }}?integrarImagens=false"
                                     data-target="#confirmationModal" data-toggle="modal">
                                 <i class="fas fa-cloud-upload-alt"></i> Integrar (sem imagens)
                             </button>

@@ -18,7 +18,7 @@
                 v-model="this.filters.grupo"
                 entity-uri="/api/fin/grupo"
                 optionLabel="descricao"
-                :orderBy="{ dtVencto: 'DESC' }"
+                :orderBy="{ descricao: 'ASC' }"
                 :filters="{ ativo: true }"
                 id="grupo"
                 label="Grupo"
@@ -34,7 +34,7 @@
                 :filters="{ pai: this.filters.grupo }"
                 id="grupoItem"
                 @change="this.doFilterNextTick"
-                label="Item"
+                label="Fatura"
               />
             </div>
           </div>

@@ -11,9 +11,9 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\CentroCusto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
-use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\ImportExtratoCabec;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Modo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\RegraImportacaoLinha;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\TipoLancto;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\MovimentacaoEntityHandler;
@@ -66,19 +66,11 @@ class MovimentacaoImporter
     private array $movsJaImportadas = [];
 
 
-    private ?string $tipoExtrato = null;
-
     private ?Carteira $carteiraExtrato = null;
 
     private ?GrupoItem $grupoItem = null;
 
-    private ?bool $gerarSemRegras = true;
-
-    private ?bool $gerarAConferir = true;
-
     private ?bool $identificarPorCabecalho = false;
-
-    private ?array $arrayCabecalho = null;
 
     private ModoRepository $repoModo;
 
@@ -113,53 +105,108 @@ class MovimentacaoImporter
         $this->repoBandeiraCartao = $this->doctrine->getRepository(BandeiraCartao::class);
         $this->repoCentroCusto = $this->doctrine->getRepository(CentroCusto::class);
         $this->movimentacaoEntityHandler = $movimentacaoEntityHandler;
+
+        $this->uuidLote = StringUtils::guidv4();
     }
 
     /**
      * @throws ViewException
      */
-    public function importar($tipoExtrato, $linhasExtrato,
-                             Carteira $carteiraExtrato,
-                             ?GrupoItem $grupoItem = null,
-                             ?bool $gerarSemRegras = true,
-                             ?bool $identificarPorCabecalho = false,
-                             ?bool $gerarAConferir = true): ?array
+    public function importarExtratoSimples(Carteira $carteiraExtrato, string $linhasExtrato)
     {
-        $this->uuidLote = StringUtils::guidv4();
-        $this->tipoExtrato = $tipoExtrato;
         $this->stringExtrato = $linhasExtrato;
         $this->carteiraExtrato = $carteiraExtrato;
-        $this->grupoItem = $grupoItem;
-        $this->gerarSemRegras = $gerarSemRegras;
-        $this->gerarAConferir = $gerarAConferir;
-        $this->identificarPorCabecalho = $identificarPorCabecalho;
-
-        if ($identificarPorCabecalho) {
-            $this->buildArrayCabecalho();
-        }
-
-        if ($tipoExtrato === 'MOVS_AGRUPADAS' && !$grupoItem) {
-            throw new ViewException('Para extratos de grupos de movimentações, é necessário informar o grupo.');
-        }
 
         $conn = $this->movimentacaoEntityHandler->getDoctrine()->getConnection();
 
         try {
             $conn->beginTransaction();
-            $r = null;
-            switch ($tipoExtrato) {
-                case 'EXTRATO_SIMPLES':
-                    $r = $this->importarExtratoSimples();
-                    break;
-                case 'EXTRATO_CARTAO':
-                    $r = $this->importarExtratoCartao();
-                    break;
-                case 'MOVS_AGRUPADAS':
-                    $r = $this->importarGrupoMovimentacao();
-                    break;
-                default:
-                    throw new ViewException('Tipo de Importação não contemplado');
+
+            $this->movsJaImportadas = [];
+
+            $linhasImportadas = []; // para exibir no resultado final
+            $linhasNaoImportadas = []; // para exibir no resultado final
+
+            $this->linhasAImportar = [];
+
+            $this->linhas = explode("\n", $this->stringExtrato);
+
+            $r = [];
+            $r['LINHAS_RESULT'] = null;
+            $r['movs'] = null;
+            $r['err'] = null;
+
+            $qtdeLinhas = count($this->linhas);
+
+
+            for ($i = 0; $i < $qtdeLinhas; $i++) {
+                $linha = trim($this->linhas[$i]);
+
+                // Verifica se é uma linha (de descrição) complementar já importada
+                if (in_array($i, $this->linhasComplementares, true)) {
+                    $this->linhasAImportar[] = $linha;
+                    continue;
+                }
+
+                if (!$linha || trim($linha) === TXT_LINHA_IMPORTADA || trim($linha) === TXT_LINHA_NAO_IMPORTADA) {
+                    $linhasNaoImportadas[] = $linha;
+                    continue;
+                }
+
+                if ($this->tipoExtrato === 'EXTRATO_SIMPLES' && !$this->ehLinhaExtratoSimplesOuSaldo($linha)) {
+                    $linhasNaoImportadas[] = $linha . ' (NÃO É LINHA DE EXTRATO?)';
+                    continue;
+                }
+
+                $this->linhasAImportar[] = $linha;
             }
+
+            $this->checkDuplicacoes($this->linhasAImportar);
+
+            foreach ($this->linhasAImportar as $i => $linha) {
+                try {
+                    $camposLinha = $this->obterCamposLinha($i);
+                    $movimentacao = $this->camposLinhaToMovimentacao($camposLinha);
+
+                    if ($movimentacao) {
+                        $movimentacao->jsonData['importacao_linha'] = $linha;
+                        $movimentacao->jsonData['uuid_lote'] = $this->uuidLote;
+                        $this->movimentacaoEntityHandler->save($movimentacao);
+                        $this->movsJaImportadas[] = $movimentacao;
+                        $linhasImportadas[] = $linha;
+                    } else {
+                        $linhasNaoImportadas[] = $linha . ' (NÃO GEROU NOVA MOVIMENTAÇÃO)';
+                    }
+                } catch (ViewException $e) {
+                    $r['err'][] = [
+                        'linha' => $linha,
+                        'errMsg' => $e->getMessage()
+                    ];
+                    $linhasNaoImportadas[] = $linha . ' (ERRO AO IMPORTAR: ' . $e->getMessage() . ')';
+                } catch (\Throwable $e) {
+                    $r['err'][] = [
+                        'linha' => $linha,
+                        'errMsg' => 'Erro geral ao processar linha: ' . $linha
+                    ];
+                    $linhasNaoImportadas[] = $linha . ' (ERRO AO IMPORTAR!)';
+                }
+            }
+
+            $r['LINHAS_RESULT'] = '';
+            if (count($linhasNaoImportadas) > 0) {
+                $r['LINHAS_RESULT'] .= TXT_LINHA_NAO_IMPORTADA . "\n" .
+                    implode("\n", $linhasNaoImportadas) . "\n\n\n\n\n";
+            }
+            $r['LINHAS_RESULT'] .= TXT_LINHA_IMPORTADA . "\n" .
+                implode("\n", $linhasImportadas);
+
+            $r['qtdeImportadas'] = count($linhasImportadas);
+            $r['qtdeNaoImportadas'] = count($linhasNaoImportadas);
+
+
+            $r['menorData'] = $this->menorDt ? $this->menorDt->format('Y-m-d') : null;
+            $r['maiorData'] = $this->maiorDt ? $this->maiorDt->format('Y-m-d') : null;
+
             $conn->commit();
             $r['RESULT'] = 'OK';
             return $r;
@@ -176,98 +223,287 @@ class MovimentacaoImporter
     }
 
 
-    private function importarExtratoSimples(): ?array
+    /**
+     * @throws ViewException
+     */
+    public function importarExtratoCartao(OperadoraCartao $operadoraCartao, string $linhasExtrato)
     {
-        $this->movsJaImportadas = [];
-
-        $linhasImportadas = []; // para exibir no resultado final
-        $linhasNaoImportadas = []; // para exibir no resultado final
-
-        $this->linhasAImportar = [];
-
-        $this->linhas = explode("\n", $this->stringExtrato);
-
         $r = [];
-        $r['LINHAS_RESULT'] = null;
-        $r['movs'] = null;
-        $r['err'] = null;
+        $linhas = explode("\n", $linhasExtrato);
+        $primeira = $linhas[0];
+        $cabecalho = explode("\t", $primeira);
 
-        $qtdeLinhas = count($this->linhas);
+        $rsPadroesCabecalho = $this->movimentacaoEntityHandler->getDoctrine()->getConnection()
+            ->fetchAssociative(
+                'SELECT valor FROM cfg_app_config WHERE ' .
+                'app_uuid = \'9121ea11-dc5d-4a22-9596-187f5452f95a\' AND ' .
+                'chave = \'fin.extratos_cartoes.padroes_cabecalhos\'');
 
-
-        for ($i = 0; $i < $qtdeLinhas; $i++) {
-            $linha = trim($this->linhas[$i]);
-            if ($this->identificarPorCabecalho && $this->arrayCabecalho && $i === 0) {
-                $linhasNaoImportadas[] = $linha . ' (CABEÇALHO?)';
-                // pula o cabeçalho
-                continue;
+        $padroesCabecalho = json_decode($rsPadroesCabecalho['valor'], true);
+        $achouPadrao = false;
+        foreach ($padroesCabecalho as $padraoCabecalho) {
+            if ($padraoCabecalho['cabecalho'] === $primeira) {
+                $achouPadrao = true;
+                break;
             }
-
-            // Verifica se é uma linha (de descrição) complementar já importada
-            if (in_array($i, $this->linhasComplementares, true)) {
-                $this->linhasAImportar[] = $linha;
-                continue;
-            }
-
-            if (!$linha || trim($linha) === TXT_LINHA_IMPORTADA || trim($linha) === TXT_LINHA_NAO_IMPORTADA) {
-                $linhasNaoImportadas[] = $linha;
-                continue;
-            }
-
-            if ($this->tipoExtrato === 'EXTRATO_SIMPLES' && !$this->ehLinhaExtratoSimplesOuSaldo($linha)) {
-                $linhasNaoImportadas[] = $linha . ' (NÃO É LINHA DE EXTRATO?)';
-                continue;
-            }
-
-            $this->linhasAImportar[] = $linha;
+        }
+        if (!$achouPadrao) {
+            throw new ViewException('Formato de extrato não encontrado para o cabeçalho informado');
         }
 
-        $this->checkDuplicacoes($this->linhasAImportar);
 
-        foreach ($this->linhasAImportar as $i => $linha) {
-            try {
-                $camposLinha = $this->obterCamposLinha($i);
-                $movimentacao = $this->camposLinhaToMovimentacao($camposLinha);
+        $conn = $this->movimentacaoEntityHandler->getDoctrine()->getConnection();
 
-                if ($movimentacao) {
+        /** @var MovimentacaoRepository $repoMovimentacao */
+        $repoMovimentacao = $this->doctrine->getRepository(Movimentacao::class);
+
+        $categ195 = $this->doctrine->getRepository(Categoria::class)->findOneByCodigo(195);
+
+        $linhasNaoImportadas = [];
+        $linhasImportadas = [];
+        try {
+            $conn->beginTransaction();
+
+            for ($i = 1; $i < count($linhas); $i++) {
+
+                $linha = trim($linhas[$i]);
+                if (!$linha) continue;
+                try {
+
+                    $campoz = explode("\t", $linha);
+                    $campos = [];
+                    foreach ($campoz as $k => $valor) {
+                        $campos[$cabecalho[$k]] = $valor;
+                    }
+
+                    $idTransacaoCartao = $campos[$padraoCabecalho['campos']['idTransacaoCartao']];
+                    $dtVenda = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtMoviment']]);
+                    $valor = abs(StringUtils::parseFloat($campos[$padraoCabecalho['campos']['valor']], true));
+                    $numCartao = $campos[$padraoCabecalho['campos']['numCartao']] ?? '????';
+
+                    // Duas formas de encontrar a movimentação já lançada:
+                    // 1) Pelo idTransacaoCartao
+                    $movimentacao = $repoMovimentacao->findOneByFiltersSimpl([
+                        ['operadoraCartao', 'EQ', $operadoraCartao],
+                        ['idTransacaoCartao', 'EQ', $idTransacaoCartao],
+                        ['dtMoviment', 'EQ', $dtVenda->format('Y-m-d')],
+                        ['valor', 'EQ', $valor],
+                    ]);
+                    if (!$movimentacao) {
+                        // 2) Ou pelos 4 últimos dígitos (quando é lançado via movimentação de caixa)
+                        $movimentacao = $repoMovimentacao->findOneByFiltersSimpl([
+                            ['operadoraCartao', 'EQ', $operadoraCartao],
+                            ['numCartao', 'LIKE_END', substr($numCartao, -4)],
+                            ['dtMoviment', 'EQ', $dtVenda->format('Y-m-d')],
+                            ['valor', 'EQ', $valor],
+                        ]);
+                        if (!$movimentacao) {
+                            $movimentacao = new Movimentacao();
+                            $movimentacao->categoria = $categ195;
+                            $descricao = sprintf('%s %s %s (Transação: %s)',
+                                $campos[$padraoCabecalho['campos']['debitoOuCredito']],
+                                $campos[$padraoCabecalho['campos']['bandeira']],
+                                $campos[$padraoCabecalho['campos']['numCartao']],
+                                $campos[$padraoCabecalho['campos']['idTransacaoCartao']]);
+
+                            $movimentacao->descricao = $descricao;
+                        }
+                    }
+
+                    $movimentacao->dtMoviment = $dtVenda;
+                    $movimentacao->valor = $valor;
+                    $movimentacao->idTransacaoCartao = $idTransacaoCartao;
+
+                    if (!$this->menorDt || DateTimeUtils::diffInDias($dtVenda, $this->menorDt) < 0) {
+                        $this->menorDt = $dtVenda;
+                    }
+                    if (!$this->maiorDt || DateTimeUtils::diffInDias($dtVenda, $this->maiorDt) > 0) {
+                        $this->maiorDt = $dtVenda;
+                    }
+
+                    $statusExtrato = mb_strtoupper($campos[$padraoCabecalho['campos']['status']]);
+
+                    if (in_array($statusExtrato, ['CAPTURADA'])) {
+                        $movimentacao->status = 'ABERTA';
+                    } else {
+                        $movimentacao->status = 'REALIZADA';
+                        $movimentacao->dtVencto = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtVencto']]);
+                        $movimentacao->dtPagto = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtVencto']]);
+                    }
+
+                    $tipo = $campos[$padraoCabecalho['campos']['debitoOuCredito']];
+
+                    preg_match('/(?<tipo>Credito|Crédito|Debito|Débito){1}(\s(?<numParcelas>\d)x)?/i', $tipo, $outputTipo);
+                    $tipo = mb_strtoupper($outputTipo['tipo']);
+                    $tipo = $tipo === 'DEBITO' ? 'DÉBITO' : $tipo;
+                    $tipo = $tipo === 'CREDITO' ? 'CRÉDITO' : $tipo;
+
+                    $numParcelas = $campos[$padraoCabecalho['campos']['qtdeParcelas'] ?? 'nao_definido'] ?? $outputTipo['numParcelas'];
+                    $movimentacao->qtdeParcelas = $numParcelas;
+                    $movimentacao->numParcela = $numParcelas;
+                    $movimentacao->cadeiaOrdem = $campos[$padraoCabecalho['campos']['numParcela'] ?? 'nao_definido'] ?? 1;
+
+                    $movimentacao->numCartao = $numCartao;
+
+
+                    $modo = $this->repoModo->find($tipo === 'DÉBITO' ? 10 : 9);
+                    $movimentacao->modo = $modo;
+
+                    $movimentacao->operadoraCartao = $operadoraCartao;
+
+                    $bandeira = $campos[$padraoCabecalho['campos']['bandeira']];
+                    if (!$bandeira) {
+                        $bandeira = $tipo === 'DÉBITO' ? 'N INF DÉB' : 'N INF CRÉD';
+                    }
+                    $bandeiraCartao = $this->repoBandeiraCartao->findByLabelsAndModo($bandeira, $modo);
+                    $movimentacao->bandeiraCartao = $bandeiraCartao;
+
                     $movimentacao->jsonData['importacao_linha'] = $linha;
-                    $movimentacao->jsonData['uuid_lote'] = $this->uuidLote;
-                    $this->movimentacaoEntityHandler->save($movimentacao);
-                    $this->movsJaImportadas[] = $movimentacao;
+                    $movimentacao->jsonData['importacao_campos'] = $campos;
+
+                    $movimentacao = $this->movimentacaoEntityHandler->save($movimentacao);
+
                     $linhasImportadas[] = $linha;
-                } else {
-                    $linhasNaoImportadas[] = $linha . ' (NÃO GEROU NOVA MOVIMENTAÇÃO)';
+                } catch (ViewException $e) {
+                    $r['err'][] = [
+                        'linha' => $linha,
+                        'errMsg' => $e->getMessage()
+                    ];
+                    $linhasNaoImportadas[] = $linha . ' (ERRO AO IMPORTAR: ' . $e->getMessage() . ')';
+                } catch (\Throwable $e) {
+                    $r['err'][] = [
+                        'linha' => $linha,
+                        'errMsg' => 'Erro geral ao processar linha: ' . $linha
+                    ];
+                    $linhasNaoImportadas[] = $linha . ' (ERRO AO IMPORTAR!)';
                 }
-            } catch (ViewException $e) {
-                $r['err'][] = [
-                    'linha' => $linha,
-                    'errMsg' => $e->getMessage()
-                ];
-                $linhasNaoImportadas[] = $linha . ' (ERRO AO IMPORTAR: ' . $e->getMessage() . ')';
-            } catch (\Throwable $e) {
-                $r['err'][] = [
-                    'linha' => $linha,
-                    'errMsg' => 'Erro geral ao processar linha: ' . $linha
-                ];
-                $linhasNaoImportadas[] = $linha . ' (ERRO AO IMPORTAR!)';
             }
+
+            $r['LINHAS_RESULT'] = '';
+            if (count($linhasNaoImportadas) > 0) {
+                $r['LINHAS_RESULT'] .= TXT_LINHA_NAO_IMPORTADA . "\n" .
+                    implode("\n", $linhasNaoImportadas) . "\n\n\n\n\n";
+            }
+            $r['LINHAS_RESULT'] .= TXT_LINHA_IMPORTADA . "\n" .
+                implode("\n", $linhasImportadas);
+
+            $r['menorData'] = $this->menorDt ? $this->menorDt->format('Y-m-d') : null;
+            $r['maiorData'] = $this->maiorDt ? $this->maiorDt->format('Y-m-d') : null;
+
+            $r['qtdeImportadas'] = count($linhasImportadas);
+            $r['qtdeNaoImportadas'] = count($linhasNaoImportadas);
+
+            $conn->commit();
+            $r['RESULT'] = 'OK';
+            return $r;
+        } catch (Exception $e) {
+            if ($conn->isTransactionActive()) {
+                try {
+                    $conn->rollBack();
+                } catch (Exception $e) {
+                    throw new ViewException('Erro ao fazer rollback', 0, $e);
+                }
+            }
+            throw new ViewException('Erro ao importar', 0, $e);
         }
+    }
 
-        $r['LINHAS_RESULT'] = '';
-        if (count($linhasNaoImportadas) > 0) {
-            $r['LINHAS_RESULT'] .= TXT_LINHA_NAO_IMPORTADA . "\n" .
-                implode("\n", $linhasNaoImportadas) . "\n\n\n\n\n";
+
+    /**
+     * @throws ViewException
+     */
+    public function importarExtratoGrupo(GrupoItem $grupoItem, string $linhasExtrato)
+    {
+        $conn = $this->movimentacaoEntityHandler->getDoctrine()->getConnection();
+
+        try {
+            $conn->beginTransaction();
+
+            $movimentacoes = [];
+
+            $i = 0;
+            foreach ($this->linhasAImportar as $linha) {
+
+                if (!$linha || $linha === TXT_LINHA_NAO_IMPORTADA || $linha === TXT_LINHA_IMPORTADA) {
+                    continue;
+                }
+
+                $camposLinha = $this->importLinhaExtratoSimples($i);
+
+                $descricao = $camposLinha['descricao'];
+                $dtMoviment = $camposLinha['dtMoviment'];
+                $dtVenctoEfetiva = $camposLinha['dtVenctoEfetiva'];
+                $valor = $camposLinha['valor'];
+                $desconto = $camposLinha['desconto'];
+                $valorTotal = $camposLinha['valorTotal'];
+
+                // Tenta encontrar uma movimentação com as características passadas.
+                $movs = $this->repoMovimentacao
+                    ->findBy([
+                        'dtMoviment' => $dtMoviment,
+                        'valor' => $valor,
+                        'grupoItem' => $this->grupoItem
+                    ]);
+
+                /** @var Movimentacao $importada */
+                $importada = null;
+                if ($movs && count($movs) > 0) {
+                    $importada = $movs[0];
+                }
+
+                if ($importada && !$importada->dtPagto) {
+                    $importada->status = 'REALIZADA';
+                    $importada->dtPagto = $dtVenctoEfetiva;
+                } else {
+
+                    $importada = new Movimentacao();
+                    $importada->UUID = (StringUtils::guidv4());
+
+                    $importada->grupoItem = ($this->grupoItem);
+
+                    /** @var Categoria $categ101 */
+                    $categ101 = $this->repoCategoria->findOneBy(['codigo' => '202001']);  // 2.02.001 - CUSTOS DE MERCADORIAS
+                    $importada->categoria = ($categ101);
+
+                    $importada->centroCusto = ($this->repoCentroCusto->find(1));
+                    $importada->modo = ($this->repoModo->find(50));
+
+                    $importada->valor = ($valor);
+                    $importada->descontos = ($desconto);
+                    $importada->valorTotal = ($valorTotal);
+
+                    $importada->descricao = (str_replace('  ', ' ', $descricao));
+                    /** @var TipoLancto $deGrupo */
+                    $deGrupo = $this->repoTipoLancto->findOneBy(['codigo' => 70]);
+                    $importada->tipoLancto = ($deGrupo);
+                    $importada->status = ('REALIZADA');
+
+                    $importada->dtMoviment = ($dtMoviment);
+                    $importada->dtVencto = ($dtVenctoEfetiva);
+                    $importada->dtVenctoEfetiva = ($dtVenctoEfetiva);
+                    $importada->dtPagto = ($dtVenctoEfetiva);
+
+                    $importada->bandeiraCartao = (null);
+                }
+
+                $movimentacoes[] = $importada;
+            }
+
+            return $movimentacoes;
+
+            $conn->commit();
+            $r['RESULT'] = 'OK';
+            return $r;
+        } catch (Exception $e) {
+            if ($conn->isTransactionActive()) {
+                try {
+                    $conn->rollBack();
+                } catch (Exception $e) {
+                    throw new ViewException('Erro ao fazer rollback', 0, $e);
+                }
+            }
+            throw new ViewException('Erro ao importar', 0, $e);
         }
-        $r['LINHAS_RESULT'] .= TXT_LINHA_IMPORTADA . "\n" .
-            implode("\n", $linhasImportadas);
-
-        $r['movs'] = $this->movsJaImportadas;
-
-        
-        $r['menorData'] = $this->menorDt ? $this->menorDt->format('Y-m-d') : null;
-        $r['maiorData'] = $this->maiorDt ? $this->maiorDt->format('Y-m-d') : null;
-
-        return $r;
     }
 
 
@@ -295,7 +531,7 @@ class MovimentacaoImporter
             array_splice($linhas, $index, 1);
         }
     }
-   
+
 
     private function obterCamposLinha(int $numLinha): ?array
     {
@@ -313,7 +549,7 @@ class MovimentacaoImporter
         $valorStr = ($matches['SINAL_I'] ?: $matches['SINAL_F'] ?: '') . $matches['money'];
 
         $dtVenctoEfetiva = DateTimeUtils::parseDateStr($dataStr);
-        
+
         if (!$this->menorDt || DateTimeUtils::diffInDias($dtVenctoEfetiva, $this->menorDt) < 0) {
             $this->menorDt = $dtVenctoEfetiva;
         }
@@ -367,23 +603,23 @@ class MovimentacaoImporter
         /** @var Modo $modo */
         $modo = $camposLinha['modo'];
 
-        if ($this->gerarAConferir) {
-            if (!$categoriaCodigo) {
-                $categoriaCodigo = $valorNegativo ? 295 : 195;
-            }
-            if (!$modo) {
 
-                if (strpos($descricao, 'TRANSF') !== FALSE || strpos($descricao, 'TED') !== FALSE) {
-                    $modo = $this->repoModo->findOneBy(['codigo' => 7]);
-                } else if (strpos($descricao, 'DEPÓSITO') !== FALSE || strpos($descricao, 'DEPOSITO') !== FALSE) {
-                    $modo = $this->repoModo->findOneBy(['codigo' => 5]);
-                } else if (strpos($descricao, 'TÍTULO') !== FALSE || strpos($descricao, 'TITULO') !== FALSE) {
-                    $modo = $this->repoModo->findOneBy(['codigo' => 6]);
-                } else {
-                    $modo = $this->repoModo->findOneBy(['codigo' => 99]);
-                }
+        if (!$categoriaCodigo) {
+            $categoriaCodigo = $valorNegativo ? 295 : 195;
+        }
+
+        if (!$modo) {
+            if (strpos($descricao, 'TRANSF') !== FALSE || strpos($descricao, 'TED') !== FALSE) {
+                $modo = $this->repoModo->findOneBy(['codigo' => 7]);
+            } else if (strpos($descricao, 'DEPÓSITO') !== FALSE || strpos($descricao, 'DEPOSITO') !== FALSE) {
+                $modo = $this->repoModo->findOneBy(['codigo' => 5]);
+            } else if (strpos($descricao, 'TÍTULO') !== FALSE || strpos($descricao, 'TITULO') !== FALSE) {
+                $modo = $this->repoModo->findOneBy(['codigo' => 6]);
+            } else {
+                $modo = $this->repoModo->findOneBy(['codigo' => 99]);
             }
         }
+
 
         $dtMoviment = $camposLinha['dtMoviment'];
 
@@ -576,42 +812,38 @@ class MovimentacaoImporter
 
             return $movimentacao;
         }
-        // else
-        if ($this->gerarSemRegras) {
-            // se for pra gerar movimentações que não se encaixem nas regras...
-            $movimentacao = new Movimentacao();
-            $movimentacao->UUID = (StringUtils::guidv4());
-            $movimentacao->carteira = ($this->carteiraExtrato);
-            $movimentacao->valor = ($valor);
-            $movimentacao->descontos = ($desconto);
-            $movimentacao->valorTotal = ($valorTotal);
-            $movimentacao->descricao = ($descricao);
-            /** @var TipoLancto $realizada */
-            $realizada = $this->repoTipoLancto->findOneBy(['codigo' => 20]);
-            $movimentacao->tipoLancto = ($realizada);
-            $movimentacao->status = ('REALIZADA');
-            $movimentacao->modo = ($modo);
-            $movimentacao->dtMoviment = ($dtMoviment);
-            $movimentacao->dtVencto = ($dtVenctoEfetiva);
-            $movimentacao->dtVenctoEfetiva = ($dtVenctoEfetiva);
-            $movimentacao->dtPagto = ($dtVenctoEfetiva);
-            $movimentacao->bandeiraCartao = ($bandeiraCartao);
 
-            /** @var Categoria $categoria */
-            $categoria = null;
-            if ($categoriaCodigo) {
-                $categoria = $this->repoCategoria->findOneBy(['codigo' => $categoriaCodigo]);
-            } else if ($valorNegativo) {
-                $categoria = $this->repoCategoria->findOneBy(['codigo' => 2]);
-            } else {
-                $categoria = $this->repoCategoria->findOneBy(['codigo' => 1]);
-            }
-            $movimentacao->categoria = ($categoria);
+        // se for pra gerar movimentações que não se encaixem nas regras...
+        $movimentacao = new Movimentacao();
+        $movimentacao->UUID = (StringUtils::guidv4());
+        $movimentacao->carteira = ($this->carteiraExtrato);
+        $movimentacao->valor = ($valor);
+        $movimentacao->descontos = ($desconto);
+        $movimentacao->valorTotal = ($valorTotal);
+        $movimentacao->descricao = ($descricao);
+        /** @var TipoLancto $realizada */
+        $realizada = $this->repoTipoLancto->findOneBy(['codigo' => 20]);
+        $movimentacao->tipoLancto = ($realizada);
+        $movimentacao->status = ('REALIZADA');
+        $movimentacao->modo = ($modo);
+        $movimentacao->dtMoviment = ($dtMoviment);
+        $movimentacao->dtVencto = ($dtVenctoEfetiva);
+        $movimentacao->dtVenctoEfetiva = ($dtVenctoEfetiva);
+        $movimentacao->dtPagto = ($dtVenctoEfetiva);
+        $movimentacao->bandeiraCartao = ($bandeiraCartao);
 
-            return $movimentacao;
+        /** @var Categoria $categoria */
+        $categoria = null;
+        if ($categoriaCodigo) {
+            $categoria = $this->repoCategoria->findOneBy(['codigo' => $categoriaCodigo]);
+        } else if ($valorNegativo) {
+            $categoria = $this->repoCategoria->findOneBy(['codigo' => 2]);
+        } else {
+            $categoria = $this->repoCategoria->findOneBy(['codigo' => 1]);
         }
+        $movimentacao->categoria = ($categoria);
 
-        return null;
+        return $movimentacao;
     }
 
 
@@ -633,127 +865,6 @@ class MovimentacaoImporter
     }
 
 
-    private function importarGrupoMovimentacao(): array
-    {
-        $movimentacoes = [];
-
-        $i = 0;
-        foreach ($this->linhasAImportar as $linha) {
-
-            if (!$linha || $linha === TXT_LINHA_NAO_IMPORTADA || $linha === TXT_LINHA_IMPORTADA) {
-                continue;
-            }
-
-            $camposLinha = $this->importLinhaExtratoSimples($i);
-
-            $descricao = $camposLinha['descricao'];
-            $dtMoviment = $camposLinha['dtMoviment'];
-            $dtVenctoEfetiva = $camposLinha['dtVenctoEfetiva'];
-            $valor = $camposLinha['valor'];
-            $desconto = $camposLinha['desconto'];
-            $valorTotal = $camposLinha['valorTotal'];
-
-            // Tenta encontrar uma movimentação com as características passadas.
-            $movs = $this->repoMovimentacao
-                ->findBy([
-                    'dtMoviment' => $dtMoviment,
-                    'valor' => $valor,
-                    'grupoItem' => $this->grupoItem
-                ]);
-
-            /** @var Movimentacao $importada */
-            $importada = null;
-            if ($movs && count($movs) > 0) {
-                $importada = $movs[0];
-            }
-
-            if ($importada && !$importada->dtPagto) {
-                $importada->status = 'REALIZADA';
-                $importada->dtPagto = $dtVenctoEfetiva;
-            } else {
-
-                $importada = new Movimentacao();
-                $importada->UUID = (StringUtils::guidv4());
-
-                $importada->grupoItem = ($this->grupoItem);
-
-                /** @var Categoria $categ101 */
-                $categ101 = $this->repoCategoria->findOneBy(['codigo' => '202001']);  // 2.02.001 - CUSTOS DE MERCADORIAS
-                $importada->categoria = ($categ101);
-
-                $importada->centroCusto = ($this->repoCentroCusto->find(1));
-                $importada->modo = ($this->repoModo->find(50));
-
-                $importada->valor = ($valor);
-                $importada->descontos = ($desconto);
-                $importada->valorTotal = ($valorTotal);
-
-                $importada->descricao = (str_replace('  ', ' ', $descricao));
-                /** @var TipoLancto $deGrupo */
-                $deGrupo = $this->repoTipoLancto->findOneBy(['codigo' => 70]);
-                $importada->tipoLancto = ($deGrupo);
-                $importada->status = ('REALIZADA');
-
-                $importada->dtMoviment = ($dtMoviment);
-                $importada->dtVencto = ($dtVenctoEfetiva);
-                $importada->dtVenctoEfetiva = ($dtVenctoEfetiva);
-                $importada->dtPagto = ($dtVenctoEfetiva);
-
-                $importada->bandeiraCartao = (null);
-            }
-
-            $movimentacoes[] = $importada;
-        }
-
-        return $movimentacoes;
-    }
-
-
-    private function importLinhaExtratoCartao($numLinha)
-    {
-        // TODO: arrumar
-        /**
-         * 0 - Data_Transacao
-         * 1 - 'MODERNINHA'
-         * 2 - Tipo_Pagamento
-         * 3 - Transacao_ID
-         * 4 - Valor_Bruto
-         */
-        $linha = trim($this->linhasAImportar[$numLinha]);
-        $camposLinha = [];
-        $campos = explode("\t", $linha);
-
-        if (count($campos) < 4) {
-            return null;
-        }
-
-        $dtVenda = DateTimeUtils::parseDateStr($campos[0]);
-        $valor = abs(StringUtils::parseFloat($campos[4], true));
-        $entradaOuSaida = $valor < 0 ? 2 : 1;
-
-        $descricao = $campos[1] . ' - ' . $campos[3] . ' (' . $campos[2] . ')';
-        $descricao = preg_replace('@\n|\r|\t@', '', $descricao);
-
-        $bandeira = 'N INF DÉB';
-
-        $modo = $this->repoModo->find(10); // 'RECEB. CARTÃO DÉBITO'
-
-        $bandeiraCartao = $this->repoBandeiraCartao->findByLabelsAndModo($bandeira, $modo);
-
-        $camposLinha['bandeiraCartao'] = $bandeiraCartao;
-        $camposLinha['planoPagtoCartao'] = 'DEBITO';
-        $camposLinha['descricao'] = $descricao;
-        $camposLinha['dtMoviment'] = $dtVenda;
-        $camposLinha['dtVenctoEfetiva'] = $dtVenda;
-        $camposLinha['valor'] = $valor;
-        $camposLinha['valorTotal'] = $valor;
-        $camposLinha['entradaOuSaida'] = $entradaOuSaida;
-        $camposLinha['categoriaCodigo'] = 199;
-
-        return $camposLinha;
-    }
-
-
     private function checkJaImportada(Movimentacao $movimentacao): bool
     {
         if ($movimentacao->getId()) {
@@ -767,57 +878,5 @@ class MovimentacaoImporter
         return false;
     }
 
-
-    public function buildArrayCabecalho(): void
-    {
-        $linhas = explode("\n", $this->stringExtrato);
-        $primeira = $linhas[0];
-        if (strpos($primeira, '<<< LINHAS NÃO IMPORTADAS >>>') !== FALSE) {
-            $primeira = $linhas[1];
-        }
-        $camposCSV = explode("\t", $primeira);
-
-        $arrayCabecalho = [];
-
-        $camposDePara = $this->doctrine->getRepository(ImportExtratoCabec::class)->findBy(['tipoExtrato' => $this->tipoExtrato]);
-        if ($camposDePara) {
-            /** @var ImportExtratoCabec $dePara */
-            foreach ($camposDePara as $dePara) {
-                // Se não está separado por vírgula, é um campo único (1-para-1).
-                if (strpos($dePara->camposCabecalho, ',') === FALSE) {
-                    $achou = false;
-                    foreach ($camposCSV as $key => $campoCSV) {
-                        if ($dePara->camposCabecalho === $campoCSV) {
-                            $arrayCabecalho[$dePara->campoSistema] = $key;
-                            $achou = true;
-                            break;
-                        }
-                    }
-                    if (!$achou) {
-                        throw new ViewException('Não foi possível montar o array do cabeçalho.');
-                    }
-                } else {
-                    $camposCabecalho = explode(',', $dePara->camposCabecalho);
-                    foreach ($camposCabecalho as $campoCabecalho) {
-                        $achou = false;
-                        foreach ($camposCSV as $key => $campoCSV) {
-                            if ($campoCabecalho === $campoCSV) {
-                                $arrayCabecalho[$dePara->campoSistema]['campos'][] = $key;
-                                $achou = true;
-                                break;
-                            }
-                        }
-                        if (!$achou) {
-                            throw new ViewException('Não foi possível montar o array do cabeçalho.');
-                        }
-                    }
-                    $arrayCabecalho[$dePara->campoSistema]['formato'] = $dePara->formato;
-                }
-            }
-        }
-
-        $this->arrayCabecalho = $arrayCabecalho;
-
-    }
 
 }
