@@ -5,6 +5,7 @@ namespace App\Controller\Estoque;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorTray;
 use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
@@ -318,7 +319,6 @@ class DeptoController extends BaseController
      */
     public function corrigirDeptosGruposSubgrupos(): Response
     {
-
         try {// corrige os subgrupos
             $conn = $this->deptoEntityHandler->getDoctrine()->getConnection();
             $subgrupos = $conn->fetchAllAssociative('SELECT s.id as subgrupo_id, s.codigo as subgrupo_codigo, s.nome as subgrupo_nome, g.id as grupo_id, g.codigo as grupo_codigo, g.nome as grupo_nome, d.id as depto_id, d.codigo as depto_codigo, d.nome as depto_nome FROM est_subgrupo s, est_grupo g, est_depto d WHERE s.grupo_id = g.id AND g.depto_id = d.id');
@@ -347,7 +347,84 @@ class DeptoController extends BaseController
         } catch (\Throwable $e) {
             return new Response('ERRO');
         }
+    }
 
+
+    /**
+     * Corrige os json_data de est_subgrupo e est_grupo
+     *
+     * @Route("/est/deptoGrupoSubgrupo/importar", name="est_deptoGrupoSubgrupo_importar")
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function importar(DeptoEntityHandler $deptoEntityHandler, GrupoEntityHandler $grupoEntityHandler, SubgrupoEntityHandler $subgrupoEntityHandler): Response
+    {
+        $txt = file_get_contents('categorias.txt');
+
+        $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
+
+        $repoGrupo = $this->getDoctrine()->getRepository(Grupo::class);
+        $repoSubgrupo = $this->getDoctrine()->getRepository(Subgrupo::class);
+
+        $linhas = explode("\n", $txt);
+
+        $deptoCodigo = 9;
+        $grupoCodigo = 1;
+        $subgrupoCodigo = 1;
+
+        foreach ($linhas as $linha) {
+            $campos = explode("\t", $linha);
+
+            $deptoNome = trim(mb_strtoupper($campos[0]));
+            $grupoNome = trim(mb_strtoupper($campos[1]));
+            $subgrupoNome = trim(mb_strtoupper($campos[2]));
+
+            $depto = $repoDepto->findOneByNome($deptoNome);
+            if (!$depto) {
+                $depto = new Depto();
+                $depto->codigo = $deptoCodigo;
+                $depto->nome = mb_strtoupper($deptoNome);
+                $depto = $deptoEntityHandler->save($depto);
+            }
+            $deptoCodigo = $depto->codigo + 1;
+
+            $grupo = $repoGrupo->findOneByFiltersSimpl([['nome', 'EQ', $grupoNome], ['depto', 'EQ', $depto]]);
+            if (!$grupo) {
+                $grupo = new grupo();
+                $grupo->depto = $depto;
+                $grupo->codigo = str_pad($grupoCodigo, 2, '0', STR_PAD_LEFT);
+                $grupoCodigo++;
+                $grupo->nome = mb_strtoupper($grupoNome);
+                $grupo = $grupoEntityHandler->save($grupo);
+            }
+            $grupoCodigo = $grupo->codigo + 1;
+
+            $subgrupo = $repoSubgrupo->findOneByFiltersSimpl([['nome', 'EQ', $subgrupoNome], ['grupo', 'EQ', $grupo]]);
+            if (!$subgrupo) {
+                $subgrupo = new Subgrupo();
+                $subgrupo->grupo = $grupo;
+                $subgrupo->codigo = str_pad($subgrupoCodigo, 2, '0', STR_PAD_LEFT);
+                $subgrupoCodigo++;
+                $subgrupo->nome = mb_strtoupper($subgrupoNome);
+                $subgrupoEntityHandler->save($subgrupo);
+            }
+            $subgrupoCodigo = $subgrupo->codigo + 1;
+
+        }
+
+
+    }
+
+
+    /**
+     * @Route("/est/deptoGrupoSubgrupo/apagarCategorias", name="est_deptoGrupoSubgrupo_apagarCategorias")
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function apagarCategorias(IntegradorTray $integradorTray): Response
+    {
+        $integradorTray->apagarCategorias();
+        return new Response('ok');
     }
 
 
