@@ -231,7 +231,7 @@ export default {
                     : null;
               },
             });
-            console.log(rs);
+
             if (!rs?.data?.RESULT === "OK") {
               throw new Error();
             }

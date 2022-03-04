@@ -124,7 +124,7 @@ $(document).ready(function () {
       dataType: 'json',
       success: function (res) {
         if (res.result === 'OK') {
-          console.log(res);
+          
           $xNomeDestinatario.val(res.dados.razaoSocial[0]);
           $inscricaoEstadualDestinatario.val(res.dados.IE[0]);
           $cepDestinatario.val(res.dados.CEP[0]);
@@ -154,7 +154,7 @@ $(document).ready(function () {
       dataType: 'json',
       success: function (res) {
         if (res.result === 'OK') {
-          console.log(res);
+          
           $transpNome.val(res.dados.razaoSocial[0]);
           $transpEndereco.val(res.dados.logradouro[0] + ', ' + res.dados.numero[0] + ' - ' + res.dados.bairro[0]);
           $transpCidade.val(res.dados.cidade[0]);

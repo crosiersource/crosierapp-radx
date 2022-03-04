@@ -659,7 +659,7 @@ class MovimentacaoController extends FormListController
             } elseif ($tipoImportacao === 'EXTRATO_CARTAO') {
                 $operadoraCartaoId = substr($content['operadoraCartao'], strrpos($content['operadoraCartao'], '/')+1);
                 $operadora = $this->getDoctrine()->getRepository(OperadoraCartao::class)->find($operadoraCartaoId);
-                $r = $importer->importarExtratoCartao($operadora, $content['linhasImportacao']);
+                $r = $importer->importarExtratoCartaoPagamentos($operadora, $content['linhasImportacao']);
             } elseif ($tipoImportacao === 'EXTRATO_GRUPO') {
                 $grupoItemId = substr($content['grupoItem'], strrpos($content['grupoItem'], '/')+1);
                 $grupoItem = $this->getDoctrine()->getRepository(GrupoItem::class)->find($grupoItemId);

@@ -224,9 +224,10 @@ class MovimentacaoImporter
 
 
     /**
+     * Apenas para importar extrato de pagamentos do cartão.
      * @throws ViewException
      */
-    public function importarExtratoCartao(OperadoraCartao $operadoraCartao, string $linhasExtrato)
+    public function importarExtratoCartaoPagamentos(OperadoraCartao $operadoraCartao, string $linhasExtrato)
     {
         $r = [];
         $linhas = explode("\n", $linhasExtrato);
@@ -254,10 +255,8 @@ class MovimentacaoImporter
 
         $conn = $this->movimentacaoEntityHandler->getDoctrine()->getConnection();
 
-        /** @var MovimentacaoRepository $repoMovimentacao */
-        $repoMovimentacao = $this->doctrine->getRepository(Movimentacao::class);
-
-        $categ195 = $this->doctrine->getRepository(Categoria::class)->findOneByCodigo(195);
+        // 191 - TRANSFERÊNCIA DE FATURA
+        $categ191 = $this->repoCategoria->findOneByCodigo(191);
 
         $linhasNaoImportadas = [];
         $linhasImportadas = [];
@@ -280,37 +279,62 @@ class MovimentacaoImporter
                     $dtVenda = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtMoviment']]);
                     $valor = abs(StringUtils::parseFloat($campos[$padraoCabecalho['campos']['valor']], true));
                     $numCartao = $campos[$padraoCabecalho['campos']['numCartao']] ?? '????';
+                    $parcelaNum = $campos[$padraoCabecalho['campos']['parcelaNum']] ?? '1';
+
+                    $tipo = $campos[$padraoCabecalho['campos']['debitoOuCredito']];
+
+                    preg_match('/(?<tipo>Credito|Crédito|Debito|Débito){1}(\s(?<parcelaNums>\d)x)?/i', $tipo, $outputTipo);
+                    $tipo = mb_strtoupper($outputTipo['tipo']);
+                    $tipo = $tipo === 'DEBITO' ? 'DÉBITO' : $tipo;
+                    $tipo = $tipo === 'CREDITO' ? 'CRÉDITO' : $tipo;
+
+                    $modo = $this->repoModo->find($tipo === 'DÉBITO' ? 10 : 9);
+
+                    $bandeira = $campos[$padraoCabecalho['campos']['bandeira']];
+                    if (!$bandeira) {
+                        $bandeira = $tipo === 'DÉBITO' ? 'N INF DÉB' : 'N INF CRÉD';
+                    }
+                    $bandeiraCartao = $this->repoBandeiraCartao->findByLabelsAndModo($bandeira, $modo);
 
                     // Duas formas de encontrar a movimentação já lançada:
-                    // 1) Pelo idTransacaoCartao
-                    $movimentacao = $repoMovimentacao->findOneByFiltersSimpl([
+                    // 1) Pelo status já REALIZADA, idTransacaoCartao e o valor já correto (já foi importada anteriormente), e etc.
+                    $movimentacao = $this->repoMovimentacao->findOneByFiltersSimpl([
+                        ['categoria', 'EQ', $categ191],
                         ['operadoraCartao', 'EQ', $operadoraCartao],
-                        ['idTransacaoCartao', 'EQ', $idTransacaoCartao],
+                        ['bandeiraCartao', 'EQ', $bandeiraCartao],
                         ['dtMoviment', 'EQ', $dtVenda->format('Y-m-d')],
+                        ['parcelaNum', 'EQ', $parcelaNum],
+                        ['status', 'EQ', 'REALIZADA'],
+                        ['numCartao', 'LIKE_END', substr($numCartao, -4)],
+                        ['idTransacaoCartao', 'EQ', $idTransacaoCartao],
                         ['valor', 'EQ', $valor],
                     ]);
                     if (!$movimentacao) {
-                        // 2) Ou pelos 4 últimos dígitos (quando é lançado via movimentação de caixa)
-                        $movimentacao = $repoMovimentacao->findOneByFiltersSimpl([
+                        
+                        // 2) Ou ela sendo ABERTA e considerando apenas numCartao, parcelaNum, e etc.
+                        // 
+                        // * Aqui ignora-se o valor, pois em caso de parcelamento a operadora pode usar uma conta diferente da conta do Crosier
+                        //
+                        // * Neste caso, pode acontecer de ter mais de uma, pois (muito raramente) pode acontecer de ter dois pagtos com mesmo 4 últ dig.
+                        // Mas aí pega a primeira e considera como sendo o pagamento.
+                        // A única forma de melhorar isso seria através de um POS (em extinção) ou
+                        // exigir a digitação do NSU ou outro número (inviável a nível de operação)
+                        
+                        $rsMovimentacoes = $this->repoMovimentacao->findByFiltersSimpl([
+                            ['categoria', 'EQ', $categ191],
                             ['operadoraCartao', 'EQ', $operadoraCartao],
-                            ['numCartao', 'LIKE_END', substr($numCartao, -4)],
+                            ['bandeiraCartao', 'EQ', $bandeiraCartao],
                             ['dtMoviment', 'EQ', $dtVenda->format('Y-m-d')],
-                            ['valor', 'EQ', $valor],
+                            ['parcelaNum', 'EQ', $parcelaNum],
+                            ['status', 'EQ', 'ABERTA'],
+                            ['numCartao', 'LIKE_END', substr($numCartao, -4)],
                         ]);
-                        if (!$movimentacao) {
-                            $movimentacao = new Movimentacao();
-                            $movimentacao->categoria = $categ195;
-                            $descricao = sprintf('%s %s %s (Transação: %s)',
-                                $campos[$padraoCabecalho['campos']['debitoOuCredito']],
-                                $campos[$padraoCabecalho['campos']['bandeira']],
-                                $campos[$padraoCabecalho['campos']['numCartao']],
-                                $campos[$padraoCabecalho['campos']['idTransacaoCartao']]);
-
-                            $movimentacao->descricao = $descricao;
+                        if (!$rsMovimentacoes) {
+                            throw new ViewException('Movimentação original não encontrada');
                         }
+                        $movimentacao = $rsMovimentacoes[0];
                     }
 
-                    $movimentacao->dtMoviment = $dtVenda;
                     $movimentacao->valor = $valor;
                     $movimentacao->idTransacaoCartao = $idTransacaoCartao;
 
@@ -321,43 +345,10 @@ class MovimentacaoImporter
                         $this->maiorDt = $dtVenda;
                     }
 
-                    $statusExtrato = mb_strtoupper($campos[$padraoCabecalho['campos']['status']]);
-
-                    if (in_array($statusExtrato, ['CAPTURADA'])) {
-                        $movimentacao->status = 'ABERTA';
-                    } else {
-                        $movimentacao->status = 'REALIZADA';
-                        $movimentacao->dtVencto = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtVencto']]);
-                        $movimentacao->dtPagto = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtVencto']]);
-                    }
-
-                    $tipo = $campos[$padraoCabecalho['campos']['debitoOuCredito']];
-
-                    preg_match('/(?<tipo>Credito|Crédito|Debito|Débito){1}(\s(?<numParcelas>\d)x)?/i', $tipo, $outputTipo);
-                    $tipo = mb_strtoupper($outputTipo['tipo']);
-                    $tipo = $tipo === 'DEBITO' ? 'DÉBITO' : $tipo;
-                    $tipo = $tipo === 'CREDITO' ? 'CRÉDITO' : $tipo;
-
-                    $numParcelas = $campos[$padraoCabecalho['campos']['qtdeParcelas'] ?? 'nao_definido'] ?? $outputTipo['numParcelas'];
-                    $movimentacao->qtdeParcelas = $numParcelas;
-                    $movimentacao->numParcela = $numParcelas;
-                    $movimentacao->cadeiaOrdem = $campos[$padraoCabecalho['campos']['numParcela'] ?? 'nao_definido'] ?? 1;
-
-                    $movimentacao->numCartao = $numCartao;
-
-
-                    $modo = $this->repoModo->find($tipo === 'DÉBITO' ? 10 : 9);
-                    $movimentacao->modo = $modo;
-
-                    $movimentacao->operadoraCartao = $operadoraCartao;
-
-                    $bandeira = $campos[$padraoCabecalho['campos']['bandeira']];
-                    if (!$bandeira) {
-                        $bandeira = $tipo === 'DÉBITO' ? 'N INF DÉB' : 'N INF CRÉD';
-                    }
-                    $bandeiraCartao = $this->repoBandeiraCartao->findByLabelsAndModo($bandeira, $modo);
-                    $movimentacao->bandeiraCartao = $bandeiraCartao;
-
+                    $movimentacao->status = 'REALIZADA';
+                    $movimentacao->dtVencto = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtVencto']]);
+                    $movimentacao->dtPagto = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtVencto']]);
+                    
                     $movimentacao->jsonData['importacao_linha'] = $linha;
                     $movimentacao->jsonData['importacao_campos'] = $campos;
 

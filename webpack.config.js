@@ -74,6 +74,7 @@ Encore
   .addEntry('fin/cliente/list', './assets/js/CRM/Cliente/list.js')
   .addEntry('fin/cliente/form', './assets/js/CRM/Cliente/form.js')
 
+  .addEntry('fin/movimentacao/rapida', './assets/js/Financeiro/Movimentacao/form_rapida.js')
   .addEntry('fin/movimentacao/caixa', './assets/js/Financeiro/Movimentacao/form_caixa.js')
   .addEntry('fin/movimentacao/importador', './assets/js/Financeiro/Movimentacao/importador.js')
   .addEntry('fin/movimentacao/list', './assets/js/Financeiro/Movimentacao/list.js')

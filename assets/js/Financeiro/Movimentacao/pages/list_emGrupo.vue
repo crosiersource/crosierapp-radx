@@ -539,7 +539,7 @@ export default {
             )}?prox=${proxima}`;
 
             const rs = await axios.get(processarUrl);
-            console.log(rs);
+
             if (rs?.status === 200) {
               // eslint-disable-next-line no-restricted-globals
               history.go(0);
