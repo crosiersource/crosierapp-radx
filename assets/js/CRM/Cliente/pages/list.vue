@@ -96,10 +96,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.dt-sm-bt {
-  height: 30px !important;
-  width: 30px !important;
-}
-</style>

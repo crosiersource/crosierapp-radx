@@ -32,7 +32,7 @@ class FornecedorController extends FormListController
 
     /**
      *
-     * @Route("/api/est/fornecedor/findProxCodigo", name="api_est_fornecedor_findProxCodigo")
+     * @Route("/api/est/fornecedor/findProxCodigo/", name="api_est_fornecedor_findProxCodigo")
      * @param Request $request
      * @return JsonResponse
      *

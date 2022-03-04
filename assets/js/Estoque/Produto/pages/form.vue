@@ -1,6 +1,6 @@
 <template>
   <Toast position="bottom-right" class="mt-5" />
-  <CrosierFormS @submitForm="this.submitForm" titulo="Produto">
+  <CrosierFormS :withoutCard="true" @submitForm="this.submitForm">
     <div class="form-row">
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
 
@@ -10,8 +10,8 @@
         col="2"
         id="codigo"
         v-model="this.fields.codigo"
-        :error="this.formErrors.codigo"
       />
+
       <div class="col-md-1">
         <div class="form-group">
           <label for="btnBuscarProxCodigo" style="color: transparent">...</label>
@@ -35,81 +35,135 @@
         :error="this.formErrors.nome"
       />
 
-      <CrosierDropdownBoolean
-        label="Utilizado"
+      <CrosierDropdown
+        label="Status"
         col="2"
-        id="utilizado"
-        v-model="this.fields.utilizado"
-        :error="this.formErrors.utilizado"
+        id="status"
+        v-model="this.fields.status"
+        :options="[
+          { label: 'Ativo', value: 'ATIVO' },
+          { label: 'Inativo', value: 'INATIVO' },
+        ]"
+        :error="this.formErrors.status"
       />
     </div>
+
     <div class="form-row">
-      <CrosierInputCpfCnpj
+      <CrosierDropdownEntity
         col="4"
-        id="documento"
-        v-model="this.fields.documento"
-        :error="this.formErrors.documento"
+        v-model="this.fields.depto"
+        :error="this.formErrors.depto"
+        entity-uri="/api/est/depto"
+        optionLabel="descricaoMontada"
+        :optionValue="null"
+        :orderBy="{ codigo: 'ASC' }"
+        label="Depto"
+        id="depto"
+        @update:modelValue="this.onChangeDepto"
       />
 
-      <CrosierInputText
-        label="Nome Fantasia"
-        col="5"
-        id="nomeFantasia"
-        v-model="this.fields.nomeFantasia"
-        :error="this.formErrors.nomeFantasia"
+      <CrosierDropdownEntity
+        col="4"
+        ref="grupo"
+        v-if="this.fields?.depto?.id"
+        v-model="this.fields.grupo"
+        :error="this.formErrors.grupo"
+        entity-uri="/api/est/grupo"
+        optionLabel="descricaoMontada"
+        :optionValue="null"
+        :orderBy="{ codigo: 'ASC' }"
+        :filters="{ depto: this.fields.depto['@id'] }"
+        label="Grupo"
+        id="grupo"
+        @update:modelValue="this.onChangeGrupo"
+      />
+      <div class="col-md-4" v-else>
+        <div class="form-group">
+          <label>Grupo</label>
+          <Skeleton class="form-control" height="2rem" />
+        </div>
+      </div>
+
+      <CrosierDropdownEntity
+        col="4"
+        ref="subgrupo"
+        v-if="this.fields?.grupo?.id"
+        v-model="this.fields.subgrupo"
+        :error="this.formErrors.subgrupo"
+        entity-uri="/api/est/subgrupo"
+        optionLabel="descricaoMontada"
+        :optionValue="null"
+        :orderBy="{ codigo: 'ASC' }"
+        :filters="{ grupo: this.fields.grupo['@id'] }"
+        label="Subgrupo"
+        id="subgrupo"
+      />
+      <div class="col-md-4" v-else>
+        <div class="form-group">
+          <label>Subgrupo</label>
+          <Skeleton class="form-control" height="2rem" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <CrosierDropdownEntity
+        col="8"
+        v-model="this.fields.fornecedor"
+        :error="this.formErrors.fornecedor"
+        entity-uri="/api/est/fornecedor"
+        optionLabel="nomeFantasiaMontado"
+        :orderBy="{ nomeFantasia: 'ASC' }"
+        :filters="{ utilizado: true }"
+        label="Fornecedor"
+        id="fornecedor"
       />
 
-      <CrosierInputText
-        label="Inscrição Estadual"
-        col="3"
-        id="inscricaoEstadual"
-        v-model="this.fields.inscricaoEstadual"
-        :error="this.formErrors.inscricaoEstadual"
+      <CrosierDropdownEntity
+        col="4"
+        v-model="this.fields.unidadePadrao"
+        :error="this.formErrors.unidadePadrao"
+        entity-uri="/api/est/unidade"
+        optionLabel="label"
+        :optionValue="null"
+        :orderBy="{ label: 'ASC' }"
+        :filters="{ atual: true }"
+        label="Unidade"
+        id="unidadePadrao"
       />
     </div>
 
-    <div class="row mt-4">
-      <CrosierInputText
-        col="5"
-        label="Logradouro"
-        id="logradouro"
-        v-model="this.fields.jsonData.endereco.logradouro"
+    <div class="form-row">
+      <CrosierInputDecimal
+        v-if="this.fields?.unidadePadrao"
+        label="Qtde Total"
+        col="6"
+        id="qtdeTotal"
+        :decimais="this.fields.unidadePadrao.casasDecimais"
+        v-model="this.fields.qtdeTotal"
+        :error="this.formErrors.qtdeTotal"
       />
-      <CrosierInputText
-        col="3"
-        label="Número"
-        id="numero"
-        v-model="this.fields.jsonData.endereco.numero"
-      />
-      <CrosierInputText
-        col="4"
-        label="Complemento"
-        id="complemento"
-        v-model="this.fields.jsonData.complemento"
-      />
-    </div>
-    <div class="row">
-      <CrosierInputText
-        label="Bairro"
-        col="3"
-        id="bairro"
-        v-model="this.fields.jsonData.endereco.bairro"
-      />
+      <div class="col-md-6" v-else>
+        <div class="form-group">
+          <label>Qtde Total</label>
+          <Skeleton class="form-control" height="2rem" />
+        </div>
+      </div>
 
-      <CrosierInputCep
-        col="2"
-        v-model="this.fields.jsonData.endereco.cep"
-        @consultaCep="this.consultaCep"
+      <CrosierInputDecimal
+        v-if="this.fields?.unidadePadrao"
+        label="Qtde Mínima"
+        col="6"
+        id="qtdeMinima"
+        :decimais="this.fields.unidadePadrao.casasDecimais"
+        v-model="this.fields.qtdeMinima"
       />
-
-      <CrosierInputText
-        label="Cidade"
-        col="4"
-        id="cidade"
-        v-model="this.fields.jsonData.endereco.cidade"
-      />
-
-      <CrosierDropdownUf id="uf" col="3" v-model="this.fields.jsonData.endereco.estado" />
+      <div class="col-md-6" v-else>
+        <div class="form-group">
+          <label>Qtde Mínima</label>
+          <Skeleton class="form-control" height="2rem" />
+        </div>
+      </div>
     </div>
   </CrosierFormS>
 </template>
@@ -117,30 +171,30 @@
 <script>
 import axios from "axios";
 import Toast from "primevue/toast";
+import Skeleton from "primevue/skeleton";
 import * as yup from "yup";
 import { mapGetters, mapMutations } from "vuex";
 import {
   CrosierFormS,
   submitForm,
-  CrosierDropdownBoolean,
+  CrosierDropdown,
+  CrosierDropdownEntity,
   CrosierInputText,
   CrosierInputInt,
-  CrosierInputCep,
-  CrosierDropdownUf,
   SetFocus,
-  CrosierInputCpfCnpj,
+  CrosierInputDecimal,
 } from "crosier-vue";
 
 export default {
   components: {
     Toast,
+    Skeleton,
     CrosierFormS,
-    CrosierDropdownBoolean,
+    CrosierDropdown,
+    CrosierDropdownEntity,
     CrosierInputText,
     CrosierInputInt,
-    CrosierInputCpfCnpj,
-    CrosierInputCep,
-    CrosierDropdownUf,
+    CrosierInputDecimal,
   },
 
   data() {
@@ -156,7 +210,13 @@ export default {
     await this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
       nome: yup.string().required().typeError(),
-      utilizado: yup.boolean().required().typeError(),
+      status: yup.string().required().typeError(),
+      depto: yup.mixed().required().typeError(),
+      grupo: yup.mixed().required().typeError(),
+      subgrupo: yup.mixed().required().typeError(),
+      fornecedor: yup.mixed().required().typeError(),
+      unidadePadrao: yup.mixed().required().typeError(),
+      qtdeTotal: yup.number().required().typeError(),
     });
 
     SetFocus("codigo", 100);
@@ -172,6 +232,19 @@ export default {
       this.fields.codigo = rs?.data?.DATA?.prox;
     },
 
+    onChangeDepto() {
+      this.$nextTick(async () => {
+        this.fields.grupo = null;
+        await this.$refs.grupo.load();
+      });
+    },
+
+    onChangeGrupo() {
+      this.$nextTick(async () => {
+        await this.$refs.subgrupo.load();
+      });
+    },
+
     async submitForm() {
       this.setLoading(true);
       await submitForm({
@@ -180,28 +253,16 @@ export default {
         $store: this.$store,
         formDataStateName: "fields",
         $toast: this.$toast,
-        // fnBeforeSave: (formData) => {
-        //
-        // },
+        fnBeforeSave: (formData) => {
+          formData.depto = formData.depto["@id"];
+          formData.grupo = formData.grupo["@id"];
+          formData.subgrupo = formData.subgrupo["@id"];
+          formData.unidadePadrao = formData.unidadePadrao["@id"];
+
+          delete formData.precos;
+        },
       });
       this.setLoading(false);
-    },
-
-    consultaCep(rs) {
-      if (rs) {
-        this.fields.jsonData = {
-          ...this.fields.jsonData,
-          ...{
-            endereco: {
-              bairro: rs?.bairro,
-              cep: rs?.cep,
-              cidade: rs?.localidade,
-              estado: rs?.uf,
-              logradouro: rs?.logradouro,
-            },
-          },
-        };
-      }
     },
   },
 

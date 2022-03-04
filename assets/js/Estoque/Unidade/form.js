@@ -5,7 +5,7 @@ import { createStore } from "vuex";
 import { api } from "crosier-vue";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
 import ConfirmationService from "primevue/confirmationservice";
-import Page from "./pages/tabview";
+import Page from "./pages/form";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
@@ -24,30 +24,22 @@ const store = createStore({
   state() {
     return {
       loading: 0,
-      fields: {},
+      fields: {
+        jsonData: {
+          endereco: {},
+        },
+      },
       fieldsErrors: {},
-
-      preco: {},
-      precoErrors: {},
     };
   },
-
   getters: {
     isLoading: (state) => state.loading > 0,
-
     getFields(state) {
       const { fields } = state;
       return fields;
     },
     getFieldsErrors: (state) => state.fieldsErrors,
-
-    getPreco(state) {
-      const { preco } = state;
-      return preco;
-    },
-    getPrecoErrors: (state) => state.precoErrors,
   },
-
   mutations: {
     setLoading(state, loading) {
       if (loading) {
@@ -58,20 +50,17 @@ const store = createStore({
     },
 
     setFields(state, fields) {
-      fields.fornecedor = fields.fornecedor["@id"];
+      if (!fields.jsonData) {
+        fields.jsonData = {};
+      }
+      if (!fields.jsonData.endereco) {
+        fields.jsonData.endereco = {};
+      }
       state.fields = fields;
     },
 
     setFieldsErrors(state, formErrors) {
       state.fieldsErrors = formErrors;
-    },
-
-    setPreco(state, preco) {
-      state.preco = preco;
-    },
-
-    setPrecoErrors(state, formErrors) {
-      state.precoErrors = formErrors;
     },
   },
 
@@ -82,7 +71,7 @@ const store = createStore({
       if (id) {
         try {
           const response = await api.get({
-            apiResource: `/api/est/produto/${id}`,
+            apiResource: `/api/est/unidade/${id}`,
           });
 
           if (response.data["@id"]) {

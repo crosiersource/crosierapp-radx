@@ -2,14 +2,10 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
-  <CrosierListS titulo="Bandeiras Cartões" apiResource="/api/fin/bandeiraCartao/" ref="dt">
+  <CrosierListS titulo="Listas de Preços" apiResource="/api/est/listaPreco/" ref="dt">
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true"></Column>
-
       <Column field="descricao" header="Descrição" :sortable="true"></Column>
-
-      <Column field="modo.descricaoMontada" header="Modo" :sortable="true"></Column>
-
       <Column field="updated" header="" :sortable="true">
         <template class="text-right" #body="r">
           <div class="d-flex justify-content-end">

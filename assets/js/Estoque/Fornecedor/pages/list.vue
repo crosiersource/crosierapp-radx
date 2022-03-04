@@ -1,5 +1,8 @@
 <template>
-  <CrosierListS titulo="Fornecedores" apiResource="/api/est/fornecedor">
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
+
+  <CrosierListS titulo="Fornecedores" apiResource="/api/est/fornecedor/" ref="dt">
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputText
@@ -80,6 +83,8 @@
 import { mapGetters, mapMutations } from "vuex";
 import { CrosierDropdownBoolean, CrosierInputText, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
+import Toast from "primevue/toast";
+import ConfirmDialog from "primevue/confirmdialog";
 
 export default {
   components: {
@@ -87,6 +92,8 @@ export default {
     Column,
     CrosierDropdownBoolean,
     CrosierInputText,
+    Toast,
+    ConfirmDialog,
   },
 
   methods: {
@@ -98,10 +105,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.dt-sm-bt {
-  height: 30px !important;
-  width: 30px !important;
-}
-</style>

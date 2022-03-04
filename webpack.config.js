@@ -37,6 +37,9 @@ Encore
 
   
   // --------------------------------------------
+  
+  // Estoque
+  
   .addEntry('crm/cliente/list', './assets/js/CRM/Cliente/list.js')
   .addEntry('crm/cliente/form', './assets/js/CRM/Cliente/form.js')
   
@@ -45,6 +48,15 @@ Encore
 
   .addEntry('est/produto/list', './assets/js/Estoque/Produto/list.js')
   .addEntry('est/produto/form', './assets/js/Estoque/Produto/form.js')
+
+  .addEntry('est/unidade/list', './assets/js/Estoque/Unidade/list.js')
+  .addEntry('est/unidade/form', './assets/js/Estoque/Unidade/form.js')
+
+  .addEntry('est/listaPreco/list', './assets/js/Estoque/ListaPreco/list.js')
+  .addEntry('est/listaPreco/form', './assets/js/Estoque/ListaPreco/form.js')
+  
+  
+  // Financeiro
   
   .addEntry('fin/banco/list', './assets/js/Financeiro/Banco/list.js')
   .addEntry('fin/banco/form', './assets/js/Financeiro/Banco/form.js')

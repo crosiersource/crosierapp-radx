@@ -1,10 +1,8 @@
 <template>
-  <CrosierListS
-    titulo="Produto"
-    apiResource="/api/est/produto"
-    :formUrl="null"
-    :filtrosNaSidebar="true"
-  >
+  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <ConfirmDialog group="confirmDialog_crosierListS" />
+
+  <CrosierListS titulo="Produto" apiResource="/api/est/produto/" :filtrosNaSidebar="true" ref="dt">
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputText label="Código" id="codigo" v-model="this.filters.codigo" />
@@ -29,7 +27,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="'/est/produto/form/' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <a
@@ -59,6 +57,8 @@
 import { mapGetters, mapMutations } from "vuex";
 import { CrosierDropdownBoolean, CrosierInputText, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
+import Toast from "primevue/toast";
+import ConfirmDialog from "primevue/confirmdialog";
 
 export default {
   components: {
@@ -66,6 +66,8 @@ export default {
     Column,
     CrosierDropdownBoolean,
     CrosierInputText,
+    Toast,
+    ConfirmDialog,
   },
 
   methods: {
@@ -77,10 +79,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.dt-sm-bt {
-  height: 30px !important;
-  width: 30px !important;
-}
-</style>

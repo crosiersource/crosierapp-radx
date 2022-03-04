@@ -7,9 +7,9 @@ use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
-use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ImageUtils\ImageUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
@@ -1079,6 +1079,24 @@ class ProdutoController extends FormListController
     }
 
 
+    /**
+     *
+     * @Route("/api/est/produto/findProxCodigo/", name="api_est_produto_findProxCodigo")
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function findProxCodigo(Connection $conn): JsonResponse
+    {
+        try {
+            $rsProxCodigo = $conn->fetchAssociative('SELECT max(codigo)+1 as prox FROM est_produto WHERE codigo < 2147483647');
+            $rsProxCodigo['prox'] = $rsProxCodigo['prox'] ?: 1; 
+            return CrosierApiResponse::success($rsProxCodigo);
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error();
+        }
+    }
 
 
 }
