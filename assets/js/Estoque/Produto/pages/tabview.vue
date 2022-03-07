@@ -7,22 +7,10 @@
             <h3>Produto</h3>
           </div>
           <div class="d-sm-flex flex-nowrap ml-auto">
-            <a
-              v-show="this.formUrl"
-              type="button"
-              class="btn btn-info mr-2"
-              :href="this.formUrl"
-              title="Novo"
-            >
+            <a type="button" class="btn btn-info mr-2" href="form" title="Novo">
               <i class="fas fa-file" aria-hidden="true"></i>
             </a>
-            <a
-              v-show="this.listUrl"
-              role="button"
-              class="btn btn-outline-secondary"
-              :href="this.listUrl"
-              title="Listar"
-            >
+            <a role="button" class="btn btn-outline-secondary" href="list" title="Listar">
               <i class="fas fa-list"></i>
             </a>
           </div>

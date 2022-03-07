@@ -1,5 +1,4 @@
 <template>
-  <Toast position="bottom-right" class="mt-5" />
   <CrosierFormS :withoutCard="true" @submitForm="this.submitForm">
     <div class="form-row">
       <CrosierDropdownEntity
@@ -116,12 +115,12 @@
         :error="this.precoErrors.precoVista"
       />
     </div>
-    <PrecosList v-if="this.produto?.id" />
   </CrosierFormS>
+
+  <PrecosList v-if="this.produto?.id" ref="precosList" />
 </template>
 
 <script>
-import Toast from "primevue/toast";
 import * as yup from "yup";
 import { mapGetters, mapMutations } from "vuex";
 import {
@@ -138,7 +137,6 @@ import PrecosList from "./precos_list";
 
 export default {
   components: {
-    Toast,
     CrosierFormS,
     CrosierDropdownBoolean,
     CrosierCalendar,
@@ -177,7 +175,7 @@ export default {
 
     async submitForm() {
       this.setLoading(true);
-      await submitForm({
+      const rs = await submitForm({
         setUrlId: false,
         commitFormDataAfterSave: false,
         apiResource: "/api/est/produtoPreco",
@@ -190,6 +188,10 @@ export default {
           formData.margem /= 100.0;
         },
       });
+      if ([200, 201].includes(rs?.status)) {
+        await this.$store.dispatch("loadData");
+        this.setPreco({});
+      }
       this.setLoading(false);
     },
   },

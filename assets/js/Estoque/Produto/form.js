@@ -67,6 +67,9 @@ const store = createStore({
     },
 
     setPreco(state, preco) {
+      preco.lista = (preco?.lista || [])["@id"];
+      preco.unidade = (preco?.unidade || [])["@id"];
+      preco.margem = preco?.margem ? preco.margem * 100.0 : null;
       state.preco = preco;
     },
 
