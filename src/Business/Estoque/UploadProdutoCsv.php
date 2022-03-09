@@ -177,6 +177,7 @@ class UploadProdutoCsv
             $inseridos = 0;
             $jaInseridos = 0;
             $alterados = 0;
+            $naoAlterados = 0;
 
             $this->carregarEstProdutos();
 
@@ -225,10 +226,21 @@ class UploadProdutoCsv
                     }
                     if ($atualizandoProduto) {
                         // os campos que são permitidos alteração
-                        $produto->referencia = $campos['erp_codigo'];
-                        $produto->ean = $campos['EAN'] ?? null;
-                        $produto->marca = $produto->fornecedor->nome;
+                        $alterado = false;
+                        if ($produto->referencia !== $campos['erp_codigo']) {
+                            $produto->referencia = $campos['erp_codigo'];
+                            $alterado = true;
+                        }
+                        if ($produto->ean !== ($campos['EAN'] ?? null)) {
+                            $produto->ean = $campos['EAN'] ?? null;
+                            $alterado = true;
+                        }
+                        if ($produto->marca !== $produto->fornecedor->nome) {
+                            $produto->marca = $produto->fornecedor->nome;
+                            $alterado = true;
+                        }
                     } else {
+                        $alterado = true;
                         // campos somente na inserção
                         $agora = (new \DateTime())->format('Y-m-d H:i:s');
 
@@ -250,15 +262,23 @@ class UploadProdutoCsv
                         $produto->jsonData['fornecedor_nome'] = $produto->fornecedor->nome;
 
                         ksort($produto->jsonData);
+
+                        $this->estProdutos[$produto->codigo] = $produto->nome;
                     }
-                    $produto = $this->produtoEntityHandler->save($produto);//, false);
-                    $this->estProdutos[$produto->codigo] = $produto->nome;
-                    if ($atualizandoProduto) {
-                        $alterados++;
+                    
+                    if ($alterado) {
+                        $produto = $this->produtoEntityHandler->save($produto);//, false);
+
+                        if ($atualizandoProduto) {
+                            $alterados++;
+                        } else {
+                            $inseridos++;
+                        }
+                        $this->syslog->info($i . '/' . $totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
                     } else {
-                        $inseridos++;
+                        $naoAlterados++;
                     }
-                    $this->syslog->info($i . '/' . $totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
+                    
                 } catch (\Throwable $e) {
                     $errMsg = 'processarArquivo() - Erro ao inserir a linha "' . $linha . '". Continuan...';
                     $this->syslog->err($errMsg, $e->getTraceAsString());
@@ -275,10 +295,12 @@ class UploadProdutoCsv
             $this->produtoEntityHandler->getDoctrine()->flush();
             $this->produtoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
 
-            $this->syslog->info('Total de inserções: ' . $inseridos);
-            $this->syslog->info('Total de alterações: ' . $alterados);
             $this->syslog->info('Total já inserido: ' . $jaInseridos);
-            return $inseridos;
+            $this->syslog->info('Total de inserções: ' . $inseridos);
+            $this->syslog->info('Total não alterados: ' . $naoAlterados);
+            $this->syslog->info('Total de alterações: ' . $alterados);
+                        
+            return $inseridos ?: $alterados ?: 0;
         } catch (\Throwable $e) {
             $errMsg = 'processarArquivo() - Erro';
             $this->syslog->err($errMsg, $e->getTraceAsString());
