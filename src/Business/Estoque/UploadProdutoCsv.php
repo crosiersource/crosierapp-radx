@@ -184,93 +184,92 @@ class UploadProdutoCsv
 
             $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
 
-            $batchSize = 500;
-            $iBatch = 0;
-            $this->produtoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
+//            $batchSize = 500;
+//            $iBatch = 0;
+//            $this->produtoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
 
             /** @var ProdutoRepository $repoProduto */
             $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
 
             for ($i = 1; $i <= $totalRegistros; $i++) {
-                $atualizandoProduto = false;
-                $linha = $linhas[$i];
-                if (!trim($linha)) {
+
+                try {
+                    $atualizandoProduto = false;
+                    $linha = $linhas[$i];
+                    if (!trim($linha)) {
+                        continue;
+                    }
+                    $campos = str_getcsv($linha);
+                    foreach ($campos as $k => $valor) {
+                        $campos[$nomesCampos[$k]] = trim($valor);
+                        unset($campos[$k]);
+                    }
+                    $campos['cadastro'] = $campos['cadastro'] ? DateTimeUtils::parseDateStr($campos['cadastro']) : null;
+                    $campos['alteracao'] = $campos['alteracao'] ? DateTimeUtils::parseDateStr($campos['alteracao']) : null;
+                    $campos['alteracao_preco'] = $campos['alteracao_preco'] ? DateTimeUtils::parseDateStr($campos['alteracao_preco']) : null;
+                    if ($this->estProdutos[$campos['erp_codigo']] ?? false) {
+                        if (!$atualizarExistentes) {
+                            $this->syslog->info($i . '/' . $totalRegistros . ') já existe registro para erp_codigo: ' . $campos['erp_codigo']);
+                            $jaInseridos++;
+                            continue;
+                        } else {
+                            $produto = $repoProduto->findOneByCodigo($campos['erp_codigo']);
+                            if (!$produto) {
+                                $produto = new Produto();
+                            } else {
+                                $atualizandoProduto = true;
+                            }
+                        }
+                    } else {
+                        $produto = new Produto();
+                    }
+                    if ($atualizandoProduto) {
+                        // os campos que são permitidos alteração
+                        $produto->referencia = $campos['erp_codigo'];
+                        $produto->ean = $campos['EAN'] ?? null;
+                        $produto->marca = $produto->fornecedor->nome;
+                    } else {
+                        // campos somente na inserção
+                        $agora = (new \DateTime())->format('Y-m-d H:i:s');
+
+                        $this->handleDeptoGrupoSubgrupo($produto, $campos);
+                        $this->handleFornecedor($produto, $campos);
+
+                        $produto->codigo = $campos['erp_codigo'];
+                        $produto->referencia = $campos['erp_codigo'];
+                        $produto->ean = $campos['EAN'] ?? null;
+                        $produto->marca = $produto->fornecedor->nome;
+                        $produto->nome = $campos['nome'];
+                        $produto->status = 'INATIVO';
+                        $produto->unidadePadrao = $this->unidade_UN;
+
+                        $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'] ?? 0.0;
+                        $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'] ?? null;
+                        $produto->jsonData['erp_codigo'] = $campos['erp_codigo'];
+                        $produto->jsonData['referencias_extras'] = $campos['erp_referencia'];
+                        $produto->jsonData['fornecedor_nome'] = $produto->fornecedor->nome;
+
+                        ksort($produto->jsonData);
+                    }
+                    $produto = $this->produtoEntityHandler->save($produto);//, false);
+                    $this->estProdutos[$produto->codigo] = $produto->nome;
+                    if ($atualizandoProduto) {
+                        $alterados++;
+                    } else {
+                        $inseridos++;
+                    }
+                    $this->syslog->info($i . '/' . $totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
+                } catch (\Throwable $e) {
+                    $errMsg = 'processarArquivo() - Erro ao inserir a linha "' . $linha . '". Continuan...';
+                    $this->syslog->err($errMsg, $e->getTraceAsString());
                     continue;
                 }
 
-                $campos = str_getcsv($linha);
-
-                foreach ($campos as $k => $valor) {
-                    $campos[$nomesCampos[$k]] = trim($valor);
-                    unset($campos[$k]);
-                }
-
-                $campos['cadastro'] = $campos['cadastro'] ? DateTimeUtils::parseDateStr($campos['cadastro']) : null;
-                $campos['alteracao'] = $campos['alteracao'] ? DateTimeUtils::parseDateStr($campos['alteracao']) : null;
-                $campos['alteracao_preco'] = $campos['alteracao_preco'] ? DateTimeUtils::parseDateStr($campos['alteracao_preco']) : null;
-
-                if ($this->estProdutos[$campos['erp_codigo']] ?? false) {
-                    if (!$atualizarExistentes) {
-                        $this->syslog->info($i . '/' . $totalRegistros . ') já existe registro para erp_codigo: ' . $campos['erp_codigo']);
-                        $jaInseridos++;
-                        continue;
-                    } else {
-                        $produto = $repoProduto->findOneByCodigo($campos['erp_codigo']);
-                        if (!$produto) {
-                            $produto = new Produto();
-                        } else {
-                            $atualizandoProduto = true;
-                        }
-                    }
-                } else {
-                    $produto = new Produto();
-                }
-
-                if ($atualizandoProduto) {
-                    // os campos que são permitidos alteração
-                    $produto->referencia = $campos['erp_codigo'];
-                    $produto->ean = $campos['EAN'] ?? null;
-                    $produto->marca = $produto->fornecedor->nome;
-                } else {
-                    // campos somente na inserção
-                    $agora = (new \DateTime())->format('Y-m-d H:i:s');
-
-                    $this->handleDeptoGrupoSubgrupo($produto, $campos);
-                    $this->handleFornecedor($produto, $campos);
-
-                    $produto->codigo = $campos['erp_codigo'];
-                    $produto->referencia = $campos['erp_codigo'];
-                    $produto->ean = $campos['EAN'] ?? null;
-                    $produto->marca = $produto->fornecedor->nome;
-                    $produto->nome = $campos['nome'];
-                    $produto->status = 'INATIVO';
-                    $produto->unidadePadrao = $this->unidade_UN;
-
-                    $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'] ?? 0.0;
-                    $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'] ?? null;
-                    $produto->jsonData['erp_codigo'] = $campos['erp_codigo'];
-                    $produto->jsonData['referencias_extras'] = $campos['erp_referencia'];
-                    $produto->jsonData['fornecedor_nome'] = $produto->fornecedor->nome;
-
-                    ksort($produto->jsonData);
-                }
-
-                $produto = $this->produtoEntityHandler->save($produto, false);
-                $this->estProdutos[$produto->codigo] = $produto->nome;
-
-                if ($atualizandoProduto) {
-                    $alterados++;
-                } else {
-                    $inseridos++;
-                }
-
-                $this->syslog->info($i . '/' . $totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
-
-                if ((++$iBatch % $batchSize) === 0) {
-                    $this->produtoEntityHandler->getDoctrine()->flush();
-                    $this->produtoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
-                    $this->prepararCampos();
-                }
+//                if ((++$iBatch % $batchSize) === 0) {
+//                    $this->produtoEntityHandler->getDoctrine()->flush();
+//                    $this->produtoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
+//                    $this->prepararCampos();
+//                }
             }
 
             $this->produtoEntityHandler->getDoctrine()->flush();
@@ -281,7 +280,7 @@ class UploadProdutoCsv
             $this->syslog->info('Total já inserido: ' . $jaInseridos);
             return $inseridos;
         } catch (\Throwable $e) {
-            $errMsg = 'processarArquivo() - Erro ao inserir a linha "' . $linha . '"';
+            $errMsg = 'processarArquivo() - Erro';
             $this->syslog->err($errMsg, $e->getTraceAsString());
             throw new ViewException($errMsg);
         }
