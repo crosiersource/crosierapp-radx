@@ -276,6 +276,7 @@ class UploadProdutoCsv
                         }
                         $this->syslog->info($i . '/' . $totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
                     } else {
+                        $this->syslog->info($i . '/' . $totalRegistros . ') produto não alterado (' . $produto->codigo . ')');
                         $naoAlterados++;
                     }
                     
