@@ -185,10 +185,12 @@ class UploadProdutoCsv
 
             $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
 
-//            $batchSize = 500;
-//            $iBatch = 0;
-//            $this->produtoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
+            $batchSize = 250;
+            $iBatch = 0;
+            $this->produtoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
 
+            $linhasBatch = [];
+            
             /** @var ProdutoRepository $repoProduto */
             $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
 
@@ -200,6 +202,8 @@ class UploadProdutoCsv
                     if (!trim($linha)) {
                         continue;
                     }
+                    $linhasBatch[] = $linha;
+                    
                     $campos = str_getcsv($linha);
                     foreach ($campos as $k => $valor) {
                         $campos[$nomesCampos[$k]] = trim($valor);
@@ -267,7 +271,7 @@ class UploadProdutoCsv
                     }
                     
                     if ($alterado) {
-                        $produto = $this->produtoEntityHandler->save($produto);//, false);
+                        $produto = $this->produtoEntityHandler->save($produto, false);
 
                         if ($atualizandoProduto) {
                             $alterados++;
@@ -276,7 +280,7 @@ class UploadProdutoCsv
                         }
                         $this->syslog->info($i . '/' . $totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
                     } else {
-                        $this->syslog->info($i . '/' . $totalRegistros . ') produto não alterado (' . $produto->codigo . ')');
+                        $this->syslog->info($i . '/' . $totalRegistros . ') produto não alterado' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
                         $naoAlterados++;
                     }
                     
@@ -286,11 +290,18 @@ class UploadProdutoCsv
                     continue;
                 }
 
-//                if ((++$iBatch % $batchSize) === 0) {
-//                    $this->produtoEntityHandler->getDoctrine()->flush();
-//                    $this->produtoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
-//                    $this->prepararCampos();
-//                }
+                if ((++$iBatch % $batchSize) === 0) {
+                    try {
+                        $this->produtoEntityHandler->getDoctrine()->flush();
+                        $this->produtoEntityHandler->getDoctrine()->clear();// Detaches all objects from Doctrine!
+                        $this->prepararCampos();
+                        $linhasBatch = [];
+                    } catch (\Throwable $e) {
+                        $errMsg = 'processarArquivo() - Erro no flush do batch';
+                        $this->syslog->err($errMsg, $e->getTraceAsString() . "\n\nLinhas:" . implode("\n", $linhasBatch));
+                        continue;
+                    }
+                }
             }
 
             $this->produtoEntityHandler->getDoctrine()->flush();
