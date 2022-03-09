@@ -280,7 +280,7 @@ class UploadProdutoCsv
                         }
                         $this->syslog->info($i . '/' . $totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
                     } else {
-                        $this->syslog->info($i . '/' . $totalRegistros . ') produto não alterado' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
+                        $this->syslog->info($i . '/' . $totalRegistros . ') produto não alterado (' . $produto->codigo . ')');
                         $naoAlterados++;
                     }
                     
@@ -304,8 +304,13 @@ class UploadProdutoCsv
                 }
             }
 
-            $this->produtoEntityHandler->getDoctrine()->flush();
-            $this->produtoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
+            try {
+                $this->produtoEntityHandler->getDoctrine()->flush();
+                $this->produtoEntityHandler->getDoctrine()->clear();
+            } catch (\Throwable $e) {
+                $errMsg = 'processarArquivo() - Erro no último flush do batch';
+                $this->syslog->err($errMsg, $e->getTraceAsString() . "\n\nLinhas:" . implode("\n", $linhasBatch));
+            }
 
             $this->syslog->info('Total já inserido: ' . $jaInseridos);
             $this->syslog->info('Total de inserções: ' . $inseridos);
