@@ -82,7 +82,8 @@ class UploadController extends BaseController
         $fileData = gzdecode(base64_decode($rFile));
 
         $extensao = pathinfo($filename, PATHINFO_EXTENSION);
-        $novoNome = ($request->get('substitutivo') ? 'ULTIMO' : StringUtils::guidv4()) . '.' . $extensao;
+        
+        $novoNome = ($request->get('substitutivo') ? 'ULTIMO' : ((new \DateTime())->format('YmdHisu'))) . '.' . $extensao;
         $nomeArquivo = $dir_fila . $novoNome;
         file_put_contents($nomeArquivo, $fileData);
         
