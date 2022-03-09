@@ -4,7 +4,7 @@ import ToastService from "primevue/toastservice";
 import { createStore } from "vuex";
 import ConfirmationService from "primevue/confirmationservice";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
-import Page from "./pages/dashboard";
+import Page from "./pages/dashboard-tray-e-ml/dashboard";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css

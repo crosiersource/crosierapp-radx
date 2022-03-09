@@ -38,6 +38,7 @@ class ProcessarUploadsCommand extends Command implements ServiceSubscriberInterf
     {
         $this->setName('crosierappradx:processarUploads');
         $this->addArgument('handler', InputArgument::REQUIRED, 'Handler [' . implode(',', array_keys(ProcessarUploadsCommand::getSubscribedServices())) . ']');
+        $this->addArgument('atualizarExistentes', InputArgument::OPTIONAL);
     }
 
 
@@ -52,13 +53,14 @@ class ProcessarUploadsCommand extends Command implements ServiceSubscriberInterf
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $handlerName = $input->getArgument('handler');
+        $atualizarExistentes = $input->getArgument('atualizarExistentes');
         if (
             ProcessarUploadsCommand::getSubscribedServices()[$handlerName] ?? null &&
             $this->locator->has($handlerName)
         ) {
             $handler = $this->locator->get($handlerName);
             try {
-                $handler->processar();
+                $handler->processar($atualizarExistentes);
             } catch (\Exception $ex) {
             }
         } else {

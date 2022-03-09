@@ -11,6 +11,9 @@ use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoSaldo;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoSaldoEntityHandler;
 
 /**
+ * Rodar com:
+ * php bin/console crosierappradx:processarUploads UploadProdutosSaldosCsv
+ * 
  * @author Carlos Eduardo Pauluk
  */
 class UploadProdutosSaldosCsv

@@ -18,8 +18,14 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\FornecedorEntityHan
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\GrupoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\SubgrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\ProdutoRepository;
 
 /**
+ * Rodar com:
+ * php bin/console crosierappradx:processarUploads UploadProdutoCsv
+ * ou para alterações:
+ * php bin/console crosierappradx:processarUploads UploadProdutoCsv true
+ *
  * @author Carlos Eduardo Pauluk
  */
 class UploadProdutoCsv
@@ -111,7 +117,7 @@ class UploadProdutoCsv
      *
      * @throws ViewException
      */
-    public function processar(): void
+    public function processar(?bool $atualizarExistentes = false): void
     {
         $pastaFila = $this->pasta . 'fila/';
         @mkdir($pastaFila, 0777, true);
@@ -128,7 +134,7 @@ class UploadProdutoCsv
         foreach ($files as $file) {
             if (!in_array($file, array('.', '..')) && !is_dir($pastaFila . $file)) {
                 try {
-                    $this->processarArquivo($file);
+                    $this->processarArquivo($file, $atualizarExistentes);
                     // $this->marcarDtHrAtualizacao(true);
                     $this->syslog->info('Arquivo processado com sucesso.');
                     @unlink($this->pasta . 'ok/ultimo.zip');
@@ -151,7 +157,7 @@ class UploadProdutoCsv
      * @param string $arquivo
      * @return int
      */
-    public function processarArquivo(string $arquivo): int
+    public function processarArquivo(string $arquivo, bool $atualizarExistentes): int
     {
         $this->syslog->info('Iniciando processamento do arquivo ' . $arquivo);
 
@@ -170,6 +176,7 @@ class UploadProdutoCsv
 
             $inseridos = 0;
             $jaInseridos = 0;
+            $alterados = 0;
 
             $this->carregarEstProdutos();
 
@@ -181,7 +188,11 @@ class UploadProdutoCsv
             $iBatch = 0;
             $this->produtoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
 
+            /** @var ProdutoRepository $repoProduto */
+            $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
+
             for ($i = 1; $i <= $totalRegistros; $i++) {
+                $atualizandoProduto = false;
                 $linha = $linhas[$i];
                 if (!trim($linha)) {
                     continue;
@@ -199,39 +210,61 @@ class UploadProdutoCsv
                 $campos['alteracao_preco'] = $campos['alteracao_preco'] ? DateTimeUtils::parseDateStr($campos['alteracao_preco']) : null;
 
                 if ($this->estProdutos[$campos['erp_codigo']] ?? false) {
-                    $this->syslog->info($i . '/' . $totalRegistros . ') já existe registro para erp_codigo: ' . $campos['erp_codigo']);
-                    $jaInseridos++;
-                    continue;
+                    if (!$atualizarExistentes) {
+                        $this->syslog->info($i . '/' . $totalRegistros . ') já existe registro para erp_codigo: ' . $campos['erp_codigo']);
+                        $jaInseridos++;
+                        continue;
+                    } else {
+                        $produto = $repoProduto->findOneByCodigo($campos['erp_codigo']);
+                        if (!$produto) {
+                            $produto = new Produto();
+                        } else {
+                            $atualizandoProduto = true;
+                        }
+                    }
+                } else {
+                    $produto = new Produto();
                 }
 
-                $agora = (new \DateTime())->format('Y-m-d H:i:s');
+                if ($atualizandoProduto) {
+                    // os campos que são permitidos alteração
+                    $produto->referencia = $campos['erp_codigo'];
+                    $produto->ean = $campos['EAN'] ?? null;
+                    $produto->marca = $produto->fornecedor->nome;
+                } else {
+                    // campos somente na inserção
+                    $agora = (new \DateTime())->format('Y-m-d H:i:s');
 
-                $produto = new Produto();
+                    $this->handleDeptoGrupoSubgrupo($produto, $campos);
+                    $this->handleFornecedor($produto, $campos);
 
-                $produto->codigo = $campos['erp_codigo'];
-                $produto->jsonData['erp_codigo'] = $campos['erp_codigo'];
-                $produto->jsonData['referencias_extras'] = $campos['erp_referencia'];
+                    $produto->codigo = $campos['erp_codigo'];
+                    $produto->referencia = $campos['erp_codigo'];
+                    $produto->ean = $campos['EAN'] ?? null;
+                    $produto->marca = $produto->fornecedor->nome;
+                    $produto->nome = $campos['nome'];
+                    $produto->status = 'INATIVO';
+                    $produto->unidadePadrao = $this->unidade_UN;
 
-                $this->handleDeptoGrupoSubgrupo($produto, $campos);
-                $this->handleFornecedor($produto, $campos);
+                    $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'] ?? 0.0;
+                    $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'] ?? null;
+                    $produto->jsonData['erp_codigo'] = $campos['erp_codigo'];
+                    $produto->jsonData['referencias_extras'] = $campos['erp_referencia'];
+                    $produto->jsonData['fornecedor_nome'] = $produto->fornecedor->nome;
 
-                $produto->jsonData['fornecedor_nome'] = $produto->fornecedor->nome;
-
-                $produto->nome = $campos['nome'];
-                $produto->status = 'INATIVO';
-                $produto->unidadePadrao = $this->unidade_UN;
-
-                $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'] ?? 0.0;
-                $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'] ?? null;
-                
-                ksort($produto->jsonData);
+                    ksort($produto->jsonData);
+                }
 
                 $produto = $this->produtoEntityHandler->save($produto, false);
                 $this->estProdutos[$produto->codigo] = $produto->nome;
 
-                $inseridos++;
+                if ($atualizandoProduto) {
+                    $alterados++;
+                } else {
+                    $inseridos++;
+                }
 
-                $this->syslog->info($i . '/' . $totalRegistros . ') produto inserido (' . $produto->codigo . ')');
+                $this->syslog->info($i . '/' . $totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
 
                 if ((++$iBatch % $batchSize) === 0) {
                     $this->produtoEntityHandler->getDoctrine()->flush();
@@ -244,11 +277,13 @@ class UploadProdutoCsv
             $this->produtoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
 
             $this->syslog->info('Total de inserções: ' . $inseridos);
+            $this->syslog->info('Total de alterações: ' . $alterados);
             $this->syslog->info('Total já inserido: ' . $jaInseridos);
             return $inseridos;
         } catch (\Throwable $e) {
-            $this->syslog->err('processarArquivo() - Erro ao inserir a linha "' . $linha . '"', $e->getTraceAsString());
-            return 0;
+            $errMsg = 'processarArquivo() - Erro ao inserir a linha "' . $linha . '"';
+            $this->syslog->err($errMsg, $e->getTraceAsString());
+            throw new ViewException($errMsg);
         }
     }
 
@@ -332,10 +367,10 @@ class UploadProdutoCsv
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
             /** @var AppConfig $appConfig */
-            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'relEstoque01.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
+            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'uploadProdutoCsv.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
             if (!$appConfig) {
                 $appConfig = new AppConfig();
-                $appConfig->chave = 'relEstoque01.dthrAtualizacao';
+                $appConfig->chave = 'uploadProdutoCsv.dthrAtualizacao';
                 $appConfig->appUUID = $_SERVER['CROSIERAPP_UUID'];
             }
             $appConfig->valor = (new \DateTime())->format('Y-m-d H:i:s.u');
@@ -343,82 +378,10 @@ class UploadProdutoCsv
 
             $this->salvarImportadorStatus($foiOk);
         } catch (\Exception $e) {
-            $errMsg = 'Erro ao marcar app_config (relEstoque01.dthrAtualizacao)';
+            $errMsg = 'Erro ao marcar app_config (uploadProdutoCsv.dthrAtualizacao)';
             $this->syslog->err($errMsg, $e->getTraceAsString());
             throw new ViewException($errMsg);
         }
-    }
-
-
-    /**
-     * @throws ViewException
-     */
-    protected function salvarImportadorStatus(bool $foiOk)
-    {
-        $feedback = array();
-        $feedback["classe"] = $this->getRelatorioTipo();
-        $now = (new \DateTime())->format('Y-m-d H:i:s.u');
-        $feedback["dthr"] = $now;
-        $feedback["ok"] = $foiOk;
-        $feedback["linhasLidas"] = $this->getTotalRegistrosNoArquivo();
-        $feedback["linhasModificadas"] = $this->getItensModificadosPeloMySQL();
-        $inconformidades = $this->getDescritorDeInconformidades()->getInconformidades();
-        $feedback["inconformidades"] = $this->statusUpdateFormateInconformidades($inconformidades);
-        $json = json_encode($feedback);
-
-        $the_key = "RELESTOQUE01.ImportadorStatus";
-        try {
-            /** @var AppConfigRepository $repoAppConfig */
-            $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
-            /** @var AppConfig $appConfig */
-            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', $the_key], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
-            if (!$appConfig) {
-                $appConfig = new AppConfig();
-                $appConfig->chave = $the_key;
-                $appConfig->appUUID = $_SERVER['CROSIERAPP_UUID'];
-            }
-            $appConfig->isJson = true;
-            $appConfig->valor = $json;
-            $this->appConfigEntityHandler->save($appConfig);
-        } catch (\Exception $e) {
-            $errMsg = 'Erro ao marcar app_config (' . $the_key . ')';
-            $this->syslog->err($errMsg, $e->getTraceAsString());
-            throw new ViewException($errMsg);
-        }
-    }
-
-    /**
-     * @param string $obs
-     * @param int $id
-     * @param array $new
-     * @param array|null $old
-     * @throws \Doctrine\DBAL\Exception
-     */
-    private function salvarProdutoEntityChange(string $obs, int $id, array $new, ?array $old = null)
-    {
-        $strChanges = '';
-        $conn = $this->doctrine->getConnection();
-
-        $arrDiff = $old ? array_diff_assoc($old, $new) : $new;
-
-        foreach ($arrDiff as $k => $diff) {
-            $strChanges .= $k . ': ';
-            if (isset($old)) {
-                $strChanges .= 'de "' . $old[$k] . '" para ';
-            }
-
-            $strChanges .= '"' . $new[$k] . '"' . PHP_EOL;
-        }
-
-        $arr = [
-            'entity_class' => Produto::class,
-            'entity_id' => $id,
-            'changing_user_id' => 1,
-            'changed_at' => (new \DateTime())->format('Y-m-d H:i:s'),
-            'changes' => $strChanges,
-            'obs' => 'RELESTOQUE01BUSINESS - ' . $obs,
-        ];
-        $conn->insert('cfg_entity_change', $arr);
     }
 
 

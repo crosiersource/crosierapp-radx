@@ -15,6 +15,32 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends BaseController
 {
 
+
+    /**
+     * @Route("/api/dashboard/tray-e-ml/totaisDeVendasUltimos12Meses", name="api_dashboard_totaisDeVendasUltimos12Meses")
+     */
+    public function totaisDeVendasUltimos12Meses(): Response
+    {
+
+        $sql = "
+            SELECT 
+                DATE_FORMAT(v.dt_venda, '%Y-%m') as mesano,
+                sum(valor_total) AS valor_total
+            FROM ecomm_tray_venda v
+            WHERE v.dt_venda > DATE_SUB(NOW(),INTERVAL 12 MONTH)
+            AND v.status NOT LIKE '%CANCELADO%'
+            GROUP BY DATE_FORMAT(v.dt_venda, '%Y-%m')
+            ORDER BY DATE_FORMAT(v.dt_venda, '%Y-%m')
+        ";
+
+
+        /** @var Connection $conn */
+        $conn = $this->getDoctrine()->getConnection();
+
+        $rsTotal = $conn->fetchAllAssociative($sql);
+
+        return CrosierApiResponse::success($rsTotal);
+    }
     
     /**
      * @Route("/api/dashboard/melhoresVendedores", name="api_dashboard_melhoresVendedores")
@@ -99,33 +125,7 @@ class DashboardController extends BaseController
     }
 
 
-    /**
-     * @Route("/api/dashboard/totaisDeVendasUltimos12Meses", name="api_dashboard_totaisDeVendasUltimos12Meses")
-     */
-    public function totaisDeVendasUltimos12Meses(): Response
-    {
 
-        $sql = "
-            SELECT sum(valor_total) AS valor_total
-            FROM ecomm_tray_venda v
-            WHERE v.dt_venda > DATE_SUB(NOW(),INTERVAL 12 MONTH)
-            AND v.status NOT LIKE '%CANCELADO%'
-            GROUP BY DATE_FORMAT(v.dt_venda, '%Y-%m')
-            ORDER BY DATE_FORMAT(v.dt_venda, '%Y-%m')
-        ";
-
-
-        /** @var Connection $conn */
-        $conn = $this->getDoctrine()->getConnection();
-
-        $rsTotal = $conn->fetchAllAssociative($sql);
-        $data = [];
-        foreach ($rsTotal as $r) {
-            $data[] = (float)$r['valor_total'];
-        }
-
-        return CrosierApiResponse::success($data);
-    }
 
     /**
      * @Route("/api/dashboard/totalizacoesGerais", name="api_dashboard_totalizacoesGerais")

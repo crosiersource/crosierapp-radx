@@ -6,7 +6,7 @@ import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
 import { api } from "crosier-vue";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
-import Page from "./pages/list";
+import Page from "./pages/list_perguntas";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/saga-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css

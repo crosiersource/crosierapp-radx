@@ -2,7 +2,14 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
-  <CrosierListS titulo="Produto" apiResource="/api/est/produto/" :filtrosNaSidebar="true" ref="dt">
+  <CrosierListS
+    titulo="Produto"
+    apiResource="/api/est/produto/"
+    :filtrosNaSidebar="true"
+    ref="dt"
+    :formUrl="null"
+    @beforeFilter="this.beforeFilter"
+  >
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputText label="Código" id="codigo" v-model="this.filters.codigo" />
@@ -27,15 +34,8 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="'form?id=' + r.data.id"
+              :href="'/est/produto/form/' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
-            ></a>
-            <a
-              role="button"
-              class="btn btn-danger btn-sm ml-1"
-              title="Deletar registro"
-              @click="this.$refs.dt.deletar(r.data.id)"
-              ><i class="fas fa-trash" aria-hidden="true"></i
             ></a>
           </div>
           <div class="d-flex justify-content-end mt-1">
@@ -59,6 +59,7 @@ import { CrosierDropdownBoolean, CrosierInputText, CrosierListS } from "crosier-
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
+import moment from "moment";
 
 export default {
   components: {
@@ -72,6 +73,10 @@ export default {
 
   methods: {
     ...mapMutations(["setLoading"]),
+
+    beforeFilter() {
+      this.filters.nome = `%${this.filters.nome}%`;
+    },
   },
 
   computed: {

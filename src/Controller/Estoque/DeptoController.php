@@ -428,4 +428,21 @@ class DeptoController extends BaseController
     }
 
 
+    /**
+     * @Route("/est/deptoGrupoSubgrupo/integrarTodasAsCategorias", name="est_deptoGrupoSubgrupo_integrarTodasAsCategorias")
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function integrarTodasAsCategorias(IntegradorTray $integradorTray): Response
+    {
+        $todosOsSubgrupos = $this->getDoctrine()->getRepository(Subgrupo::class)->findAll();
+        foreach ($todosOsSubgrupos as $subgrupo) {
+            // if ($subgrupo->grupo->depto->codigo === '00') continue;
+            $integradorTray->integraSubgrupo($subgrupo);
+        }
+        return new Response('ok');
+    }
+
+
+
 }

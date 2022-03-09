@@ -99,6 +99,7 @@ import Chart from "primevue/chart";
 import { api } from "crosier-vue";
 import { mapMutations } from "vuex";
 import Vue3autocounter from "vue3-autocounter";
+import moment from "moment";
 
 export default {
   name: "graficoVendas",
@@ -112,20 +113,7 @@ export default {
     return {
       resultadosGerais: null,
       lineStylesData: {
-        labels: [
-          "Jan",
-          "Fev",
-          "Mar",
-          "Abr",
-          "Mai",
-          "Jun",
-          "Jul",
-          "Ago",
-          "Set",
-          "Out",
-          "Nov",
-          "Dez",
-        ],
+        labels: [],
         datasets: [
           {
             label: "Totais",
@@ -183,9 +171,21 @@ export default {
     this.setLoading(true);
 
     const rs = await api.get({
-      apiResource: "/api/dashboard/totaisDeVendasUltimos12Meses",
+      apiResource: "/api/dashboard/tray-e-ml/totaisDeVendasUltimos12Meses",
     });
-    this.lineStylesData.datasets[0].data = rs.data.DATA;
+
+    console.log(rs);
+
+    const labels = rs.data.DATA.map((e) => {
+      const dtf = `${e.mesano}-01T00:00:00-03:00`;
+      console.log(dtf);
+      return this.moment(dtf).format("MMM/YY");
+    });
+
+    const valores = rs.data.DATA.map((e) => e.valor_total);
+
+    this.lineStylesData.labels = labels;
+    this.lineStylesData.datasets[0].data = valores;
 
     const rsResultadosGerais = await api.get({
       apiResource: "/api/dashboard/totalizacoesGerais",
@@ -197,6 +197,11 @@ export default {
 
   methods: {
     ...mapMutations(["setLoading"]),
+
+    moment(date) {
+      moment.locale("pt-br");
+      return moment(date);
+    },
   },
 };
 </script>

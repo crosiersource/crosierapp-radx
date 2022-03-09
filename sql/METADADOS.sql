@@ -204,6 +204,8 @@ CREATE TABLE `est_produto`
   `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
 
   `codigo`             varchar(50),
+  `ean`                varchar(50),
+  `referencia`         varchar(50),
   `uuid`               char(36)     NOT NULL,
   `depto_id`           bigint(20)   NOT NULL,
   `grupo_id`           bigint(20)   NOT NULL,
@@ -211,6 +213,7 @@ CREATE TABLE `est_produto`
   `fornecedor_id`      bigint(20)   NOT NULL,
   `unidade_padrao_id`  bigint(20)   NOT NULL,
   `nome`               varchar(255) NOT NULL,
+  `marca`              varchar(255),
   `status`             enum ('ATIVO','INATIVO'),
   `obs`                varchar(5000),
   `composicao`         char(1),
