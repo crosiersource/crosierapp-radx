@@ -457,7 +457,7 @@ class UploadProdutoCsv
     {
         try {
             /** @var AppConfigRepository $repoAppConfig */
-            $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
+            $repoAppConfig = $this->produtoEntityHandler->getDoctrine()->getRepository(AppConfig::class);
             /** @var AppConfig $appConfig */
             $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'UploadProdutoCsv.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
             if (!$appConfig) {

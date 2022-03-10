@@ -251,7 +251,7 @@ class UploadProdutosSaldosCsv
     {
         try {
             /** @var AppConfigRepository $repoAppConfig */
-            $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
+            $repoAppConfig = $this->produtoEntityHandler->getDoctrine()->getRepository(AppConfig::class);
             /** @var AppConfig $appConfig */
             $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'UploadProdutosSaldosCsv.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
             if (!$appConfig) {
