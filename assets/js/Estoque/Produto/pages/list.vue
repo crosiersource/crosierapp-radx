@@ -8,7 +8,6 @@
     :filtrosNaSidebar="true"
     ref="dt"
     :formUrl="null"
-    @beforeFilter="this.beforeFilter"
   >
     <template v-slot:filter-fields>
       <div class="form-row">
@@ -59,7 +58,6 @@ import { CrosierDropdownBoolean, CrosierInputText, CrosierListS } from "crosier-
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
-import moment from "moment";
 
 export default {
   components: {
@@ -73,10 +71,6 @@ export default {
 
   methods: {
     ...mapMutations(["setLoading"]),
-
-    beforeFilter() {
-      this.filters.nome = `%${this.filters.nome}%`;
-    },
   },
 
   computed: {
