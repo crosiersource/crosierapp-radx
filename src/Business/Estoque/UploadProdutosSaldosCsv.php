@@ -62,7 +62,7 @@ class UploadProdutosSaldosCsv
             if (!in_array($file, array('.', '..')) && !is_dir($pastaFila . $file)) {
                 try {
                     $this->processarArquivo($file);
-                    // $this->marcarDtHrAtualizacao(true);
+                    $this->marcarDtHrAtualizacao();
                     $this->syslog->info('Arquivo processado com sucesso.');
                     @unlink($this->pasta . 'ok/ultimo.zip');
                     rename($pastaFila . $file, $this->pasta . 'ok/ultimo.zip');
@@ -72,7 +72,7 @@ class UploadProdutosSaldosCsv
                     $this->syslog->err('Erro processarArquivosNaFila()');
                     $this->syslog->err('processarArquivosNaFila', $e->getTraceAsString());
                     $this->syslog->info('Arquivo movido para pasta "falha".');
-                    // $this->marcarDtHrAtualizacao(false);
+                    $this->marcarDtHrAtualizacao();
                     throw new ViewException('Erro ao processarArquivosNaFila', 0, $e);
                 }
             }
@@ -223,100 +223,27 @@ class UploadProdutosSaldosCsv
     /**
      * @throws ViewException
      */
-    protected function marcarDtHrAtualizacao(bool $foiOk): void
+    protected function marcarDtHrAtualizacao(): void
     {
         try {
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
             /** @var AppConfig $appConfig */
-            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'relEstoque01.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
+            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'UploadProdutosSaldosCsv.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
             if (!$appConfig) {
                 $appConfig = new AppConfig();
-                $appConfig->chave = 'relEstoque01.dthrAtualizacao';
+                $appConfig->chave = 'UploadProdutosSaldosCsv.dthrAtualizacao';
                 $appConfig->appUUID = $_SERVER['CROSIERAPP_UUID'];
             }
             $appConfig->valor = (new \DateTime())->format('Y-m-d H:i:s.u');
             $this->appConfigEntityHandler->save($appConfig);
-
-            $this->salvarImportadorStatus($foiOk);
         } catch (\Exception $e) {
-            $errMsg = 'Erro ao marcar app_config (relEstoque01.dthrAtualizacao)';
+            $errMsg = 'Erro ao marcar app_config (UploadProdutosSaldosCsv.dthrAtualizacao)';
             $this->syslog->err($errMsg, $e->getTraceAsString());
             throw new ViewException($errMsg);
         }
     }
 
-
-    /**
-     * @throws ViewException
-     */
-    protected function salvarImportadorStatus(bool $foiOk)
-    {
-        $feedback = array();
-        $feedback["classe"] = $this->getRelatorioTipo();
-        $now = (new \DateTime())->format('Y-m-d H:i:s.u');
-        $feedback["dthr"] = $now;
-        $feedback["ok"] = $foiOk;
-        $feedback["linhasLidas"] = $this->getTotalRegistrosNoArquivo();
-        $feedback["linhasModificadas"] = $this->getItensModificadosPeloMySQL();
-        $inconformidades = $this->getDescritorDeInconformidades()->getInconformidades();
-        $feedback["inconformidades"] = $this->statusUpdateFormateInconformidades($inconformidades);
-        $json = json_encode($feedback);
-
-        $the_key = "RELESTOQUE01.ImportadorStatus";
-        try {
-            /** @var AppConfigRepository $repoAppConfig */
-            $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
-            /** @var AppConfig $appConfig */
-            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', $the_key], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
-            if (!$appConfig) {
-                $appConfig = new AppConfig();
-                $appConfig->chave = $the_key;
-                $appConfig->appUUID = $_SERVER['CROSIERAPP_UUID'];
-            }
-            $appConfig->isJson = true;
-            $appConfig->valor = $json;
-            $this->appConfigEntityHandler->save($appConfig);
-        } catch (\Exception $e) {
-            $errMsg = 'Erro ao marcar app_config (' . $the_key . ')';
-            $this->syslog->err($errMsg, $e->getTraceAsString());
-            throw new ViewException($errMsg);
-        }
-    }
-
-    /**
-     * @param string $obs
-     * @param int $id
-     * @param array $new
-     * @param array|null $old
-     * @throws \Doctrine\DBAL\Exception
-     */
-    private function salvarProdutoEntityChange(string $obs, int $id, array $new, ?array $old = null)
-    {
-        $strChanges = '';
-        $conn = $this->doctrine->getConnection();
-
-        $arrDiff = $old ? array_diff_assoc($old, $new) : $new;
-
-        foreach ($arrDiff as $k => $diff) {
-            $strChanges .= $k . ': ';
-            if (isset($old)) {
-                $strChanges .= 'de "' . $old[$k] . '" para ';
-            }
-
-            $strChanges .= '"' . $new[$k] . '"' . PHP_EOL;
-        }
-
-        $arr = [
-            'entity_class' => Produto::class,
-            'entity_id' => $id,
-            'changing_user_id' => 1,
-            'changed_at' => (new \DateTime())->format('Y-m-d H:i:s'),
-            'changes' => $strChanges,
-            'obs' => 'RELESTOQUE01BUSINESS - ' . $obs,
-        ];
-        $conn->insert('cfg_entity_change', $arr);
-    }
 
 
     protected function getPastaUpload(): string

@@ -156,7 +156,7 @@ class UploadProdutoCsv
             if (!in_array($file, array('.', '..')) && !is_dir($pastaFila . $file)) {
                 try {
                     $this->processarArquivo($file);
-                    // $this->marcarDtHrAtualizacao(true);
+                    $this->marcarDtHrAtualizacao();
                     $this->syslog->info('Arquivo processado com sucesso.');
                     @unlink($this->pasta . 'ok/ultimo.zip');
                     rename($pastaFila . $file, $this->pasta . 'ok/ultimo.zip');
@@ -166,7 +166,7 @@ class UploadProdutoCsv
                     $this->syslog->err('Erro processarArquivosNaFila()');
                     $this->syslog->err('processarArquivosNaFila', $e->getTraceAsString());
                     $this->syslog->info('Arquivo movido para pasta "falha".');
-                    // $this->marcarDtHrAtualizacao(false);
+                    $this->marcarDtHrAtualizacao();
                     throw new ViewException('Erro ao processarArquivosNaFila', 0, $e);
                 }
             }
@@ -448,22 +448,20 @@ class UploadProdutoCsv
     /**
      * @throws ViewException
      */
-    protected function marcarDtHrAtualizacao(bool $foiOk): void
+    protected function marcarDtHrAtualizacao(): void
     {
         try {
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
             /** @var AppConfig $appConfig */
-            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'uploadProdutoCsv.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
+            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'UploadProdutoCsv.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
             if (!$appConfig) {
                 $appConfig = new AppConfig();
-                $appConfig->chave = 'uploadProdutoCsv.dthrAtualizacao';
+                $appConfig->chave = 'UploadProdutoCsv.dthrAtualizacao';
                 $appConfig->appUUID = $_SERVER['CROSIERAPP_UUID'];
             }
             $appConfig->valor = (new \DateTime())->format('Y-m-d H:i:s.u');
             $this->appConfigEntityHandler->save($appConfig);
-
-            $this->salvarImportadorStatus($foiOk);
         } catch (\Exception $e) {
             $errMsg = 'Erro ao marcar app_config (uploadProdutoCsv.dthrAtualizacao)';
             $this->syslog->err($errMsg, $e->getTraceAsString());
