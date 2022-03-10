@@ -2,6 +2,7 @@
 
 namespace App\Controller\Estoque;
 
+use App\Business\Estoque\UploadProdutoCsv;
 use App\Form\Estoque\ProdutoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
@@ -1096,6 +1097,22 @@ class ProdutoController extends FormListController
         } catch (\Exception $e) {
             return CrosierApiResponse::error();
         }
+    }
+
+
+    /**
+     *
+     * @Route("/est/produto/processarLinha", name="api_est_produto_processarLinha")
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function processarLinha(Request $request, UploadProdutoCsv $uploadProdutoCsv): Response
+    {
+        $linha = $request->get("linha");
+        $uploadProdutoCsv->processarLinha($linha);
+        return new Response("ok");
     }
 
 

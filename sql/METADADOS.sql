@@ -217,6 +217,8 @@ CREATE TABLE `est_produto`
   `status`             enum ('ATIVO','INATIVO'),
   `obs`                varchar(5000),
   `composicao`         char(1),
+  `qtde_total`         decimal(15, 3),
+  `qtde_minima`        decimal(15, 3),
   `json_data`          json,
 
   UNIQUE KEY `K_est_produto_uuid` (`uuid`),

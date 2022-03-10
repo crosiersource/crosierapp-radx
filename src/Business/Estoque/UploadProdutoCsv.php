@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
@@ -41,6 +42,7 @@ class UploadProdutoCsv
     private ?array $grupos = null;
     private ?array $subgrupos = null;
     private ?array $fornecedores = null;
+    private bool $camposPreparados = false;
 
     private ?array $estProdutos = null;
 
@@ -52,6 +54,20 @@ class UploadProdutoCsv
 
     private FornecedorEntityHandler $fornecedorEntityHandler;
 
+    private int $totalRegistros = 0;
+    
+    private int $inseridos = 0;
+    private int $jaInseridos = 0;
+    private int $alterados = 0;
+    private int $naoAlterados = 0;
+    
+    private array $nomesCampos = [];
+    
+    private bool $atualizarExistentes = false;
+    
+    private ProdutoRepository $repoProduto;
+
+    
     public function __construct(
         ProdutoEntityHandler    $produtoEntityHandler,
         DeptoEntityHandler      $deptoEntityHandler,
@@ -68,7 +84,8 @@ class UploadProdutoCsv
         $this->deptoEntityHandler = $deptoEntityHandler;
         $this->grupoEntityHandler = $grupoEntityHandler;
         $this->subgrupoEntityHandler = $subgrupoEntityHandler;
-        $this->fornecedorEntityHandler = $fornecedorEntityHandler;
+        $this->fornecedorEntityHandler = $fornecedorEntityHandler;        
+        $this->repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
     }
 
 
@@ -78,6 +95,7 @@ class UploadProdutoCsv
     public function prepararCampos()
     {
         try {
+            if ($this->camposPreparados) return;
             $this->deptos = null;
             $this->grupos = null;
             $this->subgrupos = null;
@@ -108,6 +126,8 @@ class UploadProdutoCsv
             foreach ($rsFornecedores as $fornecedor) {
                 $this->fornecedores[$fornecedor->codigo] = $fornecedor;
             }
+            
+            $this->camposPreparados = true;
         } catch (\Exception $e) {
             throw new \RuntimeException('Erro ao prepararCampos()');
         }
@@ -119,6 +139,7 @@ class UploadProdutoCsv
      */
     public function processar(?bool $atualizarExistentes = false): void
     {
+        $this->atualizarExistentes = $atualizarExistentes;
         $pastaFila = $this->pasta . 'fila/';
         @mkdir($pastaFila, 0777, true);
         @mkdir($this->pasta . 'falha/', 0777, true);
@@ -130,11 +151,11 @@ class UploadProdutoCsv
             return;
         }
         $this->syslog->info('São ' . (count($files) - 2) . ' arquivo(s) para processar');
-        $this->prepararCampos();
+        
         foreach ($files as $file) {
             if (!in_array($file, array('.', '..')) && !is_dir($pastaFila . $file)) {
                 try {
-                    $this->processarArquivo($file, $atualizarExistentes);
+                    $this->processarArquivo($file);
                     // $this->marcarDtHrAtualizacao(true);
                     $this->syslog->info('Arquivo processado com sucesso.');
                     @unlink($this->pasta . 'ok/ultimo.zip');
@@ -157,10 +178,13 @@ class UploadProdutoCsv
      * @param string $arquivo
      * @return int
      */
-    public function processarArquivo(string $arquivo, bool $atualizarExistentes): int
+    public function processarArquivo(string $arquivo): int
     {
         $this->syslog->info('Iniciando processamento do arquivo ' . $arquivo);
 
+        $this->carregarEstProdutos();
+        $this->prepararCampos();
+        
         try {
             $pastaFila = $this->pasta . 'fila/';
 
@@ -172,16 +196,9 @@ class UploadProdutoCsv
             zip_close($zip);
 
             $linhas = explode(PHP_EOL, $conteudo);
-            $totalRegistros = count($linhas) - 2;
+            $this->totalRegistros = count($linhas) - 2;
 
-            $inseridos = 0;
-            $jaInseridos = 0;
-            $alterados = 0;
-            $naoAlterados = 0;
-
-            $this->carregarEstProdutos();
-
-            $nomesCampos = str_getcsv($linhas[0]);
+            $this->nomesCampos = str_getcsv($linhas[0]);
 
             $conn = $this->produtoEntityHandler->getDoctrine()->getConnection();
 
@@ -190,111 +207,32 @@ class UploadProdutoCsv
             $this->produtoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
 
             $linhasBatch = [];
-            
-            /** @var ProdutoRepository $repoProduto */
-            $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
 
-            for ($i = 1; $i <= $totalRegistros; $i++) {
+            for ($i = 1; $i <= $this->totalRegistros; $i++) {
 
                 try {
-                    $atualizandoProduto = false;
                     $linha = $linhas[$i];
                     if (!trim($linha)) {
                         continue;
                     }
                     $linhasBatch[] = $linha;
-                    
-                    $campos = str_getcsv($linha);
-                    foreach ($campos as $k => $valor) {
-                        $campos[$nomesCampos[$k]] = trim($valor);
-                        unset($campos[$k]);
-                    }
-                    $campos['cadastro'] = $campos['cadastro'] ? DateTimeUtils::parseDateStr($campos['cadastro']) : null;
-                    $campos['alteracao'] = $campos['alteracao'] ? DateTimeUtils::parseDateStr($campos['alteracao']) : null;
-                    $campos['alteracao_preco'] = $campos['alteracao_preco'] ? DateTimeUtils::parseDateStr($campos['alteracao_preco']) : null;
-                    if ($this->estProdutos[$campos['erp_codigo']] ?? false) {
-                        if (!$atualizarExistentes) {
-                            $this->syslog->info($i . '/' . $totalRegistros . ') já existe registro para erp_codigo: ' . $campos['erp_codigo']);
-                            $jaInseridos++;
-                            continue;
-                        } else {
-                            $produto = $repoProduto->findOneByCodigo($campos['erp_codigo']);
-                            if (!$produto) {
-                                $produto = new Produto();
-                            } else {
-                                $atualizandoProduto = true;
-                            }
-                        }
-                    } else {
-                        $produto = new Produto();
-                    }
-                    if ($atualizandoProduto) {
-                        // os campos que são permitidos alteração
-                        $alterado = false;
-                        if ($produto->referencia !== $campos['erp_codigo']) {
-                            $produto->referencia = $campos['erp_codigo'];
-                            $alterado = true;
-                        }
-                        if ($produto->ean !== ($campos['EAN'] ?? null)) {
-                            $produto->ean = $campos['EAN'] ?? null;
-                            $alterado = true;
-                        }
-                        if ($produto->marca !== $produto->fornecedor->nome) {
-                            $produto->marca = $produto->fornecedor->nome;
-                            $alterado = true;
-                        }
-                    } else {
-                        $alterado = true;
-                        // campos somente na inserção
-                        $agora = (new \DateTime())->format('Y-m-d H:i:s');
 
-                        $this->handleDeptoGrupoSubgrupo($produto, $campos);
-                        $this->handleFornecedor($produto, $campos);
+                    $this->doProcessarLinha($linha, $i);
 
-                        $produto->codigo = $campos['erp_codigo'];
-                        $produto->referencia = $campos['erp_codigo'];
-                        $produto->ean = $campos['EAN'] ?? null;
-                        $produto->marca = $produto->fornecedor->nome;
-                        $produto->nome = $campos['nome'];
-                        $produto->status = 'INATIVO';
-                        $produto->unidadePadrao = $this->unidade_UN;
-
-                        $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'] ?? 0.0;
-                        $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'] ?? null;
-                        $produto->jsonData['erp_codigo'] = $campos['erp_codigo'];
-                        $produto->jsonData['referencias_extras'] = $campos['erp_referencia'];
-                        $produto->jsonData['fornecedor_nome'] = $produto->fornecedor->nome;
-
-                        ksort($produto->jsonData);
-
-                        $this->estProdutos[$produto->codigo] = $produto->nome;
-                    }
-                    
-                    if ($alterado) {
-                        $produto = $this->produtoEntityHandler->save($produto, false);
-
-                        if ($atualizandoProduto) {
-                            $alterados++;
-                        } else {
-                            $inseridos++;
-                        }
-                        $this->syslog->info($i . '/' . $totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
-                    } else {
-                        $this->syslog->info($i . '/' . $totalRegistros . ') produto não alterado (' . $produto->codigo . ')');
-                        $naoAlterados++;
-                    }
-                    
                 } catch (\Throwable $e) {
-                    $errMsg = 'processarArquivo() - Erro ao inserir a linha "' . $linha . '". Continuan...';
+                    $errMsg = 'processarArquivo() - Erro ao inserir a linha "' . $linha . '". Continuando...';
+                    $errMsg = ExceptionUtils::treatException($e, $errMsg);
                     $this->syslog->err($errMsg, $e->getTraceAsString());
+                    
                     continue;
                 }
 
                 if ((++$iBatch % $batchSize) === 0) {
                     try {
+                        $this->camposPreparados = false;
+                        $this->prepararCampos();
                         $this->produtoEntityHandler->getDoctrine()->flush();
                         $this->produtoEntityHandler->getDoctrine()->clear();// Detaches all objects from Doctrine!
-                        $this->prepararCampos();
                         $linhasBatch = [];
                     } catch (\Throwable $e) {
                         $errMsg = 'processarArquivo() - Erro no flush do batch';
@@ -312,16 +250,127 @@ class UploadProdutoCsv
                 $this->syslog->err($errMsg, $e->getTraceAsString() . "\n\nLinhas:" . implode("\n", $linhasBatch));
             }
 
-            $this->syslog->info('Total já inserido: ' . $jaInseridos);
-            $this->syslog->info('Total de inserções: ' . $inseridos);
-            $this->syslog->info('Total não alterados: ' . $naoAlterados);
-            $this->syslog->info('Total de alterações: ' . $alterados);
-                        
-            return $inseridos ?: $alterados ?: 0;
+            $this->syslog->info('Total já inserido: ' . $this->jaInseridos);
+            $this->syslog->info('Total de inserções: ' . $this->inseridos);
+            $this->syslog->info('Total não alterados: ' . $this->naoAlterados);
+            $this->syslog->info('Total de alterações: ' . $this->alterados);
+
+            return $this->inseridos ?: $this->alterados ?: 0;
         } catch (\Throwable $e) {
             $errMsg = 'processarArquivo() - Erro';
             $this->syslog->err($errMsg, $e->getTraceAsString());
             throw new ViewException($errMsg);
+        }
+    }
+
+    public function processarLinha(string $linha): void
+    {
+        $this->carregarEstProdutos();
+        $this->prepararCampos();
+        $this->nomesCampos = [
+            'erp_codigo',
+            'erp_referencia',
+            'nome',
+            'grupo_codigo',
+            'grupo_nome',
+            'subgrupo_codigo',
+            'subgrupo_nome',
+            'unidade',
+            'ncm',
+            'preco_custo',
+            'preco_tabela',
+            'fornecedor_codigo',
+            'fornecedor_nome',
+            'cadastro',
+            'alteracao',
+            'alteracao_preco',
+            'EAN',
+        ];
+        $this->doProcessarLinha($linha, 0);
+    }
+    
+    private function doProcessarLinha(string $linha, int &$i): void
+    {
+        $atualizandoProduto = false;
+            
+        $campos = str_getcsv($linha);
+        foreach ($campos as $k => $valor) {
+            $campos[$this->nomesCampos[$k]] = trim($valor);
+            unset($campos[$k]);
+        }
+        $campos['cadastro'] = $campos['cadastro'] ? DateTimeUtils::parseDateStr($campos['cadastro']) : null;
+        $campos['alteracao'] = $campos['alteracao'] ? DateTimeUtils::parseDateStr($campos['alteracao']) : null;
+        $campos['alteracao_preco'] = $campos['alteracao_preco'] ? DateTimeUtils::parseDateStr($campos['alteracao_preco']) : null;
+        if ($this->estProdutos[$campos['erp_codigo']] ?? false) {
+            if (!$this->atualizarExistentes) {
+                $this->syslog->info($i . '/' . $this->totalRegistros . ') já existe registro para erp_codigo: ' . $campos['erp_codigo']);
+                $this->jaInseridos++;
+                return;
+            } else {
+                $produto = $this->repoProduto->findOneByCodigo($campos['erp_codigo']);
+                if (!$produto) {
+                    $produto = new Produto();
+                } else {
+                    $atualizandoProduto = true;
+                }
+            }
+        } else {
+            $produto = new Produto();
+        }
+        if ($atualizandoProduto) {
+            // os campos que são permitidos alteração
+            $alterado = false;
+            if ($produto->referencia !== $campos['erp_codigo']) {
+                $produto->referencia = $campos['erp_codigo'];
+                $alterado = true;
+            }
+            if ($produto->ean !== ($campos['EAN'] ?? null)) {
+                $produto->ean = $campos['EAN'] ?? null;
+                $alterado = true;
+            }
+            if ($produto->marca !== $produto->fornecedor->nome) {
+                $produto->marca = $produto->fornecedor->nome;
+                $alterado = true;
+            }
+        } else {
+            $alterado = true;
+            // campos somente na inserção
+            $agora = (new \DateTime())->format('Y-m-d H:i:s');
+
+            $this->handleDeptoGrupoSubgrupo($produto, $campos);
+            $this->handleFornecedor($produto, $campos);
+
+            $produto->codigo = $campos['erp_codigo'];
+            $produto->referencia = $campos['erp_codigo'];
+            $produto->ean = $campos['EAN'] ?? null;
+            $produto->marca = $produto->fornecedor->nome;
+            $produto->nome = $campos['nome'];
+            $produto->status = 'INATIVO';
+            $produto->unidadePadrao = $this->unidade_UN;
+
+            $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'] ?? 0.0;
+            $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'] ?? null;
+            $produto->jsonData['erp_codigo'] = $campos['erp_codigo'];
+            $produto->jsonData['referencias_extras'] = $campos['erp_referencia'];
+            $produto->jsonData['fornecedor_nome'] = $produto->fornecedor->nome;
+
+            ksort($produto->jsonData);
+
+            $this->estProdutos[$produto->codigo] = $produto->nome;
+        }
+
+        if ($alterado) {
+            $produto = $this->produtoEntityHandler->save($produto, false);
+
+            if ($atualizandoProduto) {
+                $this->alterados++;
+            } else {
+                $this->inseridos++;
+            }
+            $this->syslog->info($i . '/' . $this->totalRegistros . ') produto ' . ($atualizandoProduto ? 'alterado' : 'inserido') . ' (' . $produto->codigo . ')');
+        } else {
+            $this->syslog->info($i . '/' . $this->totalRegistros . ') produto não alterado (' . $produto->codigo . ')');
+            $this->naoAlterados++;
         }
     }
 
