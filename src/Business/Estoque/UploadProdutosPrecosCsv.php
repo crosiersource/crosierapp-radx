@@ -4,16 +4,16 @@ namespace App\Business\Estoque;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
-use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoPreco;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoEntityHandler;
 
 /**
  * Rodar com:
  * php bin/console crosierappradx:processarUploads UploadProdutosPrecosCsv
- * 
+ *
  * @author Carlos Eduardo Pauluk
  */
 class UploadProdutosPrecosCsv
@@ -23,19 +23,23 @@ class UploadProdutosPrecosCsv
 
     private ProdutoEntityHandler $produtoEntityHandler;
 
+    private AppConfigEntityHandler $appConfigEntityHandler;
+
     private string $pasta;
 
     private ?array $estProdutos = null;
 
     public function __construct(
-        ProdutoEntityHandler $produtoEntityHandler,
-        SyslogBusiness            $syslog)
+        ProdutoEntityHandler   $produtoEntityHandler,
+        SyslogBusiness         $syslog,
+        AppConfigEntityHandler $appConfigEntityHandler)
     {
         $this->produtoEntityHandler = $produtoEntityHandler;
         $this->syslog = $syslog->setApp('radx')
             ->setComponent('UploadProdutosPrecosCsv')
             ->setEcho(true);
         $this->pasta = $_SERVER['PASTA_UPLOADS'] . 'est_produtos_precos_csv/';
+        $this->appConfigEntityHandler = $appConfigEntityHandler;
     }
 
 
@@ -103,7 +107,7 @@ class UploadProdutosPrecosCsv
                 $this->syslog->info('Nenhum registro para processar na est_produto_preco');
                 return 0;
             }
-            
+
             $alterados = 0;
             $naoAlterados = 0;
 
@@ -114,8 +118,8 @@ class UploadProdutosPrecosCsv
             $batchSize = 500;
             $iBatch = 0;
             $this->produtoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
-            
-            $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class); 
+
+            $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
 
             for ($i = 1; $i <= $totalRegistros; $i++) {
                 try {
@@ -136,13 +140,13 @@ class UploadProdutosPrecosCsv
                     $campos['preco_tabela'] = (float)$campos['preco_tabela'];
 
                     $estProduto = $this->estProdutos[$campos['erp_codigo']] ?? false;
-                    $produto = null;           
-                    
+                    $produto = null;
+
                     if (!$estProduto) {
                         $this->syslog->err($i . '/' . $totalRegistros . ' - Impossível atualizar est_produto_preco', 'Não existe registro para erp_codigo: ' . $campos['erp_codigo']);
                         continue;
                     }
-                    
+
                     if (
                         ((float)$estProduto['preco_tabela'] !== (float)$campos['preco_tabela']) ||
                         ((float)$estProduto['preco_custo'] !== (float)$campos['preco_custo']) ||
@@ -160,7 +164,7 @@ class UploadProdutosPrecosCsv
                     }
 
                     $this->syslog->info($i . '/' . $totalRegistros . ') produto alterado (' . $campos['erp_codigo'] . ')');
-                    
+
                     if ((++$iBatch % $batchSize) === 0) {
                         $this->produtoEntityHandler->getDoctrine()->flush();
                         $this->produtoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
@@ -228,7 +232,6 @@ class UploadProdutosPrecosCsv
             throw new ViewException($errMsg);
         }
     }
-
 
 
     protected function getPastaUpload(): string

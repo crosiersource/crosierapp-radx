@@ -4,6 +4,7 @@ namespace App\Business\Estoque;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
@@ -36,6 +37,8 @@ class UploadProdutoCsv
 
     private ProdutoEntityHandler $produtoEntityHandler;
 
+    private AppConfigEntityHandler $appConfigEntityHandler;
+
     private string $pasta;
 
     private ?array $deptos = null;
@@ -55,25 +58,26 @@ class UploadProdutoCsv
     private FornecedorEntityHandler $fornecedorEntityHandler;
 
     private int $totalRegistros = 0;
-    
+
     private int $inseridos = 0;
     private int $jaInseridos = 0;
     private int $alterados = 0;
     private int $naoAlterados = 0;
-    
+
     private array $nomesCampos = [];
-    
-    private bool $atualizarExistentes = false;
-    
+
+    private ?bool $atualizarExistentes = false;
+
     private ProdutoRepository $repoProduto;
 
-    
+
     public function __construct(
         ProdutoEntityHandler    $produtoEntityHandler,
         DeptoEntityHandler      $deptoEntityHandler,
         GrupoEntityHandler      $grupoEntityHandler,
         SubgrupoEntityHandler   $subgrupoEntityHandler,
         FornecedorEntityHandler $fornecedorEntityHandler,
+        AppConfigEntityHandler  $appConfigEntityHandler,
         SyslogBusiness          $syslog)
     {
         $this->produtoEntityHandler = $produtoEntityHandler;
@@ -84,8 +88,9 @@ class UploadProdutoCsv
         $this->deptoEntityHandler = $deptoEntityHandler;
         $this->grupoEntityHandler = $grupoEntityHandler;
         $this->subgrupoEntityHandler = $subgrupoEntityHandler;
-        $this->fornecedorEntityHandler = $fornecedorEntityHandler;        
+        $this->fornecedorEntityHandler = $fornecedorEntityHandler;
         $this->repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
+        $this->appConfigEntityHandler = $appConfigEntityHandler;
     }
 
 
@@ -126,7 +131,7 @@ class UploadProdutoCsv
             foreach ($rsFornecedores as $fornecedor) {
                 $this->fornecedores[$fornecedor->codigo] = $fornecedor;
             }
-            
+
             $this->camposPreparados = true;
         } catch (\Exception $e) {
             throw new \RuntimeException('Erro ao prepararCampos()');
@@ -151,7 +156,7 @@ class UploadProdutoCsv
             return;
         }
         $this->syslog->info('São ' . (count($files) - 2) . ' arquivo(s) para processar');
-        
+
         foreach ($files as $file) {
             if (!in_array($file, array('.', '..')) && !is_dir($pastaFila . $file)) {
                 try {
@@ -184,7 +189,7 @@ class UploadProdutoCsv
 
         $this->carregarEstProdutos();
         $this->prepararCampos();
-        
+
         try {
             $pastaFila = $this->pasta . 'fila/';
 
@@ -223,7 +228,7 @@ class UploadProdutoCsv
                     $errMsg = 'processarArquivo() - Erro ao inserir a linha "' . $linha . '". Continuando...';
                     $errMsg = ExceptionUtils::treatException($e, $errMsg);
                     $this->syslog->err($errMsg, $e->getTraceAsString());
-                    
+
                     continue;
                 }
 
@@ -288,11 +293,11 @@ class UploadProdutoCsv
         ];
         $this->doProcessarLinha($linha, 0);
     }
-    
+
     private function doProcessarLinha(string $linha, int &$i): void
     {
         $atualizandoProduto = false;
-            
+
         $campos = str_getcsv($linha);
         foreach ($campos as $k => $valor) {
             $campos[$this->nomesCampos[$k]] = trim($valor);
