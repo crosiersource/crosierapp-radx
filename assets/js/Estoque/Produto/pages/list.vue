@@ -13,7 +13,7 @@
       <div class="form-row">
         <CrosierInputText label="Código" id="codigo" v-model="this.filters.codigo" />
 
-        <CrosierInputText label="Nome" id="nome" v-model="this.filters.nome" />
+        <CrosierInputText label="Nome" id="nome" v-model="this.filters['like[nome]']" />
 
         <CrosierDropdownBoolean label="Ativo" id="ativo" v-model="this.filters.ativo" />
       </div>
