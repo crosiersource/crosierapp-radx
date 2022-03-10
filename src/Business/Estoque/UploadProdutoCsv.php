@@ -229,10 +229,10 @@ class UploadProdutoCsv
 
                 if ((++$iBatch % $batchSize) === 0) {
                     try {
-                        $this->camposPreparados = false;
-                        $this->prepararCampos();
                         $this->produtoEntityHandler->getDoctrine()->flush();
                         $this->produtoEntityHandler->getDoctrine()->clear();// Detaches all objects from Doctrine!
+                        $this->camposPreparados = false;
+                        $this->prepararCampos();
                         $linhasBatch = [];
                     } catch (\Throwable $e) {
                         $errMsg = 'processarArquivo() - Erro no flush do batch';
