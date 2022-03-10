@@ -134,6 +134,23 @@
     </div>
 
     <div class="form-row">
+      <CrosierInputText
+        label="EAN"
+        col="3"
+        id="ean"
+        v-model="this.fields.ean"
+        helpText="Código de barras"
+      />
+      <CrosierInputText
+        label="Referência"
+        col="4"
+        id="referencia"
+        v-model="this.fields.referencia"
+      />
+      <CrosierInputText label="Marca" col="5" id="marca" v-model="this.fields.marca" />
+    </div>
+
+    <div class="form-row">
       <CrosierInputDecimal
         v-if="this.fields?.unidadePadrao"
         label="Qtde Total"
@@ -164,6 +181,24 @@
           <Skeleton class="form-control" height="2rem" />
         </div>
       </div>
+    </div>
+
+    <div class="form-row">
+      <CrosierCurrency
+        label="Preço Tabela"
+        col="3"
+        id="valor"
+        v-model="this.fields.jsonData['preco_tabela']"
+        :disabled="true"
+      />
+
+      <CrosierCurrency
+        label="Preço E-commerce"
+        col="3"
+        id="valor"
+        v-model="this.fields.jsonData['preco_site']"
+        :disabled="true"
+      />
     </div>
   </CrosierFormS>
 </template>

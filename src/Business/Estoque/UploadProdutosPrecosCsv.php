@@ -7,42 +7,35 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
-use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoSaldo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\ProdutoPreco;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoEntityHandler;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoSaldoEntityHandler;
 
 /**
  * Rodar com:
- * php bin/console crosierappradx:processarUploads UploadProdutosSaldosCsv
+ * php bin/console crosierappradx:processarUploads UploadProdutosPrecosCsv
  * 
  * @author Carlos Eduardo Pauluk
  */
-class UploadProdutosSaldosCsv
+class UploadProdutosPrecosCsv
 {
 
     private SyslogBusiness $syslog;
 
-    private ProdutoSaldoEntityHandler $produtoSaldoEntityHandler;
-    
     private ProdutoEntityHandler $produtoEntityHandler;
 
     private string $pasta;
 
     private ?array $estProdutos = null;
-    private ?array $estProdutosSaldos = null;
-
 
     public function __construct(
-        ProdutoSaldoEntityHandler $produtoSaldoEntityHandler,
         ProdutoEntityHandler $produtoEntityHandler,
         SyslogBusiness            $syslog)
     {
-        $this->produtoSaldoEntityHandler = $produtoSaldoEntityHandler;
         $this->produtoEntityHandler = $produtoEntityHandler;
         $this->syslog = $syslog->setApp('radx')
-            ->setComponent('UploadProdutosSaldosCsv')
+            ->setComponent('UploadProdutosPrecosCsv')
             ->setEcho(true);
-        $this->pasta = $_SERVER['PASTA_UPLOADS'] . 'est_produtos_saldos_csv/';
+        $this->pasta = $_SERVER['PASTA_UPLOADS'] . 'est_produtos_precos_csv/';
     }
 
 
@@ -107,7 +100,7 @@ class UploadProdutosSaldosCsv
             $totalRegistros = count($linhas) - 2;
 
             if ($totalRegistros < 1) {
-                $this->syslog->info('Nenhum registro para processar na est_produto_saldo');
+                $this->syslog->info('Nenhum registro para processar na est_produto_preco');
                 return 0;
             }
             
@@ -115,18 +108,14 @@ class UploadProdutosSaldosCsv
             $naoAlterados = 0;
 
             $this->carregarEstProdutos();
-            $this->carregarEstProdutosSaldos();
 
             $nomesCampos = str_getcsv($linhas[0]);
 
-            $conn = $this->produtoSaldoEntityHandler->getDoctrine()->getConnection();
-
             $batchSize = 500;
             $iBatch = 0;
-            $this->produtoSaldoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
+            $this->produtoEntityHandler->getDoctrine()->getConnection()->getConfiguration()->setSQLLogger(null);
             
-            $repoProdutoSaldo = $this->produtoSaldoEntityHandler->getDoctrine()->getRepository(ProdutoSaldo::class); 
-            $repoProduto = $this->produtoSaldoEntityHandler->getDoctrine()->getRepository(Produto::class); 
+            $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class); 
 
             for ($i = 1; $i <= $totalRegistros; $i++) {
                 try {
@@ -142,53 +131,40 @@ class UploadProdutosSaldosCsv
                         unset($campos[$k]);
                     }
 
-                    $campos['saldo'] = (float)$campos['saldo'];
+                    $campos['preco_custo'] = (float)$campos['preco_custo'];
+                    $campos['preco_ecommerce'] = (float)$campos['preco_ecommerce'];
+                    $campos['preco_tabela'] = (float)$campos['preco_tabela'];
 
                     $estProduto = $this->estProdutos[$campos['erp_codigo']] ?? false;
                     $produto = null;           
                     
                     if (!$estProduto) {
-                        $this->syslog->err($i . '/' . $totalRegistros . ' - Impossível atualizar est_produto_saldo', 'Não existe registro para erp_codigo: ' . $campos['erp_codigo']);
+                        $this->syslog->err($i . '/' . $totalRegistros . ' - Impossível atualizar est_produto_preco', 'Não existe registro para erp_codigo: ' . $campos['erp_codigo']);
                         continue;
                     }
                     
-                    if ((float)$estProduto['qtde_total'] !== (float)$campos['saldo']) {
+                    if (
+                        ((float)$estProduto['preco_tabela'] !== (float)$campos['preco_tabela']) ||
+                        ((float)$estProduto['preco_custo'] !== (float)$campos['preco_custo']) ||
+                        ((float)$estProduto['preco_ecommerce'] !== (float)$campos['preco_ecommerce'])
+                    ) {
                         /** @var Produto $produto */
-                        $produto = $repoProduto->find($this->estProdutos[$campos['erp_codigo']]['id']);
-                        // Salva aqui e ali embaixo também na est_produto_saldo
-                        $produto->qtdeTotal = (float)$campos['saldo'];
-                        $produto = $this->produtoEntityHandler->save($produto);
-                    }
-                    
-
-                    $agora = (new \DateTime())->format('Y-m-d H:i:s');
-
-                    $rsProdutoSaldo = $this->estProdutosSaldos[$campos['erp_codigo']] ?? null;
-
-                    if (!$rsProdutoSaldo) {
-                        $produtoSaldo = new ProdutoSaldo();                        
-                        $produtoSaldo->produto = $produto ?? $repoProduto->find($this->estProdutos[$campos['erp_codigo']]['id']);
-                    } else {
-                        $produtoSaldo = $repoProdutoSaldo->find($rsProdutoSaldo['saldo_id']);
-                    }
-
-                    if (!$rsProdutoSaldo || ((float)$rsProdutoSaldo['qtde'] !== $campos['saldo'])) {
-                        $produtoSaldo->qtde = $campos['saldo'];
-                        $this->produtoSaldoEntityHandler->save($produtoSaldo, false);
+                        $produto = $repoProduto->find($this->estProdutos[$campos['erp_codigo']]['produto_id']);
+                        $produto->jsonData['preco_ecommerce'] = (float)$campos['preco_ecommerce'];
+                        $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'];
+                        $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'];
+                        $produto = $this->produtoEntityHandler->save($produto, false);
                         $alterados++;
-                        $this->syslog->info($i . '/' . $totalRegistros . ' - est_produto_saldo alterado para ' . $campos['erp_codigo']);
                     } else {
-                        $this->syslog->info($i . '/' . $totalRegistros . ' - nada a alterar para ' . $campos['erp_codigo']);
                         $naoAlterados++;
                     }
-                    
-                    
 
+                    $this->syslog->info($i . '/' . $totalRegistros . ') produto alterado (' . $campos['erp_codigo'] . ')');
+                    
                     if ((++$iBatch % $batchSize) === 0) {
-                        $this->produtoSaldoEntityHandler->getDoctrine()->flush();
-                        $this->produtoSaldoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
+                        $this->produtoEntityHandler->getDoctrine()->flush();
+                        $this->produtoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
                         $this->carregarEstProdutos();
-                        $this->carregarEstProdutosSaldos();
                     }
 
                 } catch (\Exception $e) {
@@ -196,8 +172,8 @@ class UploadProdutosSaldosCsv
                 }
             }
 
-            $this->produtoSaldoEntityHandler->getDoctrine()->flush();
-            $this->produtoSaldoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
+            $this->produtoEntityHandler->getDoctrine()->flush();
+            $this->produtoEntityHandler->getDoctrine()->clear(); // Detaches all objects from Doctrine!
 
             $this->syslog->info('Total alterados: ' . $alterados);
             $this->syslog->info('Total NÃO alterados: ' . $naoAlterados);
@@ -211,31 +187,20 @@ class UploadProdutosSaldosCsv
 
     private function carregarEstProdutos()
     {
-        $rs = $this->produtoSaldoEntityHandler->getDoctrine()->getConnection()->fetchAllAssociative(
-            'SELECT id, json_data->>"$.erp_codigo" as erp_codigo, qtde_total, nome FROM est_produto');
-        $this->estProdutos = [];
-        foreach ($rs as $r) {
-            $this->estProdutos[$r['erp_codigo']] = $r;
-        }
-    }
-
-    private function carregarEstProdutosSaldos()
-    {
-        $rs = $this->produtoSaldoEntityHandler->getDoctrine()->getConnection()->fetchAllAssociative(
+        $rs = $this->produtoEntityHandler->getDoctrine()->getConnection()->fetchAllAssociative(
             'SELECT 
                         p.id as produto_id, 
-                        p.json_data->>"$.erp_codigo" as erp_codigo,
-                        saldo.id as saldo_id,
-                        saldo.qtde 
+                        p.codigo as erp_codigo,
+                        p.json_data->>"$.preco_site" as preco_ecommerce,
+                        p.json_data->>"$.preco_custo" as preco_custo,
+                        p.json_data->>"$.preco_tabela" as preco_tabela
                    FROM 
-                        est_produto p, est_produto_saldo saldo 
-                   WHERE 
-                        saldo.produto_id = p.id');
+                        est_produto p');
 
-        $this->estProdutosSaldos = [];
+        $this->estProdutos = [];
 
         foreach ($rs as $r) {
-            $this->estProdutosSaldos[$r['erp_codigo']] = $r;
+            $this->estProdutos[$r['erp_codigo']] = $r;
         }
     }
 
@@ -249,16 +214,16 @@ class UploadProdutosSaldosCsv
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
             /** @var AppConfig $appConfig */
-            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'UploadProdutosSaldosCsv.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
+            $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'UploadProdutosPrecosCsv.dthrAtualizacao'], ['appUUID', 'EQ', $_SERVER['CROSIERAPP_UUID']]]);
             if (!$appConfig) {
                 $appConfig = new AppConfig();
-                $appConfig->chave = 'UploadProdutosSaldosCsv.dthrAtualizacao';
+                $appConfig->chave = 'UploadProdutosPrecosCsv.dthrAtualizacao';
                 $appConfig->appUUID = $_SERVER['CROSIERAPP_UUID'];
             }
             $appConfig->valor = (new \DateTime())->format('Y-m-d H:i:s.u');
             $this->appConfigEntityHandler->save($appConfig);
         } catch (\Exception $e) {
-            $errMsg = 'Erro ao marcar app_config (UploadProdutosSaldosCsv.dthrAtualizacao)';
+            $errMsg = 'Erro ao marcar app_config (UploadProdutosPrecosCsv.dthrAtualizacao)';
             $this->syslog->err($errMsg, $e->getTraceAsString());
             throw new ViewException($errMsg);
         }

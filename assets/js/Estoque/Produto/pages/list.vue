@@ -33,7 +33,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="'/est/produto/form/' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
           </div>

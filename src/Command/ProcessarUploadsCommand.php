@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Business\Estoque\UploadProdutoCsv;
+use App\Business\Estoque\UploadProdutosPrecosCsv;
 use App\Business\Estoque\UploadProdutosSaldosCsv;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -30,6 +31,7 @@ class ProcessarUploadsCommand extends Command implements ServiceSubscriberInterf
         return [
             "UploadProdutoCsv" => UploadProdutoCsv::class,
             "UploadProdutosSaldosCsv" => UploadProdutosSaldosCsv::class,
+            "UploadProdutosPrecosCsv" => UploadProdutosPrecosCsv::class,
         ];
     }
 

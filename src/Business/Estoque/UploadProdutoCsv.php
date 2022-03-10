@@ -236,7 +236,7 @@ class UploadProdutoCsv
                         $linhasBatch = [];
                     } catch (\Throwable $e) {
                         $errMsg = 'processarArquivo() - Erro no flush do batch';
-                        $this->syslog->err($errMsg, $e->getTraceAsString() . "\n\nLinhas:" . implode("\n", $linhasBatch));
+                        $this->syslog->err($errMsg, $e->getTraceAsString());
                         continue;
                     }
                 }
@@ -247,7 +247,7 @@ class UploadProdutoCsv
                 $this->produtoEntityHandler->getDoctrine()->clear();
             } catch (\Throwable $e) {
                 $errMsg = 'processarArquivo() - Erro no último flush do batch';
-                $this->syslog->err($errMsg, $e->getTraceAsString() . "\n\nLinhas:" . implode("\n", $linhasBatch));
+                $this->syslog->err($errMsg, $e->getTraceAsString());
             }
 
             $this->syslog->info('Total já inserido: ' . $this->jaInseridos);
