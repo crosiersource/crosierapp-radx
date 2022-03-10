@@ -219,6 +219,7 @@ CREATE TABLE `est_produto`
   `composicao`         char(1),
   `qtde_total`         decimal(15, 3),
   `qtde_minima`        decimal(15, 3),
+  `ecommerce`          tinyint(1),
   `json_data`          json,
 
   UNIQUE KEY `K_est_produto_uuid` (`uuid`),
