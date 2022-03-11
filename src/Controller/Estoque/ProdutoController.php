@@ -1116,4 +1116,33 @@ class ProdutoController extends FormListController
     }
 
 
+
+    /**
+     *
+     * @Route("/api/est/produto/ecommerce/integrarProduto/{produto}", name="api_est_produto_ecommerce_integrarProduto")
+     * @param Request $request
+     * @param IntegradorWebStorm $integraWebStormBusiness
+     * @param Produto $produto
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     * @return JsonResponse
+     */
+    public function integrarProduto2(Request $request, IntegradorEcommerceFactory $integradorEcommerceFactory, Produto $produto): JsonResponse
+    {
+        try {
+            $start = microtime(true);
+            $integrarImagens = null;
+            if ($request->query->has('integrarImagens')) {
+                $integrarImagens = filter_var($request->query->get('integrarImagens'), FILTER_VALIDATE_BOOLEAN);
+            } else {
+                $integrarImagens = true;
+            }
+            $integradorEcommerceFactory->getIntegrador()->integraProduto($produto, $integrarImagens);
+            $tt = (int)(microtime(true) - $start);
+            return CrosierApiResponse::success();
+        } catch (ViewException $e) {
+            $this->addFlash('error', 'Erro ao integrar produto (' . $e->getMessage() . ')');
+            return CrosierApiResponse::error();
+        }
+    }
+    
 }

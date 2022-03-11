@@ -8,6 +8,18 @@
     :filtrosNaSidebar="true"
     ref="dt"
     :formUrl="null"
+    :properties="[
+      'id',
+      'updated',
+      'depto.descricaoMontada',
+      'grupo.descricaoMontada',
+      'subgrupo.descricaoMontada',
+      'nome',
+      'codigo',
+      'ecommerce',
+      'dtUltIntegracaoEcommerce',
+    ]"
+    @afterFilter="this.reloadDeptosGrupos()"
   >
     <template v-slot:filter-fields>
       <div class="form-row">
@@ -15,7 +27,72 @@
 
         <CrosierInputText label="Nome" id="nome" v-model="this.filters['like[nome]']" />
 
-        <CrosierDropdownBoolean label="Ativo" id="ativo" v-model="this.filters.ativo" />
+        <CrosierDropdown
+          label="Status"
+          id="status"
+          v-model="this.filters.status"
+          :values="[
+            { name: 'Ativo', value: 'ATIVO' },
+            { name: 'Inativo', value: 'INATIVO' },
+          ]"
+        />
+
+        <CrosierDropdownBoolean
+          label="Integrado ao e-commerce"
+          id="ecommerce"
+          v-model="this.filters.ecommerce"
+        />
+      </div>
+
+      <div class="form-row">
+        <CrosierDropdownEntity
+          v-model="this.filters.depto"
+          entity-uri="/api/est/depto"
+          optionLabel="descricaoMontada"
+          :orderBy="{ codigo: 'ASC' }"
+          label="Depto"
+          id="depto"
+          @update:modelValue="this.onChangeDepto"
+        />
+      </div>
+      <div class="form-row">
+        <CrosierDropdownEntity
+          ref="grupo"
+          v-if="this.filters?.depto"
+          v-model="this.filters.grupo"
+          entity-uri="/api/est/grupo"
+          optionLabel="descricaoMontada"
+          :orderBy="{ codigo: 'ASC' }"
+          :filters="{ depto: this.filters.depto }"
+          label="Grupo"
+          id="grupo"
+          @update:modelValue="this.onChangeGrupo"
+        />
+        <div class="col-md-12" v-else>
+          <div class="form-group">
+            <label>Grupo</label>
+            <Skeleton class="form-control" height="2rem" />
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <CrosierDropdownEntity
+          ref="subgrupo"
+          v-if="this.filters?.grupo"
+          v-model="this.filters.subgrupo"
+          entity-uri="/api/est/subgrupo"
+          optionLabel="descricaoMontada"
+          :orderBy="{ codigo: 'ASC' }"
+          :filters="{ grupo: this.filters.grupo }"
+          label="Subgrupo"
+          id="subgrupo"
+        />
+        <div class="col-md-12" v-else>
+          <div class="form-group">
+            <label>Subgrupo</label>
+            <Skeleton class="form-control" height="2rem" />
+          </div>
+        </div>
       </div>
     </template>
 
@@ -26,6 +103,25 @@
 
       <Column field="nome" header="Nome" :sortable="true"></Column>
 
+      <Column field="depto.codigo" header="Depto/Grupo/Subgrupo" :sortable="true">
+        <template class="text-right" #body="r">
+          {{ r.data.depto.descricaoMontada }} <br />
+          {{ r.data.grupo.descricaoMontada }} <br />
+          {{ r.data.subgrupo.descricaoMontada }}
+        </template>
+      </Column>
+
+      <Column field="dtUltIntegracaoEcommerce" header="Integr E-commerce" :sortable="true">
+        <template class="text-right" #body="r">
+          <div>
+            {{ r.data.ecommerce ? "Sim" : "Não" }}
+          </div>
+          <span class="ml-1 badge badge-pill badge-info" v-if="r.data.ecommerce">
+            Últ Integr: {{ new Date(r.data.dtUltIntegracaoEcommerce).toLocaleString() }}</span
+          >
+        </template>
+      </Column>
+
       <Column field="updated" header="" :sortable="true">
         <template class="text-right" #body="r">
           <div class="d-flex justify-content-end">
@@ -33,7 +129,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="'form?id=' + r.data.id"
+              :href="'formComEcommerce?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
           </div>
@@ -54,8 +150,15 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierDropdownBoolean, CrosierInputText, CrosierListS } from "crosier-vue";
+import {
+  CrosierDropdownBoolean,
+  CrosierDropdownEntity,
+  CrosierDropdown,
+  CrosierInputText,
+  CrosierListS,
+} from "crosier-vue";
 import Column from "primevue/column";
+import Skeleton from "primevue/skeleton";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 
@@ -64,13 +167,38 @@ export default {
     CrosierListS,
     Column,
     CrosierDropdownBoolean,
+    CrosierDropdown,
     CrosierInputText,
     Toast,
     ConfirmDialog,
+    CrosierDropdownEntity,
+    Skeleton,
   },
 
   methods: {
     ...mapMutations(["setLoading"]),
+
+    onChangeDepto() {
+      this.$nextTick(async () => {
+        this.filters.grupo = null;
+        if (this.$refs?.grupo) {
+          await this.$refs.grupo.load();
+        }
+      });
+    },
+
+    onChangeGrupo() {
+      this.$nextTick(async () => {
+        if (this.$refs?.subgrupo) {
+          await this.$refs.subgrupo.load();
+        }
+      });
+    },
+
+    reloadDeptosGrupos() {
+      this.onChangeDepto();
+      this.onChangeGrupo();
+    },
   },
 
   computed: {

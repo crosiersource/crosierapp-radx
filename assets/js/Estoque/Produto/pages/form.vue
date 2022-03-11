@@ -218,6 +218,7 @@ import {
   CrosierInputInt,
   SetFocus,
   CrosierInputDecimal,
+  CrosierCurrency,
 } from "crosier-vue";
 
 export default {
@@ -230,6 +231,7 @@ export default {
     CrosierInputText,
     CrosierInputInt,
     CrosierInputDecimal,
+    CrosierCurrency,
   },
 
   data() {

@@ -47,8 +47,9 @@ Encore
   .addEntry('est/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')
 
   .addEntry('est/produto/list', './assets/js/Estoque/Produto/list.js')
-  .addEntry('est/produto/listComEcommerce', './assets/js/Estoque/Produto/list_comEcommerce.js')
   .addEntry('est/produto/form', './assets/js/Estoque/Produto/form.js')
+  .addEntry('est/produto/listComEcommerce', './assets/js/Estoque/Produto/list_comEcommerce.js')
+  .addEntry('est/produto/formComEcommerce', './assets/js/Estoque/Produto/form_comEcommerce.js')
 
   .addEntry('est/unidade/list', './assets/js/Estoque/Unidade/list.js')
   .addEntry('est/unidade/form', './assets/js/Estoque/Unidade/form.js')
@@ -173,4 +174,9 @@ Encore
   })
 ;
 
-module.exports = Encore.getWebpackConfig();
+config = Encore.getWebpackConfig();
+config.watchOptions = {
+  aggregateTimeout: 1500,
+};
+
+module.exports = config;

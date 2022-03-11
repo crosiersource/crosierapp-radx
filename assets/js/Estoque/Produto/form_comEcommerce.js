@@ -5,7 +5,7 @@ import { createStore } from "vuex";
 import { api } from "crosier-vue";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
 import ConfirmationService from "primevue/confirmationservice";
-import Page from "./pages/tabview";
+import Page from "./pages/tabview_comEcommerce";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
@@ -60,6 +60,9 @@ const store = createStore({
     },
 
     setFields(state, fields) {
+      fields.dtUltIntegracaoEcommerce = fields.dtUltIntegracaoEcommerce
+        ? new Date(fields.dtUltIntegracaoEcommerce)
+        : null;
       fields.fornecedor = fields.fornecedor["@id"];
       state.fields = fields;
     },
