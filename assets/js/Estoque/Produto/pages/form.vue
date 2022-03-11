@@ -221,6 +221,7 @@ import {
   CrosierInputDecimal,
   CrosierCurrency,
 } from "crosier-vue";
+import moment from "moment";
 
 export default {
   components: {
@@ -266,6 +267,10 @@ export default {
   methods: {
     ...mapMutations(["setLoading", "setFields", "setFieldsErrors"]),
 
+    moment(date) {
+      return moment(date);
+    },
+
     async buscarProxCodigo() {
       const rs = await axios.get("/api/est/produto/findProxCodigo");
       this.fields.codigo = rs?.data?.DATA?.prox;
@@ -297,6 +302,9 @@ export default {
           formData.grupo = formData.grupo["@id"];
           formData.subgrupo = formData.subgrupo["@id"];
           formData.unidadePadrao = formData.unidadePadrao["@id"];
+          formData.dtUltIntegracaoEcommerce = this.moment(
+            formData.dtUltIntegracaoEcommerce
+          ).format();
 
           delete formData.precos;
           delete formData.saldos;

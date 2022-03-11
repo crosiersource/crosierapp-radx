@@ -78,8 +78,6 @@ export default {
   async mounted() {
     this.setLoading(true);
 
-    await this.$store.dispatch("loadData");
-
     this.schemaValidator = yup.object().shape({
       nome: yup.string().required().typeError(),
       status: yup.string().required().typeError(),
