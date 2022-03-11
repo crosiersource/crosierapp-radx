@@ -159,6 +159,7 @@
         :decimais="this.fields.unidadePadrao.casasDecimais"
         v-model="this.fields.qtdeTotal"
         :error="this.formErrors.qtdeTotal"
+        :disabled="true"
       />
       <div class="col-md-6" v-else>
         <div class="form-group">

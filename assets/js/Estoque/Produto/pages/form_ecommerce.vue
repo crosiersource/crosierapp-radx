@@ -12,7 +12,8 @@
 
     <div class="form-row">
       <CrosierInputText
-        label="Integrador por"
+        id="ecommerce_integr_por"
+        label="Integrado por"
         v-model="this.fields.jsonData['ecommerce_integr_por']"
         col="6"
         :disabled="true"
