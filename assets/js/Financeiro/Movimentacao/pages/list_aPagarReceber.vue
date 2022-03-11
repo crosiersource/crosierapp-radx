@@ -71,6 +71,11 @@
               </div>
             </div>
           </div>
+
+          <div class="form-row">
+            <CrosierInputText label="Descrição" id="descricao" v-model="this.filters.descricao" />
+          </div>
+
           <div class="form-row">
             <CrosierCurrency
               label="Valor Total entre..."
@@ -439,6 +444,7 @@ import {
   CrosierCalendar,
   CrosierCurrency,
   CrosierMultiSelectEntity,
+  CrosierInputText,
 } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
@@ -459,6 +465,7 @@ export default {
     CrosierMultiSelectEntity,
     CrosierCalendar,
     CrosierCurrency,
+    CrosierInputText,
   },
 
   emits: [
@@ -546,26 +553,26 @@ export default {
         ? `${moment(this.filters["dtVenctoEfetiva[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
         : `${this.moment().endOf("month").format("YYYY-MM-DD")}T23:59:59-03:00`;
 
-      const diff = moment(this.filters["dtVenctoEfetiva[before]"]).diff(
-        moment(this.filters["dtVenctoEfetiva[after]"]),
-        "days"
-      );
-      if (diff > 31) {
-        this.filters["dtVenctoEfetiva[after]"] = `${this.moment().format(
-          "YYYY-MM"
-        )}-01T00:00:00-03:00`;
-        this.filters["dtVenctoEfetiva[before]"] = `${this.moment()
-          .endOf("month")
-          .format("YYYY-MM-DD")}T23:59:59-03:00`;
-        this.$toast.add({
-          severity: "warn",
-          summary: "Atenção",
-          detail: "Não é possível pesquisar com período superior a 31 dias",
-          life: 5000,
-        });
-      }
+      // const diff = moment(this.filters["dtVenctoEfetiva[before]"]).diff(
+      //   moment(this.filters["dtVenctoEfetiva[after]"]),
+      //   "days"
+      // );
+      // if (diff > 31) {
+      //   this.filters["dtVenctoEfetiva[after]"] = `${this.moment().format(
+      //     "YYYY-MM"
+      //   )}-01T00:00:00-03:00`;
+      //   this.filters["dtVenctoEfetiva[before]"] = `${this.moment()
+      //     .endOf("month")
+      //     .format("YYYY-MM-DD")}T23:59:59-03:00`;
+      //   this.$toast.add({
+      //     severity: "warn",
+      //     summary: "Atenção",
+      //     detail: "Não é possível pesquisar com período superior a 31 dias",
+      //     life: 5000,
+      //   });
+      // }
 
-      const rows = Number.MAX_SAFE_INTEGER;
+      const rows = 500; // Number.MAX_SAFE_INTEGER;
       const page = 1;
 
       const response = await api.get({

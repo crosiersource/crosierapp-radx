@@ -160,6 +160,14 @@
           id="centroCusto"
         />
       </div>
+
+      <div class="form-row">
+        <CrosierInputText
+          v-model="this.filters.chequeNumCheque"
+          label="Núm Cheque"
+          id="chequeNumCheque"
+        />
+      </div>
     </template>
 
     <template v-slot:columns>

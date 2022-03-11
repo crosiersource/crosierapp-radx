@@ -162,7 +162,7 @@ class UploadProdutosSaldosCsv
                         $produto = $repoProduto->find($this->estProdutos[$campos['erp_codigo']]['id']);
                         // Salva aqui e ali embaixo também na est_produto_saldo
                         $produto->qtdeTotal = (float)$campos['saldo'];
-                        $produto = $this->produtoEntityHandler->save($produto);
+                        $produto = $this->produtoEntityHandler->save($produto, false);
                     }
 
 
