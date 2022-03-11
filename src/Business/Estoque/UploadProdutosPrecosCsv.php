@@ -157,6 +157,7 @@ class UploadProdutosPrecosCsv
                         $produto->jsonData['preco_ecommerce'] = (float)$campos['preco_ecommerce'];
                         $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'];
                         $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'];
+                        $produto->jsonData['ecommerce_desatualizado'] = true;
                         $produto = $this->produtoEntityHandler->save($produto, false);
                         $alterados++;
                     } else {
