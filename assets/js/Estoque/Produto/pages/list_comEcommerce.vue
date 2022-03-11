@@ -19,7 +19,6 @@
       'ecommerce',
       'dtUltIntegracaoEcommerce',
     ]"
-    @afterFilter="this.reloadDeptosGrupos()"
   >
     <template v-slot:filter-fields>
       <div class="form-row">
@@ -193,11 +192,6 @@ export default {
           await this.$refs.subgrupo.load();
         }
       });
-    },
-
-    reloadDeptosGrupos() {
-      this.onChangeDepto();
-      this.onChangeGrupo();
     },
   },
 
