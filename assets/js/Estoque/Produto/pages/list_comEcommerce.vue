@@ -18,7 +18,7 @@
       'codigo',
       'ecommerce',
       'dtUltIntegracaoEcommerce',
-      'qtdeTotal',
+      'getQtdeTotal',
       'jsonData',
     ]"
   >
