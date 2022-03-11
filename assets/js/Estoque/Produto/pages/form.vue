@@ -298,6 +298,7 @@ export default {
           formData.unidadePadrao = formData.unidadePadrao["@id"];
 
           delete formData.precos;
+          delete formData.saldos;
         },
       });
       this.setLoading(false);
