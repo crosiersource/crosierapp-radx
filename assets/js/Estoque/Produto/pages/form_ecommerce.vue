@@ -1,6 +1,6 @@
 <template>
   <Toast position="bottom-right" class="mt-5" />
-  <CrosierFormS :withoutCard="true" @submitForm="this.submitForm">
+  <CrosierFormS :withoutCard="true" :disabledSubmit="true">
     <div class="form-row">
       <CrosierDropdownBoolean
         label="Integrado"
@@ -139,26 +139,6 @@ export default {
           this.setLoading(false);
         },
       });
-    },
-
-    async submitForm() {
-      this.setLoading(true);
-      await submitForm({
-        apiResource: "/api/est/produto",
-        schemaValidator: this.schemaValidator,
-        $store: this.$store,
-        formDataStateName: "fields",
-        $toast: this.$toast,
-        fnBeforeSave: (formData) => {
-          formData.depto = formData.depto["@id"];
-          formData.grupo = formData.grupo["@id"];
-          formData.subgrupo = formData.subgrupo["@id"];
-          formData.unidadePadrao = formData.unidadePadrao["@id"];
-
-          delete formData.precos;
-        },
-      });
-      this.setLoading(false);
     },
   },
 
