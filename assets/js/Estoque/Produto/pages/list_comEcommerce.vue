@@ -18,6 +18,8 @@
       'codigo',
       'ecommerce',
       'dtUltIntegracaoEcommerce',
+      'qtdeTotal',
+      'jsonData',
     ]"
   >
     <template v-slot:filter-fields>
@@ -118,6 +120,30 @@
           <span class="ml-1 badge badge-pill badge-info" v-if="r.data.ecommerce">
             Últ Integr: {{ new Date(r.data.dtUltIntegracaoEcommerce).toLocaleString() }}</span
           >
+        </template>
+      </Column>
+
+      <Column field="qtdeTotal" header="Estoque" :sortable="true"></Column>
+
+      <Column field="id" header="Preço Tabela" style="width: 1% !important">
+        <template #body="r">
+          {{
+            parseFloat(r.data.jsonData.preco_tabela ?? 0).toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })
+          }}
+        </template>
+      </Column>
+
+      <Column field="id" header="Preço Site" style="width: 1% !important">
+        <template #body="r">
+          {{
+            parseFloat(r.data.jsonData.preco_site ?? 0).toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })
+          }}
         </template>
       </Column>
 
