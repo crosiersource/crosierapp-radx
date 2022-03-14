@@ -302,10 +302,8 @@ export default {
           formData.grupo = formData.grupo["@id"];
           formData.subgrupo = formData.subgrupo["@id"];
           formData.unidadePadrao = formData.unidadePadrao["@id"];
-          formData.dtUltIntegracaoEcommerce = this.moment(
-            formData.dtUltIntegracaoEcommerce
-          ).format();
 
+          delete formData.dtUltIntegracaoEcommerce;
           delete formData.precos;
           delete formData.saldos;
         },
