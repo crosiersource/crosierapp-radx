@@ -279,13 +279,18 @@ export default {
     onChangeDepto() {
       this.$nextTick(async () => {
         this.fields.grupo = null;
+        this.setLoading(true);
         await this.$refs.grupo.load();
+        this.setLoading(false);
       });
     },
 
     onChangeGrupo() {
       this.$nextTick(async () => {
+        this.fields.subgrupo = null;
+        this.setLoading(true);
         await this.$refs.subgrupo.load();
+        this.setLoading(false);
       });
     },
 
