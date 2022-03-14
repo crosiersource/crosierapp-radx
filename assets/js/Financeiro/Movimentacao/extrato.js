@@ -40,11 +40,11 @@ const store = createStore({
     },
 
     async setFilters(state, filters) {
-      state.filters["dtPagto[after]"] = state.filters["dtPagto[after]"]
-        ? new Date(state.filters["dtPagto[after]"])
+      state.filters["dtUtil[after]"] = state.filters["dtUtil[after]"]
+        ? new Date(state.filters["dtUtil[after]"])
         : null;
-      state.filters["dtPagto[before]"] = state.filters["dtPagto[before]"]
-        ? new Date(state.filters["dtPagto[before]"])
+      state.filters["dtUtil[before]"] = state.filters["dtUtil[before]"]
+        ? new Date(state.filters["dtUtil[before]"])
         : null;
       state.filters = filters;
     },

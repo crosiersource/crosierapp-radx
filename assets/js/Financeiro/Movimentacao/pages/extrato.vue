@@ -29,7 +29,7 @@
               inputClass="crsr-date"
               id="dt"
               :baseZIndex="10000"
-              v-model="this.filters['dtPagto[after]']"
+              v-model="this.filters['dtUtil[after]']"
             />
 
             <CrosierCalendar
@@ -38,7 +38,7 @@
               inputClass="crsr-date"
               id="dt"
               :baseZIndex="10000"
-              v-model="this.filters['dtPagto[before]']"
+              v-model="this.filters['dtUtil[before]']"
             />
           </div>
 
@@ -89,7 +89,7 @@
               inputClass="crsr-date"
               id="dt"
               :baseZIndex="10000"
-              v-model="this.filters['dtPagto[after]']"
+              v-model="this.filters['dtUtil[after]']"
             />
           </div>
           <div>
@@ -99,7 +99,7 @@
               inputClass="crsr-date"
               id="dt"
               :baseZIndex="10000"
-              v-model="this.filters['dtPagto[before]']"
+              v-model="this.filters['dtUtil[before]']"
             />
           </div>
           <div>
@@ -162,7 +162,7 @@
         <DataTable
           v-if="this.saldos"
           rowGroupMode="subheader"
-          groupRowsBy="dtPagto"
+          groupRowsBy="dtUtil"
           stateStorage="local"
           class="p-datatable-sm p-datatable-striped"
           :stateKey="this.dataTableStateKey"
@@ -369,7 +369,7 @@
 
           <template #groupheader="r">
             <div class="h5 float-left" style="font-weight: bolder">
-              {{ new Date(r.data.dtPagto).toLocaleString().substring(0, 10) }}
+              {{ new Date(r.data.dtUtil).toLocaleString().substring(0, 10) }}
             </div>
           </template>
 
@@ -378,22 +378,22 @@
               class="h5 text-right"
               colspan="4"
               :style="
-                'font-weight: bolder; color: ' + (this.getSaldo(r.data.dtPagto) >= 0)
+                'font-weight: bolder; color: ' + (this.getSaldo(r.data.dtUtil) >= 0)
                   ? 'blue'
                   : 'red'
               "
             >
-              Saldo em {{ this.moment(r.data.dtPagto).format("DD/MM/YYYY") }}:
+              Saldo em {{ this.moment(r.data.dtUtil).format("DD/MM/YYYY") }}:
             </td>
             <td
               class="text-right h5"
               :style="
-                'font-weight: bolder; color: ' + (this.getSaldo(r.data.dtPagto) >= 0)
+                'font-weight: bolder; color: ' + (this.getSaldo(r.data.dtUtil) >= 0)
                   ? 'blue'
                   : 'red'
               "
             >
-              {{ this.getSaldoFormatted(r.data.dtPagto) }}
+              {{ this.getSaldoFormatted(r.data.dtUtil) }}
             </td>
             <td></td>
           </template>
@@ -499,15 +499,15 @@ export default {
     },
 
     async trocaPeriodo(proximo) {
-      const ini = moment(this.filters["dtPagto[after]"]).format("YYYY-MM-DD");
-      const fim = moment(this.filters["dtPagto[before]"]).format("YYYY-MM-DD");
+      const ini = moment(this.filters["dtUtil[after]"]).format("YYYY-MM-DD");
+      const fim = moment(this.filters["dtUtil[before]"]).format("YYYY-MM-DD");
 
       const rs = await axios.get(
         `/base/diaUtil/incPeriodo/?ini=${ini}&fim=${fim}&futuro=${proximo}&comercial=false&financeiro=false`
       );
 
-      this.filters["dtPagto[after]"] = new Date(`${rs.data.dtIni}T00:00:00-03:00`);
-      this.filters["dtPagto[before]"] = new Date(`${rs.data.dtFim}T23:59:59-03:00`);
+      this.filters["dtUtil[after]"] = new Date(`${rs.data.dtIni}T00:00:00-03:00`);
+      this.filters["dtUtil[before]"] = new Date(`${rs.data.dtFim}T23:59:59-03:00`);
 
       this.doFilter();
     },
@@ -526,31 +526,31 @@ export default {
         this.filters.carteira = rCarteira.data;
       }
 
-      if (!this.filters["dtPagto[after]"]) {
-        this.filters["dtPagto[after]"] = `${this.moment()
+      if (!this.filters["dtUtil[after]"]) {
+        this.filters["dtUtil[after]"] = `${this.moment()
           .subtract(7, "days")
           .format("YYYY-MM-DD")}T00:00:00-03:00`;
       } else {
-        this.filters["dtPagto[after]"] = `${this.moment(this.filters["dtPagto[after]"]).format(
+        this.filters["dtUtil[after]"] = `${this.moment(this.filters["dtUtil[after]"]).format(
           "YYYY-MM-DD"
         )}T00:00:00-03:00`;
       }
 
-      if (!this.filters["dtPagto[before]"]) {
-        this.filters["dtPagto[before]"] = `${this.moment().format("YYYY-MM-DD")}T23:59:59-03:00`;
+      if (!this.filters["dtUtil[before]"]) {
+        this.filters["dtUtil[before]"] = `${this.moment().format("YYYY-MM-DD")}T23:59:59-03:00`;
       } else {
-        this.filters["dtPagto[before]"] = `${this.moment(this.filters["dtPagto[before]"]).format(
+        this.filters["dtUtil[before]"] = `${this.moment(this.filters["dtUtil[before]"]).format(
           "YYYY-MM-DD"
         )}T23:59:59-03:00`;
       }
 
-      const diff = moment(this.filters["dtPagto[before]"]).diff(
-        moment(this.filters["dtPagto[after]"]),
+      const diff = moment(this.filters["dtUtil[before]"]).diff(
+        moment(this.filters["dtUtil[after]"]),
         "days"
       );
       if (diff > 62) {
-        this.filters["dtPagto[after]"] = `${this.moment().format("YYYY-MM")}-01T00:00:00-03:00`;
-        this.filters["dtPagto[before]"] = `${this.moment()
+        this.filters["dtUtil[after]"] = `${this.moment().format("YYYY-MM")}-01T00:00:00-03:00`;
+        this.filters["dtUtil[before]"] = `${this.moment()
           .endOf("month")
           .format("YYYY-MM-DD")}T23:59:59-03:00`;
         this.$toast.add({
@@ -583,7 +583,7 @@ export default {
         apiResource: this.apiResource,
         page,
         rows,
-        order: { dtPagto: "ASC", "categoria.codigoSuper": "ASC", valor: "ASC" },
+        order: { dtUtil: "ASC", "categoria.codigoSuper": "ASC", valor: "ASC" },
         filters,
         defaultFilters: this.defaultFilters,
         properties: [
@@ -594,7 +594,7 @@ export default {
           "dtVencto",
           "dtVenctoEfetiva",
           "dtUtil",
-          "dtPagto",
+          "dtUtil",
           "valorFormatted",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
@@ -617,7 +617,7 @@ export default {
       this.tableData = response.data["hydra:member"];
 
       const rsSaldos = await axios.get(
-        `/api/fin/saldo?carteira=${this.filters.carteira["@id"]}&dtSaldo[after]=${this.filters["dtPagto[after]"]}&dtSaldo[before]=${this.filters["dtPagto[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
+        `/api/fin/saldo?carteira=${this.filters.carteira["@id"]}&dtSaldo[after]=${this.filters["dtUtil[after]"]}&dtSaldo[before]=${this.filters["dtUtil[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
       );
 
       this.saldos = rsSaldos.data["hydra:member"];
@@ -804,11 +804,11 @@ export default {
     getSaldo(d) {
       let saldo = null;
       if (d === "ANTERIOR") {
-        if (this.tableData && this.tableData[0] && this.tableData[0].dtPagto) {
+        if (this.tableData && this.tableData[0] && this.tableData[0].dtUtil) {
           saldo = this.saldos.find(
             (e) =>
               this.moment(e.dtSaldo).format("YYYY-MM-DD") ===
-              this.moment(this.tableData[0].dtPagto).subtract(1, "days").format("YYYY-MM-DD")
+              this.moment(this.tableData[0].dtUtil).subtract(1, "days").format("YYYY-MM-DD")
           );
         }
       } else {
