@@ -102,7 +102,11 @@
 
       <Column field="codigo" header="Código" :sortable="true"></Column>
 
-      <Column field="nome" header="Nome" :sortable="true"></Column>
+      <Column field="nome" header="Nome" :sortable="true">
+        <template class="text-right" #body="r">
+          <div style="max-width: 250px; white-space: break-spaces">{{ r.data.nome }}</div>
+        </template>
+      </Column>
 
       <Column field="depto.codigo" header="Depto/Grupo/Subgrupo" :sortable="true">
         <template class="text-right" #body="r">
@@ -112,7 +116,7 @@
         </template>
       </Column>
 
-      <Column field="dtUltIntegracaoEcommerce" header="Integr E-commerce" :sortable="true">
+      <Column field="dtUltIntegracaoEcommerce" header="E-comm" :sortable="true">
         <template class="text-right" #body="r">
           <div>
             {{ r.data.ecommerce ? "Sim" : "Não" }}
