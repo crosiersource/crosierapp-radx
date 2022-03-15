@@ -280,7 +280,9 @@ export default {
       this.$nextTick(async () => {
         this.fields.grupo = null;
         this.setLoading(true);
-        await this.$refs.grupo.load();
+        if (this.$refs?.grupo) {
+          await this.$refs.grupo.load();
+        }
         this.setLoading(false);
       });
     },
@@ -289,7 +291,9 @@ export default {
       this.$nextTick(async () => {
         this.fields.subgrupo = null;
         this.setLoading(true);
-        await this.$refs.subgrupo.load();
+        if (this.$refs?.subgrupo) {
+          await this.$refs.subgrupo.load();
+        }
         this.setLoading(false);
       });
     },
