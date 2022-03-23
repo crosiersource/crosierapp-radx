@@ -5,8 +5,23 @@ DROP TABLE IF EXISTS `crm_cliente`;
 CREATE TABLE `crm_cliente`
 (
   `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
-  `nome`               VARCHAR(255) NOT NULL,
-  `documento`          varchar(20),
+  `nome`               VARCHAR(255) NOT NULL, -- nome ou razao social
+  `tipo_pessoa`        char(2),               -- PF/PJ
+  `nome_fantasia`      VARCHAR(255),          -- nome ou razao social
+  `documento`          varchar(20),           -- cpf ou cnpj
+  `ie`                 varchar(30),
+  `logradouro`         varchar(255),
+  `numero`             varchar(60),
+  `complemento`        varchar(60),
+  `bairro`             varchar(60),
+  `cidade`             varchar(60),
+  `estado`             char(2),
+  `cep`                varchar(8),
+  `fone1`              varchar(50),
+  `fone2`              varchar(50),
+  `fone3`              varchar(50),
+  `fone4`              varchar(50),
+  `dt_nascimento`      date,
   `json_data`          json,
 
   -- campo de controle

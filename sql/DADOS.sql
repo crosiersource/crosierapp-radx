@@ -16,11 +16,11 @@ VALUES (null, '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 'crosierapp-
 
 DELETE
 FROM cfg_app_config
-WHERE chave = 'URL_devlocal';
+WHERE chave = 'URL_devlocal' AND app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
 
 INSERT INTO `cfg_app_config` (id, chave, valor, is_json, app_uuid, inserted, updated,
                               estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES (1, 'URL_devlocal', 'https://radx.crosier.dev', false,
+VALUES (null, 'URL_devlocal', 'https://radx.crosier.dev', false,
         '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 1, 1, 1);
 
 

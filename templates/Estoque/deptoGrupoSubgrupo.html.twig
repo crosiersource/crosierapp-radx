@@ -93,6 +93,7 @@
                                                     <td style="cursor: pointer"
                                                         onclick="window.location = '{{ url('est_deptoGrupoSubgrupo_form', {'deptoId': depto.id, '_fragment': 'gerenciar'}) }}'">
                                                         {{ loop.index }}
+                                                        <div class="badge badge-primary">{{ depto.id }}</div>
                                                     </td>
                                                     <td>
                                                         <input type="hidden" name="depto[id]" id="depto_id"
@@ -174,6 +175,7 @@
                                                         <td style="cursor: pointer"
                                                             onclick="window.location = '{{ url('est_deptoGrupoSubgrupo_form', {'grupoId': grupo.id, '_fragment': 'gerenciar'}) }}'">
                                                             {{ loop.index }}
+                                                            <div class="badge badge-primary">{{ grupo.id }}</div>
                                                         </td>
                                                         <td>
                                                             <input type="hidden" name="grupo[id]" id="grupo_id"
@@ -266,6 +268,7 @@
                                                     <tr>
                                                         <td>
                                                             {{ loop.index }}
+                                                            <div class="badge badge-primary">{{ subgrupo.id }}</div>
                                                         </td>
                                                         <td>
                                                             <input type="hidden" name="subgrupo[id]" id="subgrupo_id"

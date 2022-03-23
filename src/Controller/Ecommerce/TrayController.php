@@ -10,7 +10,9 @@ use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorTray;
 use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\TrayBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\ClienteConfig;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Ecommerce\ClienteConfigEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -186,15 +188,35 @@ class TrayController extends BaseController
 
 
     /**
-     * @Route("/ecommerce/tray/integraCategoria/{depto}", name="ecommerce_tray_integraCategoria", requirements={"depto"="\d+"})
+     * @Route("/ecommerce/tray/integraDepto/{depto}", name="ecommerce_tray_integraDepto", requirements={"depto"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
-    public function integraCategoria(Depto $depto): Response
+    public function integraDepto(Depto $depto): Response
+    {
+        // $this->integradorTray->integraDepto($depto);
+        return new Response('Depto/categoria integrado com sucesso');
+    }
+
+    /**
+     * @Route("/ecommerce/tray/integraGrupo/{grupo}", name="ecommerce_tray_integraGrupo", requirements={"grupo"="\d+"})
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function integraGrupo(Grupo $grupo): Response
     {
 //        $integradorTray->endpoint = $clienteConfig->jsonData['url_loja'];
 //        $integradorTray->accessToken = $clienteConfig->jsonData['tray']['access_token'];
 //        $integradorTray->integraCategoria($depto);
         return new Response('Depto/categoria integrado com sucesso');
+    }
+
+    /**
+     * @Route("/ecommerce/tray/integraSubgrupo/{subgrupo}", name="ecommerce_tray_integraSubgrupo", requirements={"subgrupo"="\d+"})
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function integraSubgrupo(Subgrupo $subgrupo): Response
+    {
+        $this->integradorTray->integraSubgrupo($subgrupo);
+        return new Response('Subgrupo integrado com sucesso');
     }
 
 
