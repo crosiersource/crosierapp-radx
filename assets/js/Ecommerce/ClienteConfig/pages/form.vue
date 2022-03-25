@@ -104,7 +104,7 @@
                 :href="
                   this.clienteConfig.jsonData['url_loja'] +
                   // eslint-disable-next-line max-len
-                  'auth.php?response_type=code&consumer_key=941cf91385f289a72cf395e8b5272ef77f730650418b1257ac4193bd567f0463&callback=https://radx.crosier.conectamaisvc.com.br/ecommerce/tray/endpoint/' +
+                  'auth.php?response_type=code&consumer_key=941cf91385f289a72cf395e8b5272ef77f730650418b1257ac4193bd567f0463&callback=https://radx.demo.crosier.com.br/ecommerce/tray/endpoint/' +
                   this.clienteConfig.id
                 "
               >
