@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS `crm_cliente`;
 CREATE TABLE `crm_cliente`
 (
   `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
+  `codigo`             varchar(36)  NOT NULL,
   `nome`               VARCHAR(255) NOT NULL, -- nome ou razao social
   `tipo_pessoa`        char(2),               -- PF/PJ
   `nome_fantasia`      VARCHAR(255),          -- nome ou razao social
@@ -22,7 +23,10 @@ CREATE TABLE `crm_cliente`
   `fone3`              varchar(50),
   `fone4`              varchar(50),
   `dt_nascimento`      date,
+  `ativo`              tinyint(1)   NOT NULL DEFAULT true,
   `json_data`          json,
+
+  UNIQUE KEY `UK_crm_cliente_codigo` (`codigo`),
 
   -- campo de controle
   PRIMARY KEY (`id`),

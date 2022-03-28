@@ -2,25 +2,15 @@
 
 namespace App\Controller\Estoque;
 
-use App\Form\Estoque\FornecedorType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
-use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
-use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
-use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\FornecedorEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\FornecedorRepository;
 use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -42,12 +32,13 @@ class FornecedorController extends FormListController
     {
         try {
             $rsProxCodigo = $conn->fetchAssociative('SELECT max(codigo)+1 as prox FROM est_fornecedor WHERE codigo < 2147483647');
-            return CrosierApiResponse::success($rsProxCodigo);
+            $proxCodigo = $rsProxCodigo['prox'] ?? 1;
+            return CrosierApiResponse::success(['prox' => (string)$proxCodigo]);
         } catch (\Exception $e) {
             return CrosierApiResponse::error();
         }
     }
-    
+
     /**
      *
      * @Route("/api/est/fornecedor/findByStr", name="api_est_fornecedor_findByStr")

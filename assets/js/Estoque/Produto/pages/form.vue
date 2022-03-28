@@ -186,18 +186,34 @@
 
     <div class="form-row">
       <CrosierCurrency
+        label="Preço E-commerce"
+        col="3"
+        id="preco_ecommerce"
+        v-model="this.fields.jsonData['preco_ecommerce']"
+        :disabled="true"
+      />
+
+      <CrosierCurrency
         label="Preço Tabela"
         col="3"
-        id="valor"
+        id="preco_tabela"
         v-model="this.fields.jsonData['preco_tabela']"
         :disabled="true"
       />
 
       <CrosierCurrency
-        label="Preço E-commerce"
+        label="Preço c/ Desconto"
         col="3"
-        id="valor"
-        v-model="this.fields.jsonData['preco_site']"
+        id="preco_venda_com_desconto"
+        v-model="this.fields.jsonData['preco_venda_com_desconto']"
+        :disabled="true"
+      />
+
+      <CrosierCurrency
+        label="Preço Promoção"
+        col="3"
+        id="preco_promocao"
+        v-model="this.fields.jsonData['preco_promocao']"
         :disabled="true"
       />
     </div>

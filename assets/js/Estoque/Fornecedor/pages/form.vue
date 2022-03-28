@@ -36,7 +36,7 @@
       />
 
       <CrosierDropdownBoolean
-        label="Utilizado"
+        label="Ativo"
         col="2"
         id="utilizado"
         v-model="this.fields.utilizado"
@@ -55,6 +55,7 @@
         label="Nome Fantasia"
         col="5"
         id="nomeFantasia"
+        v-show="this.pj"
         v-model="this.fields.nomeFantasia"
         :error="this.formErrors.nomeFantasia"
       />
@@ -63,6 +64,7 @@
         label="Inscrição Estadual"
         col="3"
         id="inscricaoEstadual"
+        v-show="this.pj"
         v-model="this.fields.inscricaoEstadual"
         :error="this.formErrors.inscricaoEstadual"
       />
@@ -155,6 +157,7 @@ export default {
 
     await this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
+      codigo: yup.number().required().typeError(),
       nome: yup.string().required().typeError(),
       utilizado: yup.boolean().required().typeError(),
     });
@@ -207,6 +210,10 @@ export default {
 
   computed: {
     ...mapGetters({ fields: "getFields", formErrors: "getFieldsErrors" }),
+
+    pj() {
+      return this.fields.documento && this.fields.documento.length > 14;
+    },
   },
 };
 </script>

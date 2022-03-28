@@ -129,15 +129,18 @@ class UploadProdutosPrecosCsv
                     }
 
                     $campos = str_getcsv($linha);
+                    // erp_codigo,preco_ecommerce,preco_tabela,preco_custo,preco_venda_com_desconto,preco_promocao
 
                     foreach ($campos as $k => $valor) {
                         $campos[$nomesCampos[$k]] = trim($valor);
                         unset($campos[$k]);
                     }
 
-                    $campos['preco_custo'] = (float)$campos['preco_custo'];
                     $campos['preco_ecommerce'] = (float)$campos['preco_ecommerce'];
                     $campos['preco_tabela'] = (float)$campos['preco_tabela'];
+                    $campos['preco_custo'] = (float)$campos['preco_custo'];
+                    $campos['preco_venda_com_desconto'] = (float)$campos['preco_venda_com_desconto'];
+                    $campos['preco_promocao'] = (float)$campos['preco_promocao'];
 
                     $estProduto = $this->estProdutos[$campos['erp_codigo']] ?? false;
                     $produto = null;
@@ -148,15 +151,19 @@ class UploadProdutosPrecosCsv
                     }
 
                     if (
+                        ((float)$estProduto['preco_ecommerce'] !== (float)$campos['preco_ecommerce']) ||
                         ((float)$estProduto['preco_tabela'] !== (float)$campos['preco_tabela']) ||
                         ((float)$estProduto['preco_custo'] !== (float)$campos['preco_custo']) ||
-                        ((float)$estProduto['preco_ecommerce'] !== (float)$campos['preco_ecommerce'])
+                        ((float)$estProduto['preco_venda_com_desconto'] !== (float)$campos['preco_venda_com_desconto']) ||
+                        ((float)$estProduto['preco_promocao'] !== (float)$campos['preco_promocao'])                        
                     ) {
                         /** @var Produto $produto */
                         $produto = $repoProduto->find($this->estProdutos[$campos['erp_codigo']]['produto_id']);
                         $produto->jsonData['preco_ecommerce'] = (float)$campos['preco_ecommerce'];
                         $produto->jsonData['preco_tabela'] = (float)$campos['preco_tabela'];
                         $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'];
+                        $produto->jsonData['preco_venda_com_desconto'] = (float)$campos['preco_venda_com_desconto'];
+                        $produto->jsonData['preco_promocao'] = (float)$campos['preco_promocao'];
                         $produto->jsonData['ecommerce_desatualizado'] = true;
                         $produto = $this->produtoEntityHandler->save($produto, false);
                         $alterados++;
@@ -192,13 +199,17 @@ class UploadProdutosPrecosCsv
 
     private function carregarEstProdutos()
     {
+        // preco_ecommerce,preco_tabela,preco_custo,preco_venda_com_desconto,preco_promocao
+        
         $rs = $this->produtoEntityHandler->getDoctrine()->getConnection()->fetchAllAssociative(
             'SELECT 
                         p.id as produto_id, 
                         p.codigo as erp_codigo,
                         p.json_data->>"$.preco_site" as preco_ecommerce,
+                        p.json_data->>"$.preco_tabela" as preco_tabela,
                         p.json_data->>"$.preco_custo" as preco_custo,
-                        p.json_data->>"$.preco_tabela" as preco_tabela
+                        p.json_data->>"$.preco_venda_com_desconto" as preco_venda_com_desconto,
+                        p.json_data->>"$.preco_promocao" as preco_promocao
                    FROM 
                         est_produto p');
 

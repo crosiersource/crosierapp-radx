@@ -228,7 +228,7 @@ class TrayController extends BaseController
     {
 //        $integradorTray->endpoint = $clienteConfig->jsonData['url_loja'];
 //        $integradorTray->accessToken = $clienteConfig->jsonData['tray']['access_token'];
-//        $integradorTray->integraProduto($produto);
+        $this->integradorTray->integraProduto($produto);
         return new Response('Produto integrado com sucesso');
     }
 

@@ -4,12 +4,13 @@ namespace App\Controller\CRM;
 
 
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\CRM\ClienteEntityHandler;
+use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -17,7 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ClienteController extends FormListController
 {
-
 
     /**
      * @required
@@ -30,12 +30,10 @@ class ClienteController extends FormListController
 
 
     /**
-     *
      * @Route("/crm/cliente/findClienteByStr/", name="crm_cliente_findClienteByStr")
      * @param Request $request
      * @return JsonResponse
      * @throws \Exception
-     *
      * @IsGranted("ROLE_CRM", statusCode=403)
      */
     public function findClienteByStr(Request $request): JsonResponse
@@ -67,12 +65,10 @@ class ClienteController extends FormListController
 
 
     /**
-     *
      * @Route("/crm/cliente/findClienteByDocumento/", name="crm_cliente_findClienteByDocumento")
      * @param Request $request
      * @return JsonResponse
      * @throws \Exception
-     *
      * @IsGranted("ROLE_CRM", statusCode=403)
      */
     public function findClienteByDocumento(Request $request): JsonResponse
@@ -101,7 +97,22 @@ class ClienteController extends FormListController
     }
 
 
-
+    /**
+     * @Route("/api/est/cliente/findProxCodigo/", name="api_est_cliente_findProxCodigo")
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_CRM", statusCode=403)
+     */
+    public function findProxCodigo(Connection $conn): JsonResponse
+    {
+        try {
+            $rsProxCodigo = $conn->fetchAssociative('SELECT max(codigo)+1 as prox FROM crm_cliente WHERE codigo < 2147483647');
+            $proxCodigo = $rsProxCodigo['prox'] ?? 1;
+            return CrosierApiResponse::success(['prox' => (string)$proxCodigo]);
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error();
+        }
+    }
 
 
 }
