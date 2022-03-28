@@ -155,7 +155,7 @@ class UploadProdutosPrecosCsv
                         ((float)$estProduto['preco_tabela'] !== (float)$campos['preco_tabela']) ||
                         ((float)$estProduto['preco_custo'] !== (float)$campos['preco_custo']) ||
                         ((float)$estProduto['preco_venda_com_desconto'] !== (float)$campos['preco_venda_com_desconto']) ||
-                        ((float)$estProduto['preco_promocao'] !== (float)$campos['preco_promocao'])                        
+                        ((float)$estProduto['preco_promocao'] !== (float)$campos['preco_promocao'])
                     ) {
                         /** @var Produto $produto */
                         $produto = $repoProduto->find($this->estProdutos[$campos['erp_codigo']]['produto_id']);
@@ -164,7 +164,9 @@ class UploadProdutosPrecosCsv
                         $produto->jsonData['preco_custo'] = (float)$campos['preco_custo'];
                         $produto->jsonData['preco_venda_com_desconto'] = (float)$campos['preco_venda_com_desconto'];
                         $produto->jsonData['preco_promocao'] = (float)$campos['preco_promocao'];
-                        $produto->jsonData['ecommerce_desatualizado'] = true;
+                        if ($produto->ecommerce) {
+                            $produto->jsonData['ecommerce_desatualizado'] = true;
+                        }
                         $produto = $this->produtoEntityHandler->save($produto, false);
                         $alterados++;
                     } else {
@@ -200,7 +202,7 @@ class UploadProdutosPrecosCsv
     private function carregarEstProdutos()
     {
         // preco_ecommerce,preco_tabela,preco_custo,preco_venda_com_desconto,preco_promocao
-        
+
         $rs = $this->produtoEntityHandler->getDoctrine()->getConnection()->fetchAllAssociative(
             'SELECT 
                         p.id as produto_id, 
