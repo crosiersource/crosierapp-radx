@@ -29,13 +29,13 @@ class EcommerceBusiness
     public function reintegrarDesatualizados(IntegradorEcommerce $integradorEcommerce)
     {
         $rsProdutosDesatualizados = $this->em->getConnection()->fetchAllAssociative(
-            'SELECT id FROM est_produto WHERE ecommerce AND json_data->>"$.ecommerce_desatualizado" = true');
+            'SELECT id FROM est_produto WHERE ecommerce AND json_data->>"$.ecommerce_desatualizado" = \'true\'');
         $this->syslog->info('EcommerceBusiness.reintegrarDesatualizados - ' . count($rsProdutosDesatualizados) . ' produto(s) desatualizado(s)');
 
         $repoProduto = $this->em->getRepository(Produto::class);
         foreach ($rsProdutosDesatualizados as $rProd) {
             $produto = $repoProduto->find($rProd['id']);
-            $integradorEcommerce->integraProduto($produto);
+            $integradorEcommerce->integraProduto($produto, true, true);
         }
         $this->syslog->info('EcommerceBusiness.reintegrarDesatualizados - fim'); 
     }

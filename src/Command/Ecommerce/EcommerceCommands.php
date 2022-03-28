@@ -11,6 +11,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
+/**
+ * php bin/console ecommerce:reintegrarDesatualizados [TRAY,]
+ * @author Carlos Eduardo Pauluk
+ */
 class EcommerceCommands extends Command implements ServiceSubscriberInterface
 {
 
