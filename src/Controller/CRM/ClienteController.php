@@ -106,8 +106,9 @@ class ClienteController extends FormListController
     public function findProxCodigo(Connection $conn): JsonResponse
     {
         try {
-            $rsProxCodigo = $conn->fetchAssociative('SELECT max(codigo)+1 as prox FROM crm_cliente WHERE codigo < 2147483647');
-            $proxCodigo = $rsProxCodigo['prox'] ?? 1;
+            /** @var ClienteEntityHandler $clienteEntityHandler */
+            $clienteEntityHandler = $this->entityHandler;
+            $proxCodigo = $clienteEntityHandler->getProxCodigo();
             return CrosierApiResponse::success(['prox' => (string)$proxCodigo]);
         } catch (\Exception $e) {
             return CrosierApiResponse::error();

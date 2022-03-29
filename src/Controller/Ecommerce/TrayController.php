@@ -247,14 +247,16 @@ class TrayController extends BaseController
 
 
     /**
-     * @Route("/ecommerce/tray/obterPedido/{id}", name="ecommerce_tray_obterPedido", requirements={"id"="\d+"})
+     * @Route("/ecommerce/tray/obterPedido", name="ecommerce_tray_obterPedido")
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
-    public function obterPedido(int $numPedido): Response
+    public function obterPedido(Request $request): Response
     {
 //        $integradorTray->endpoint = $clienteConfig->jsonData['url_loja'];
 //        $integradorTray->accessToken = $clienteConfig->jsonData['tray']['access_token'];
-//        $integradorTray->obterPedido($numPedido);
+        $numPedido = $request->get('numPedido');
+        $resalvar = filter_var($request->get('resalvar'), FILTER_VALIDATE_BOOLEAN);
+        $this->integradorTray->obterPedidoDoEcommerce($numPedido, $resalvar);
         return new Response('Pedido integrado com sucesso');
     }
 
@@ -289,8 +291,8 @@ class TrayController extends BaseController
         if (!$dtIni) {
             $dtIni = new \DateTime();
         }
-        $resalvar = $request->get('resalvar') ?? null;
-        $total = $this->integradorTray->obterVendas($dtIni, $resalvar === 'S');
+        $resalvar = filter_var($request->get('resalvar'), FILTER_VALIDATE_BOOLEAN);
+        $total = $this->integradorTray->obterVendas($dtIni, $resalvar);
         return new Response('OK: ' . $total);
     }
 
