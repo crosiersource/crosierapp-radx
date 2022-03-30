@@ -29,7 +29,7 @@
 
       <CrosierInputText
         :label="this.pj ? 'Razão Social' : 'Nome'"
-        col="5"
+        col="7"
         id="nome"
         v-model="this.fields.nome"
         :error="this.formErrors.nome"
@@ -137,7 +137,7 @@ export default {
 
     await this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
-      codigo: yup.number().required().typeError(),
+      codigo: yup.string().required().typeError(),
       nome: yup.string().required().typeError(),
       ativo: yup.boolean().required().typeError(),
     });
