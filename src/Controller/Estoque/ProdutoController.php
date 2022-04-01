@@ -173,7 +173,7 @@ class ProdutoController extends FormListController
         $params['jsonMetadata'] = json_decode($repoProduto->getJsonMetadata(), true);
 
         $fnHandleRequestOnValid = function (Request $request, Produto $produto) {
-            $produto->jsonData['ecommerce_desatualizado'] = 1;
+            $produto->jsonData['ecommerce_desatualizado'] = 'S';
         };
 
         // Verifique o método handleRequestOnValid abaixo
