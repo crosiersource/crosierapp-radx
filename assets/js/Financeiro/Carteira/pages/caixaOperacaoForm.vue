@@ -3,7 +3,7 @@
 
   <ConfirmDialog></ConfirmDialog>
 
-  <CrosierFormS @submitForm="this.submitForm" :titulo="this.titulo">
+  <CrosierFormS @submitForm="this.submitForm" :titulo="this.titulo" :formUrl="null">
     <div class="form-row">
       <CrosierDropdownEntity
         v-model="this.fields.carteira"
