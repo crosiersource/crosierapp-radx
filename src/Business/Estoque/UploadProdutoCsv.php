@@ -365,7 +365,7 @@ class UploadProdutoCsv
         }
 
         if ($alterado) {
-            $produto->jsonData['ecommerce_desatualizado'] = true;
+            $produto->jsonData['ecommerce_desatualizado'] = 'S';
             $produto = $this->produtoEntityHandler->save($produto, false);
 
             if ($atualizandoProduto) {
