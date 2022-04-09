@@ -11,7 +11,7 @@
         "crosier-vue": "1.0.2",
         "deepmerge": "^4.2.2",
         "mitt": "^2.1.0",
-        "moment": "^2.23.0",
+        "moment": "^2.29.2",
         "moment-timezone": "^0.5.33",
         "primeflex": "2.0.0",
         "primeicons": "^5.0.0",
