@@ -29,7 +29,11 @@
     </template>
 
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true"></Column>
+      <Column field="id" header="Id" :sortable="true">
+        <template #body="r">
+          {{ ("00000000" + r.data.id).slice(-8) }}
+        </template>
+      </Column>
 
       <Column field="codigo" header="Código" :sortable="true"> </Column>
 

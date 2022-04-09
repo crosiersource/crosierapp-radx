@@ -1,5 +1,5 @@
 <template>
-  <div v-for="(mlConfig, i) in this.clienteConfig.jsonData.mercadolivre">
+  <div v-for="(mlConfig, i) in this.clienteConfig.jsonData.mercadolivre" :key="i">
     <div class="card mt-3">
       <div class="card-body">
         <h5 class="card-title">Mercado Livre #{{ i + 1 }}</h5>

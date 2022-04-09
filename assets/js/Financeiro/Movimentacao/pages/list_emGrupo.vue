@@ -285,10 +285,8 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
-import InlineMessage from "primevue/inlinemessage";
-import Sidebar from "primevue/sidebar";
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierBlock, CrosierDropdownEntity, CrosierMultiSelectEntity } from "crosier-vue";
+import { api, CrosierBlock, CrosierDropdownEntity } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
 
@@ -301,10 +299,7 @@ export default {
     CrosierBlock,
     DataTable,
     Column,
-    InlineMessage,
     Toast,
-    Sidebar,
-    CrosierMultiSelectEntity,
     CrosierDropdownEntity,
   },
 

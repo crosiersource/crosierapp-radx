@@ -56,7 +56,6 @@ import {
   CrosierFormS,
   CrosierInputText,
   SetFocus,
-  submitForm,
 } from "crosier-vue";
 
 export default {

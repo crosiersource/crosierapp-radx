@@ -141,6 +141,7 @@ export default {
     },
 
     expandAll() {
+      // eslint-disable-next-line no-restricted-syntax
       for (const node of this.categorias) {
         this.expandNode(node);
       }
@@ -154,6 +155,7 @@ export default {
     expandNode(node) {
       this.expandedKeys[node.key] = true;
       if (node.children && node.children.length) {
+        // eslint-disable-next-line no-restricted-syntax
         for (const child of node.children) {
           this.expandNode(child);
         }

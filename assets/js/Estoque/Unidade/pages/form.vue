@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Toast from "primevue/toast";
 import * as yup from "yup";
 import { mapGetters, mapMutations } from "vuex";

@@ -9,7 +9,11 @@
     :properties="['id', 'descricao', 'carteiraPagantePadrao', 'ativo', 'updated']"
   >
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true"></Column>
+      <Column field="id" header="Id" :sortable="true">
+        <template #body="r">
+          {{ ("00000000" + r.data.id).slice(-8) }}
+        </template>
+      </Column>
 
       <Column field="descricao" header="Descrição" :sortable="true"></Column>
 
@@ -60,7 +64,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierDropdown, CrosierInputInt, CrosierInputText, CrosierListS } from "crosier-vue";
+import { CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -69,9 +73,6 @@ export default {
   components: {
     CrosierListS,
     Column,
-    CrosierDropdown,
-    CrosierInputText,
-    CrosierInputInt,
     Toast,
     ConfirmDialog,
   },
