@@ -2,29 +2,15 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
-  <CrosierListS titulo="Carteiras" apiResource="/api/fin/carteira/" ref="dt">
+  <CrosierListS
+    titulo="Carteiras"
+    apiResource="/api/fin/carteira/"
+    ref="dt"
+    :filtrosNaSidebar="true"
+  >
     <template v-slot:filter-fields>
       <div class="form-row">
-        <div class="col-md-2">
-          <label for="id">ID</label>
-          <InputText class="form-control" id="id" type="text" v-model="this.filters.id" />
-        </div>
-        <div class="col-md-3">
-          <label for="codigo">Código</label>
-          <InputText class="form-control" id="codigo" type="text" v-model="this.filters.codigo" />
-        </div>
-        <div class="col-md-7">
-          <label for="ativo">Descrição</label>
-          <Dropdown
-            class="form-control"
-            inputId="ativo"
-            v-model="this.filters.ativo"
-            :options="this.dropdownOptions.statusOptions"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="Selecione o status"
-          />
-        </div>
+        <CrosierInputText label="Descrição" id="descricao" v-model="this.filters.descricao" />
       </div>
     </template>
 
@@ -35,9 +21,9 @@
         </template>
       </Column>
 
-      <Column field="codigo" header="Código" :sortable="true"> </Column>
+      <Column field="codigo" header="Código" :sortable="true"></Column>
 
-      <Column field="descricao" header="Descrição" :sortable="true"> </Column>
+      <Column field="descricao" header="Descrição" :sortable="true"></Column>
 
       <Column field="updated" header="" :sortable="true">
         <template class="text-right" #body="r">
@@ -74,10 +60,8 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierListS } from "crosier-vue";
+import { CrosierListS, CrosierInputText } from "crosier-vue";
 import Column from "primevue/column";
-import Dropdown from "primevue/dropdown";
-import InputText from "primevue/inputtext";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 
@@ -85,10 +69,9 @@ export default {
   components: {
     CrosierListS,
     Column,
-    InputText,
-    Dropdown,
     Toast,
     ConfirmDialog,
+    CrosierInputText,
   },
   data() {
     return {

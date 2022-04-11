@@ -2,7 +2,7 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
-  <CrosierListS titulo="Bancos" apiResource="/api/fin/banco/" ref="dt">
+  <CrosierListS titulo="Bancos" apiResource="/api/fin/banco/" ref="dt" :filtrosNaSidebar="true">
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputInt
