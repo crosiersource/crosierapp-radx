@@ -153,7 +153,7 @@ class MovimentacaoImporter
                     continue;
                 }
 
-                if ($this->tipoExtrato === 'EXTRATO_SIMPLES' && !$this->ehLinhaExtratoSimplesOuSaldo($linha)) {
+                if (!$this->ehLinhaExtratoSimplesOuSaldo($linha)) {
                     $linhasNaoImportadas[] = $linha . ' (NÃO É LINHA DE EXTRATO?)';
                     continue;
                 }

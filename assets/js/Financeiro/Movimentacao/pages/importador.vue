@@ -31,6 +31,13 @@
               id="tipoImportacao"
             />
 
+            <div class="col-md-5" v-if="!this.fields.tipoImportacao">
+              <div class="form-group">
+                <label class="transparente">.</label>
+                <Skeleton class="form-control" height="2rem" />
+              </div>
+            </div>
+
             <CrosierDropdownEntity
               v-if="this.fields.tipoImportacao === 'EXTRATO_SIMPLES'"
               col="5"
@@ -58,13 +65,6 @@
               label="Operadora"
               id="operadoraCartao"
             />
-
-            <div class="col-md-5" v-else>
-              <div class="form-group">
-                <label class="transparente">.</label>
-                <Skeleton class="form-control" height="2rem" />
-              </div>
-            </div>
 
             <div class="col-2">
               <label for="btnImportar" class="transparente">...</label>

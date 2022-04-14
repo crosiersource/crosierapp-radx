@@ -22,26 +22,6 @@
             />
           </div>
 
-          <div class="form-row">
-            <CrosierCalendar
-              label="Desde..."
-              col="6"
-              inputClass="crsr-date"
-              id="dt"
-              :baseZIndex="10000"
-              v-model="this.filters['dtUtil[after]']"
-            />
-
-            <CrosierCalendar
-              label="até..."
-              col="6"
-              inputClass="crsr-date"
-              id="dt"
-              :baseZIndex="10000"
-              v-model="this.filters['dtUtil[before]']"
-            />
-          </div>
-
           <div class="row mt-3">
             <div class="col-12">
               <InlineMessage severity="info"
@@ -84,24 +64,26 @@
 
           <div class="ml-auto"></div>
           <div>
-            <CrosierCalendar
-              label="Desde..."
-              inputClass="crsr-date"
-              id="dt"
-              :baseZIndex="10000"
-              v-model="this.filters['dtUtil[after]']"
-            />
+            <div :class="col - md - 12">
+              <div class="form-group">
+                <label for="periodo">Período</label>
+                <Datepicker
+                  v-model="this.filters.periodo"
+                  range
+                  multiCalendars
+                  maxRange="59"
+                  format="dd/MM/yyyy"
+                  locale="pt-BR"
+                  selectText="OK"
+                  cancelText="Cancelar"
+                  nowButtonLabel="Agora"
+                  closeOnScroll
+                  autoApply
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <CrosierCalendar
-              @date-select="this.doFilterNextTick"
-              label="até..."
-              inputClass="crsr-date"
-              id="dt"
-              :baseZIndex="10000"
-              v-model="this.filters['dtUtil[before]']"
-            />
-          </div>
+
           <div>
             <button
               type="button"
@@ -412,13 +394,15 @@ import ConfirmDialog from "primevue/confirmdialog";
 import InlineMessage from "primevue/inlinemessage";
 import Sidebar from "primevue/sidebar";
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierBlock, CrosierDropdownEntity, CrosierCalendar } from "crosier-vue";
+import { api, CrosierBlock, CrosierDropdownEntity } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
 import printJS from "print-js";
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 export default {
-  name: "list_recorrente",
+  name: "extrato",
 
   components: {
     Checkbox,
@@ -430,7 +414,7 @@ export default {
     Toast,
     Sidebar,
     CrosierDropdownEntity,
-    CrosierCalendar,
+    Datepicker,
   },
 
   emits: [
@@ -481,7 +465,11 @@ export default {
       }
     }
 
-    await this.doFilter();
+    if (!this.filters.periodo) {
+      this.filters.periodo = [new Date(this.moment().subtract(7, "days")), new Date()];
+    }
+
+    // await this.doFilter();
     this.accordionActiveIndex = this.isFiltering ? 0 : null;
     this.setLoading(false);
   },
@@ -499,15 +487,19 @@ export default {
     },
 
     async trocaPeriodo(proximo) {
-      const ini = moment(this.filters["dtUtil[after]"]).format("YYYY-MM-DD");
-      const fim = moment(this.filters["dtUtil[before]"]).format("YYYY-MM-DD");
+      this.setLoading(true);
+      const ini = moment(this.filters.periodo[0]).format("YYYY-MM-DD");
+      const fim = moment(this.filters.periodo[1]).format("YYYY-MM-DD");
+
+      console.log(`ini: ${ini}`);
+      console.log(`fim: ${fim}`);
 
       const rs = await axios.get(
         `/base/diaUtil/incPeriodo/?ini=${ini}&fim=${fim}&futuro=${proximo}&comercial=false&financeiro=false`
       );
 
-      this.filters["dtUtil[after]"] = new Date(`${rs.data.dtIni}T00:00:00-03:00`);
-      this.filters["dtUtil[before]"] = new Date(`${rs.data.dtFim}T23:59:59-03:00`);
+      this.filters.periodo = [new Date(moment(rs.data.dtIni)), new Date(moment(rs.data.dtFim))];
+      this.setLoading(false);
 
       this.doFilter();
     },
@@ -526,23 +518,12 @@ export default {
         this.filters.carteira = rCarteira.data;
       }
 
-      if (!this.filters["dtUtil[after]"]) {
-        this.filters["dtUtil[after]"] = `${this.moment()
-          .subtract(7, "days")
-          .format("YYYY-MM-DD")}T00:00:00-03:00`;
-      } else {
-        this.filters["dtUtil[after]"] = `${this.moment(this.filters["dtUtil[after]"]).format(
-          "YYYY-MM-DD"
-        )}T00:00:00-03:00`;
-      }
+      const dtIni = this.filters.periodo[0];
+      const dtFim = this.filters.periodo[1];
 
-      if (!this.filters["dtUtil[before]"]) {
-        this.filters["dtUtil[before]"] = `${this.moment().format("YYYY-MM-DD")}T23:59:59-03:00`;
-      } else {
-        this.filters["dtUtil[before]"] = `${this.moment(this.filters["dtUtil[before]"]).format(
-          "YYYY-MM-DD"
-        )}T23:59:59-03:00`;
-      }
+      this.filters["dtUtil[after]"] = `${this.moment(dtIni).format("YYYY-MM-DD")}T00:00:00-03:00`;
+
+      this.filters["dtUtil[before]"] = `${this.moment(dtFim).format("YYYY-MM-DD")}T23:59:59-03:00`;
 
       const diff = moment(this.filters["dtUtil[before]"]).diff(
         moment(this.filters["dtUtil[after]"]),
@@ -593,7 +574,6 @@ export default {
           "descricaoMontada",
           "dtVencto",
           "dtVenctoEfetiva",
-          "dtUtil",
           "dtUtil",
           "valorFormatted",
           "categoria.descricaoMontada",
@@ -856,3 +836,8 @@ export default {
   },
 };
 </script>
+<style>
+.dp__pointer.dp__input.dp__input_icon_pad {
+  height: 31.1562px;
+}
+</style>
