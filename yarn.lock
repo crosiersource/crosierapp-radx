@@ -3855,15 +3855,16 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-crosier-vue@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/crosier-vue/-/crosier-vue-1.0.3.tgz#5272ff0bbabc41ab112c7aacfe18fc24cdb67c27"
-  integrity sha512-Zt+d0lnYV7jAygGeEoYsdrw0hEtQ9Rv6F51zXzfi6biA22K38NaIEjyH2IRAsdglmFBNAW6+bcTq1c9w11sRyA==
+crosier-vue@1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/crosier-vue/-/crosier-vue-1.1.3.tgz#5ad1f49cbdb220f551082cad3490f04146d3e32f"
+  integrity sha512-xGD+2azOx/DF18g5duSzTndbYnFV1kHk+q+m2v33j/3YborWV40UY8aLmtdSNGb6M7OdpODifE+MXOik1l1qjQ==
   dependencies:
     "@fullcalendar/core" "^5.6.0"
     "@fullcalendar/daygrid" "^5.5.0"
     "@fullcalendar/interaction" "^5.6.0"
     "@fullcalendar/timegrid" "^5.6.0"
+    "@vuepic/vue-datepicker" "^3.1.0"
     axios "^0.21.2"
     chart.js "^3.3.2"
     cleave.js "^1.6.0"
