@@ -438,7 +438,7 @@ class EmissaoNFeController extends FormListController
     public function imprimirCartaCorrecao(NotaFiscalCartaCorrecao $cartaCorrecao): void
     {
         try {
-            $xml = $cartaCorrecao->getMsgRetorno();
+            $xml = $cartaCorrecao->msgRetorno;
 
             $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($cartaCorrecao->notaFiscal->documentoEmitente);
 
@@ -457,7 +457,7 @@ class EmissaoNFeController extends FormListController
 
             $daevento = new Daevento($xml, $dadosEmitente);
             $daevento->debugMode(true);
-            $daevento->creditsIntegratorFooter('WEBNFe Sistemas - http://www.webenf.com.br');
+            
 
             $arrContextOptions = array(
                 "ssl" => array(
