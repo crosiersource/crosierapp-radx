@@ -162,7 +162,13 @@ class UploadProdutosSaldosCsv
                         $produto = $repoProduto->find($this->estProdutos[$campos['erp_codigo']]['id']);
                         // Salva aqui e ali embaixo também na est_produto_saldo
                         $produto->qtdeTotal = (float)$campos['saldo'];
-                        $produto->jsonData['ecommerce_desatualizado'] = 'S';
+
+                        if ($produto->ecommerce) {
+                            $produto->jsonData['ecommerce_desatualizado'] = 'S';
+                        } else {
+                            unset($produto->jsonData['ecommerce_desatualizado']);
+                        }
+                        
                         $produto = $this->produtoEntityHandler->save($produto, false);
                     }
 

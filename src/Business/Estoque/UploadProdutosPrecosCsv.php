@@ -166,6 +166,8 @@ class UploadProdutosPrecosCsv
                         $produto->jsonData['preco_promocao'] = (float)$campos['preco_promocao'];
                         if ($produto->ecommerce) {
                             $produto->jsonData['ecommerce_desatualizado'] = 'S';
+                        } else {
+                            unset($produto->jsonData['ecommerce_desatualizado']);
                         }
                         $produto = $this->produtoEntityHandler->save($produto, false);
                         $alterados++;

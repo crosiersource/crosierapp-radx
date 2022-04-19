@@ -22,7 +22,7 @@ class EcommerceBusiness
     public function __construct(EntityManagerInterface $em, SyslogBusiness $syslog)
     {
         $this->em = $em;
-        $this->syslog = $syslog->setApp('radx')->setComponent(self::class);
+        $this->syslog = $syslog->setApp('radx')->setComponent(self::class)->setEcho(true);
     }
 
 
@@ -37,7 +37,7 @@ class EcommerceBusiness
             $produto = $repoProduto->find($rProd['id']);
             $integradorEcommerce->integraProduto($produto, true, true);
         }
-        $this->syslog->info('EcommerceBusiness.reintegrarDesatualizados - fim'); 
+        $this->syslog->info('EcommerceBusiness.reintegrarDesatualizados - fim');
     }
 
 }
