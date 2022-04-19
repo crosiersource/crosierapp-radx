@@ -34,8 +34,12 @@ class EcommerceBusiness
 
         $repoProduto = $this->em->getRepository(Produto::class);
         foreach ($rsProdutosDesatualizados as $rProd) {
-            $produto = $repoProduto->find($rProd['id']);
-            $integradorEcommerce->integraProduto($produto, true, true);
+            try {
+                $produto = $repoProduto->find($rProd['id']);
+                $integradorEcommerce->integraProduto($produto, true, true);
+            } catch (\Exception $e) {
+                $this->syslog->err($e->getMessage());
+            }
         }
         $this->syslog->info('EcommerceBusiness.reintegrarDesatualizados - fim');
     }
