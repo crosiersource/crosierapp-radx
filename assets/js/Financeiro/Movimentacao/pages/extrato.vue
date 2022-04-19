@@ -369,24 +369,6 @@ export default {
       this.visibleRight = !this.visibleRight;
     },
 
-    async trocaPeriodo(proximo) {
-      this.setLoading(true);
-      const ini = moment(this.filters.periodo[0]).format("YYYY-MM-DD");
-      const fim = moment(this.filters.periodo[1]).format("YYYY-MM-DD");
-
-      console.log(`ini: ${ini}`);
-      console.log(`fim: ${fim}`);
-
-      const rs = await axios.get(
-        `/base/diaUtil/incPeriodo/?ini=${ini}&fim=${fim}&futuro=${proximo}&comercial=false&financeiro=false`
-      );
-
-      this.filters.periodo = [new Date(moment(rs.data.dtIni)), new Date(moment(rs.data.dtFim))];
-      this.setLoading(false);
-
-      this.doFilter();
-    },
-
     doFilterNextTick() {
       this.$nextTick(() => {
         this.doFilter();
