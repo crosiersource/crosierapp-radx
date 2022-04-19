@@ -442,7 +442,7 @@ class UploadProdutoCsv
             $fornecedor = $this->fornecedores[$campos['fornecedor_codigo']];
         }
         $produto->fornecedor = $fornecedor;
-        $produto->jsonData['marca'] = $fornecedor->nome;
+        $produto->marca = $fornecedor->nome;
     }
 
     private function carregarEstProdutos()
