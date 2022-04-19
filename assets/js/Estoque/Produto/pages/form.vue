@@ -113,7 +113,7 @@
         :error="this.formErrors.fornecedor"
         entity-uri="/api/est/fornecedor"
         optionLabel="nomeFantasiaMontado"
-        :orderBy="{ nomeFantasia: 'ASC' }"
+        :orderBy="{ nome: 'ASC' }"
         :filters="{ utilizado: true }"
         label="Fornecedor"
         id="fornecedor"
