@@ -4,56 +4,6 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
-  <Sidebar class="p-sidebar-lg" v-model:visible="this.visibleRight" position="right">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title"><i class="fas fa-search"></i> Filtros</h5>
-        <form @submit.prevent="this.doFilter()" class="notSubmit">
-          <div class="form-row">
-            <CrosierDropdownEntity
-              v-model="this.filters.carteira"
-              entity-uri="/api/fin/carteira"
-              optionLabel="descricaoMontada"
-              :optionValue="null"
-              :orderBy="{ codigo: 'ASC' }"
-              :filters="{ concreta: true }"
-              label="Carteira"
-              id="carteira"
-            />
-          </div>
-
-          <div class="row mt-3">
-            <div class="col-12">
-              <InlineMessage severity="info"
-                ><small>
-                  {{ totalRecords }} registro(s) encontrado(s)
-                  <span v-show="this.isFiltering">(com filtros aplicados)</span>.
-                </small>
-              </InlineMessage>
-            </div>
-          </div>
-
-          <div class="form-row mt-2">
-            <div class="col-6">
-              <button type="submit" class="btn btn-primary btn-sm btn-block">
-                <i class="fas fa-search"></i> Filtrar
-              </button>
-            </div>
-            <div class="col-6">
-              <button
-                type="button"
-                class="btn btn-sm btn-secondary btn-block"
-                @click="this.doClearFilters()"
-              >
-                <i class="fas fa-backspace"></i> Limpar
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </Sidebar>
-
   <div class="container-fluid">
     <div class="card" style="margin-bottom: 50px">
       <div class="card-header">
@@ -64,45 +14,15 @@
 
           <div class="ml-auto"></div>
           <div>
-            <div :class="col - md - 12">
-              <div class="form-group">
-                <label for="periodo">Período</label>
-                <Datepicker
-                  v-model="this.filters.periodo"
-                  range
-                  multiCalendars
-                  maxRange="59"
-                  format="dd/MM/yyyy"
-                  locale="pt-BR"
-                  selectText="OK"
-                  cancelText="Cancelar"
-                  nowButtonLabel="Agora"
-                  closeOnScroll
-                  autoApply
-                />
-              </div>
-            </div>
+            <CrosierCalendar
+              label="Período"
+              v-model="this.filters.periodo"
+              range
+              comBotoesPeriodo
+              maxRange="59"
+            />
           </div>
 
-          <div>
-            <button
-              type="button"
-              class="ml-1 btn btn-info"
-              title="Período anterior"
-              @click="this.trocaPeriodo(false)"
-            >
-              <i class="fas fa-angle-left"></i>
-            </button>
-
-            <button
-              type="button"
-              class="ml-1 btn btn-info"
-              title="Próximo período"
-              @click="this.trocaPeriodo(true)"
-            >
-              <i class="fas fa-angle-right"></i>
-            </button>
-          </div>
           <div>
             <CrosierDropdownEntity
               v-model="this.filters.carteira"
@@ -113,36 +33,25 @@
               :filters="{ concreta: true }"
               label="Carteira"
               id="carteira"
-              @change="this.doFilterNextTick"
             />
           </div>
 
           <div class="d-sm-flex flex-nowrap">
-            <a type="button" class="btn btn-outline-info" href="form" title="Novo">
-              <i class="fas fa-file" aria-hidden="true"></i>
-            </a>
             <button
               type="button"
-              :class="'btn btn-' + (!this.isFiltering ? 'outline-' : '') + 'warning ml-1'"
-              @click="this.toggleFiltros"
+              class="btn btn-success ml-1 mt-3"
+              @click="this.doFilter"
+              title="Filtrar relatório do extrato"
             >
-              <i class="fas fa-search"></i>
-            </button>
-
-            <button
-              type="button"
-              class="btn btn-outline-secondary ml-1"
-              title="Limpar filtros"
-              @click="this.doClearFilters"
-            >
-              <i class="fas fa-sync-alt"></i>
+              <i class="fas fa-search"></i> Filtrar
             </button>
           </div>
         </div>
       </div>
       <div class="card-body">
+        <div v-if="!this.saldos" class="row col">Selecione os filtros.</div>
         <DataTable
-          v-if="this.saldos"
+          v-else
           rowGroupMode="subheader"
           groupRowsBy="dtUtil"
           stateStorage="local"
@@ -172,15 +81,6 @@
         >
           <template #empty> Nenhum dado a exibir. </template>
           <Column field="id">
-            <template #header>
-              <Checkbox
-                :binary="true"
-                @change="this.tudoSelecionadoClick()"
-                v-model="this.tudoSelecionado"
-                onIcon="pi pi-check"
-                offIcon="pi pi-times"
-              />&nbsp; Id
-            </template>
             <template #body="r">
               {{ ("0".repeat(8) + r.data.id).slice(-8) }}
             </template>
@@ -343,9 +243,9 @@
             </template>
           </Column>
 
-          <template #header>
-            <div class="h5 text-right">
-              {{ this.getSaldoFormatted("ANTERIOR") }}
+          <template #header="r">
+            <div class="h5 text-right mr-5">
+              Saldo anterior: {{ this.getSaldoFormatted("ANTERIOR") }}
             </div>
           </template>
 
@@ -386,45 +286,28 @@
 </template>
 
 <script>
-import Checkbox from "primevue/checkbox";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
-import InlineMessage from "primevue/inlinemessage";
-import Sidebar from "primevue/sidebar";
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierBlock, CrosierDropdownEntity } from "crosier-vue";
+import { api, CrosierBlock, CrosierDropdownEntity, CrosierCalendar } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
 import printJS from "print-js";
-import Datepicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
 
 export default {
   name: "extrato",
 
   components: {
-    Checkbox,
     ConfirmDialog,
     CrosierBlock,
     DataTable,
     Column,
-    InlineMessage,
     Toast,
-    Sidebar,
     CrosierDropdownEntity,
-    Datepicker,
+    CrosierCalendar,
   },
-
-  emits: [
-    "beforeFilter",
-    "afterFilter",
-    "row-select",
-    "row-unselect",
-    "update:selection",
-    "tudoSelecionadoClick",
-  ],
 
   data() {
     return {
@@ -596,8 +479,12 @@ export default {
       this.totalRecords = response.data["hydra:totalItems"];
       this.tableData = response.data["hydra:member"];
 
+      const umDiaAntes = `${this.moment(this.filters["dtUtil[after]"])
+        .subtract(1, "days")
+        .format("YYYY-MM-DD")}T00:00:00-03:00`;
+
       const rsSaldos = await axios.get(
-        `/api/fin/saldo?carteira=${this.filters.carteira["@id"]}&dtSaldo[after]=${this.filters["dtUtil[after]"]}&dtSaldo[before]=${this.filters["dtUtil[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
+        `/api/fin/saldo?carteira=${this.filters.carteira["@id"]}&dtSaldo[after]=${umDiaAntes}&dtSaldo[before]=${this.filters["dtUtil[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
       );
 
       this.saldos = rsSaldos.data["hydra:member"];
@@ -785,11 +672,20 @@ export default {
       let saldo = null;
       if (d === "ANTERIOR") {
         if (this.tableData && this.tableData[0] && this.tableData[0].dtUtil) {
-          saldo = this.saldos.find(
-            (e) =>
+          console.log(`vou achar o saldo anterior a ${this.tableData[0].dtUtil}`);
+
+          saldo = this.saldos.find((e) => {
+            console.log(this.moment(e.dtSaldo).format("YYYY-MM-DD"));
+            console.log("é igual a");
+            console.log(
+              this.moment(this.tableData[0].dtUtil).subtract(1, "days").format("YYYY-MM-DD")
+            );
+
+            return (
               this.moment(e.dtSaldo).format("YYYY-MM-DD") ===
               this.moment(this.tableData[0].dtUtil).subtract(1, "days").format("YYYY-MM-DD")
-          );
+            );
+          });
         }
       } else {
         saldo = this.saldos.find(

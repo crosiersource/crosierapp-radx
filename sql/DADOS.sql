@@ -1083,6 +1083,10 @@ INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, 
 VALUES (404, 999, 'INDEFINIDO', 0, now(), now(), 0, 1, 1, 1);
 INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
 VALUES (NULL, 197, 'STONE PAGAMENTOS S.A.', true, now(), now(), 0, 1, 1, 1);
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (NULL, 136, 'UNICRED', 1, now(), now(), 0, 1, 1, 1);
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (NULL, 260, 'NUBANK', 1, now(), now(), 0, 1, 1, 1);
 
 
 

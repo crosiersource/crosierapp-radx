@@ -797,9 +797,9 @@ class MovimentacaoImporter
             $movimentacao->valor = ($valor);
             $movimentacao->valorTotal = ($valor);
 
-            if ($regra->status === 'REALIZADA') {
+//            if ($regra->status === 'REALIZADA') {
                 $movimentacao->dtPagto = ($dtVenctoEfetiva);
-            }
+//            }
 
             return $movimentacao;
         }
