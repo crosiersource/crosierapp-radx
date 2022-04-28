@@ -85,6 +85,12 @@ const store = createStore({
         );
       }
 
+      if (clienteConfig?.jsonData?.tray?.dt_exp_refresh_token) {
+        clienteConfig.jsonData.tray.dt_exp_refresh_token = new Date(
+          clienteConfig.jsonData.tray.dt_exp_refresh_token
+        );
+      }
+
       state.clienteConfig = clienteConfig;
     },
 

@@ -3,117 +3,59 @@
   <ConfirmDialog></ConfirmDialog>
   <CrosierFormS @submitForm="this.submitForm" titulo="Configurações do Cliente">
     <div class="form-row">
-      <CrosierInputId
-        col="3"
-        class="form-control"
-        type="text"
-        v-model="this.clienteConfig.id"
-        disabled
-      />
+      <CrosierInputId col="3" v-model="this.clienteConfig.id" disabled />
       <CrosierDropdown
+        col="8"
         label="Cliente"
         id="cliente"
         v-model="this.clienteConfig.cliente"
         :error="this.formErrors.cliente"
         :options="this.clientes"
         optionLabel="nome"
-        placeholder="--"
+        :optionValue="null"
         @change="this.onChangeCliente"
-        :filter="true"
       />
-      <CrosierSwitch label="Ativo" v-model="this.clienteConfig.ativo" />
+      <CrosierSwitch col="1" label="Ativo" v-model="this.clienteConfig.ativo" />
     </div>
     <div class="form-row">
-      <div class="col-md-8">
-        <div class="form-group">
-          <label for="name">URL Loja</label>
-          <InputText
-            :class="{
-              'form-control notuppercase ': true,
-              'is-invalid': this.formErrors['jsonData.url_loja'],
-            }"
-            id="nome"
-            type="text"
-            v-model="this.clienteConfig.jsonData['url_loja']"
-          />
-          <small class="form-text text-muted">Manter com a última barra (/)</small>
-          <div class="invalid-feedback">
-            {{ this.formErrors["jsonData.url_loja"] }}
-          </div>
-        </div>
-      </div>
+      <CrosierInputText
+        label="URL Loja"
+        inputClass="notuppercase"
+        col="8"
+        id="nome"
+        v-model="this.clienteConfig.jsonData['url_loja']"
+        :error="this.formErrors['jsonData.url_loja']"
+        helpText="ATENÇÃO: Manter sempre com a última barra (/)"
+      />
 
       <CrosierInputText
         col="4"
-        label="E-mails dos Responsáveis (Crosier)"
+        label="E-mails dos Responsáveis"
         id="emailsResponsaveis"
         v-model="this.clienteConfig.jsonData['emailDests']"
-        helpText="Separados por vírgulas"
+        helpText="E-mails que recebem o link para ativação do Mercado Livre. Informar separados por vírgulas."
         inputClass="lowercase"
       />
     </div>
 
     <div class="card mt-3">
       <div class="card-body">
-        <h5 class="card-title">Tray</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Configurações</h6>
-        <div class="form-row mt-3">
-          <div class="col-md-3">
-            <div class="form-group">
-              <label for="tray_store_id">Store Id</label>
-              <InputText
-                class="form-control notuppercase"
-                id="tray_store_id"
-                type="text"
-                v-model="this.clienteConfig.jsonData.tray.store_id"
-              />
-            </div>
+        <div class="d-sm-flex flex-nowrap">
+          <div>
+            <h5 class="card-title">Tray</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Configurações</h6>
           </div>
-          <div class="col-md-5">
-            <div class="form-group">
-              <label for="tray_code">Code</label>
-              <InputText
-                class="form-control notuppercase"
-                id="tray_code"
-                type="text"
-                v-model="this.clienteConfig.jsonData['tray']['code']"
-              />
-              <small v-if="this.clienteConfig.jsonData['tray']['code']" class="form-text text-muted"
-                >Retorno da chamada 'auth'</small
-              >
-              <a
-                :href="
-                  this.clienteConfig.jsonData['url_loja'] +
-                  // eslint-disable-next-line max-len
-                  'auth.php?response_type=code&consumer_key=941cf91385f289a72cf395e8b5272ef77f730650418b1257ac4193bd567f0463&callback=https://radx.demo.crosier.com.br/ecommerce/tray/endpoint/' +
-                  this.clienteConfig.id
-                "
-              >
-                <small class="form-text">Obter novo código</small></a
-              >
-            </div>
-          </div>
-          <div class="col-md-2">
-            <div class="form-group">
-              <label for="pedidos_integrados_ate">Integrar a partir de</label>
-              <Calendar
-                id="pedidos_integrados_ate"
-                :showIcon="true"
-                :showOnFocus="true"
-                inputClass="form-control crsr-date"
-                v-model="this.clienteConfig.jsonData['tray']['pedidos_integrados_ate']"
-                dateFormat="dd/mm/yy"
-              />
-              <small class="form-text text-muted"
-                >Só pesquisa pedidos modificados a partir desta data (inclusive)</small
-              >
-            </div>
-          </div>
-          <div class="col-md-2">
+
+          <div class="ml-auto">
+            <button type="button" class="btn btn-sm btn-success" @click="this.autorizarNaTray">
+              <i class="fas fa-link"></i>
+              Obter novo código
+            </button>
+
             <button
               type="button"
-              v-if="this.clienteConfig.jsonData['tray']['code']"
-              class="btn btn-block btn-sm btn-danger mt-4"
+              :disabled="!this.permiteAutorizar"
+              class="btn btn-sm btn-danger ml-1"
               @click="this.autorizarNaTray"
             >
               <i class="fas fa-link"></i>
@@ -122,12 +64,8 @@
 
             <button
               type="button"
-              v-if="
-                this.clienteConfig.jsonData['tray']['code'] &&
-                this.clienteConfig.jsonData['tray']['access_token'] &&
-                this.clienteConfig.jsonData['tray']['refresh_token']
-              "
-              class="btn btn-block btn-sm btn-warning mt-4"
+              v-if="this.permiteRefreshToken"
+              class="btn btn-sm btn-warning ml-1"
               @click="this.renewAccessTokenTray"
             >
               <i class="fas fa-sync-alt"></i>
@@ -136,54 +74,66 @@
           </div>
         </div>
         <div class="form-row mt-3">
-          <div class="col-md-8">
-            <div class="form-group">
-              <label for="tray_access_token">Access Token</label>
-              <InputText
-                class="form-control notuppercase"
-                id="tray_access_token"
-                type="text"
-                v-model="this.clienteConfig.jsonData['tray']['access_token']"
-              />
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <label for="tray_dt_exp_access_token">Dt Expiração</label>
-              <InputText
-                class="form-control notuppercase"
-                disabled="disabled"
-                id="tray_dt_exp_access_token"
-                type="text"
-                v-model="this.clienteConfig.trayDtExpAccessToken"
-              />
-            </div>
-          </div>
+          <CrosierInputText
+            label="Store Id"
+            col="3"
+            inputClass="notuppercase"
+            id="tray_store_id"
+            type="text"
+            v-model="this.clienteConfig.jsonData.tray.store_id"
+          />
+          <CrosierInputText
+            label="Code"
+            col="5"
+            inputClass="notuppercase"
+            id="tray_code"
+            type="text"
+            v-model="this.clienteConfig.jsonData['tray']['code']"
+            helpText="Retorno da chamada 'auth'"
+          />
+
+          <CrosierCalendar
+            label="Integrar a partir de"
+            col="2"
+            id="pedidos_integrados_ate"
+            v-model="this.clienteConfig.jsonData['tray']['pedidos_integrados_ate']"
+            helpText="Só pesquisará pedidos modificados a partir desta data (inclusive)"
+          />
         </div>
         <div class="form-row mt-3">
-          <div class="col-md-8">
-            <div class="form-group">
-              <label for="tray_refresh_token">Refresh Token</label>
-              <InputText
-                class="form-control notuppercase"
-                id="tray_refresh_token"
-                type="text"
-                v-model="this.clienteConfig.jsonData['tray']['refresh_token']"
-              />
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <label for="tray_dt_exp_refresh_token">Dt Expiração</label>
-              <InputText
-                disabled="disabled"
-                class="form-control"
-                id="tray_dt_exp_refresh_token"
-                type="text"
-                v-model="this.clienteConfig.jsonData['tray']['dt_exp_refresh_token']"
-              />
-            </div>
-          </div>
+          <CrosierInputText
+            col="8"
+            label="Access Token"
+            inputClass="notuppercase"
+            id="tray_access_token"
+            type="text"
+            v-model="this.clienteConfig.jsonData['tray']['access_token']"
+          />
+          <CrosierCalendar
+            showSeconds
+            label="Dt Expiração"
+            col="4"
+            disabled
+            id="tray_dt_exp_access_token"
+            v-model="this.clienteConfig.trayDtExpAccessToken"
+          />
+        </div>
+        <div class="form-row mt-3">
+          <CrosierInputText
+            label="Refresh Token"
+            col="8"
+            inputClass="notuppercase"
+            id="tray_refresh_token"
+            v-model="this.clienteConfig.jsonData['tray']['refresh_token']"
+          />
+          <CrosierCalendar
+            showSeconds
+            col="4"
+            label="Dt Expiração"
+            disabled
+            id="tray_dt_exp_refresh_token"
+            v-model="this.clienteConfig.jsonData['tray']['dt_exp_refresh_token']"
+          />
         </div>
         <div class="form-row mt-3">
           <div class="col-md-12 text-right">
@@ -213,13 +163,14 @@ import {
   CrosierInputText,
   CrosierSwitch,
   CrosierDropdown,
+  CrosierCalendar,
   submitForm,
 } from "crosier-vue";
 import MercadoLivre from "./form_mercadoLivre";
 
 export default {
   components: {
-    Calendar,
+    CrosierCalendar,
     ConfirmDialog,
     CrosierFormS,
     CrosierInputId,
@@ -275,25 +226,27 @@ export default {
       this.setLoading(false);
     },
 
-    async onChangeCliente() {
-      this.setLoading(true);
-      const cliente = { ...this.clienteConfig.cliente };
-      const response = await api.get({
-        apiResource: `/api/ecommerce/clienteConfig`,
-        filters: { cliente: this.clienteConfig.cliente["@id"] },
+    onChangeCliente() {
+      this.$nextTick(async () => {
+        this.setLoading(true);
+        const cliente = { ...this.clienteConfig.cliente };
+        const response = await api.get({
+          apiResource: `/api/ecommerce/clienteConfig`,
+          filters: { cliente: this.clienteConfig.cliente["@id"] },
+        });
+        if (response.data["hydra:member"].length) {
+          // eslint-disable-next-line max-len
+          window.location = `form?id=${response.data["hydra:member"][0].id}`;
+        } else {
+          this.setNewClienteConfig();
+          const clienteConfig = { ...this.clienteConfig };
+          clienteConfig.cliente = cliente;
+          this.setClienteConfig(clienteConfig);
+          // eslint-disable-next-line no-restricted-globals
+          history.pushState({}, null, "form");
+          this.setLoading(false);
+        }
       });
-      if (response.data["hydra:member"].length) {
-        // eslint-disable-next-line max-len
-        window.location = `form?id=${response.data["hydra:member"][0].id}`;
-      } else {
-        this.setNewClienteConfig();
-        const clienteConfig = { ...this.clienteConfig };
-        clienteConfig.cliente = cliente;
-        this.setClienteConfig(clienteConfig);
-        // eslint-disable-next-line no-restricted-globals
-        history.pushState({}, null, "form");
-        this.setLoading(false);
-      }
     },
 
     async autorizarNaTray() {
@@ -370,6 +323,18 @@ export default {
         },
       });
     },
+
+    obterNovoCodigo() {
+      window.open(
+        `${
+          this.clienteConfig.jsonData.url_loja
+          // eslint-disable-next-line max-len
+        }auth.php?response_type=code&consumer_key=941cf91385f289a72cf395e8b5272ef77f730650418b1257ac4193bd567f0463&callback=https://radx.demo.crosier.com.br/ecommerce/tray/endpoint/${
+          this.clienteConfig.id
+        }`,
+        "_blank"
+      );
+    },
   },
   computed: {
     ...mapGetters({
@@ -377,6 +342,18 @@ export default {
       clientes: "getClientes",
       formErrors: "getClienteConfigErrors",
     }),
+
+    permiteAutorizar() {
+      return this.clienteConfig?.jsonData?.tray?.code;
+    },
+
+    permiteRefreshToken() {
+      return (
+        this.clienteConfig?.jsonData?.tray?.code &&
+        this.clienteConfig?.jsonData?.tray?.access_token &&
+        this.clienteConfig?.jsonData?.tray?.refresh_token
+      );
+    },
   },
 };
 </script>
