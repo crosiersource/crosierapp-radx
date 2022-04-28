@@ -3,44 +3,25 @@
   <ConfirmDialog></ConfirmDialog>
   <CrosierFormS @submitForm="this.submitForm" titulo="Configurações do Cliente">
     <div class="form-row">
-      <div class="col-md-3">
-        <div class="form-group">
-          <label for="id">ID</label>
-          <InputText
-            class="form-control"
-            id="id"
-            type="text"
-            v-model="this.clienteConfig.id"
-            disabled
-          />
-        </div>
-      </div>
-      <div class="col-md-7">
-        <div class="form-group">
-          <label for="cliente">Cliente</label>
-          <Dropdown
-            :class="{ 'form-control': true, 'is-invalid': this.formErrors['cliente'] }"
-            id="cliente"
-            inputId="cliente"
-            v-model="this.clienteConfig.cliente"
-            :options="this.clientes"
-            optionLabel="nome"
-            placeholder="--"
-            @change="this.onChangeCliente"
-            :filter="true"
-          />
-          <div class="invalid-feedback">
-            {{ this.formErrors["cliente"] }}
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="form-group">
-          <label for="id">Ativo</label>
-          <br />
-          <InputSwitch v-model="this.clienteConfig.ativo" />
-        </div>
-      </div>
+      <CrosierInputId
+        col="3"
+        class="form-control"
+        type="text"
+        v-model="this.clienteConfig.id"
+        disabled
+      />
+      <CrosierDropdown
+        label="Cliente"
+        id="cliente"
+        v-model="this.clienteConfig.cliente"
+        :error="this.formErrors.cliente"
+        :options="this.clientes"
+        optionLabel="nome"
+        placeholder="--"
+        @change="this.onChangeCliente"
+        :filter="true"
+      />
+      <CrosierSwitch label="Ativo" v-model="this.clienteConfig.ativo" />
     </div>
     <div class="form-row">
       <div class="col-md-8">
@@ -220,15 +201,20 @@
 
 <script>
 import ConfirmDialog from "primevue/confirmdialog";
-import InputText from "primevue/inputtext";
-import InputSwitch from "primevue/inputswitch";
 import Toast from "primevue/toast";
-import Dropdown from "primevue/dropdown";
 import Calendar from "primevue/calendar";
 import * as yup from "yup";
 import axios from "axios";
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierFormS, submitForm, CrosierInputText } from "crosier-vue";
+import {
+  api,
+  CrosierFormS,
+  CrosierInputId,
+  CrosierInputText,
+  CrosierSwitch,
+  CrosierDropdown,
+  submitForm,
+} from "crosier-vue";
 import MercadoLivre from "./form_mercadoLivre";
 
 export default {
@@ -236,12 +222,12 @@ export default {
     Calendar,
     ConfirmDialog,
     CrosierFormS,
-    InputText,
-    InputSwitch,
-    Dropdown,
+    CrosierInputId,
+    CrosierInputText,
+    CrosierSwitch,
+    CrosierDropdown,
     Toast,
     MercadoLivre,
-    CrosierInputText,
   },
 
   data() {

@@ -1,22 +1,14 @@
 <template>
-  <CrosierListS titulo="Clientes" apiResource="/api/crm/cliente/" :formUrl="this.formUrl" ref="dt">
+  <CrosierListS titulo="Clientes" apiResource="/api/crm/cliente/" ref="dt" filtrosNaSidebar>
     <template v-slot:filter-fields>
       <div class="form-row">
-        <CrosierInputText
-          label="CPF/CNPJ"
-          col="3"
-          id="documento"
-          v-model="this.filters.documento"
-        />
-
-        <CrosierInputText label="Nome" col="5" id="nome" v-model="this.filters.nome" />
-
-        <CrosierDropdownBoolean
-          label="Utilizado"
-          col="4"
-          id="utilizado"
-          v-model="this.filters.utilizado"
-        />
+        <CrosierInputText label="CPF/CNPJ" id="documento" v-model="this.filters.documento" />
+      </div>
+      <div class="form-row">
+        <CrosierInputText label="Nome" id="nome" v-model="this.filters.nome" />
+      </div>
+      <div class="form-row">
+        <CrosierDropdownBoolean label="Ativo" col="4" id="ativo" v-model="this.filters.ativo" />
       </div>
     </template>
 

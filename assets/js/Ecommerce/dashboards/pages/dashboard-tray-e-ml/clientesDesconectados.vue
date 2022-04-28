@@ -46,15 +46,8 @@ export default {
   async mounted() {
     this.setLoading(true);
 
-    const rs = await api.get({
-      apiResource: "/api/ecommerce/clienteConfig",
-      allRows: true,
-      filters: { ativo: false },
-      order: { updated: "desc" },
-      properties: ["id", "cliente.nome", "jsonData"],
-    });
+    await this.doFilter();
 
-    this.clientes = rs.data["hydra:member"];
     this.setLoading(false);
   },
 
@@ -64,6 +57,21 @@ export default {
     onRowClick($event) {
       this.setLoading(true);
       window.location = `/v/ecommerce/clienteConfig/form?id=${$event.data.id}`;
+    },
+
+    async doFilter() {
+      const rs = await api.get({
+        apiResource: "/api/ecommerce/clienteConfig",
+        allRows: true,
+        filters: {
+          ativo: false,
+          "cliente.ativo": true,
+        },
+        order: { updated: "desc" },
+        properties: ["id", "cliente.nome", "jsonData"],
+      });
+
+      this.clientes = rs.data["hydra:member"];
     },
   },
 };

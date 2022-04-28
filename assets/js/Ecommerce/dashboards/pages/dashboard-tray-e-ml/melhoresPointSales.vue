@@ -1,8 +1,9 @@
 <template>
   <div class="card mb-4">
     <div class="card-body">
-      <h5 class="card-title">Melhores Marketplaces</h5>
-      <h6 class="card-subtitle mb-2 text-muted">Últimos 90 dias</h6>
+      <div>
+        <h4 class="card-title mb-0">Melhores Marketplaces</h4>
+      </div>
       <DataTable
         scrollable
         scrollHeight="300px"
@@ -37,7 +38,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import { api } from "crosier-vue";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
@@ -59,16 +60,29 @@ export default {
   async mounted() {
     this.setLoading(true);
 
-    const rs = await api.get({
-      apiResource: "/api/dashboard/melhoresPointSales",
-    });
+    await this.doFilter();
 
-    this.results = rs.data.DATA;
     this.setLoading(false);
   },
 
   methods: {
     ...mapMutations(["setLoading"]),
+
+    async doFilter() {
+      const rs = await api.get({
+        apiResource: "/api/dashboard/melhoresPointSales",
+        filters: this.filters,
+      });
+
+      this.results = rs.data.DATA;
+    },
+  },
+
+  computed: {
+    ...mapGetters({
+      loading: "isLoading",
+      filters: "getFilters",
+    }),
   },
 };
 </script>

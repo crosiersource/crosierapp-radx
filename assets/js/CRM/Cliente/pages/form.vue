@@ -2,7 +2,7 @@
   <Toast position="bottom-right" class="mt-5" />
   <CrosierFormS @submitForm="this.submitForm" titulo="Cliente">
     <div class="form-row">
-      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
+      <CrosierInputId col="2" id="id" v-model="this.fields.id" />
 
       <CrosierInputText
         label="Código"
@@ -29,19 +29,13 @@
 
       <CrosierInputText
         :label="this.pj ? 'Razão Social' : 'Nome'"
-        col="7"
+        col="5"
         id="nome"
         v-model="this.fields.nome"
         :error="this.formErrors.nome"
       />
 
-      <CrosierDropdownBoolean
-        label="Ativo"
-        col="2"
-        id="ativo"
-        v-model="this.fields.ativo"
-        :error="this.formErrors.ativo"
-      />
+      <CrosierSwitch col="2" v-model="this.fields.ativo" label="Ativo" />
     </div>
     <div class="form-row">
       <CrosierInputCpfCnpj
@@ -104,11 +98,11 @@ import {
   CrosierFormS,
   submitForm,
   CrosierInputText,
-  CrosierInputInt,
+  CrosierInputId,
   CrosierInputCep,
   CrosierDropdownUf,
   CrosierInputCpfCnpj,
-  CrosierDropdownBoolean,
+  CrosierSwitch,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
@@ -117,9 +111,9 @@ export default {
   components: {
     Toast,
     CrosierFormS,
-    CrosierDropdownBoolean,
     CrosierInputText,
-    CrosierInputInt,
+    CrosierInputId,
+    CrosierSwitch,
     CrosierInputCpfCnpj,
     CrosierInputCep,
     CrosierDropdownUf,

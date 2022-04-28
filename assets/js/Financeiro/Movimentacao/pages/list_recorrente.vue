@@ -20,10 +20,6 @@
             />
           </div>
 
-          <div class="form-row">
-            <CrosierMesAno v-model="this.filters.mesAno" id="mesAno" />
-          </div>
-
           <div class="row mt-3">
             <div class="col-12">
               <InlineMessage severity="info"
@@ -67,7 +63,13 @@
               {{ moment(this.filters["dtVencto[after]"]).format("YYYY") }}
             </h5>
           </div>
-          <div class="d-sm-flex flex-nowrap ml-auto">
+
+          <div class="ml-auto"></div>
+          <div>
+            <CrosierMesAno v-model="this.filters.mesAno" id="mesAno" />
+          </div>
+
+          <div class="d-sm-flex flex-nowrap">
             <a type="button" class="btn btn-outline-info" href="form" title="Novo">
               <i class="fas fa-file" aria-hidden="true"></i>
             </a>
@@ -81,29 +83,11 @@
 
             <button
               type="button"
-              class="btn btn-outline-secondary ml-1"
-              title="Limpar filtros"
-              @click="this.doClearFilters"
+              class="btn btn-success ml-1 mt-3"
+              @click="this.doFilter"
+              title="Filtrar relatório do extrato"
             >
-              <i class="fas fa-sync-alt"></i>
-            </button>
-
-            <button
-              type="button"
-              class="ml-1 btn btn-info"
-              title="Mês anterior"
-              @click="this.trocaMes(false)"
-            >
-              <i class="fas fa-angle-left"></i>
-            </button>
-
-            <button
-              type="button"
-              class="ml-1 btn btn-info"
-              title="Próximo mês"
-              @click="this.trocaMes(true)"
-            >
-              <i class="fas fa-angle-right"></i>
+              <i class="fas fa-search"></i> Filtrar
             </button>
 
             <button
@@ -114,7 +98,7 @@
               id="btnProcessar"
               name="btnProcessar"
             >
-              <i class="fas fa-cog"></i>
+              <i class="fas fa-cog"></i> Processar
             </button>
           </div>
         </div>

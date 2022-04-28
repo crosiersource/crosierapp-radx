@@ -1,23 +1,23 @@
 <template>
   <CrosierBlock :loading="this.loading" />
   <div class="container">
-    <GraficoVendas />
+    <GraficoVendas @mudouPeriodo="this.mudouPeriodo" />
 
     <div class="row">
       <div class="col-12 col-md-6">
-        <ClientesDesconectados />
+        <MelhoresVendedores ref="melhoresVendedores" />
       </div>
       <div class="col-12 col-md-6">
-        <ClientesComMaisPerguntas />
+        <MelhoresPointSales ref="melhoresPointSales" />
       </div>
     </div>
 
     <div class="row">
       <div class="col-12 col-md-6">
-        <MelhoresVendedores />
+        <ClientesDesconectados ref="clientesDesconectados" />
       </div>
       <div class="col-12 col-md-6">
-        <MelhoresPointSales />
+        <ClientesComMaisPerguntas ref="clientesComMaisPerguntas" />
       </div>
     </div>
   </div>
@@ -46,6 +46,13 @@ export default {
 
   data() {
     return {};
+  },
+
+  methods: {
+    mudouPeriodo() {
+      this.$refs.melhoresVendedores.doFilter();
+      this.$refs.melhoresPointSales.doFilter();
+    },
   },
 
   computed: {

@@ -22,12 +22,15 @@ const store = createStore({
   state() {
     return {
       loading: 0,
+      filters: {},
     };
   },
   getters: {
     isLoading(state) {
       return state.loading > 0;
     },
+
+    getFilters: (state) => state.filters,
   },
 
   mutations: {
@@ -37,6 +40,16 @@ const store = createStore({
       } else {
         state.loading--;
       }
+    },
+
+    async setFilters(state, filters) {
+      state.filters["dtUtil[after]"] = state.filters["dtUtil[after]"]
+        ? new Date(state.filters["dtUtil[after]"])
+        : null;
+      state.filters["dtUtil[before]"] = state.filters["dtUtil[before]"]
+        ? new Date(state.filters["dtUtil[before]"])
+        : null;
+      state.filters = filters;
     },
   },
 

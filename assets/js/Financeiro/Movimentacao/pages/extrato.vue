@@ -243,7 +243,7 @@
             </template>
           </Column>
 
-          <template #header="r">
+          <template #header>
             <div class="h5 text-right mr-5">
               Saldo anterior: {{ this.getSaldoFormatted("ANTERIOR") }}
             </div>
@@ -654,15 +654,7 @@ export default {
       let saldo = null;
       if (d === "ANTERIOR") {
         if (this.tableData && this.tableData[0] && this.tableData[0].dtUtil) {
-          console.log(`vou achar o saldo anterior a ${this.tableData[0].dtUtil}`);
-
           saldo = this.saldos.find((e) => {
-            console.log(this.moment(e.dtSaldo).format("YYYY-MM-DD"));
-            console.log("é igual a");
-            console.log(
-              this.moment(this.tableData[0].dtUtil).subtract(1, "days").format("YYYY-MM-DD")
-            );
-
             return (
               this.moment(e.dtSaldo).format("YYYY-MM-DD") ===
               this.moment(this.tableData[0].dtUtil).subtract(1, "days").format("YYYY-MM-DD")
@@ -693,11 +685,11 @@ export default {
     }),
 
     filtersOnLocalStorage() {
-      return "filters_list_recorrente";
+      return "filters_extrato";
     },
 
     dataTableStateKey() {
-      return "dt-state_list_recorrente";
+      return "dt-state_extrato";
     },
 
     isFiltering() {

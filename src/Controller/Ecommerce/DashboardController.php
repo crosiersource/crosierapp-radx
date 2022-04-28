@@ -5,7 +5,9 @@ namespace App\Controller\Ecommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -17,36 +19,61 @@ class DashboardController extends BaseController
 
 
     /**
-     * @Route("/api/dashboard/tray-e-ml/totaisDeVendasUltimos12Meses", name="api_dashboard_totaisDeVendasUltimos12Meses")
+     * @Route("/api/dashboard/tray-e-ml/totaisDeVendasPorPeriodo", name="api_dashboard_totaisDeVendasPorPeriodo")
      */
-    public function totaisDeVendasUltimos12Meses(): Response
+    public function totaisDeVendasPorPeridoo(Request $request): Response
     {
+        $periodo = $request->get('periodo');
+
+        $dtIni = DateTimeUtils::parseDateStr($periodo[0]);
+        $dtFim = DateTimeUtils::parseDateStr($periodo[1]);
+
+
+        $mostrarEmDias = DateTimeUtils::diffInDias($dtFim, $dtIni) < 62;
+
+        $group = $mostrarEmDias ? '%Y-%m-%d' : '%Y-%m';
 
         $sql = "
             SELECT 
-                DATE_FORMAT(v.dt_venda, '%Y-%m') as mesano,
+                DATE_FORMAT(v.dt_venda, :group) as dt,
                 sum(valor_total) AS valor_total
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda > DATE_SUB(NOW(),INTERVAL 12 MONTH)
+            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim
             AND v.status NOT LIKE '%CANCELADO%'
-            GROUP BY DATE_FORMAT(v.dt_venda, '%Y-%m')
-            ORDER BY DATE_FORMAT(v.dt_venda, '%Y-%m')
+            GROUP BY DATE_FORMAT(v.dt_venda, :group)
+            ORDER BY DATE_FORMAT(v.dt_venda, :group)
         ";
 
 
         /** @var Connection $conn */
         $conn = $this->getDoctrine()->getConnection();
 
-        $rsTotal = $conn->fetchAllAssociative($sql);
+        $rsTotal = $conn->fetchAllAssociative($sql, [
+            'group' => $group,
+            'dtIni' => $dtIni->format('Y-m-d'),
+            'dtFim' => $dtFim->format('Y-m-d'),
+        ]);
+
+        if ($mostrarEmDias) {
+            $somatorio = 0.0;
+            foreach ($rsTotal as $k => $r) {
+                $rsTotal[$k]['somatorio'] = $somatorio += $r['valor_total'];
+            }
+        }
+
 
         return CrosierApiResponse::success($rsTotal);
     }
-    
+
     /**
      * @Route("/api/dashboard/melhoresVendedores", name="api_dashboard_melhoresVendedores")
      */
-    public function dashboard(): Response
+    public function melhoresVendedores(Request $request): Response
     {
+        $periodo = $request->get('periodo');
+
+        $dtIni = DateTimeUtils::parseDateStr($periodo[0]);
+        $dtFim = DateTimeUtils::parseDateStr($periodo[1]);
 
         $sqlMelhoresVendedores = "
             SELECT sum(valor_total) AS valor_total,
@@ -55,10 +82,11 @@ class DashboardController extends BaseController
             FROM ecomm_tray_venda v,
                  ecomm_cliente_config config,
                  crm_cliente cli
-            WHERE v.dt_venda > DATE_SUB(NOW(),INTERVAL 3 MONTH)
+            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
               AND v.cliente_config_id = config.id
               AND config.cliente_id = cli.id 
               AND v.status NOT LIKE '%CANCELADO%'
+              AND cli.ativo 
             GROUP BY cliente_config_id,
                      nome
             ORDER BY valor_total DESC
@@ -68,15 +96,21 @@ class DashboardController extends BaseController
         $sqlTotais = "
             SELECT sum(valor_total) as total_vendido
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda > DATE_SUB(NOW(),INTERVAL 3 MONTH)
+            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
         ";
 
         /** @var Connection $conn */
         $conn = $this->getDoctrine()->getConnection();
 
-        $rsMelhoresVendedores = $conn->fetchAllAssociative($sqlMelhoresVendedores);
-        $rsTotal = $conn->fetchAssociative($sqlTotais);
+        $rsMelhoresVendedores = $conn->fetchAllAssociative($sqlMelhoresVendedores, [
+            'dtIni' => $dtIni->format('Y-m-d'),
+            'dtFim' => $dtFim->format('Y-m-d'),
+        ]);
+        $rsTotal = $conn->fetchAssociative($sqlTotais, [
+            'dtIni' => $dtIni->format('Y-m-d'),
+            'dtFim' => $dtFim->format('Y-m-d'),
+        ]);
 
         foreach ($rsMelhoresVendedores as $k => $v) {
             $rsMelhoresVendedores[$k]['valor_total'] = (float)$rsMelhoresVendedores[$k]['valor_total'];
@@ -90,14 +124,18 @@ class DashboardController extends BaseController
     /**
      * @Route("/api/dashboard/melhoresPointSales", name="api_dashboard_melhoresPointSales")
      */
-    public function melhoresPointSales(): Response
+    public function melhoresPointSales(Request $request): Response
     {
+        $periodo = $request->get('periodo');
+
+        $dtIni = DateTimeUtils::parseDateStr($periodo[0]);
+        $dtFim = DateTimeUtils::parseDateStr($periodo[1]);
 
         $sql = "
             SELECT sum(valor_total) AS valor_total,
                    point_sale
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda > DATE_SUB(NOW(),INTERVAL 3 MONTH)
+            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
             GROUP BY point_sale
             ORDER BY valor_total DESC
@@ -106,15 +144,21 @@ class DashboardController extends BaseController
         $sqlTotais = "
             SELECT sum(valor_total) as total_vendido
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda > DATE_SUB(NOW(),INTERVAL 3 MONTH)
+            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
         ";
 
         /** @var Connection $conn */
         $conn = $this->getDoctrine()->getConnection();
 
-        $rsMelhores = $conn->fetchAllAssociative($sql);
-        $rsTotal = $conn->fetchAssociative($sqlTotais);
+        $rsMelhores = $conn->fetchAllAssociative($sql, [
+            'dtIni' => $dtIni->format('Y-m-d'),
+            'dtFim' => $dtFim->format('Y-m-d'),
+        ]);
+        $rsTotal = $conn->fetchAssociative($sqlTotais, [
+            'dtIni' => $dtIni->format('Y-m-d'),
+            'dtFim' => $dtFim->format('Y-m-d'),
+        ]);
 
         foreach ($rsMelhores as $k => $v) {
             $rsMelhores[$k]['valor_total'] = (float)$rsMelhores[$k]['valor_total'];
@@ -125,35 +169,47 @@ class DashboardController extends BaseController
     }
 
 
-
-
     /**
      * @Route("/api/dashboard/totalizacoesGerais", name="api_dashboard_totalizacoesGerais")
      */
-    public function totalizacoesGerais(): Response
+    public function totalizacoesGerais(Request $request): Response
     {
+        $periodo = $request->get('periodo');
+
+        $dtIni = DateTimeUtils::parseDateStr($periodo[0]);
+        $dtFim = DateTimeUtils::parseDateStr($periodo[1]);
+
         /** @var Connection $conn */
         $conn = $this->getDoctrine()->getConnection();
 
         $rsTotalGeral = $conn->fetchAssociative(
             "SELECT sum(valor_total) AS valor_total
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda > DATE_SUB(NOW(),INTERVAL 12 MONTH)
+            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
-            ");
+            ", [
+            'dtIni' => $dtIni->format('Y-m-d'),
+            'dtFim' => $dtFim->format('Y-m-d'),
+        ]);
 
         $rsQtdeVendas = $conn->fetchAssociative(
             "SELECT count(*) AS qtde_vendas
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda > DATE_SUB(NOW(),INTERVAL 12 MONTH)
+            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
-            ");
+            ", [
+            'dtIni' => $dtIni->format('Y-m-d'),
+            'dtFim' => $dtFim->format('Y-m-d'),
+        ]);
 
         $rsQtdePerguntas = $conn->fetchAssociative(
             "SELECT count(*) AS qtde_perguntas
             FROM ecomm_ml_pergunta
-            WHERE dt_pergunta > DATE_SUB(NOW(),INTERVAL 12 MONTH)
-            ");
+            WHERE dt_pergunta BETWEEN :dtIni AND :dtFim
+            ", [
+            'dtIni' => $dtIni->format('Y-m-d'),
+            'dtFim' => $dtFim->format('Y-m-d'),
+        ]);
 
 
         $data = [

@@ -4,19 +4,22 @@
       <div class="d-flex justify-content-between">
         <div>
           <h4 class="card-title mb-0">Vendas</h4>
-          <div class="small text-medium-emphasis">Últimos 12 meses</div>
         </div>
-        <div
-          class="btn-toolbar d-none d-md-block"
-          role="toolbar"
-          aria-label="Toolbar with buttons"
-        ></div>
+        <div class="btn-toolbar d-none d-md-block" role="toolbar" aria-label="Toolbar with buttons">
+          <CrosierCalendar
+            label="Período"
+            v-model="this.filters.periodo"
+            range
+            comBotoesPeriodo
+            @update:modelValue="this.mudouPeriodo"
+          />
+        </div>
       </div>
       <div class="c-chart-wrapper">
         <Chart type="line" :data="lineStylesData" :options="basicOptions" style="height: 250px" />
       </div>
     </div>
-    <div class="card-footer" v-if="resultadosGerais">
+    <div class="card-footer" v-if="resultadosGerais" :key="this.key_resultadosGerais">
       <div class="row row-cols-1 row-cols-md-3 text-center">
         <div class="col mb-sm-2 mb-0">
           <div class="text-medium-emphasis">Total</div>
@@ -96,8 +99,8 @@
 
 <script>
 import Chart from "primevue/chart";
-import { api } from "crosier-vue";
-import { mapMutations } from "vuex";
+import { api, CrosierCalendar } from "crosier-vue";
+import { mapGetters, mapMutations } from "vuex";
 import Vue3autocounter from "vue3-autocounter";
 import moment from "moment";
 
@@ -107,23 +110,16 @@ export default {
   components: {
     Chart,
     Vue3autocounter,
+    CrosierCalendar,
   },
 
   data() {
     return {
       resultadosGerais: null,
+      key_resultadosGerais: 1,
       lineStylesData: {
         labels: [],
-        datasets: [
-          {
-            label: "Totais",
-            data: [],
-            fill: true,
-            borderColor: "#FFA726",
-            tension: 0.4,
-            backgroundColor: "rgba(255,167,38,0.2)",
-          },
-        ],
+        datasets: null,
       },
       basicOptions: {
         maintainAspectRatio: false,
@@ -170,27 +166,11 @@ export default {
   async mounted() {
     this.setLoading(true);
 
-    const rs = await api.get({
-      apiResource: "/api/dashboard/tray-e-ml/totaisDeVendasUltimos12Meses",
-    });
+    if (!this.filters.periodo) {
+      this.filters.periodo = [new Date(this.moment().subtract(12, "months")), new Date()];
+    }
 
-    console.log(rs);
-
-    const labels = rs.data.DATA.map((e) => {
-      const dtf = `${e.mesano}-01T00:00:00-03:00`;
-      console.log(dtf);
-      return this.moment(dtf).format("MMM/YY");
-    });
-
-    const valores = rs.data.DATA.map((e) => e.valor_total);
-
-    this.lineStylesData.labels = labels;
-    this.lineStylesData.datasets[0].data = valores;
-
-    const rsResultadosGerais = await api.get({
-      apiResource: "/api/dashboard/totalizacoesGerais",
-    });
-    this.resultadosGerais = rsResultadosGerais.data.DATA;
+    await this.doFilter();
 
     this.setLoading(false);
   },
@@ -202,6 +182,83 @@ export default {
       moment.locale("pt-br");
       return moment(date);
     },
+
+    async mudouPeriodo() {
+      this.$emit("mudouPeriodo");
+      await this.doFilter();
+    },
+
+    async doFilter() {
+      this.setLoading(true);
+
+      const rs = await api.get({
+        apiResource: "/api/dashboard/tray-e-ml/totaisDeVendasPorPeriodo",
+        filters: this.filters,
+      });
+
+      const labels = rs.data.DATA.map((e) => {
+        const ehMesano = e.dt.length === 7;
+        const dtf = ehMesano ? `${e.dt}-01T00:00:00-03:00` : `${e.dt}T00:00:00-03:00`;
+        return this.moment(dtf).format(ehMesano ? "MMM/YY" : "DD/MMM");
+      });
+
+      const dsValores = rs.data.DATA.map((e) => e.valor_total);
+      const dsSomatorios = rs.data.DATA.map((e) => e.somatorio);
+
+      this.lineStylesData.labels = labels;
+
+      const ehMesano = rs.data.DATA[0].dt.length === 7;
+
+      if (ehMesano) {
+        this.lineStylesData.datasets = [
+          {
+            label: "Totais",
+            data: [],
+            fill: true,
+            borderColor: "#FFA726",
+            tension: 0.4,
+            backgroundColor: "rgba(255,167,38,0.2)",
+          },
+        ];
+        this.lineStylesData.datasets[0].data = dsValores;
+      } else {
+        this.lineStylesData.datasets = [
+          {
+            label: "Totais",
+            data: [],
+            fill: true,
+            borderColor: "#FFA726",
+            tension: 0.4,
+            backgroundColor: "rgba(255,167,38,0.2)",
+          },
+          {
+            label: "Somatório",
+            data: [],
+            fill: true,
+            borderColor: "#00FFFF",
+            tension: 0.4,
+            backgroundColor: "rgba(0,255,255,0.2)",
+          },
+        ];
+        this.lineStylesData.datasets[0].data = dsValores;
+        this.lineStylesData.datasets[1].data = dsSomatorios;
+      }
+
+      const rsResultadosGerais = await api.get({
+        apiResource: "/api/dashboard/totalizacoesGerais",
+        filters: this.filters,
+      });
+      this.resultadosGerais = rsResultadosGerais.data.DATA;
+      this.key_resultadosGerais++;
+      this.setLoading(false);
+    },
+  },
+
+  computed: {
+    ...mapGetters({
+      loading: "isLoading",
+      filters: "getFilters",
+    }),
   },
 };
 </script>

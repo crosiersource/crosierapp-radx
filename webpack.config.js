@@ -117,7 +117,7 @@ Encore
   .addEntry('ecommerce/clienteConfig/form', './assets/js/Ecommerce/ClienteConfig/form.js')
   
   .addEntry('ecommerce/trayVenda/list', './assets/js/Ecommerce/TrayVenda/list.js')
-  .addEntry('ecommerce/mercadoLivre/list_perguntas', './assets/js/Ecommerce/MercadoLivre/list_perguntas.js')
+  .addEntry('ecommerce/mercadoLivrePergunta/list', './assets/js/Ecommerce/MercadoLivre/list_perguntas.js')
   // .addEntry('ecommerce/mercadoLivre/form_venda', './assets/js/Ecommerce/MercadoLivre/form_venda.js')
   
   .addEntry('ecommerce/dashboard/tray-e-ml', './assets/js/Ecommerce/dashboards/dashboard-tray-e-ml.js')
