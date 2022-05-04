@@ -28,6 +28,13 @@ class DashboardController extends BaseController
         $dtIni = DateTimeUtils::parseDateStr($periodo[0]);
         $dtFim = DateTimeUtils::parseDateStr($periodo[1]);
 
+        $primeiroDiaMes = DateTimeUtils::getPrimeiroDiaMes($dtIni);
+        $ultimoDiaMes = DateTimeUtils::getUltimoDiaMes($dtIni);
+        
+        $ehMesAtualeCompleto = DateTimeUtils::ehMesmoDia($dtIni, $primeiroDiaMes) &&
+            DateTimeUtils::ehMesmoDia($dtFim, $ultimoDiaMes) && 
+            $dtIni->format('mm/YYYY') === (new \DateTime())->format('mm/YYYY');
+
 
         $mostrarEmDias = DateTimeUtils::diffInDias($dtFim, $dtIni) < 62;
 
@@ -59,6 +66,42 @@ class DashboardController extends BaseController
             foreach ($rsTotal as $k => $r) {
                 $rsTotal[$k]['somatorio'] = $somatorio += $r['valor_total'];
             }
+        }
+
+        if ($ehMesAtualeCompleto) {
+            $numUltimoDiaMes = (int)$ultimoDiaMes->format('d');
+            $mes = $ultimoDiaMes->format('m');
+            $ano = $ultimoDiaMes->format('Y');
+
+            $media = bcdiv($somatorio, DateTimeUtils::diffInDias(new \DateTime(), $dtIni) + 1, 2);
+            
+            function getValorTotal($dt, $rsTotal) {
+                foreach ($rsTotal as $r) {
+                    if (DateTimeUtils::ehMesmoDia(DateTimeUtils::parseDateStr($r['dt']), $dt)) {
+                        return $r['valor_total'];
+                    }  
+                }
+                return 0;
+            }
+            $rsComProjecao = [];
+            $somatorio = 0;
+            $valorTotal = 0;
+            $projecao = 0;
+            $metaAcum = 0;
+            $meta = bcdiv(200000, $numUltimoDiaMes, 2);
+            for ($i=1 ; $i<=$numUltimoDiaMes ; $i++) {
+                $dt = DateTimeUtils::parseDateStr($i . '/' . $mes . '/' . $ano);
+                $valorTotal = getValorTotal($dt, $rsTotal);
+                $somatorio += $valorTotal;
+                $rsComProjecao[] = [
+                    'dt' => $dt->format('Y-m-d'),
+                    'valor_total' => $valorTotal,
+                    'somatorio' => $somatorio,
+                    'projecao' => $projecao += $media,
+                    'meta' => $metaAcum += $meta,
+                ];
+            }
+            $rsTotal = $rsComProjecao;
         }
 
 

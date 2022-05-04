@@ -170,13 +170,18 @@ export default {
       this.filters.periodo = [new Date(this.moment().subtract(12, "months")), new Date()];
     }
 
+    const lsFilters = localStorage.getItem("dashboard-tray-e-ml_graficoVendas");
+    if (lsFilters) {
+      this.setFilters(JSON.parse(lsFilters));
+    }
+
     await this.doFilter();
 
     this.setLoading(false);
   },
 
   methods: {
-    ...mapMutations(["setLoading"]),
+    ...mapMutations(["setLoading", "setFilters"]),
 
     moment(date) {
       moment.locale("pt-br");
@@ -191,10 +196,14 @@ export default {
     async doFilter() {
       this.setLoading(true);
 
+      localStorage.setItem("dashboard-tray-e-ml_graficoVendas", JSON.stringify(this.filters));
+
       const rs = await api.get({
         apiResource: "/api/dashboard/tray-e-ml/totaisDeVendasPorPeriodo",
         filters: this.filters,
       });
+
+      console.log(rs);
 
       const labels = rs.data.DATA.map((e) => {
         const ehMesano = e.dt.length === 7;
@@ -204,6 +213,9 @@ export default {
 
       const dsValores = rs.data.DATA.map((e) => e.valor_total);
       const dsSomatorios = rs.data.DATA.map((e) => e.somatorio);
+      const dsProjecoes = rs.data.DATA.map((e) => e.projecao);
+      const dsMeta = rs.data.DATA.map((e) => e.meta);
+      console.log(dsMeta);
 
       this.lineStylesData.labels = labels;
 
@@ -239,9 +251,27 @@ export default {
             tension: 0.4,
             backgroundColor: "rgba(0,255,255,0.2)",
           },
+          {
+            label: "Projeção",
+            data: [],
+            fill: true,
+            borderColor: "#006400",
+            tension: 0.4,
+            backgroundColor: "rgba(0,100,0,0.2)",
+          },
+          {
+            label: "Meta",
+            data: [],
+            fill: true,
+            borderColor: "#FF0000",
+            tension: 0.4,
+            backgroundColor: "rgba(255,0,0,0.2)",
+          },
         ];
         this.lineStylesData.datasets[0].data = dsValores;
         this.lineStylesData.datasets[1].data = dsSomatorios;
+        this.lineStylesData.datasets[2].data = dsProjecoes;
+        this.lineStylesData.datasets[3].data = dsMeta;
       }
 
       const rsResultadosGerais = await api.get({
