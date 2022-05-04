@@ -58,8 +58,8 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/nosec, roles: PUBLIC_ACCESS }
+        - { path: ^/ecommerce/tray/endpoint, roles: PUBLIC_ACCESS }
         - { path: ^/ecomm/mercadoLivre/authCallback, roles: PUBLIC_ACCESS }
-        - { path: ^/ecomm/tray/endpoint, roles: PUBLIC_ACCESS }
         - { path: ^/ecomm/mercadolivre/endpoint, roles: PUBLIC_ACCESS }
         - { path: ^/ecomm/mercadolivre/authcallbackrouter, roles: PUBLIC_ACCESS }
         # but, definitely allow /login to be accessible anonymously
