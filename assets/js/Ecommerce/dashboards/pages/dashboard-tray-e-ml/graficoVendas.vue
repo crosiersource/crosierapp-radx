@@ -203,7 +203,7 @@ export default {
         filters: this.filters,
       });
 
-      console.log(rs);
+      const msg = rs.data?.MSG;
 
       const labels = rs.data.DATA.map((e) => {
         const ehMesano = e.dt.length === 7;
@@ -212,72 +212,63 @@ export default {
       });
 
       const dsValores = rs.data.DATA.map((e) => e.valor_total);
-      const dsSomatorios = rs.data.DATA.map((e) => e.somatorio);
-      const dsProjecoes = rs.data.DATA.map((e) => e.projecao);
-      const dsMeta = rs.data.DATA.map((e) => e.meta);
-      console.log(dsMeta);
+      const dsSomatorios = rs.data.DATA.map((e) => e?.somatorio);
+      const dsProjecoes = rs.data.DATA.map((e) => e?.projecao);
+      const dsMeta = rs.data.DATA.map((e) => e?.meta);
 
       this.lineStylesData.labels = labels;
 
-      const ehMesano = rs.data.DATA[0].dt.length === 7;
+      this.lineStylesData.datasets = [
+        {
+          label: "Totais",
+          data: [],
+          fill: true,
+          borderColor: "#FFA726",
+          tension: 0.4,
+          backgroundColor: "rgba(255,167,38,0.2)",
+        },
+      ];
+      this.lineStylesData.datasets[0].data = dsValores;
 
-      if (ehMesano) {
-        this.lineStylesData.datasets = [
-          {
-            label: "Totais",
-            data: [],
-            fill: true,
-            borderColor: "#FFA726",
-            tension: 0.4,
-            backgroundColor: "rgba(255,167,38,0.2)",
-          },
-        ];
-        this.lineStylesData.datasets[0].data = dsValores;
-      } else {
-        this.lineStylesData.datasets = [
-          {
-            label: "Totais",
-            data: [],
-            fill: true,
-            borderColor: "#FFA726",
-            tension: 0.4,
-            backgroundColor: "rgba(255,167,38,0.2)",
-          },
-          {
-            label: "Somatório",
-            data: [],
-            fill: true,
-            borderColor: "#00FFFF",
-            tension: 0.4,
-            backgroundColor: "rgba(0,255,255,0.2)",
-          },
-          {
+      if (msg === "mostrarEmDias" || msg === "ehMesAtualeCompleto") {
+        this.lineStylesData.datasets.push({});
+        this.lineStylesData.datasets[1] = {
+          label: "Somatório",
+          data: dsSomatorios,
+          fill: true,
+          borderColor: "#00FFFF",
+          tension: 0.4,
+          backgroundColor: "rgba(0,255,255,0.2)",
+        };
+
+        if (msg === "ehMesAtualeCompleto") {
+          this.lineStylesData.datasets.push({});
+          this.lineStylesData.datasets[2] = {
             label: "Projeção",
-            data: [],
+            data: dsProjecoes,
             fill: true,
             borderColor: "#006400",
             tension: 0.4,
             backgroundColor: "rgba(0,100,0,0.2)",
-          },
-          {
+          };
+
+          this.lineStylesData.datasets.push({});
+          this.lineStylesData.datasets[3] = {
             label: "Meta",
-            data: [],
+            data: dsMeta,
             fill: true,
             borderColor: "#FF0000",
             tension: 0.4,
             backgroundColor: "rgba(255,0,0,0.2)",
-          },
-        ];
-        this.lineStylesData.datasets[0].data = dsValores;
-        this.lineStylesData.datasets[1].data = dsSomatorios;
-        this.lineStylesData.datasets[2].data = dsProjecoes;
-        this.lineStylesData.datasets[3].data = dsMeta;
+          };
+        }
       }
 
       const rsResultadosGerais = await api.get({
         apiResource: "/api/dashboard/totalizacoesGerais",
         filters: this.filters,
       });
+
       this.resultadosGerais = rsResultadosGerais.data.DATA;
       this.key_resultadosGerais++;
       this.setLoading(false);
