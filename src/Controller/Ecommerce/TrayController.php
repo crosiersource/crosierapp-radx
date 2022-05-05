@@ -74,41 +74,32 @@ class TrayController extends BaseController
     public function trayEndpoint(Request $request, ?ClienteConfig $clienteConfig = null): Response
     {
 
-        /**
-         * https://radx.../ecommerce/tray/endpoint/14?
-         * adm_user=mdcosmeticos&
-         * user_id=1&
-         * code=b2aee6adf2565d3d372f60802a9ed3b2b04f3fd70ac3cc3e67acdf7bcea80450&
-         * api_address=https%3A%2F%2Fwww.cosmeticosmd.com.br%2Fweb_api&
-         * store=987203&
-         * store_host=https%3A%2F%2Fwww.cosmeticosmd.com.br
-         */
-
         $r = [];
-        $r[] = 'Cliente IP: ' . $request->getClientIp();
-        $r[] = 'Host: ' . $request->getHost();
-        $r[] = '<hr />';
-        $r[] = 'Content:';
-        $r[] = $request->getContent();
-        $r[] = '--------------------------------';
-        $r[] = 'Query';
-        foreach ($request->query->all() as $k => $v) {
-            $r[] = $k . ': ' . print_r($v, true);
-        }
-        $r[] = '--------------------------------';
-        $r[] = 'Request';
-        foreach ($request->request->all() as $k => $v) {
-            $r[] = $k . ': ' . print_r($v, true);
-        }
-        $r[] = '--------------------------------';
-        $r[] = 'Headers';
-        foreach ($request->headers->all() as $k => $v) {
-            $r[] = $k . ': ' . print_r($v, true);
-        }
+//        $r[] = 'Cliente IP: ' . $request->getClientIp();
+//        $r[] = 'Host: ' . $request->getHost();
+//        $r[] = '<hr />';
+//        $r[] = 'Content:';
+//        $r[] = $request->getContent();
+//        $r[] = '--------------------------------';
+//        $r[] = 'Query';
+//        foreach ($request->query->all() as $k => $v) {
+//            $r[] = $k . ': ' . print_r($v, true);
+//        }
+//        $r[] = '--------------------------------';
+//        $r[] = 'Request';
+//        foreach ($request->request->all() as $k => $v) {
+//            $r[] = $k . ': ' . print_r($v, true);
+//        }
+//        $r[] = '--------------------------------';
+//        $r[] = 'Headers';
+//        foreach ($request->headers->all() as $k => $v) {
+//            $r[] = $k . ': ' . print_r($v, true);
+//        }
 
         $this->syslog->info('ecomm_tray_endpoint', implode(PHP_EOL, $r));
 
         if ($request->get("code")) {
+            $r[] = '<h3>Código Tray: <b style="color: orangered">' . $request->get("code") . '</b></h3>';  
             if ($clienteConfig) {
                 $clienteConfig->jsonData['tray']['code'] = $request->get("code");
                 $this->clienteConfigEntityHandler->save($clienteConfig);

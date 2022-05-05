@@ -47,7 +47,7 @@
           </div>
 
           <div class="ml-auto">
-            <button type="button" class="btn btn-sm btn-success" @click="this.autorizarNaTray">
+            <button type="button" class="btn btn-sm btn-success" @click="this.obterNovoCodigo">
               <i class="fas fa-link"></i>
               Obter novo código
             </button>
@@ -329,9 +329,7 @@ export default {
         `${
           this.clienteConfig.jsonData.url_loja
           // eslint-disable-next-line max-len
-        }auth.php?response_type=code&consumer_key=941cf91385f289a72cf395e8b5272ef77f730650418b1257ac4193bd567f0463&callback=https://radx.demo.crosier.com.br/ecommerce/tray/endpoint/${
-          this.clienteConfig.id
-        }`,
+        }auth.php?response_type=code&consumer_key=941cf91385f289a72cf395e8b5272ef77f730650418b1257ac4193bd567f0463&callback=https://radx.demo.crosier.com.br/ecommerce/tray/endpoint`,
         "_blank"
       );
     },
