@@ -413,6 +413,8 @@ export default {
       this.totalRecords = response.data["hydra:totalItems"];
       this.tableData = response.data["hydra:member"];
 
+      this.totalGeral = 0;
+
       this.tableData.forEach((m) => {
         this.totalGeral += m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
       });

@@ -522,6 +522,8 @@ export default {
         this.somatorios.set(m.dtVencto, total + valor);
       });
 
+      this.totalGeral = 0;
+
       this.tableData.forEach((m) => {
         this.totalGeral += m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
       });
