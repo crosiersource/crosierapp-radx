@@ -516,6 +516,13 @@ export default {
       }
     }
 
+    this.filters["dtVenctoEfetiva[after]"] =
+      this.filters["dtVenctoEfetiva[after]"] ??
+      `${this.moment().format("YYYY-MM")}-01T00:00:00-03:00`;
+    this.filters["dtVenctoEfetiva[before]"] =
+      this.filters["dtVenctoEfetiva[before]"] ??
+      `${this.moment().endOf("month").format("YYYY-MM-DD")}T23:59:59-03:00`;
+
     await this.doFilter();
     this.accordionActiveIndex = this.isFiltering ? 0 : null;
     this.setLoading(false);
