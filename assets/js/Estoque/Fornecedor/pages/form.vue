@@ -12,6 +12,7 @@
         v-model="this.fields.codigo"
         :error="this.formErrors.codigo"
       />
+
       <div class="col-md-1">
         <div class="form-group">
           <label for="btnBuscarProxCodigo" style="color: transparent">...</label>
@@ -29,20 +30,15 @@
 
       <CrosierInputText
         label="Nome"
-        col="5"
+        col="6"
         id="nome"
         v-model="this.fields.nome"
         :error="this.formErrors.nome"
       />
 
-      <CrosierDropdownBoolean
-        label="Ativo"
-        col="2"
-        id="utilizado"
-        v-model="this.fields.utilizado"
-        :error="this.formErrors.utilizado"
-      />
+      <CrosierSwitch col="1" id="ativo" label="Ativo" v-model="this.fields.utilizado" />
     </div>
+
     <div class="form-row">
       <CrosierInputCpfCnpj
         col="4"
@@ -70,48 +66,66 @@
       />
     </div>
 
-    <div class="row mt-4">
+    <div class="form-row">
+      <CrosierInputTelefone
+        id="fone1"
+        v-model="this.fields.fone1"
+        :error="this.formErrors?.fone1"
+        col="3"
+        label="Fone 1"
+      />
+
+      <CrosierInputTelefone
+        id="fone2"
+        v-model="this.fields.fone2"
+        :error="this.formErrors?.fone2"
+        col="3"
+        label="Fone 2"
+      />
+
+      <CrosierInputTelefone
+        id="fone3"
+        v-model="this.fields.fone3"
+        :error="this.formErrors?.fone3"
+        col="3"
+        label="Fone 3"
+      />
+
+      <CrosierInputTelefone
+        id="fone4"
+        v-model="this.fields.fone4"
+        :error="this.formErrors?.fone4"
+        col="3"
+        label="Fone 4"
+      />
+    </div>
+
+    <div class="form-row">
       <CrosierInputText
         col="5"
         label="Logradouro"
         id="logradouro"
-        v-model="this.fields.jsonData.endereco.logradouro"
+        v-model="this.fields.logradouro"
       />
-      <CrosierInputText
-        col="3"
-        label="Número"
-        id="numero"
-        v-model="this.fields.jsonData.endereco.numero"
-      />
+
+      <CrosierInputText col="3" label="Número" id="numero" v-model="this.fields.numero" />
+
       <CrosierInputText
         col="4"
         label="Complemento"
         id="complemento"
-        v-model="this.fields.jsonData.complemento"
+        v-model="this.fields.complemento"
       />
     </div>
-    <div class="row">
-      <CrosierInputText
-        label="Bairro"
-        col="3"
-        id="bairro"
-        v-model="this.fields.jsonData.endereco.bairro"
-      />
 
-      <CrosierInputCep
-        col="2"
-        v-model="this.fields.jsonData.endereco.cep"
-        @consultaCep="this.consultaCep"
-      />
+    <div class="form-row">
+      <CrosierInputText col="3" label="Bairro" id="bairro" v-model="this.fields.bairro" />
 
-      <CrosierInputText
-        label="Cidade"
-        col="4"
-        id="cidade"
-        v-model="this.fields.jsonData.endereco.cidade"
-      />
+      <CrosierInputCep col="2" v-model="this.fields.cep" @consultaCep="this.consultaCep" />
 
-      <CrosierDropdownUf id="uf" col="3" v-model="this.fields.jsonData.endereco.estado" />
+      <CrosierInputText col="4" label="Cidade" id="cidade" v-model="this.fields.cidade" />
+
+      <CrosierDropdownUf id="estado" v-model="this.fields.estado" col="3" />
     </div>
   </CrosierFormS>
 </template>
@@ -122,27 +136,29 @@ import Toast from "primevue/toast";
 import * as yup from "yup";
 import { mapGetters, mapMutations } from "vuex";
 import {
-  CrosierFormS,
-  submitForm,
-  CrosierDropdownBoolean,
-  CrosierInputText,
-  CrosierInputInt,
-  CrosierInputCep,
   CrosierDropdownUf,
-  SetFocus,
+  CrosierFormS,
+  CrosierInputCep,
   CrosierInputCpfCnpj,
+  CrosierInputInt,
+  CrosierInputTelefone,
+  CrosierInputText,
+  CrosierSwitch,
+  SetFocus,
+  submitForm,
 } from "crosier-vue";
 
 export default {
   components: {
     Toast,
     CrosierFormS,
-    CrosierDropdownBoolean,
     CrosierInputText,
     CrosierInputInt,
     CrosierInputCpfCnpj,
+    CrosierInputTelefone,
     CrosierInputCep,
     CrosierDropdownUf,
+    CrosierSwitch,
   },
 
   data() {
@@ -192,18 +208,17 @@ export default {
 
     consultaCep(rs) {
       if (rs) {
-        this.fields.jsonData = {
-          ...this.fields.jsonData,
+        this.setFields({
+          ...this.fields,
           ...{
-            endereco: {
-              bairro: rs?.bairro,
-              cep: rs?.cep,
-              cidade: rs?.localidade,
-              estado: rs?.uf,
-              logradouro: rs?.logradouro,
-            },
+            bairro: rs?.bairro,
+            cep: rs?.cep,
+            cidade: rs?.localidade,
+            estado: rs?.uf,
+            logradouro: rs?.logradouro,
           },
-        };
+        });
+        SetFocus("numero");
       }
     },
   },

@@ -64,6 +64,40 @@
       />
     </div>
 
+    <div class="form-row">
+      <CrosierInputTelefone
+        id="fone1"
+        v-model="this.fields.fone1"
+        :error="this.formErrors?.fone1"
+        col="3"
+        label="Fone 1"
+      />
+
+      <CrosierInputTelefone
+        id="fone2"
+        v-model="this.fields.fone2"
+        :error="this.formErrors?.fone2"
+        col="3"
+        label="Fone 2"
+      />
+
+      <CrosierInputTelefone
+        id="fone3"
+        v-model="this.fields.fone3"
+        :error="this.formErrors?.fone3"
+        col="3"
+        label="Fone 3"
+      />
+
+      <CrosierInputTelefone
+        id="fone4"
+        v-model="this.fields.fone4"
+        :error="this.formErrors?.fone4"
+        col="3"
+        label="Fone 4"
+      />
+    </div>
+
     <div class="row mt-4">
       <CrosierInputText
         col="5"
@@ -102,7 +136,9 @@ import {
   CrosierInputCep,
   CrosierDropdownUf,
   CrosierInputCpfCnpj,
+  CrosierInputTelefone,
   CrosierSwitch,
+  SetFocus,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
@@ -115,6 +151,7 @@ export default {
     CrosierInputId,
     CrosierSwitch,
     CrosierInputCpfCnpj,
+    CrosierInputTelefone,
     CrosierInputCep,
     CrosierDropdownUf,
   },
@@ -130,11 +167,14 @@ export default {
     this.setLoading(true);
 
     await this.$store.dispatch("loadData");
+
     this.schemaValidator = yup.object().shape({
       codigo: yup.string().required().typeError(),
       nome: yup.string().required().typeError(),
       ativo: yup.boolean().required().typeError(),
     });
+
+    SetFocus("codigo");
 
     this.setLoading(false);
   },
@@ -174,6 +214,7 @@ export default {
             logradouro: rs?.logradouro,
           },
         });
+        SetFocus("numero");
       }
     },
   },

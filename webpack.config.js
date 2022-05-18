@@ -24,6 +24,9 @@ Encore
     ],
   }))
 
+  // --------------------------------------------
+
+  .addEntry("cleanls", "./assets/js/CleanLocalStorage/cleanLocalStorage.js")
 
   .addEntry('Estoque/produto_form', './assets/js/Estoque/produto_form.js')
   .addEntry('Vendas/ven_venda_listVendasPorDiaComEcommerce', './assets/js/Vendas/ven_venda_listVendasPorDiaComEcommerce.js')

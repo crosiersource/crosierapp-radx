@@ -474,9 +474,20 @@ CREATE TABLE `est_fornecedor`
   `nome_fantasia`      VARCHAR(255),
   `documento`          varchar(20),
   `inscricao_estadual` varchar(20),
+  `logradouro`         varchar(255) default null,
+  `numero`             varchar(60)  default null,
+  `complemento`        varchar(60)  default null,
+  `bairro`             varchar(60)  default null,
+  `cidade`             varchar(60)  default null,
+  `estado`             char(2)      default null,
+  `cep`                varchar(8)   default null,
+  `fone1`              varchar(50)  default null,
+  `fone2`              varchar(50)  default null,
+  `fone3`              varchar(50)  default null,
+  `fone4`              varchar(50)  default null,
+  `email`              varchar(200) default null,
   `utilizado`          tinyint(1)   NOT NULL,
   `json_data`          json,
-
 
   UNIQUE KEY `UK_est_fornecedor_codigo` (`codigo`),
 
