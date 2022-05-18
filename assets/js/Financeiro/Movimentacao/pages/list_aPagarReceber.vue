@@ -596,7 +596,7 @@ export default {
           "descricaoMontada",
           "dtVencto",
           "dtVenctoEfetiva",
-          "valorFormatted",
+          "valor",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
           "carteira.descricaoMontada",

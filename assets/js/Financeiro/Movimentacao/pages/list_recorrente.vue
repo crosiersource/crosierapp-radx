@@ -493,7 +493,7 @@ export default {
           "descricaoMontada",
           "dtVencto",
           "dtVencto",
-          "valorFormatted",
+          "valor",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
           "carteira.descricaoMontada",

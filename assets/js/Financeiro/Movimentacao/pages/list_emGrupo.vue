@@ -392,7 +392,7 @@ export default {
           "status",
           "descricaoMontada",
           "dtVencto",
-          "valorFormatted",
+          "valor",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
           "carteira.descricaoMontada",

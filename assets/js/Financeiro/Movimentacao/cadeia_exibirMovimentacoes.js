@@ -64,7 +64,7 @@ const store = createStore({
               "movimentacoes.descricaoMontada",
               "movimentacoes.dtVencto",
               "movimentacoes.dtVenctoEfetiva",
-              "movimentacoes.valorFormatted",
+              "movimentacoes.valor",
               "movimentacoes.categoria.descricaoMontada",
               "movimentacoes.categoria.codigoSuper",
               "movimentacoes.carteira.codigo",

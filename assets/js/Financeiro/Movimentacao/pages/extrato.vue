@@ -440,7 +440,7 @@ export default {
           "dtVencto",
           "dtVenctoEfetiva",
           "dtUtil",
-          "valorFormatted",
+          "valor",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
           "carteira.descricaoMontada",
