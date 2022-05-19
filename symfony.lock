@@ -13,6 +13,9 @@
             "src/Entity/.gitignore"
         ]
     },
+    "composer/package-versions-deprecated": {
+        "version": "1.11.99.4"
+    },
     "crosiersource/crosierlib-base": {
         "version": "dev-master"
     },

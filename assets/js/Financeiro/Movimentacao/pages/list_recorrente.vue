@@ -3,55 +3,6 @@
   <Toast position="bottom-right" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
-  <Sidebar class="p-sidebar-lg" v-model:visible="this.visibleRight" position="right">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title"><i class="fas fa-search"></i> Filtros</h5>
-        <form @submit.prevent="this.doFilter()" class="notSubmit">
-          <div class="form-row">
-            <CrosierMultiSelectEntity
-              v-model="this.filters.carteira"
-              entity-uri="/api/fin/carteira"
-              optionLabel="descricaoMontada"
-              :orderBy="{ codigo: 'ASC' }"
-              :filters="{ abertas: true }"
-              label="Carteiras"
-              id="carteiras"
-            />
-          </div>
-
-          <div class="row mt-3">
-            <div class="col-12">
-              <InlineMessage severity="info"
-                ><small>
-                  {{ totalRecords }} registro(s) encontrado(s)
-                  <span v-show="this.isFiltering">(com filtros aplicados)</span>.
-                </small>
-              </InlineMessage>
-            </div>
-          </div>
-
-          <div class="form-row mt-2">
-            <div class="col-6">
-              <button type="submit" class="btn btn-primary btn-sm btn-block">
-                <i class="fas fa-search"></i> Filtrar
-              </button>
-            </div>
-            <div class="col-6">
-              <button
-                type="button"
-                class="btn btn-sm btn-secondary btn-block"
-                @click="this.doClearFilters()"
-              >
-                <i class="fas fa-backspace"></i> Limpar
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </Sidebar>
-
   <div class="container-fluid">
     <div class="card" style="margin-bottom: 50px">
       <div class="card-header">
@@ -65,30 +16,20 @@
           </div>
 
           <div class="ml-auto"></div>
-          <div>
-            <CrosierMesAno v-model="this.filters.mesAno" id="mesAno" />
+          <div class="mt-3">
+            <CrosierMesAno
+              :showLabel="false"
+              mesCorrenteInicial
+              v-model="this.filters.mesAno"
+              id="mesAno"
+              @update:modelValue="this.doFilter"
+            />
           </div>
 
-          <div class="d-sm-flex flex-nowrap">
+          <div>
             <a type="button" class="btn btn-outline-info" href="form" title="Novo">
               <i class="fas fa-file" aria-hidden="true"></i>
             </a>
-            <button
-              type="button"
-              :class="'btn btn-' + (!this.isFiltering ? 'outline-' : '') + 'warning ml-1'"
-              @click="this.toggleFiltros"
-            >
-              <i class="fas fa-search"></i>
-            </button>
-
-            <button
-              type="button"
-              class="btn btn-success ml-1 mt-3"
-              @click="this.doFilter"
-              title="Filtrar relatório do extrato"
-            >
-              <i class="fas fa-search"></i> Filtrar
-            </button>
 
             <button
               type="button"
@@ -358,10 +299,8 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
-import InlineMessage from "primevue/inlinemessage";
-import Sidebar from "primevue/sidebar";
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierBlock, CrosierMultiSelectEntity, CrosierMesAno } from "crosier-vue";
+import { api, CrosierBlock, CrosierMesAno } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
 import printJS from "print-js";
@@ -375,10 +314,7 @@ export default {
     CrosierBlock,
     DataTable,
     Column,
-    InlineMessage,
     Toast,
-    Sidebar,
-    CrosierMultiSelectEntity,
     CrosierMesAno,
   },
 
@@ -525,7 +461,8 @@ export default {
       this.totalGeral = 0;
 
       this.tableData.forEach((m) => {
-        this.totalGeral += m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
+        const valor = m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
+        this.totalGeral += parseFloat(valor);
       });
 
       // salva os filtros no localStorage
