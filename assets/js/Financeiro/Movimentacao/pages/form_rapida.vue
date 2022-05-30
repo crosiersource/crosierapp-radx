@@ -2,7 +2,12 @@
   <Toast position="bottom-right" class="mb-5" />
   <ConfirmDialog></ConfirmDialog>
 
-  <CrosierFormS @submitForm="this.submitForm" titulo="Movimentação" subtitulo="Lançamento Rápido">
+  <CrosierFormS
+    @submitForm="this.submitForm"
+    titulo="Movimentação"
+    subtitulo="Lançamento Rápido"
+    formUrl="/v/fin/movimentacao/rapida"
+  >
     <template #btns>
       <div class="dropdown ml-2 float-right">
         <button
