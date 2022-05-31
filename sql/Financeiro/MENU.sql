@@ -10,7 +10,7 @@ DELETE
 FROM cfg_entmenu
 WHERE uuid = '189dd86e-f806-4f96-8d5e-2a3e388c6976';
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('189dd86e-f806-4f96-8d5e-2a3e388c6976', 'Financeiro', 'fas fa-dollar-sign', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin', '', '71d1456b-3a9f-4589-8f71-42bbf6c91a3e', 100, 'background-color: darkslateblue;
+VALUES ('189dd86e-f806-4f96-8d5e-2a3e388c6976', 'Financeiro', 'fas fa-dollar-sign', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin', 'ROLE_FINAN', '71d1456b-3a9f-4589-8f71-42bbf6c91a3e', 100, 'background-color: darkslateblue;
 ', now(), now(), 1, 1, 1);
 
 -- Entrada do meu PAI (NÃO É EXIBIDO)
@@ -18,7 +18,7 @@ DELETE
 FROM cfg_entmenu
 WHERE uuid = 'b7a5f134-ea80-40e4-822e-e04cdac70258';
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('b7a5f134-ea80-40e4-822e-e04cdac70258', 'Financeiro (Menu Raíz)', '', 'PAI', '9121ea11-dc5d-4a22-9596-187f5452f95a', '', '', null, 0, null, now(), now(), 1, 1, 1);
+VALUES ('b7a5f134-ea80-40e4-822e-e04cdac70258', 'Financeiro (Menu Raíz)', '', 'PAI', '9121ea11-dc5d-4a22-9596-187f5452f95a', '', 'ROLE_FINAN', null, 0, null, now(), now(), 1, 1, 1);
 
 
 --
@@ -320,5 +320,5 @@ FROM cfg_entmenu_locator
 WHERE menu_uuid = 'b7a5f134-ea80-40e4-822e-e04cdac70258';
 
 INSERT INTO cfg_entmenu_locator(menu_uuid, url_regexp, quem, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('b7a5f134-ea80-40e4-822e-e04cdac70258', '^https://radx\.(.)*/fin/(.)*', '*', now(), now(), 1, 1, 1);
+VALUES ('b7a5f134-ea80-40e4-822e-e04cdac70258', '^https://radx\.(.)*/fin/(.)*', 'r:ROLE_FINAN', now(), now(), 1, 1, 1);
 COMMIT;
