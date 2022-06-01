@@ -46,8 +46,8 @@ CREATE TABLE `crm_cliente`
 
 
 
-INSERT INTO crm_cliente(id, nome, documento, inserted, updated, version, estabelecimento_id,
-                        user_inserted_id, user_updated_id) value (null,
+INSERT INTO crm_cliente(id, codigo, nome, documento, inserted, updated, version, estabelecimento_id,
+                        user_inserted_id, user_updated_id) value (null, 1, 
                                                                   'CONSUMIDOR NÃO IDENTIFICADO',
                                                                   '99999999999', now(), now(), 0, 1,
                                                                   1, 1);
