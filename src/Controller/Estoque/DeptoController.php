@@ -444,5 +444,40 @@ class DeptoController extends BaseController
     }
 
 
+    /**
+     * Corrige os json_data de est_subgrupo e est_grupo
+     *
+     * @Route("/est/deptoGrupoSubgrupo/corrigirProdutos", name="est_deptoGrupoSubgrupo_corrigirProdutos")
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function corrigirProdutos(): Response
+    {
+        /** @var Connection $conn */
+        $conn = $this->getDoctrine()->getConnection();
+        $conn->executeStatement("
+            UPDATE 
+              est_produto produto, est_subgrupo sg, est_grupo g, est_depto d 
+              SET 
+                produto.depto_id = d.id, 
+                produto.grupo_id = g.id, 
+                produto.json_data = 
+                    json_set(produto.json_data, 
+                    '$.depto_id', d.id, 
+                    '$.depto_nome', d.nome, 
+                    '$.depto_codigo', d.codigo, 
+                    '$.grupo_id', g.id, 
+                    '$.grupo_nome', g.nome, 
+                    '$.grupo_codigo', g.codigo, 
+                    '$.subgrupo_nome', sg.nome, 
+                    '$.subgrupo_codigo', sg.codigo) 
+                WHERE 
+                    produto.subgrupo_id = sg.id AND 
+                    sg.grupo_id = g.id AND 
+                    g.depto_id = d.id AND 
+                    (produto.grupo_id != g.id OR produto.depto_id != d.id)");
+        return new Response('OK');
+    }
+
 
 }

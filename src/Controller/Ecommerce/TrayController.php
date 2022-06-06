@@ -212,6 +212,39 @@ class TrayController extends BaseController
 
 
     /**
+     * @Route("/ecommerce/tray/alteraSubgrupo/{subgrupo}", name="ecommerce_tray_alteraSubgrupo", requirements={"subgrupo"="\d+"})
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function alteraSubgrupo(Subgrupo $subgrupo): Response
+    {
+        $this->integradorTray->alteraSubgrupo($subgrupo);
+        return new Response('Subgrupo integrado com sucesso');
+    }
+
+
+    /**
+     * @Route("/ecommerce/tray/alteraGrupo/{grupo}", name="ecommerce_tray_alteraGrupo", requirements={"grupo"="\d+"})
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function alteraGrupo(Grupo $grupo): Response
+    {
+        $this->integradorTray->alteraGrupo($grupo);
+        return new Response('Grupo integrado com sucesso');
+    }
+
+
+    /**
+     * @Route("/ecommerce/tray/alteraDepto/{depto}", name="ecommerce_tray_alteraDepto", requirements={"depto"="\d+"})
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function alteraDepto(Depto $depto): Response
+    {
+        $this->integradorTray->alteraDepto($depto);
+        return new Response('Depto integrado com sucesso');
+    }
+
+
+    /**
      * @Route("/ecommerce/tray/integraProduto/{produto}", name="ecommerce_tray_integraProduto", requirements={"produto"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
      */
