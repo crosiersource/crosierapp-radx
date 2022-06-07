@@ -242,16 +242,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.0.5",
+            "version": "v1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "72ff802a2a158b73a2aff695bbd60779af3ab0f7"
+                "reference": "dc6e02ed3763cdcdee44d832d28df0a18b4acd71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/72ff802a2a158b73a2aff695bbd60779af3ab0f7",
-                "reference": "72ff802a2a158b73a2aff695bbd60779af3ab0f7",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/dc6e02ed3763cdcdee44d832d28df0a18b4acd71",
+                "reference": "dc6e02ed3763cdcdee44d832d28df0a18b4acd71",
                 "shasum": ""
             },
             "require": {
@@ -314,22 +314,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.0.5"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.0.6"
             },
-            "time": "2022-06-02T19:44:29+00:00"
+            "time": "2022-06-07T19:00:03+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.0.5",
+            "version": "v1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "c2bc631074d91a80aca9bad4f57c2dc00d93a05c"
+                "reference": "cd58af7193738072f7dabbc97a24bfdbe069727a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/c2bc631074d91a80aca9bad4f57c2dc00d93a05c",
-                "reference": "c2bc631074d91a80aca9bad4f57c2dc00d93a05c",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/cd58af7193738072f7dabbc97a24bfdbe069727a",
+                "reference": "cd58af7193738072f7dabbc97a24bfdbe069727a",
                 "shasum": ""
             },
             "require": {
@@ -377,9 +377,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.0.5"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.0.6"
             },
-            "time": "2022-06-06T17:44:28+00:00"
+            "time": "2022-06-07T17:12:53+00:00"
         },
         {
             "name": "doctrine/annotations",
