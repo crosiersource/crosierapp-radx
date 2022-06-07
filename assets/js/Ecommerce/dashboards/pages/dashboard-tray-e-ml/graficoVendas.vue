@@ -198,6 +198,10 @@ export default {
 
       localStorage.setItem("dashboard-tray-e-ml_graficoVendas", JSON.stringify(this.filters));
 
+      if (!this.filters.periodo) {
+        this.filters.periodo = [new Date(this.moment().subtract(12, "months")), new Date()];
+      }
+
       const rs = await api.get({
         apiResource: "/api/dashboard/tray-e-ml/totaisDeVendasPorPeriodo",
         filters: this.filters,
