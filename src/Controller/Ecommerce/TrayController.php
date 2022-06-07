@@ -424,4 +424,18 @@ class TrayController extends BaseController
     }
 
 
+
+    /**
+     * @Route("/ecommerce/tray/consultaProduto/{produto}", name="ecommerce_tray_consultaProduto", requirements={"produto"="\d+"})
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function consultaProduto(Produto $produto): Response
+    {
+//        $integradorTray->endpoint = $clienteConfig->jsonData['url_loja'];
+//        $integradorTray->accessToken = $clienteConfig->jsonData['tray']['access_token'];
+        $r = $this->integradorTray->consultaProduto($produto);
+        return new Response('<pre>' . print_r($r, true));
+    }
+    
+
 }
