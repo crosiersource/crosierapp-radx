@@ -109,7 +109,7 @@
       </Column>
       <Column field="id" header="Destinatario" :sortable="true">
         <template #body="r">
-          <div class="float-left">
+          <div class="float-left" v-if="r.data?.documentoDestinatario">
             {{
               r.data.documentoDestinatario.length === 14
                 ? r.data.documentoDestinatario.replace(
