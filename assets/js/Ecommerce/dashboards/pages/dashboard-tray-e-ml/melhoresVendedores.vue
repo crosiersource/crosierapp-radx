@@ -45,6 +45,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { api } from "crosier-vue";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import moment from "moment";
 
 export default {
   name: "melhoresVendedores",
@@ -70,6 +71,11 @@ export default {
 
   methods: {
     ...mapMutations(["setLoading"]),
+
+    moment(date) {
+      moment.locale("pt-br");
+      return moment(date);
+    },
 
     async doFilter() {
       this.filters.periodo = this.filters?.periodo ?? [];
