@@ -72,6 +72,10 @@ export default {
     ...mapMutations(["setLoading"]),
 
     async doFilter() {
+      if (!this.filters.periodo) {
+        this.filters.periodo = [new Date(this.moment().subtract(12, "months")), new Date()];
+      }
+
       const rs = await api.get({
         apiResource: "/api/dashboard/melhoresVendedores",
         filters: this.filters,
