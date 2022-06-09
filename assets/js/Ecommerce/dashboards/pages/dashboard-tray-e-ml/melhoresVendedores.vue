@@ -78,14 +78,9 @@ export default {
     },
 
     async doFilter() {
-      this.filters.periodo = this.filters?.periodo ?? [];
-      this.filters.periodo[0] =
-        this.filters.periodo[0] ?? new Date(this.moment().subtract(12, "months"));
-      this.filters.periodo[1] = this.filters.periodo[1] ?? new Date();
-
       const rs = await api.get({
         apiResource: "/api/dashboard/melhoresVendedores",
-        filters: this.filters,
+        filters: this.periodo,
       });
 
       this.results = rs.data.DATA;
@@ -95,7 +90,7 @@ export default {
   computed: {
     ...mapGetters({
       loading: "isLoading",
-      filters: "getFilters",
+      periodo: "getPeriodoFormatted",
     }),
   },
 };

@@ -4,6 +4,7 @@ import ToastService from "primevue/toastservice";
 import { createStore } from "vuex";
 import ConfirmationService from "primevue/confirmationservice";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
+import moment from "moment";
 import Page from "./pages/dashboard-tray-e-ml/dashboard";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css"; // theme
@@ -31,6 +32,28 @@ const store = createStore({
     },
 
     getFilters: (state) => state.filters,
+
+    getPeriodoFormatted(state) {
+      if (!state.filters?.periodo) {
+        state.filters.periodo = [new Date(moment().subtract(12, "months")), new Date()];
+      }
+
+      const periodo = [];
+
+      periodo[0] =
+        state.filters?.periodo && new Date(state.filters?.periodo[0]).valueOf()
+          ? new Date(state.filters.periodo[0])
+          : new Date(moment().subtract(12, "months"));
+      periodo[0] = moment(periodo[0]).format("YYYY-MM-DD");
+
+      periodo[1] =
+        state.filters?.periodo && new Date(state.filters?.periodo[1]).valueOf()
+          ? new Date(state.filters.periodo[1])
+          : new Date();
+      periodo[1] = moment(periodo[1]).format("YYYY-MM-DD");
+
+      return { periodo };
+    },
   },
 
   mutations: {

@@ -199,14 +199,9 @@ export default {
 
       localStorage.setItem("dashboard-tray-e-ml_graficoVendas", JSON.stringify(this.filters));
 
-      this.filters.periodo = this.filters?.periodo ?? [];
-      this.filters.periodo[0] =
-        this.filters.periodo[0] ?? new Date(this.moment().subtract(12, "months"));
-      this.filters.periodo[1] = this.filters.periodo[1] ?? new Date();
-
       const rs = await api.get({
         apiResource: "/api/dashboard/tray-e-ml/totaisDeVendasPorPeriodo",
-        filters: this.filters,
+        filters: this.periodo,
       });
 
       const msg = rs.data?.MSG;
@@ -285,6 +280,7 @@ export default {
     ...mapGetters({
       loading: "isLoading",
       filters: "getFilters",
+      periodo: "getPeriodoFormatted",
     }),
   },
 };
