@@ -154,14 +154,14 @@
       <CrosierInputDecimal
         v-if="this.fields?.unidadePadrao"
         label="Qtde Total"
-        col="6"
+        col="4"
         id="qtdeTotal"
         :decimais="this.fields.unidadePadrao.casasDecimais"
         v-model="this.fields.qtdeTotal"
         :error="this.formErrors.qtdeTotal"
         :disabled="true"
       />
-      <div class="col-md-6" v-else>
+      <div class="col-md-4" v-else>
         <div class="form-group">
           <label>Qtde Total</label>
           <Skeleton class="form-control" height="2rem" />
@@ -171,17 +171,23 @@
       <CrosierInputDecimal
         v-if="this.fields?.unidadePadrao"
         label="Qtde Mínima"
-        col="6"
+        col="4"
         id="qtdeMinima"
         :decimais="this.fields.unidadePadrao.casasDecimais"
         v-model="this.fields.qtdeMinima"
       />
-      <div class="col-md-6" v-else>
+      <div class="col-md-4" v-else>
         <div class="form-group">
           <label>Qtde Mínima</label>
           <Skeleton class="form-control" height="2rem" />
         </div>
       </div>
+
+      <CrosierSwitch
+        label="Preço sob consulta"
+        v-model="this.fields.jsonData.preco_sob_consulta"
+        col="4"
+      />
     </div>
 
     <div class="form-row">
@@ -236,6 +242,7 @@ import {
   SetFocus,
   CrosierInputDecimal,
   CrosierCurrency,
+  CrosierSwitch,
 } from "crosier-vue";
 import moment from "moment";
 
@@ -250,6 +257,7 @@ export default {
     CrosierInputInt,
     CrosierInputDecimal,
     CrosierCurrency,
+    CrosierSwitch,
   },
 
   data() {
