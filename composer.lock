@@ -320,16 +320,16 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.0.6",
+            "version": "v1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "cd58af7193738072f7dabbc97a24bfdbe069727a"
+                "reference": "27c8c530acc4c516875c26d68d3eb9168e64eba4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/cd58af7193738072f7dabbc97a24bfdbe069727a",
-                "reference": "cd58af7193738072f7dabbc97a24bfdbe069727a",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/27c8c530acc4c516875c26d68d3eb9168e64eba4",
+                "reference": "27c8c530acc4c516875c26d68d3eb9168e64eba4",
                 "shasum": ""
             },
             "require": {
@@ -377,9 +377,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.0.6"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.0.7"
             },
-            "time": "2022-06-07T17:12:53+00:00"
+            "time": "2022-06-10T14:38:47+00:00"
         },
         {
             "name": "doctrine/annotations",
