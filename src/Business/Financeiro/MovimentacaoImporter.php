@@ -26,8 +26,6 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\RegraImportacaoLinh
 use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\TipoLanctoRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Contracts\Cache\ItemInterface;
 
 const TXT_LINHA_NAO_IMPORTADA = '<<< LINHAS NÃO IMPORTADAS >>>';
 
@@ -86,7 +84,7 @@ class MovimentacaoImporter
 
     private MovimentacaoEntityHandler $movimentacaoEntityHandler;
 
-    private ?string $uuidLote = null;
+    private ?string $uuidImportacao = null;
 
     private array $duplicacoes = [];
 
@@ -106,7 +104,7 @@ class MovimentacaoImporter
         $this->repoCentroCusto = $this->doctrine->getRepository(CentroCusto::class);
         $this->movimentacaoEntityHandler = $movimentacaoEntityHandler;
 
-        $this->uuidLote = StringUtils::guidv4();
+        $this->uuidImportacao = StringUtils::guidv4();
     }
 
     /**
@@ -170,7 +168,7 @@ class MovimentacaoImporter
 
                     if ($movimentacao) {
                         $movimentacao->jsonData['importacao_linha'] = $linha;
-                        $movimentacao->jsonData['uuid_lote'] = $this->uuidLote;
+                        $movimentacao->uuidImportacao = $this->uuidImportacao;
                         $this->movimentacaoEntityHandler->save($movimentacao);
                         $this->movsJaImportadas[] = $movimentacao;
                         $linhasImportadas[] = $linha;
@@ -647,10 +645,7 @@ class MovimentacaoImporter
         /** @var RegraImportacaoLinhaRepository $repoRegraImportacaoLinha */
         $repoRegraImportacaoLinha = $this->doctrine->getRepository(RegraImportacaoLinha::class);
 
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPPRADX_UUID'] . '.MovimentacaoImporter', 36000, $_SERVER['CROSIER_SESSIONS_FOLDER']);
-        $regras = $cache->get('regrasPorCarteira', function (ItemInterface $item) use ($repoRegraImportacaoLinha) {
-            return $repoRegraImportacaoLinha->findAllBy($this->carteiraExtrato);
-        });
+        $regras = $repoRegraImportacaoLinha->findAllBy($this->carteiraExtrato);
 
 
         /** @var RegraImportacaoLinha $regra */

@@ -79,6 +79,7 @@
         label="Padrão da Descrição"
         col="3"
         id="padraoDescricao"
+        inputClass="notuppercase"
         v-model="this.fields.padraoDescricao"
         :error="this.formErrors.padraoDescricao"
       />

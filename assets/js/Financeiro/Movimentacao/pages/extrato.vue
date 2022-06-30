@@ -20,6 +20,7 @@
               range
               comBotoesPeriodo
               maxRange="59"
+              @date-select="this.doFilter"
             />
           </div>
 
@@ -44,6 +45,14 @@
               title="Filtrar relatório do extrato"
             >
               <i class="fas fa-search"></i> Filtrar
+            </button>
+
+            <button
+              class="btn btn-danger btn-sm ml-1 mt-3"
+              title="Deletar registros selecionados"
+              @click="this.deletarRegistrosSelecionados"
+            >
+              <i class="fas fa-trash" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -387,7 +396,6 @@ export default {
       const dtFim = this.filters.periodo[1];
 
       this.filters["dtUtil[after]"] = `${this.moment(dtIni).format("YYYY-MM-DD")}T00:00:00-03:00`;
-
       this.filters["dtUtil[before]"] = `${this.moment(dtFim).format("YYYY-MM-DD")}T23:59:59-03:00`;
 
       const diff = moment(this.filters["dtUtil[before]"]).diff(
@@ -571,6 +579,56 @@ export default {
               life: 5000,
             });
           }
+          this.setLoading(false);
+        },
+      });
+    },
+
+    deletarRegistrosSelecionados() {
+      this.$confirm.require({
+        acceptLabel: "Sim",
+        rejectLabel: "Não",
+        message: "Confirmar a operação?",
+        header: "Atenção!",
+        icon: "pi pi-exclamation-triangle",
+        group: "confirmDialog_crosierListS",
+        accept: async () => {
+          this.setLoading(true);
+          try {
+            this.selection.forEach(async (e) => {
+              const deleteUrl = `${this.apiResource}/${e.id}`;
+              const rsDelete = await api.delete(deleteUrl);
+              if (!rsDelete) {
+                throw new Error("rsDelete n/d");
+              }
+              if (rsDelete?.status === 204) {
+                this.$toast.add({
+                  severity: "success",
+                  summary: "Sucesso",
+                  detail: "Registro deletado com sucesso",
+                  group: "mainToast",
+                  life: 5000,
+                });
+                delete this.selection[this.selection.indexOf(e)];
+              } else if (rsDelete?.data && rsDelete.data["hydra:description"]) {
+                throw new Error(`status !== 204: ${rsDelete?.data["hydra:description"]}`);
+              } else if (rsDelete?.statusText) {
+                throw new Error(`status !== 204: ${rsDelete?.statusText}`);
+              } else {
+                throw new Error("Erro ao deletar (erro n/d, status !== 204)");
+              }
+            });
+          } catch (e) {
+            console.error(e);
+            this.$toast.add({
+              severity: "error",
+              summary: "Erro",
+              detail: "Ocorreu um erro ao deletar",
+              group: "mainToast",
+              life: 5000,
+            });
+          }
+          await this.doFilter();
           this.setLoading(false);
         },
       });
