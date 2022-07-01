@@ -387,109 +387,122 @@ export default {
     async doFilter() {
       this.setLoading(true);
 
-      if (typeof this.filters.carteira === "string" || this.filters.carteira instanceof String) {
-        const rCarteira = await axios.get(this.filters.carteira);
-        this.filters.carteira = rCarteira.data;
-      }
+      try {
+        if (typeof this.filters.carteira === "string" || this.filters.carteira instanceof String) {
+          const rCarteira = await axios.get(this.filters.carteira);
+          this.filters.carteira = rCarteira.data;
+        }
 
-      const dtIni = this.filters.periodo[0];
-      const dtFim = this.filters.periodo[1];
+        const dtIni = this.filters.periodo[0];
+        const dtFim = this.filters.periodo[1];
 
-      this.filters["dtUtil[after]"] = `${this.moment(dtIni).format("YYYY-MM-DD")}T00:00:00-03:00`;
-      this.filters["dtUtil[before]"] = `${this.moment(dtFim).format("YYYY-MM-DD")}T23:59:59-03:00`;
+        this.filters["dtUtil[after]"] = `${this.moment(dtIni).format("YYYY-MM-DD")}T00:00:00-03:00`;
+        this.filters["dtUtil[before]"] = `${this.moment(dtFim).format(
+          "YYYY-MM-DD"
+        )}T23:59:59-03:00`;
 
-      const diff = moment(this.filters["dtUtil[before]"]).diff(
-        moment(this.filters["dtUtil[after]"]),
-        "days"
-      );
-      if (diff > 62) {
-        this.filters["dtUtil[after]"] = `${this.moment().format("YYYY-MM")}-01T00:00:00-03:00`;
-        this.filters["dtUtil[before]"] = `${this.moment()
-          .endOf("month")
-          .format("YYYY-MM-DD")}T23:59:59-03:00`;
+        const diff = moment(this.filters["dtUtil[before]"]).diff(
+          moment(this.filters["dtUtil[after]"]),
+          "days"
+        );
+        if (diff > 62) {
+          this.filters["dtUtil[after]"] = `${this.moment().format("YYYY-MM")}-01T00:00:00-03:00`;
+          this.filters["dtUtil[before]"] = `${this.moment()
+            .endOf("month")
+            .format("YYYY-MM-DD")}T23:59:59-03:00`;
+          this.$toast.add({
+            severity: "warn",
+            summary: "Atenção",
+            group: "mainToast",
+            detail: "Não é possível pesquisar com período superior a 2 meses",
+            life: 5000,
+          });
+        }
+
+        if (!this.filters.carteira) {
+          const rsCarteiras = await api.get({
+            apiResource: "/api/fin/carteira",
+            allRows: true,
+            order: { codigo: "ASC" },
+            filters: { concreta: true },
+            properties: ["id", "descricaoMontada"],
+          });
+          this.filters.carteira = rsCarteiras.data["hydra:member"][0];
+        }
+
+        const filters = { ...this.filters };
+        filters.carteira = filters.carteira["@id"];
+
+        const rows = Number.MAX_SAFE_INTEGER;
+        const page = 1;
+
+        const response = await api.get({
+          apiResource: this.apiResource,
+          page,
+          rows,
+          order: { dtUtil: "ASC", "categoria.codigoSuper": "ASC", valorTotal: "ASC" },
+          filters,
+          defaultFilters: this.defaultFilters,
+          properties: [
+            "id",
+            "descricao",
+            "status",
+            "descricaoMontada",
+            "dtVencto",
+            "dtVenctoEfetiva",
+            "dtUtil",
+            "valorTotalFormatted",
+            "categoria.descricaoMontada",
+            "categoria.codigoSuper",
+            "carteira.descricaoMontada",
+            "modo.descricaoMontada",
+            "updated",
+            "sacado",
+            "cedente",
+            "chequeNumCheque",
+            "recorrente",
+            "parcelamento",
+            "cadeia.id",
+            "transferenciaEntreCarteiras",
+            "movimentacaoOposta.categoria.codigo",
+            "movimentacaoOposta.carteira.descricaoMontada",
+          ],
+        });
+
+        this.totalRecords = response.data["hydra:totalItems"];
+        this.tableData = response.data["hydra:member"];
+
+        const umDiaAntes = `${this.moment(this.filters["dtUtil[after]"])
+          .subtract(1, "days")
+          .format("YYYY-MM-DD")}T00:00:00-03:00`;
+
+        const rsSaldos = await axios.get(
+          `/api/fin/saldo?carteira=${this.filters.carteira["@id"]}&dtSaldo[after]=${umDiaAntes}&dtSaldo[before]=${this.filters["dtUtil[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
+        );
+
+        this.saldos = rsSaldos.data["hydra:member"];
+
+        // salva os filtros no localStorage
+        localStorage.setItem(this.filtersOnLocalStorage, JSON.stringify(this.filters));
+
+        this.totalRecords = response.data["hydra:totalItems"];
+        this.tableData = response.data["hydra:member"];
+        this.setFilters(this.filters);
+
+        this.$emit("afterFilter", this.tableData);
+        this.handleTudoSelecionado();
+
+        this.visibleRight = false;
+      } catch (e) {
+        console.error(e);
         this.$toast.add({
-          severity: "warn",
-          summary: "Atenção",
           group: "mainToast",
-          detail: "Não é possível pesquisar com período superior a 2 meses",
+          severity: "error",
+          summary: "Erro",
+          detail: "Ocorreu um erro ao efetuar a operação",
           life: 5000,
         });
       }
-
-      if (!this.filters.carteira) {
-        const rsCarteiras = await api.get({
-          apiResource: "/api/fin/carteira",
-          allRows: true,
-          order: { codigo: "ASC" },
-          filters: { concreta: true },
-          properties: ["id", "descricaoMontada"],
-        });
-        this.filters.carteira = rsCarteiras.data["hydra:member"][0];
-      }
-
-      const filters = { ...this.filters };
-      filters.carteira = filters.carteira["@id"];
-
-      const rows = Number.MAX_SAFE_INTEGER;
-      const page = 1;
-
-      const response = await api.get({
-        apiResource: this.apiResource,
-        page,
-        rows,
-        order: { dtUtil: "ASC", "categoria.codigoSuper": "ASC", valorTotal: "ASC" },
-        filters,
-        defaultFilters: this.defaultFilters,
-        properties: [
-          "id",
-          "descricao",
-          "status",
-          "descricaoMontada",
-          "dtVencto",
-          "dtVenctoEfetiva",
-          "dtUtil",
-          "valorTotalFormatted",
-          "categoria.descricaoMontada",
-          "categoria.codigoSuper",
-          "carteira.descricaoMontada",
-          "modo.descricaoMontada",
-          "updated",
-          "sacado",
-          "cedente",
-          "chequeNumCheque",
-          "recorrente",
-          "parcelamento",
-          "cadeia.id",
-          "transferenciaEntreCarteiras",
-          "movimentacaoOposta.categoria.codigo",
-          "movimentacaoOposta.carteira.descricaoMontada",
-        ],
-      });
-
-      this.totalRecords = response.data["hydra:totalItems"];
-      this.tableData = response.data["hydra:member"];
-
-      const umDiaAntes = `${this.moment(this.filters["dtUtil[after]"])
-        .subtract(1, "days")
-        .format("YYYY-MM-DD")}T00:00:00-03:00`;
-
-      const rsSaldos = await axios.get(
-        `/api/fin/saldo?carteira=${this.filters.carteira["@id"]}&dtSaldo[after]=${umDiaAntes}&dtSaldo[before]=${this.filters["dtUtil[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
-      );
-
-      this.saldos = rsSaldos.data["hydra:member"];
-
-      // salva os filtros no localStorage
-      localStorage.setItem(this.filtersOnLocalStorage, JSON.stringify(this.filters));
-
-      this.totalRecords = response.data["hydra:totalItems"];
-      this.tableData = response.data["hydra:member"];
-      this.setFilters(this.filters);
-
-      this.$emit("afterFilter", this.tableData);
-      this.handleTudoSelecionado();
-
-      this.visibleRight = false;
 
       this.setLoading(false);
     },
@@ -629,57 +642,6 @@ export default {
             });
           }
           await this.doFilter();
-          this.setLoading(false);
-        },
-      });
-    },
-
-    processar() {
-      if (!this.selection || this.selection.length < 1) {
-        this.$toast.add({
-          severity: "error",
-          summary: "Erro",
-          detail: "Nenhuma movimentação selecionada para processar",
-          group: "mainToast",
-          life: 5000,
-        });
-        return;
-      }
-      this.$confirm.require({
-        acceptLabel: "Sim",
-        rejectLabel: "Não",
-        message: "Confirmar a operação?",
-        header: "Atenção!",
-        icon: "pi pi-exclamation-triangle",
-        group: "confirmDialog_crosierListS",
-        accept: async () => {
-          this.setLoading(true);
-          try {
-            const processarUrl = "/fin/movimentacao/recorrente/processar";
-            const rs = await api.post(processarUrl, this.selection);
-
-            if (rs?.status === 200) {
-              this.$toast.add({
-                severity: "success",
-                summary: "Sucesso",
-                detail: "Movimentações processadas com sucesso",
-                group: "mainToast",
-                life: 5000,
-              });
-              await this.doFilter();
-            } else {
-              throw new Error("Erro ao processar (status <> 200)");
-            }
-          } catch (e) {
-            console.error(e);
-            this.$toast.add({
-              severity: "error",
-              summary: "Erro",
-              detail: "Ocorreu um erro ao processar",
-              group: "mainToast",
-              life: 5000,
-            });
-          }
           this.setLoading(false);
         },
       });
