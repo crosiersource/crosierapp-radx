@@ -198,7 +198,7 @@
             </template>
           </Column>
 
-          <Column field="valor" header="Valor">
+          <Column field="valorTotal" header="Valor">
             <template #body="r">
               <div
                 class="text-right"
@@ -208,7 +208,7 @@
                 "
               >
                 {{
-                  parseFloat(r.data.valor ?? 0).toLocaleString("pt-BR", {
+                  parseFloat(r.data.valorTotal ?? 0).toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL",
                   })
@@ -383,7 +383,7 @@ export default {
         apiResource: this.apiResource,
         page,
         rows,
-        order: { dtVencto: "ASC", "categoria.codigoSuper": "ASC", valor: "ASC" },
+        order: { dtVencto: "ASC", "categoria.codigoSuper": "ASC", valorTotal: "ASC" },
         filters: this.filters,
         defaultFilters: this.defaultFilters,
         properties: [
@@ -392,7 +392,7 @@ export default {
           "status",
           "descricaoMontada",
           "dtVencto",
-          "valor",
+          "valorTotalFormatted",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
           "carteira.descricaoMontada",
@@ -416,7 +416,7 @@ export default {
       this.totalGeral = 0;
 
       this.tableData.forEach((m) => {
-        this.totalGeral += m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
+        this.totalGeral += m.categoria.codigoSuper === 1 ? m.valorTotal : -m.valorTotal;
       });
 
       // salva os filtros no localStorage

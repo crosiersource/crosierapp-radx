@@ -323,7 +323,7 @@
             </template>
           </Column>
 
-          <Column field="valor" header="Valor">
+          <Column field="valorTotal" header="Valor">
             <template #body="r">
               <div
                 class="text-right"
@@ -333,7 +333,7 @@
                 "
               >
                 {{
-                  parseFloat(r.data.valor ?? 0).toLocaleString("pt-BR", {
+                  parseFloat(r.data.valorTotal ?? 0).toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL",
                   })
@@ -586,7 +586,7 @@ export default {
         apiResource: this.apiResource,
         page,
         rows,
-        order: { dtVenctoEfetiva: "ASC", "categoria.codigoSuper": "ASC", valor: "ASC" },
+        order: { dtVenctoEfetiva: "ASC", "categoria.codigoSuper": "ASC", valorTotal: "ASC" },
         filters: this.filters,
         defaultFilters: this.defaultFilters,
         properties: [
@@ -596,7 +596,7 @@ export default {
           "descricaoMontada",
           "dtVencto",
           "dtVenctoEfetiva",
-          "valor",
+          "valorTotalFormatted",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
           "carteira.descricaoMontada",
@@ -621,14 +621,14 @@ export default {
 
       this.tableData.forEach((m) => {
         const total = this.somatorios.get(m.dtVenctoEfetiva) || 0;
-        const valor = m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
-        this.somatorios.set(m.dtVenctoEfetiva, total + valor);
+        const valorTotal = m.categoria.codigoSuper === 1 ? m.valorTotal : -m.valorTotal;
+        this.somatorios.set(m.dtVenctoEfetiva, total + valorTotal);
       });
 
       this.totalGeral = 0;
 
       this.tableData.forEach((m) => {
-        this.totalGeral += m.categoria.codigoSuper === 1 ? m.valor : -m.valor;
+        this.totalGeral += m.categoria.codigoSuper === 1 ? m.valorTotal : -m.valorTotal;
       });
 
       // salva os filtros no localStorage
