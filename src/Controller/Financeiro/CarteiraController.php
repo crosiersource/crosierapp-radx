@@ -9,6 +9,7 @@ use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Grupo;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\CarteiraEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Financeiro\GrupoEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,16 +24,16 @@ class CarteiraController extends BaseController
 {
 
     /**
-     * @Route("/api/fin/carteira/consolidar/{carteira}/{data}", methods={"HEAD","GET"}, name="api_fin_carteira_consolidar")
+     * @Route("/api/fin/carteira/consolidar/{carteira}/{dtConsolidado}", methods={"HEAD","GET"}, name="api_fin_carteira_consolidar")
      * @ParamConverter("data", options={"format": "Y-m-d"})
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
-    public function consolidar(Grupo $pai, Carteira $carteira, \DateTime $dt): JsonResponse
+    public function consolidar(Carteira $carteira, \DateTime $dtConsolidado, CarteiraEntityHandler $carteiraEntityHandler): JsonResponse
     {
         try {
-            $prox = filter_var($request->get('prox'), FILTER_VALIDATE_BOOLEAN);
-            $grupoItemGerado = $grupoEntityHandler->gerarNovo($pai, $prox);
-            return CrosierApiResponse::success(['id' => $grupoItemGerado->getId()]);
+            $carteira->dtConsolidado = $dtConsolidado;
+            $carteiraEntityHandler->save($carteira);
+            return CrosierApiResponse::success();
         } catch (\Exception $e) {
             return CrosierApiResponse::error();
         }

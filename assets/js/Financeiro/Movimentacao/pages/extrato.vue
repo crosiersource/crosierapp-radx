@@ -286,7 +286,16 @@
             >
               {{ this.getSaldoFormatted(r.data.dtUtil) }}
             </td>
-            <td></td>
+            <td>
+              <button
+                type="button"
+                @click="this.consolidar(r.data.dtUtil)"
+                class="btn btn-sm btn-block btn-outline-primary"
+                title="Consolidar carteira nesta data"
+              >
+                <i class="fas fa-check"></i>
+              </button>
+            </td>
           </template>
         </DataTable>
       </div>
@@ -693,6 +702,62 @@ export default {
       return parseFloat(this.getSaldo(saldo)).toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL",
+      });
+    },
+
+    async consolidar(data) {
+      this.$confirm.require({
+        acceptLabel: "Sim",
+        rejectLabel: "Não",
+        message: "Confirmar?",
+        header: "Atenção!",
+        group: "confirmDialog_crosierListS",
+        icon: "pi pi-exclamation-triangle",
+        accept: async () => {
+          this.setLoading(true);
+          const url = `/api/fin/carteira/consolidar/${this.filters.carteira.id}/${data.substring(
+            0,
+            10
+          )}`;
+          console.log(url);
+          try {
+            const rs = await axios.get(url, {
+              validateStatus(status) {
+                return status < 500; // Resolve only if the status code is less than 500
+              },
+              responseType: "json",
+            });
+
+            if (![200, 201].includes(rs?.status)) {
+              this.$toast.add({
+                severity: "error",
+                summary: "Erro",
+                group: "mainToast",
+                detail: rs?.data?.EXCEPTION_MSG || rs?.data?.MSG || "Ocorreu um erro",
+                life: 5000,
+              });
+            } else {
+              this.$toast.add({
+                severity: "success",
+                summary: "Sucesso",
+                group: "mainToast",
+                detail: "Carteira consolidada com sucesso",
+                life: 5000,
+              });
+            }
+          } catch (e) {
+            console.error(e);
+            this.$toast.add({
+              severity: "error",
+              summary: "Erro",
+              group: "mainToast",
+              detail: "Ocorreu um erro na chamada",
+              life: 5000,
+            });
+          }
+
+          this.setLoading(false);
+        },
       });
     },
   },
