@@ -21,7 +21,7 @@
       'carteira.descricaoMontada',
       'modo.descricaoMontada',
       'descricaoMontada',
-      'valorTotal',
+      'valorTotalFormatted',
       'dtVencto',
       'dtVenctoEfetiva',
       'dtUtil',

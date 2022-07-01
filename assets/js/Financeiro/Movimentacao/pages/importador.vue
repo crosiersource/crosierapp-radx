@@ -255,7 +255,7 @@ export default {
 
     visualizarMovimentacoes() {
       if (this.fields.tipoImportacao === "EXTRATO_SIMPLES") {
-        window.location = `/v/fin/movimentacao/extrato?filters={"dtPagto[after]":"${this.results.menorData}T00:00:00-03:00","dtPagto[before]":"${this.results.maiorData}T23:59:59-03:00","carteira":"${this.fields.carteira["@id"]}"}`;
+        window.location = `/v/fin/movimentacao/extrato?filters={"dtUtil[after]":"${this.results.menorData}T00:00:00-03:00","dtUtil[before]":"${this.results.maiorData}T23:59:59-03:00","carteira":"${this.fields.carteira["@id"]}"}`;
       }
     },
   },

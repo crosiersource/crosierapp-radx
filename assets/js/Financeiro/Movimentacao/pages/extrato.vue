@@ -193,7 +193,7 @@
             </template>
           </Column>
 
-          <Column field="valor" header="Valor" style="width: 1% !important">
+          <Column field="valorTotal" header="Valor" style="width: 1% !important">
             <template #body="r">
               <div
                 class="text-right"
@@ -203,7 +203,7 @@
                 "
               >
                 {{
-                  parseFloat(r.data.valor ?? 0).toLocaleString("pt-BR", {
+                  parseFloat(r.data.valorTotal ?? 0).toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL",
                   })
@@ -437,7 +437,7 @@ export default {
         apiResource: this.apiResource,
         page,
         rows,
-        order: { dtUtil: "ASC", "categoria.codigoSuper": "ASC", valor: "ASC" },
+        order: { dtUtil: "ASC", "categoria.codigoSuper": "ASC", valorTotal: "ASC" },
         filters,
         defaultFilters: this.defaultFilters,
         properties: [
@@ -448,7 +448,7 @@ export default {
           "dtVencto",
           "dtVenctoEfetiva",
           "dtUtil",
-          "valor",
+          "valorTotalFormatted",
           "categoria.descricaoMontada",
           "categoria.codigoSuper",
           "carteira.descricaoMontada",

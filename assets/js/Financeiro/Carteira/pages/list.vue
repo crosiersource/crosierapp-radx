@@ -6,7 +6,15 @@
     titulo="Carteiras"
     apiResource="/api/fin/carteira/"
     ref="dt"
-    :filtrosNaSidebar="true"
+    filtrosNaSidebar
+    :properties="[
+      'id',
+      'updated',
+      'descricao',
+      'codigo',
+      'operadoraCartao.descricao',
+      'dtConsolidado',
+    ]"
   >
     <template v-slot:filter-fields>
       <div class="form-row">
@@ -24,6 +32,14 @@
       <Column field="codigo" header="Código" :sortable="true"></Column>
 
       <Column field="descricao" header="Descrição" :sortable="true"></Column>
+
+      <Column field="operadoraCartao.descricao" header="Operadora Cartão"></Column>
+
+      <Column field="dtConsolidado" header="Consolidada em" :sortable="true">
+        <template #body="r">
+          {{ new Date(r.data.dtConsolidado).toLocaleString().substring(0, 10) }}
+        </template>
+      </Column>
 
       <Column field="updated" header="" :sortable="true">
         <template class="text-right" #body="r">
