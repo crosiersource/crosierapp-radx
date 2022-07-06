@@ -25,6 +25,7 @@
           col="4"
           id="codigo"
           v-model="this.fields.codigo"
+          :error="this.fieldsErrors?.codigo"
         />
 
         <div class="col-md-4" v-if="this.fields.pai">
@@ -86,7 +87,7 @@ export default {
     this.setLoading(true);
 
     this.schemaValidator = yup.object().shape({
-      codigo: yup.number().required().typeError(),
+      codigo: yup.string().required().typeError(),
       descricao: yup.string().required().typeError(),
     });
 

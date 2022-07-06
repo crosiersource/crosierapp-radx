@@ -9,14 +9,15 @@ FROM cfg_app
 WHERE uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
 
 INSERT INTO `cfg_app` (`id`, `uuid`, `inserted`, `updated`, `nome`, `obs`, `estabelecimento_id`, `user_inserted_id`,
- `user_updated_id`)
+                       `user_updated_id`)
 VALUES (null, '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 'crosierapp-radx', 'Módulos "raíz" do Crosier: CRM, RH, Financeiro, Vendas, Estoque, Fiscal', 1,
- 1, 1);
+        1, 1);
 
 
 DELETE
 FROM cfg_app_config
-WHERE chave = 'URL_devlocal' AND app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
+WHERE chave = 'URL_devlocal'
+  AND app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
 
 INSERT INTO `cfg_app_config` (id, chave, valor, is_json, app_uuid, inserted, updated,
                               estabelecimento_id, user_inserted_id, user_updated_id)
@@ -27,11 +28,11 @@ VALUES (null, 'URL_devlocal', 'https://radx.crosier.dev', false,
 DELETE
 FROM cfg_app_config
 WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
- AND chave = 'financeiro.filiais_prop.json';
+  AND chave = 'financeiro.filiais_prop.json';
 
 INSERT INTO cfg_app_config
- (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
-VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'financeiro.filiais_prop.json', 
+  (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'financeiro.filiais_prop.json',
         '{ "00000000000000": "EMPRESA TESTE LTDA" }');
 
 
@@ -41,7 +42,7 @@ WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
   AND chave = 'fin.extratos_cartoes.padroes_cabecalhos';
 
 INSERT INTO cfg_app_config
-(id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+  (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
 VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'fin.extratos_cartoes.padroes_cabecalhos',
         '[ { "descricao": "Stone Recebimentos 2022", "cabecalho": "STONECODE\\tDOCUMENTO\\tNOME FANTASIA\\tCATEGORIA\\tHORA DA VENDA\\tDATA DE VENCIMENTO\\tTIPO\\tNº DA PARCELA\\tQTD DE PARCELAS\\tBANDEIRA\\tSTONE ID\\tN° CARTÃO\\tVALOR BRUTO\\tVALOR LÍQUIDO\\tDESCONTO DE ANTECIPAÇÃO\\tDESCONTO DE MDR\\tÚLTIMO STATUS\\tDATA DO ÚLTIMO STATUS\\tCHAVE EXTERNA", "campos": { "status": "ÚLTIMO STATUS", "dtMoviment": "HORA DA VENDA", "dtVencto": "DATA DE VENCIMENTO", "debitoOuCredito": "TIPO", "qtdeParcelasCartao": "QTD DE PARCELAS", "parcelaNum": "Nº DA PARCELA", "bandeira": "BANDEIRA", "numCartao": "N° CARTÃO", "idTransacaoCartao": "STONE ID", "valor": "VALOR BRUTO", "descontoMdr": "DESCONTO DE MDR", "descontoAntecip": "DESCONTO DE ANTECIPAÇÃO" } }, { "descricao": "Stone Vendas 2022", "cabecalho": "HORA DA VENDA\\tTIPO\\tBANDEIRA\\tMEIO DE CAPTURA\\tSTONE ID\\tVALOR BRUTO\\tVALOR LÍQUIDO\\tN° CARTÃO\\tSERIAL NUMBER\\tÚLTIMO STATUS\\tDATA DO ÚLTIMO STATUS\\tSTONE CODE", "campos": { "status": "ÚLTIMO STATUS", "dtMoviment": "HORA DA VENDA", "dtVencto": "DATA DE VENCIMENTO", "debitoOuCredito": "TIPO", "bandeira": "BANDEIRA", "idTransacaoCartao": "STONE ID", "valor": "VALOR BRUTO", "numCartao": "N° CARTÃO" } } ]');
 
@@ -49,11 +50,11 @@ VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'fi
 DELETE
 FROM cfg_app_config
 WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
- AND chave = 'manifestarCienciaParaUltimas.dias';
+  AND chave = 'manifestarCienciaParaUltimas.dias';
 
 INSERT INTO cfg_app_config
- (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
-VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'manifestarCienciaParaUltimas.dias', 
+  (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'manifestarCienciaParaUltimas.dias',
         '10');
 
 
@@ -61,10 +62,10 @@ VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'ma
 DELETE
 FROM cfg_app_config
 WHERE app_uuid = '440e429c-b711-4411-87ed-d95f7281cd43'
- AND chave = 'produto_form.ordem_abas';
+  AND chave = 'produto_form.ordem_abas';
 
 INSERT INTO cfg_app_config
- (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+  (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
 VALUES (null, now(), now(), 1, 1, 1, '440e429c-b711-4411-87ed-d95f7281cd43', 'produto_form.ordem_abas', 'Produto,Descritivos,Complementos,Fotos,Preços,ERP,Fiscal');
 
 
@@ -396,142 +397,140 @@ VALUES (null, 'est_produto_json_metadata', '9121ea11-dc5d-4a22-9596-187f5452f95a
 DELETE
 FROM cfg_app_config
 WHERE chave = 'crm_cliente_json_metadata'
- AND app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
+  AND app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
 
 INSERT INTO cfg_app_config(id, chave, app_uuid, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, is_json, valor)
 VALUES (null, 'crm_cliente_json_metadata', '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 1, 1, 1, 1,
- '{
- "campos": {
- "nome_fantasia": {
- "label": "Nome Fantasia",
- "tipo": "string"
- },
- "tipo_pessoa": {
- "label": "",
- "tipo": "select",
- "sugestoes": [
- "PF",
- "PJ"
- ]
- },
- "dt_nascimento": {
- "label": "Dt Nascimento",
- "tipo": "date"
- },
- "rg": {
- "label": "RG",
- "tipo": "string"
- },
- "inscricao_estadual": {
- "label": "IE",
- "tipo": "string"
- },
- "sexo": {
- "label": "Sexo",
- "tipo": "select",
- "sugestoes": [
- "M",
- "F"
- ]
- },
- "canal": {
- "label": "Canal",
- "tipo": "select",
- "class": "s2allownew",
- "sugestoes": [
- "ECOMMERCE",
- "LOJA FÍSICA"
- ]
- },
- "email": {
- "label": "E-mail",
- "tipo": "email"
- },
- "fone1": {
- "label": "Fone (1)",
- "tipo": "fone"
- },
- "fone2": {
- "label": "Fone (2)",
- "tipo": "fone"
- }
- },
- "abas": {
- "Dados": [],
- "Endereços": [],
- "E-commerce": []
- },
- "enderecoTipos": {
- "FATURAMENTO": "FATURAMENTO",
- "COMERCIAL": "COMERCIAL",
- "ENTREGA": "ENTREGA",
- "RESIDENCIAL": "RESIDENCIAL"
- }
- }');
-
-
+        '{
+        "campos": {
+        "nome_fantasia": {
+        "label": "Nome Fantasia",
+        "tipo": "string"
+        },
+        "tipo_pessoa": {
+        "label": "",
+        "tipo": "select",
+        "sugestoes": [
+        "PF",
+        "PJ"
+        ]
+        },
+        "dt_nascimento": {
+        "label": "Dt Nascimento",
+        "tipo": "date"
+        },
+        "rg": {
+        "label": "RG",
+        "tipo": "string"
+        },
+        "inscricao_estadual": {
+        "label": "IE",
+        "tipo": "string"
+        },
+        "sexo": {
+        "label": "Sexo",
+        "tipo": "select",
+        "sugestoes": [
+        "M",
+        "F"
+        ]
+        },
+        "canal": {
+        "label": "Canal",
+        "tipo": "select",
+        "class": "s2allownew",
+        "sugestoes": [
+        "ECOMMERCE",
+        "LOJA FÍSICA"
+        ]
+        },
+        "email": {
+        "label": "E-mail",
+        "tipo": "email"
+        },
+        "fone1": {
+        "label": "Fone (1)",
+        "tipo": "fone"
+        },
+        "fone2": {
+        "label": "Fone (2)",
+        "tipo": "fone"
+        }
+        },
+        "abas": {
+        "Dados": [],
+        "Endereços": [],
+        "E-commerce": []
+        },
+        "enderecoTipos": {
+        "FATURAMENTO": "FATURAMENTO",
+        "COMERCIAL": "COMERCIAL",
+        "ENTREGA": "ENTREGA",
+        "RESIDENCIAL": "RESIDENCIAL"
+        }
+        }');
 
 
 
 DELETE
 FROM cfg_app_config
 WHERE chave = 'est_fornecedor_json_metadata'
- AND app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
+  AND app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
 
 
 
 INSERT INTO cfg_app_config(id, chave, app_uuid, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, is_json, valor)
 VALUES (null, 'est_fornecedor_json_metadata', '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 1, 1, 1, 1,
- '{
- "campos": {
- "nome_fantasia": {
- "label": "Nome Fantasia",
- "tipo": "string"
- },
- "tipo_pessoa": {
- "label": "",
- "tipo": "select",
- "sugestoes": [
- "PF",
- "PJ"
- ]
- },
- "filial_prop": {
- "label": "",
- "tipo": "select",
- "sugestoes": [
- "S",
- "N"
- ]
- },
- "inscricao_estadual": {
- "label": "IE",
- "tipo": "string"
- },
- "email": {
- "label": "E-mail",
- "tipo": "email"
- },
- "fone1": {
- "label": "Fone (1)",
- "tipo": "fone"
- },
- "fone2": {
- "label": "Fone (2)",
- "tipo": "fone"
- }
- },
- "abas": {
- "Dados": [],
- "Endereços": []
- },
- "enderecoTipos": {
- "FATURAMENTO": "FATURAMENTO",
- "COMERCIAL": "COMERCIAL",
- "ENTREGA": "ENTREGA",
- "RESIDENCIAL": "RESIDENCIAL"
- }
- }');
+        '{
+        "campos": {
+        "nome_fantasia": {
+        "label": "Nome Fantasia",
+        "tipo": "string"
+        },
+        "tipo_pessoa": {
+        "label": "",
+        "tipo": "select",
+        "sugestoes": [
+        "PF",
+        "PJ"
+        ]
+        },
+        "filial_prop": {
+        "label": "",
+        "tipo": "select",
+        "sugestoes": [
+        "S",
+        "N"
+        ]
+        },
+        "inscricao_estadual": {
+        "label": "IE",
+        "tipo": "string"
+        },
+        "email": {
+        "label": "E-mail",
+        "tipo": "email"
+        },
+        "fone1": {
+        "label": "Fone (1)",
+        "tipo": "fone"
+        },
+        "fone2": {
+        "label": "Fone (2)",
+        "tipo": "fone"
+        }
+        },
+        "abas": {
+        "Dados": [],
+        "Endereços": []
+        },
+        "enderecoTipos": {
+        "FATURAMENTO": "FATURAMENTO",
+        "COMERCIAL": "COMERCIAL",
+        "ENTREGA": "ENTREGA",
+        "RESIDENCIAL": "RESIDENCIAL"
+        }
+        }');
 
 
 TRUNCATE TABLE est_lista_preco;
@@ -540,23 +539,31 @@ insert into est_lista_preco
 values (1, 'VAREJO', '1900-01-01', null, now(), now(), 0, 1, 1, 1);
 
 
-DELETE FROM est_depto WHERE codigo = '00';
+DELETE
+FROM est_depto
+WHERE codigo = '00';
 
-INSERT INTO est_depto(id , uuid , codigo , nome , json_data , inserted , updated , version , estabelecimento_id , user_inserted_id , user_updated_id)
+INSERT INTO est_depto(id, uuid, codigo, nome, json_data, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, uuid(), '00', 'INDEFINIDO', NULL, now(), now(), 0, 1, 1, 1);
 
-select LAST_INSERT_ID() into @lastInsertId;
+select LAST_INSERT_ID()
+into @lastInsertId;
 
-DELETE FROM est_grupo WHERE codigo = '00';
+DELETE
+FROM est_grupo
+WHERE codigo = '00';
 
-INSERT INTO est_grupo(id , uuid , depto_id, codigo , nome , json_data , inserted , updated , version , estabelecimento_id , user_inserted_id , user_updated_id)
+INSERT INTO est_grupo(id, uuid, depto_id, codigo, nome, json_data, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, uuid(), @lastInsertId, '00', 'INDEFINIDO', NULL, now(), now(), 0, 1, 1, 1);
 
-select LAST_INSERT_ID() into @lastInsertId;
+select LAST_INSERT_ID()
+into @lastInsertId;
 
-DELETE FROM est_subgrupo WHERE codigo = '00';
+DELETE
+FROM est_subgrupo
+WHERE codigo = '00';
 
-INSERT INTO est_subgrupo(id , uuid , grupo_id, codigo , nome , json_data , inserted , updated , version , estabelecimento_id , user_inserted_id , user_updated_id)
+INSERT INTO est_subgrupo(id, uuid, grupo_id, codigo, nome, json_data, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, uuid(), @lastInsertId, '00', 'INDEFINIDO', NULL, now(), now(), 0, 1, 1, 1);
 
 
@@ -588,21 +595,20 @@ VALUES (null, 0.894, 136, 1999999999, now(), now(), 0, 1, 1, 1);
 
 TRUNCATE TABLE est_unidade;
 
-insert into est_unidade(id,descricao,label,casas_decimais,fator,atual,inserted,updated,version,estabelecimento_id,user_inserted_id,user_updated_id) 
-  values 
-        (1,'UNIDADE','UN',0,1,1,now(),now(),0,1,1,1),
-        (2,'QUILO','KG',3,1,1,now(),now(),0,1,1,1),
-        (3,'CONJUNTO','CJ',0,1,1,now(),now(),0,1,1,1),
-        (4,'PAR','PAR',0,1,1,now(),now(),0,1,1,1),
-        (5,'PACOTE COM 3','PCT3',0,3,0,now(),now(),0,1,1,1),
-        (6,'MEIA DÚZIA','MDZ',0,6,0,now(),now(),0,1,1,1),
-        (7,'DÚZIA','DZ',0,12,0,now(),now(),0,1,1,1),
-        (8,'METRO','MT',2,1,1,now(),now(),0,1,1,1),
-        (9,'PACOTE COM 5','PCT5',0,5,0,now(),now(),0,1,1,1),
-        (10,'ROLO COM 30 METROS','30M',0,30,0,now(),now(),0,1,1,1),
-        (11,'CAIXA','CX',0,1,1,now(),now(),0,1,1,1),
-        (12,'PACOTE COM 15','PCT15',0,5,0,now(),now(),0,1,1,1),
-        (13,'JOGO OU KIT','JG',0,1,0,now(),now(),0,1,1,1);
+insert into est_unidade(id, descricao, label, casas_decimais, fator, atual, inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+values (1, 'UNIDADE', 'UN', 0, 1, 1, now(), now(), 0, 1, 1, 1),
+       (2, 'QUILO', 'KG', 3, 1, 1, now(), now(), 0, 1, 1, 1),
+       (3, 'CONJUNTO', 'CJ', 0, 1, 1, now(), now(), 0, 1, 1, 1),
+       (4, 'PAR', 'PAR', 0, 1, 1, now(), now(), 0, 1, 1, 1),
+       (5, 'PACOTE COM 3', 'PCT3', 0, 3, 0, now(), now(), 0, 1, 1, 1),
+       (6, 'MEIA DÚZIA', 'MDZ', 0, 6, 0, now(), now(), 0, 1, 1, 1),
+       (7, 'DÚZIA', 'DZ', 0, 12, 0, now(), now(), 0, 1, 1, 1),
+       (8, 'METRO', 'MT', 2, 1, 1, now(), now(), 0, 1, 1, 1),
+       (9, 'PACOTE COM 5', 'PCT5', 0, 5, 0, now(), now(), 0, 1, 1, 1),
+       (10, 'ROLO COM 30 METROS', '30M', 0, 30, 0, now(), now(), 0, 1, 1, 1),
+       (11, 'CAIXA', 'CX', 0, 1, 1, now(), now(), 0, 1, 1, 1),
+       (12, 'PACOTE COM 15', 'PCT15', 0, 5, 0, now(), now(), 0, 1, 1, 1),
+       (13, 'JOGO OU KIT', 'JG', 0, 1, 0, now(), now(), 0, 1, 1, 1);
 
 
 TRUNCATE TABLE fin_centrocusto;
@@ -625,7 +631,7 @@ VALUES (4, 'MODERNINHA', 24, now(), now(), 0, 1, 1, 1);
 TRUNCATE TABLE fin_carteira;
 
 INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
- user_inserted_id, user_updated_id, atual)
+                            user_inserted_id, user_updated_id, atual)
 VALUES (1, 1, 'GERAL', null, null, null, true, false, false, true, '1900-01-01', 0, null, now(), now(), 0, 1, 1, 1, true);
 
 INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
@@ -646,7 +652,7 @@ VALUES (24, 24, 'MODERNINHA', null, null, null, true, false, false, true, '1900-
 
 
 INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
- user_inserted_id, user_updated_id, atual)
+                            user_inserted_id, user_updated_id, atual)
 VALUES (50, 50, 'MOVIMENTAÇÕES AGRUPADAS', null, null, null, true, false, false, true, '1900-01-01', 0, null, now(), now(), 0, 1, 1, 1, true);
 
 INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
@@ -654,107 +660,525 @@ INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abe
 VALUES (99, 99, 'INDEFINIDA', null, null, null, true, false, false, false, '1900-01-01', 0, null, now(), now(), 0, 1, 1, 1, true);
 
 
-ALTER TABLE fin_carteira AUTO_INCREMENT = 100;
+ALTER TABLE fin_carteira
+  AUTO_INCREMENT = 100;
 
 
 TRUNCATE TABLE fin_tipo_lancto;
 
 REPLACE INTO `fin_tipo_lancto` (`id`, `codigo`, `descricao`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
 VALUES (20, 20, 'MOVIMENTAÇÃO NORMAL', now(), now(), 0, 1, 1, 1),
- (60, 60, 'TRANSFERÊNCIA ENTRE CARTEIRAS', now(), now(), 0, 1, 1, 1),
- (61, 61, 'TRANSFERÊNCIA DE ENTRADA DE CAIXA', now(), now(), 0, 1, 1, 1),
- (62, 62, 'FATURA TRANSACIONAL', now(), now(), 0, 1, 1, 1),
- (63, 63, 'MOVIMENTAÇÃO CARTÃO CRÉDITO/DÉBITO', now(), now(), 0, 1, 1, 1),
- (64, 64, 'ENTRADA DE CAIXA POR TRANSF. BANCÁRIA', now(), now(), 0, 1, 1, 1);
+       (60, 60, 'TRANSFERÊNCIA ENTRE CARTEIRAS', now(), now(), 0, 1, 1, 1),
+       (61, 61, 'TRANSFERÊNCIA DE ENTRADA DE CAIXA', now(), now(), 0, 1, 1, 1),
+       (62, 62, 'FATURA TRANSACIONAL', now(), now(), 0, 1, 1, 1),
+       (63, 63, 'MOVIMENTAÇÃO CARTÃO CRÉDITO/DÉBITO', now(), now(), 0, 1, 1, 1),
+       (64, 64, 'ENTRADA DE CAIXA POR TRANSF. BANCÁRIA', now(), now(), 0, 1, 1, 1);
 
 TRUNCATE TABLE fin_categoria;
 
-INSERT INTO `fin_categoria` VALUES (1,1,'ENTRADAS',NULL,0,1,NULL,0,NULL,NULL,100000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (2,2,'SAÍDAS',NULL,0,2,NULL,0,NULL,NULL,200000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (101,101,'RECEB. VENDAS INTERNAS',1,0,1,'',0,'','',101000000000,now(),now(),3,1,1,1);
-INSERT INTO `fin_categoria` VALUES (102,102,'RECEB. VENDAS EXTERNAS',1,0,1,NULL,0,NULL,NULL,102000000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (103,103,'ENTRADA - EMPRÉSTIMO',1,0,1,NULL,0,NULL,NULL,103000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (110,110,'RECEB. FATURA',1,0,1,'',0,'','',110000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (121,121,'PAGTO. PROCEDIMENTO',1,0,1,'',0,'','',121000000000,now(),now(),3,1,1,1);
-INSERT INTO `fin_categoria` VALUES (122,122,'RECEB. COMISS/TAXA CLÍNICA',1,0,1,NULL,0,NULL,NULL,122000000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (130,130,'RECEB. MOVS',1,0,1,NULL,0,NULL,NULL,130000000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (150,150,'RECEB. OUTROS',1,0,1,NULL,0,NULL,NULL,150000000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (151,151,'ENTRADA - AJUSTE DE CAIXA',1,0,1,NULL,0,NULL,NULL,151000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (160,160,'RECEB. PARA TERCEIROS',1,0,1,NULL,0,NULL,NULL,160000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (170,170,'OUTRAS ENTRADAS',1,0,1,'',0,'','',170000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (179,179,'REAPRESENTAÇÃO DE CHEQUE (E)',1,0,1,'',0,'','',179000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (180,180,'ENTRADAS PESSOAIS',1,0,1,'',0,'',NULL,180000000000,now(),now(),2,1,1,1);
-INSERT INTO `fin_categoria` VALUES (188,188,'MOVIMENTAÇÃO ESTORNADA (E)',1,0,1,'%s',0,NULL,NULL,188000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (189,189,'ESTORNO DE SAÍDA DIRECIONADA',1,0,1,'',0,'','',189000000000,now(),now(),2,1,1,1);
-INSERT INTO `fin_categoria` VALUES (191,191,'TRANSFERÊNCIA DE FATURA',1,0,1,'',0,'','',191000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (195,195,'ENTRADAS - A CONFERIR',1,0,1,'',0,'',NULL,195000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (199,199,'TRANSFERÊNCIA DE CONTA',1,0,1,'',0,'','',199000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201,201,'CUSTOS FIXOS',2,0,2,NULL,0,NULL,NULL,201000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (202,202,'CUSTOS VARIÁVEIS',2,0,2,NULL,0,NULL,NULL,202000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (203,203,'EMPRÉSTIMOS',2,0,2,NULL,0,NULL,NULL,203000000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (204,204,'INVESTIMENTOS',2,0,2,'',0,'','',204000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (209,209,'SAÍDAS VIRTUAIS',2,0,2,NULL,0,NULL,NULL,209000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (230,230,'PAGTO. MOVS',1,0,1,NULL,0,NULL,NULL,230000000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (250,250,'OUTRAS SAÍDAS',2,0,2,NULL,0,NULL,NULL,250000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (251,251,'SAÍDA - AJUSTE DE CAIXA',2,0,2,NULL,0,NULL,NULL,251000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (252,252,'AJUSTE COBRANÇA FATURA',2,0,2,'',0,'','',252000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (259,259,'SAQUE POR PROFISSIONAL',259,0,2,NULL,0,NULL,NULL,259000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (260,260,'PAGTO TERCEIROS',2,0,2,NULL,0,NULL,NULL,260000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (270,270,'MOVIMENTAÇÃO ESTORNADA (S)',2,0,2,NULL,0,NULL,NULL,270000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (279,279,'REAPRESENTAÇÃO DE CHEQUE (S)',2,0,2,NULL,0,NULL,NULL,279000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (280,280,'SAÍDAS PESSOAIS',2,0,2,'',0,'','ROLE_FINANCEIRO_PROPRIET',280000000000,now(),now(),2,1,1,1);
-INSERT INTO `fin_categoria` VALUES (290,290,'PAGTO. GRUPO MOVIMENT.',2,0,2,NULL,0,NULL,NULL,290000000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (291,291,'TRANSFERÊNCIA PARA FATURA',2,0,2,'',0,'','',291000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (295,295,'SAIDAS - A CONFERIR',2,0,2,'',0,'',NULL,295000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (299,299,'TRANSFERÊNCIA PARA CONTA',2,0,2,'',0,'','',299000000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (103001,103001,'ENTRADA GIRO RÁPIDO',103,0,1,NULL,0,NULL,NULL,103001000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (103002,103002,'ENTRADA CAPITAL DE GIRO',103,0,1,NULL,0,NULL,NULL,103002000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201001,201001,'LUZ',201,0,2,NULL,0,NULL,NULL,201001000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201002,201002,'TELEFONE FIXO / INTERNET',201,0,2,NULL,0,NULL,NULL,201002000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201003,201003,'TELEFONE CELULAR',201,0,2,NULL,0,NULL,NULL,201003000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201004,201004,'ÁGUA',201,0,2,NULL,0,NULL,NULL,201004000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201005,201005,'SEGUROS',201,0,2,NULL,0,NULL,NULL,201005000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201006,201006,'MATERIAIS DE EXPEDIENTE',201,0,2,NULL,0,NULL,NULL,201006000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201007,201007,'COMBUSTÍVEIS E DESP. VIAGENS',201,0,2,NULL,0,NULL,NULL,201007000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201008,201008,'MARKETING/PUBLICIDADE',201,0,2,NULL,0,NULL,NULL,201008000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201009,201009,'FRETES',201,0,2,'PAGTO DE FRETE',0,NULL,NULL,201009000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201010,201010,'EMBALAGENS',201,0,2,NULL,0,NULL,NULL,201010000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201011,201011,'TAXAS, ENCARGOS, DESP. BANCÁRIAS',201,0,2,'',0,'','',201011000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201012,201012,'IRFF',201,0,2,NULL,0,NULL,NULL,201012000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201013,201013,'TAXAS E IMPOSTOS DIVERSOS',201,0,2,NULL,0,NULL,NULL,201013000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201014,201014,'ACIPG/CDL',201,0,2,NULL,0,NULL,NULL,201014000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201015,201015,'DESP. LICITAÇÕES',201,0,2,NULL,0,NULL,NULL,201015000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201016,201016,'MÁQUINAS E EQUIPAMENTOS',201,0,2,NULL,0,NULL,NULL,201016000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201017,201017,'IPTU',201,0,2,'',0,'','',201017000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201018,201018,'MANUTENÇÕES EM VEÍCULOS',201,0,2,'',0,'','',201018000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201019,201019,'ALUGUEL',201,0,2,'%S',0,'','',201019000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201099,201099,'CUSTOS DIVERSOS',201,0,2,'',0,'','',201099000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100,201100,'DEPTO. PESSOAL',201,0,2,NULL,0,NULL,NULL,201100000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (202001,202001,'CUSTOS DE MERCADORIAS',202,0,2,'PAGTO A FORNECEDOR',0,'','',202001000000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (202002,202002,'IMPOSTO SUPER-SIMPLES',202,0,2,NULL,0,NULL,NULL,202002000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (202003,202003,'SAÍDA DIRECIONADA',202,0,2,'',0,'','ROLE_FINANCEIRO_PROPRIET',202003000000,now(),now(),3,1,1,1);
-INSERT INTO `fin_categoria` VALUES (202004,202004,'TAXA ADMIN. CREDIÁRIO',202,0,2,NULL,0,NULL,NULL,202004000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (202005,202005,'CUSTO FINANCEIRO CARTÕES',202,0,2,NULL,0,NULL,NULL,202005000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (202006,202006,'DOAÇÕES, AJUDAS, CONTRIBUIÇÕES',202,0,2,NULL,0,NULL,NULL,202006000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (203001,203001,'PAGTO. JUROS/TAXAS',203,0,2,NULL,0,NULL,NULL,203001000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (203002,203002,'PAGTO. CAPITAL',203,0,2,NULL,0,NULL,NULL,203002000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (203003,203003,'PAGTO. GIRO RÁPIDO',203,0,2,NULL,0,NULL,NULL,203003000000,now(),now(),2,1,1,1);
-INSERT INTO `fin_categoria` VALUES (209001,209001,'PAGTO. COMISS/TAXA CLÍNICA',209,0,2,NULL,0,NULL,NULL,209001000000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100001,201100001,'FOLHA DE PAGAMENTO',201100,0,2,NULL,0,NULL,NULL,201100001000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100002,201100002,'INSS',201100,0,2,NULL,0,NULL,NULL,201100002000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100003,201100003,'FGTS',201100,0,2,NULL,0,NULL,NULL,201100003000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100004,201100004,'VALE TRANSPORTE',201100,0,2,NULL,0,NULL,NULL,201100004000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100005,201100005,'SINDICATO',201100,0,2,NULL,0,NULL,NULL,201100005000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100006,201100006,'HONORÁRIOS CONTÁBEIS',201100,0,2,NULL,0,NULL,NULL,201100006000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100007,201100007,'MÃO-DE-OBRA',201100,0,2,NULL,0,NULL,NULL,201100007000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100008,201100008,'CONVÊNIOS',201100,0,2,NULL,0,NULL,NULL,201100008000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100100,201100100,'PAGTO. A PROFISSIONAL',201100,0,2,NULL,0,NULL,NULL,201100100000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (201100999,201100999,'ENCARGOS SOCIAIS (GERAIS)',201100,0,2,NULL,0,NULL,NULL,201100999000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (202005001,202005001,'CUSTO FINANCEIRO CARTÕES DE CRÉDITO',202005,0,2,'CUSTO FINANCEIRO CARTÕES DE CRÉDITO',0,NULL,NULL,202005001000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (202005002,202005002,'CUSTO FINANCEIRO CARTÕES DE DÉBITO',202005,0,2,'CUSTO FINANCEIRO CARTÕES DE DÉBITO',0,NULL,NULL,202005002000,now(),now(),1,1,1,1);
-INSERT INTO `fin_categoria` VALUES (203002001,203002001,'PAGTO. CAPITAL LONGO PRAZO',203002,0,2,NULL,0,NULL,NULL,203002001000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (203002002,203002002,'PAGTO. CAPITAL CURTO PRAZO',203002,0,2,NULL,0,NULL,NULL,203002002000,now(),now(),0,1,1,1);
-INSERT INTO `fin_categoria` VALUES (203002003,203002003,'PAGTO. DDPCG',203002,0,2,NULL,0,NULL,NULL,203002003000,now(),now(),0,1,1,1);
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (1, 1, 'ENTRADAS', NULL, 0, 1, NULL, 0, NULL, NULL, 100000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (2, 2, 'SAÍDAS', NULL, 0, 2, NULL, 0, NULL, NULL, 200000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (101, 101, 'RECEB. VENDAS INTERNAS', 1, 0, 1, '', 0, '', '', 101000000000, now(), now(), 3, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (102, 102, 'RECEB. VENDAS EXTERNAS', 1, 0, 1, NULL, 0, NULL, NULL, 102000000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (103, 103, 'ENTRADA - EMPRÉSTIMO', 1, 0, 1, NULL, 0, NULL, NULL, 103000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+
+VALUES (110, 110, 'RECEB. FATURA', 1, 0, 1, '', 0, '', '', 110000000000, now(), now(), 0, 1, 1, 1);
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (121, 121, 'PAGTO. PROCEDIMENTO', 1, 0, 1, '', 0, '', '', 121000000000, now(), now(), 3, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (122, 122, 'RECEB. COMISS/TAXA CLÍNICA', 1, 0, 1, NULL, 0, NULL, NULL, 122000000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (130, 130, 'RECEB. MOVS', 1, 0, 1, NULL, 0, NULL, NULL, 130000000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (150, 150, 'RECEB. OUTROS', 1, 0, 1, NULL, 0, NULL, NULL, 150000000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (151, 151, 'ENTRADA - AJUSTE DE CAIXA', 1, 0, 1, NULL, 0, NULL, NULL, 151000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (160, 160, 'RECEB. PARA TERCEIROS', 1, 0, 1, NULL, 0, NULL, NULL, 160000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (170, 170, 'OUTRAS ENTRADAS', 1, 0, 1, '', 0, '', '', 170000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (179, 179, 'REAPRESENTAÇÃO DE CHEQUE (E)', 1, 0, 1, '', 0, '', '', 179000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (180, 180, 'ENTRADAS PESSOAIS', 1, 0, 1, '', 0, '', NULL, 180000000000, now(), now(), 2, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (188, 188, 'MOVIMENTAÇÃO ESTORNADA (E)', 1, 0, 1, '%s', 0, NULL, NULL, 188000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (189, 189, 'ESTORNO DE SAÍDA DIRECIONADA', 1, 0, 1, '', 0, '', '', 189000000000, now(), now(), 2, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (191, 191, 'TRANSFERÊNCIA DE FATURA', 1, 0, 1, '', 0, '', '', 191000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (195, 195, 'ENTRADAS - A CONFERIR', 1, 0, 1, '', 0, '', NULL, 195000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (199, 199, 'TRANSFERÊNCIA DE CONTA', 1, 0, 1, '', 0, '', '', 199000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201, 201, 'CUSTOS FIXOS', 2, 0, 2, NULL, 0, NULL, NULL, 201000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (202, 202, 'CUSTOS VARIÁVEIS', 2, 0, 2, NULL, 0, NULL, NULL, 202000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (203, 203, 'EMPRÉSTIMOS', 2, 0, 2, NULL, 0, NULL, NULL, 203000000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (204, 204, 'INVESTIMENTOS', 2, 0, 2, '', 0, '', '', 204000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (209, 209, 'SAÍDAS VIRTUAIS', 2, 0, 2, NULL, 0, NULL, NULL, 209000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (230, 230, 'PAGTO. MOVS', 1, 0, 1, NULL, 0, NULL, NULL, 230000000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (250, 250, 'OUTRAS SAÍDAS', 2, 0, 2, NULL, 0, NULL, NULL, 250000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (251, 251, 'SAÍDA - AJUSTE DE CAIXA', 2, 0, 2, NULL, 0, NULL, NULL, 251000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (252, 252, 'AJUSTE COBRANÇA FATURA', 2, 0, 2, '', 0, '', '', 252000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (260, 260, 'PAGTO TERCEIROS', 2, 0, 2, NULL, 0, NULL, NULL, 260000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (270, 270, 'MOVIMENTAÇÃO ESTORNADA (S)', 2, 0, 2, NULL, 0, NULL, NULL, 270000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (279, 279, 'REAPRESENTAÇÃO DE CHEQUE (S)', 2, 0, 2, NULL, 0, NULL, NULL, 279000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (280, 280, 'SAÍDAS PESSOAIS', 2, 0, 2, '', 0, '', 'ROLE_FINANCEIRO_PROPRIET', 280000000000, now(), now(), 2, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (290, 290, 'PAGTO. GRUPO MOVIMENT.', 2, 0, 2, NULL, 0, NULL, NULL, 290000000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (291, 291, 'TRANSFERÊNCIA PARA FATURA', 2, 0, 2, '', 0, '', '', 291000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (295, 295, 'SAIDAS - A CONFERIR', 2, 0, 2, '', 0, '', NULL, 295000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (299, 299, 'TRANSFERÊNCIA PARA CONTA', 2, 0, 2, '', 0, '', '', 299000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (103001, 103001, 'ENTRADA GIRO RÁPIDO', 103, 0, 1, NULL, 0, NULL, NULL, 103001000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (103002, 103002, 'ENTRADA CAPITAL DE GIRO', 103, 0, 1, NULL, 0, NULL, NULL, 103002000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201001, 201001, 'LUZ', 201, 0, 2, NULL, 0, NULL, NULL, 201001000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201002, 201002, 'TELEFONE FIXO / INTERNET', 201, 0, 2, NULL, 0, NULL, NULL, 201002000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201003, 201003, 'TELEFONE CELULAR', 201, 0, 2, NULL, 0, NULL, NULL, 201003000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201004, 201004, 'ÁGUA', 201, 0, 2, NULL, 0, NULL, NULL, 201004000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201005, 201005, 'SEGUROS', 201, 0, 2, NULL, 0, NULL, NULL, 201005000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201006, 201006, 'MATERIAIS DE EXPEDIENTE', 201, 0, 2, NULL, 0, NULL, NULL, 201006000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201007, 201007, 'COMBUSTÍVEIS E DESP. VIAGENS', 201, 0, 2, NULL, 0, NULL, NULL, 201007000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201008, 201008, 'MARKETING/PUBLICIDADE', 201, 0, 2, NULL, 0, NULL, NULL, 201008000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201009, 201009, 'FRETES', 201, 0, 2, 'PAGTO DE FRETE', 0, NULL, NULL, 201009000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201010, 201010, 'EMBALAGENS', 201, 0, 2, NULL, 0, NULL, NULL, 201010000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201011, 201011, 'TAXAS, ENCARGOS, DESP. BANCÁRIAS', 201, 0, 2, '', 0, '', '', 201011000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201012, 201012, 'IRFF', 201, 0, 2, NULL, 0, NULL, NULL, 201012000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201013, 201013, 'TAXAS E IMPOSTOS DIVERSOS', 201, 0, 2, NULL, 0, NULL, NULL, 201013000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201014, 201014, 'ACIPG/CDL', 201, 0, 2, NULL, 0, NULL, NULL, 201014000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201015, 201015, 'DESP. LICITAÇÕES', 201, 0, 2, NULL, 0, NULL, NULL, 201015000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201016, 201016, 'MÁQUINAS E EQUIPAMENTOS', 201, 0, 2, NULL, 0, NULL, NULL, 201016000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201017, 201017, 'IPTU', 201, 0, 2, '', 0, '', '', 201017000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201018, 201018, 'MANUTENÇÕES EM VEÍCULOS', 201, 0, 2, '', 0, '', '', 201018000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201019, 201019, 'ALUGUEL', 201, 0, 2, '%S', 0, '', '', 201019000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201099, 201099, 'CUSTOS DIVERSOS', 201, 0, 2, '', 0, '', '', 201099000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100, 201100, 'DEPTO. PESSOAL', 201, 0, 2, NULL, 0, NULL, NULL, 201100000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (202001, 202001, 'CUSTOS DE MERCADORIAS', 202, 0, 2, 'PAGTO A FORNECEDOR', 0, '', '', 202001000000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (202002, 202002, 'IMPOSTO SUPER-SIMPLES', 202, 0, 2, NULL, 0, NULL, NULL, 202002000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (202003, 202003, 'SAÍDA DIRECIONADA', 202, 0, 2, '', 0, '', 'ROLE_FINANCEIRO_PROPRIET', 202003000000, now(), now(), 3, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (202004, 202004, 'TAXA ADMIN. CREDIÁRIO', 202, 0, 2, NULL, 0, NULL, NULL, 202004000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (202005, 202005, 'CUSTO FINANCEIRO CARTÕES', 202, 0, 2, NULL, 0, NULL, NULL, 202005000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (202006, 202006, 'DOAÇÕES, AJUDAS, CONTRIBUIÇÕES', 202, 0, 2, NULL, 0, NULL, NULL, 202006000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (203001, 203001, 'PAGTO. JUROS/TAXAS', 203, 0, 2, NULL, 0, NULL, NULL, 203001000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (203002, 203002, 'PAGTO. CAPITAL', 203, 0, 2, NULL, 0, NULL, NULL, 203002000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (203003, 203003, 'PAGTO. GIRO RÁPIDO', 203, 0, 2, NULL, 0, NULL, NULL, 203003000000, now(), now(), 2, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (209001, 209001, 'PAGTO. COMISS/TAXA CLÍNICA', 209, 0, 2, NULL, 0, NULL, NULL, 209001000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100001, 201100001, 'FOLHA DE PAGAMENTO', 201100, 0, 2, NULL, 0, NULL, NULL, 201100001000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100002, 201100002, 'INSS', 201100, 0, 2, NULL, 0, NULL, NULL, 201100002000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100003, 201100003, 'FGTS', 201100, 0, 2, NULL, 0, NULL, NULL, 201100003000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100004, 201100004, 'VALE TRANSPORTE', 201100, 0, 2, NULL, 0, NULL, NULL, 201100004000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100005, 201100005, 'SINDICATO', 201100, 0, 2, NULL, 0, NULL, NULL, 201100005000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100006, 201100006, 'HONORÁRIOS CONTÁBEIS', 201100, 0, 2, NULL, 0, NULL, NULL, 201100006000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100007, 201100007, 'MÃO-DE-OBRA', 201100, 0, 2, NULL, 0, NULL, NULL, 201100007000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100008, 201100008, 'CONVÊNIOS', 201100, 0, 2, NULL, 0, NULL, NULL, 201100008000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (201100999, 201100999, 'ENCARGOS SOCIAIS (GERAIS)', 201100, 0, 2, NULL, 0, NULL, NULL, 201100999000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (202005001, 202005001, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 202005, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 0, NULL, NULL, 202005001000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (202005002, 202005002, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 202005, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 0, NULL, NULL, 202005002000, now(), now(), 1, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (203002001, 203002001, 'PAGTO. CAPITAL LONGO PRAZO', 203002, 0, 2, NULL, 0, NULL, NULL, 203002001000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (203002002, 203002002, 'PAGTO. CAPITAL CURTO PRAZO', 203002, 0, 2, NULL, 0, NULL, NULL, 203002002000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (203002003, 203002003, 'PAGTO. DDPCG', 203002, 0, 2, NULL, 0, NULL, NULL, 203002003000, now(), now(), 0, 1, 1, 1);
 
 
 
@@ -762,43 +1186,43 @@ TRUNCATE TABLE fin_modo;
 
 
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (1, 1, 'EM ESPÉCIE', 0, 0, 0, 1, 0, 0, now(), now(), 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (2, 2, 'DÉBITO AUTOMÁTICO', 1, 0, 0, 0, 0, 0, now(), now(), 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (3, 3, 'CHEQUE PRÓPRIO', 0, 0, 0, 1, 0, 1, now(), now(), 2, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (7, 7, 'PIX/TRANSF. BANCÁRIA', 1, 0, 1, 1, 0, 0, now(), now(), 4, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (5, 5, 'DEPÓSITO BANCÁRIO', 1, 0, 0, 1, 0, 0, now(), now(), 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (99, 99, 'INDEFINIDO', 0, 0, 0, 0, 0, 0, now(), now(), 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (6, 6, 'BOLETO/GUIA/DDA', 1, 0, 0, 0, 0, 0, now(), now(), 1, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (4, 4, 'CHEQUE TERCEIROS', 0, 0, 1, 1, 0, 1, now(), now(), 2, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (9, 9, 'RECEB. CARTÃO CRÉDITO', 0, 0, 0, 0, 1, 0, now(), now(), 1, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (10, 10, 'RECEB. CARTÃO DÉBITO', 0, 0, 0, 0, 1, 0, now(), now(), 1, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (11, 11, 'TRANSF. ENTRE CONTAS', 0, 0, 1, 1, 0, 0, now(), now(), 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (50, 50, 'MOVIMENTAÇÃO AGRUPADA', 0, 1, 0, 0, 0, 0, now(), now(), 0, 1, 1, 1);
 INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
- `user_inserted_id`, `user_updated_id`)
+                        `user_inserted_id`, `user_updated_id`)
 VALUES (60, 60, 'VIRTUAL', 0, 0, 0, 0, 0, 0, now(), now(), 0, 1, 1, 1);
 
 
@@ -1090,9 +1514,6 @@ VALUES (NULL, 260, 'NUBANK', 1, now(), now(), 0, 1, 1, 1);
 
 
 
-
-
-
 TRUNCATE TABLE fin_bandeira_cartao;
 
 INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
@@ -1128,13 +1549,13 @@ VALUES (14, 'N INF DÉB', 10, ' ', now(), now(), 3, 1, 1, 1);
 
 REPLACE INTO `ven_plano_pagto` (`id`, `codigo`, `descricao`, `ativo`, `json_data`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
 VALUES (null, '001', 'A VISTA (ESPÉCIE)', 1, '{\"modo_id\": \"1\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false}', now(), now(), 0, 1, 1, 1),
- (null, '002', 'A VISTA (CHEQUE)', 1, '{\"modo_id\": \"8\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false}', now(), now(), 0, 1, 1, 1),
- (null, '003', 'CARTÃO DÉBITO', 1, '{\"modo_id\": \"10\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false, \"tipo_carteiras_destino\": \"operadora_cartao\"}', now(), now(), 0, 1, 1, 1),
- (null, '010', 'CARTÃO DE CRÉDITO', 1, '{\"modo_id\": \"9\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": true, \"tipo_carteiras_destino\": \"operadora_cartao\"}', now(), now(), 0, 1, 1, 1),
- (null, '020', 'DEPÓSITO/TRANSFERÊNCIA', 1, '{\"modo_id\": \"5\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": true}', now(), now(), 0, 1, 1, 1),
- (null, '030', 'BOLETO', 1, '{\"modo_id\": \"7\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": true}', now(), now(), 0, 1, 1, 1),
- (null, '040', 'PIX', 1, '{\"modo_id\": \"7\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": false}', now(), now(), 0, 1, 1, 1),
- (null, '999', 'NÃO INFORMADO', 1, NULL, now(), now(), 0, 1, 1, 1);
+       (null, '002', 'A VISTA (CHEQUE)', 1, '{\"modo_id\": \"8\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false}', now(), now(), 0, 1, 1, 1),
+       (null, '003', 'CARTÃO DÉBITO', 1, '{\"modo_id\": \"10\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false, \"tipo_carteiras_destino\": \"operadora_cartao\"}', now(), now(), 0, 1, 1, 1),
+       (null, '010', 'CARTÃO DE CRÉDITO', 1, '{\"modo_id\": \"9\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": true, \"tipo_carteiras_destino\": \"operadora_cartao\"}', now(), now(), 0, 1, 1, 1),
+       (null, '020', 'DEPÓSITO/TRANSFERÊNCIA', 1, '{\"modo_id\": \"5\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": true}', now(), now(), 0, 1, 1, 1),
+       (null, '030', 'BOLETO', 1, '{\"modo_id\": \"7\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": true}', now(), now(), 0, 1, 1, 1),
+       (null, '040', 'PIX', 1, '{\"modo_id\": \"7\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": false}', now(), now(), 0, 1, 1, 1),
+       (null, '999', 'NÃO INFORMADO', 1, NULL, now(), now(), 0, 1, 1, 1);
 
 
 COMMIT;

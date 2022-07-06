@@ -487,9 +487,9 @@ export default {
         this.fields.descontos = 0;
         this.fields.acrescimos = 0;
         if (this.fields.valorTotal > this.fields.valor) {
-          this.fields.acrescimos = this.fields.valorTotal - this.fields.valor;
+          this.fields.acrescimos = Math.abs(this.fields.valorTotal - this.fields.valor);
         } else if (this.fields.valorTotal < this.fields.valor) {
-          this.fields.descontos = this.fields.valor - this.fields.valorTotal;
+          this.fields.descontos = Math.abs(this.fields.valor - this.fields.valorTotal);
         } else {
           this.fields.valor = this.fields.valorTotal;
         }

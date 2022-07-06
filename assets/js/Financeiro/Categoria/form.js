@@ -112,7 +112,8 @@ const store = createStore({
             } else {
               pai = findNode(tree, categ.pai.id);
               if (!pai) {
-                console.error(`Não achei pai pro ${node}`);
+                console.error(`Não achei pai pro...`);
+                console.error(node);
               } else {
                 pai.children = pai.children ?? [];
                 pai.children.push(node);

@@ -31,7 +31,7 @@ class FornecedorController extends FormListController
     public function findProxCodigo(Connection $conn): JsonResponse
     {
         try {
-            $rsProxCodigo = $conn->fetchAssociative('SELECT max(codigo)+1 as prox FROM est_fornecedor WHERE codigo < 2147483647');
+            $rsProxCodigo = $conn->fetchAssociative('SELECT max(CAST(codigo as UNSIGNED))+1 as prox FROM est_fornecedor WHERE codigo < 2147483647');
             $proxCodigo = $rsProxCodigo['prox'] ?? 1;
             return CrosierApiResponse::success(['prox' => (string)$proxCodigo]);
         } catch (\Exception $e) {

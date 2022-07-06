@@ -1,6 +1,9 @@
 <template>
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
+
   <ConfirmDialog group="confirmDialog_crosierListS" />
+
+  <CrosierBlock :loading="this.loading" />
 
   <div class="container">
     <div class="card" style="margin-bottom: 50px">
@@ -90,13 +93,14 @@ import TreeTable from "primevue/treetable";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
 import { mapGetters, mapMutations } from "vuex";
-import { api } from "crosier-vue";
+import { api, CrosierBlock } from "crosier-vue";
 import CategoriaForm from "./formDialog";
 
 export default {
   components: {
     Toast,
     ConfirmDialog,
+    CrosierBlock,
     TreeTable,
     Column,
     CategoriaForm,
@@ -207,6 +211,7 @@ export default {
 
   computed: {
     ...mapGetters({
+      loading: "isLoading",
       fields: "getFields",
       formErrors: "getFieldsErrors",
       categorias: "getCategorias",

@@ -2,7 +2,12 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
-  <CrosierListS titulo="Fornecedores" apiResource="/api/est/fornecedor/" ref="dt">
+  <CrosierListS
+    titulo="Fornecedores"
+    apiResource="/api/est/fornecedor/"
+    ref="dt"
+    :properties="['id', 'codigo', 'updated', 'documento', 'nome', 'nomeFantasia']"
+  >
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputText
@@ -48,7 +53,9 @@
         </template>
       </Column>
 
-      <Column field="nome" header="Nome" :sortable="true"></Column>
+      <Column field="nome" header="Nome/Razão Social" :sortable="true"></Column>
+
+      <Column field="nomeFantasia" header="Nome Fantasia" :sortable="true"></Column>
 
       <Column field="updated" header="" :sortable="true">
         <template class="text-right" #body="r">
