@@ -247,16 +247,16 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.0.17",
+            "version": "v1.0.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "d1ca661a45a527412c02d9ea1676f83271854ce1"
+                "reference": "1b4ca74adefce8cbab81229233d57711a7d65d22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/d1ca661a45a527412c02d9ea1676f83271854ce1",
-                "reference": "d1ca661a45a527412c02d9ea1676f83271854ce1",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/1b4ca74adefce8cbab81229233d57711a7d65d22",
+                "reference": "1b4ca74adefce8cbab81229233d57711a7d65d22",
                 "shasum": ""
             },
             "require": {
@@ -304,9 +304,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.0.17"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.0.18"
             },
-            "time": "2022-07-06T21:19:33+00:00"
+            "time": "2022-07-11T17:42:29+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -3456,19 +3456,27 @@
         },
         {
             "name": "nfephp-org/sped-gtin",
-            "version": "v1.1.0",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-gtin.git",
-                "reference": "44d83fbbd24087868300a29006ad8e7a27c97a5c"
+                "reference": "759a902e1c01f4755b27eee4e9fa30153d6b29d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-gtin/zipball/44d83fbbd24087868300a29006ad8e7a27c97a5c",
-                "reference": "44d83fbbd24087868300a29006ad8e7a27c97a5c",
+                "url": "https://api.github.com/repos/nfephp-org/sped-gtin/zipball/759a902e1c01f4755b27eee4e9fa30153d6b29d3",
+                "reference": "759a902e1c01f4755b27eee4e9fa30153d6b29d3",
                 "shasum": ""
             },
             "require": {
+                "ext-curl": "*",
+                "ext-dom": "*",
+                "ext-json": "*",
+                "ext-libxml": "*",
+                "ext-openssl": "*",
+                "ext-simplexml": "*",
+                "ext-soap": "*",
+                "nfephp-org/sped-common": "^5.1.0",
                 "php": ">= 7.4"
             },
             "require-dev": {
@@ -3524,9 +3532,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nfephp-org/sped-gtin/issues",
-                "source": "https://github.com/nfephp-org/sped-gtin/tree/v1.1.0"
+                "source": "https://github.com/nfephp-org/sped-gtin/tree/v1.1.1"
             },
-            "time": "2022-02-15T12:11:55+00:00"
+            "time": "2022-06-01T18:08:50+00:00"
         },
         {
             "name": "nfephp-org/sped-nfe",
