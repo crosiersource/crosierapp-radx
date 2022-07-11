@@ -1140,8 +1140,7 @@ class ProdutoController extends FormListController
             $tt = (int)(microtime(true) - $start);
             return CrosierApiResponse::success();
         } catch (ViewException $e) {
-            $this->addFlash('error', 'Erro ao integrar produto (' . $e->getMessage() . ')');
-            return CrosierApiResponse::error();
+            return CrosierApiResponse::error($e);
         }
     }
     

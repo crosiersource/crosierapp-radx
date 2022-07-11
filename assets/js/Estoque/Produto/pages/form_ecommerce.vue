@@ -130,7 +130,7 @@ export default {
             this.$toast.add({
               severity: "error",
               summary: "Erro",
-              detail: "Erro ao integrar ao e-commerce",
+              detail: rs?.data?.EXCEPTION_MSG || rs?.data?.MSG || "Erro ao integrar ao e-commerce",
               life: 5000,
             });
           }
