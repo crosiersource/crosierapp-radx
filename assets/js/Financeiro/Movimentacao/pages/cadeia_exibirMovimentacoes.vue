@@ -173,7 +173,7 @@
             </template>
           </Column>
 
-          <Column field="valor" header="Valor">
+          <Column field="valorTotal" header="Valor">
             <template #body="r">
               <div
                 class="text-right"
@@ -183,7 +183,7 @@
                 "
               >
                 {{
-                  parseFloat(r.data.valor ?? 0).toLocaleString("pt-BR", {
+                  parseFloat(r.data.valorTotal ?? 0).toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL",
                   })
