@@ -5,7 +5,7 @@ import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
 import { createStore } from "vuex";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
-import Page from "./pages/list_aPagarReceber";
+import Page from "./pages/list_aPagar";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/saga-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
@@ -25,6 +25,7 @@ const store = createStore({
       filters: {},
       defaultFilters: {
         status: "ABERTA",
+        "categoria.codigoSuper": "2",
       },
     };
   },

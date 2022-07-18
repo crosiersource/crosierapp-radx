@@ -88,7 +88,7 @@ WHERE uuid = 'e8d385b5-5fe2-41f0-b8e2-f1d1ad7bd097';
 SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES ('e8d385b5-5fe2-41f0-b8e2-f1d1ad7bd097', 'A Pagar/Receber', 'fas fa-file-invoice-dollar', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/movimentacao/aPagarReceber/list', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
+VALUES ('e8d385b5-5fe2-41f0-b8e2-f1d1ad7bd097', 'Contas a Pagar', 'fas fa-file-invoice-dollar', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/movimentacao/aPagar/list', '', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
 
 -- Pesquisa de Movimentações
 DELETE

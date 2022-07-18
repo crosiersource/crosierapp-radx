@@ -129,7 +129,7 @@
       <div class="card-header">
         <div class="d-flex flex-wrap align-items-center">
           <div class="mr-1">
-            <h3>Contas a Pagar/Receber</h3>
+            <h3>Contas a Pagar</h3>
             <h6>
               Entre {{ moment(this.filters["dtVenctoEfetiva[after]"]).format("DD/MM/YYYY") }} e
               {{ moment(this.filters["dtVenctoEfetiva[before]"]).format("DD/MM/YYYY") }}
