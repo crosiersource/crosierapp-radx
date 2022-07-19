@@ -1763,7 +1763,7 @@ CREATE TABLE `fis_nf_cartacorrecao`
   `estabelecimento_id` bigint(20) NOT NULL,
   `user_inserted_id`   bigint(20) NOT NULL,
   `user_updated_id`    bigint(20) NOT NULL,
-  `msg_retorno`        varchar(2000),
+  `msg_retorno`        varchar(20000),
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_fis_nf_cartacorrecao` (`nota_fiscal_id`, `seq`),
   KEY `K_fis_nf_cartacorrecao_estabelecimento` (`estabelecimento_id`),
