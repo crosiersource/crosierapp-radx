@@ -25,7 +25,7 @@ const store = createStore({
       loading: 0,
       filters: {},
       defaultFilters: {
-        // status: "REALIZADA",
+        status: "REALIZADA",
       },
     };
   },

@@ -229,7 +229,7 @@
                   role="button"
                   class="btn btn-primary btn-sm ml-1"
                   title="Editar registro"
-                  :href="'form?id=' + r.data.id"
+                  :href="'/v/fin/movimentacao/aPagarReceber/form?rPagamento=S&id=' + r.data.id"
                   ><i class="fas fa-wrench" aria-hidden="true"></i
                 ></a>
                 <a
@@ -441,6 +441,7 @@ export default {
 
         const filters = { ...this.filters };
         filters.carteira = filters.carteira["@id"];
+        filters.status = "ABERTA"; // RTA
 
         const rows = Number.MAX_SAFE_INTEGER;
         const page = 1;
