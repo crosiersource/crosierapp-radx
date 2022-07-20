@@ -489,7 +489,7 @@ export default {
       accordionActiveIndex: null,
       tudoSelecionado: false,
       visibleRight: false,
-      apiResource: "/api/fin/movimentacao",
+      apiResource: "/api/fin/movimentacao/",
       selection: [],
     };
   },
