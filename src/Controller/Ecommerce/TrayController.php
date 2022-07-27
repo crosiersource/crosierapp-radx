@@ -6,6 +6,7 @@ use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorTray;
 use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\TrayBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\ClienteConfig;
@@ -280,7 +281,8 @@ class TrayController extends BaseController
 //        $integradorTray->accessToken = $clienteConfig->jsonData['tray']['access_token'];
         $numPedido = $request->get('numPedido');
         $resalvar = filter_var($request->get('resalvar'), FILTER_VALIDATE_BOOLEAN);
-        $this->integradorTray->obterPedidoDoEcommerce($numPedido, $resalvar);
+        $json = $this->integradorTray->obterPedidoDoEcommerce($numPedido);
+        $this->integrarVendaParaCrosier($json, $resalvar);
         return new Response('Pedido integrado com sucesso');
     }
 
@@ -357,8 +359,12 @@ class TrayController extends BaseController
             $nfId = $this->integradorTray->gerarNFeParaVenda($codVenda);
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $nfId]);
         } catch (\Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-            return new Response($e->getMessage());
+            $msg = ExceptionUtils::treatException($e);
+            if ($e->getPrevious()) {
+                $msg .= ' - ' . $e->getPrevious()->getMessage();
+            }
+            $this->addFlash('error', $msg);
+            return new Response($msg);
         }
 
     }
