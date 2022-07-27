@@ -188,8 +188,21 @@
                   <i class="fas fa-check-double" title="Movimentação realizada"></i> Realizada</span
                 >
 
-                <span v-else class="text-center badge badge-pill badge-info" style="width: 82px">
-                  '<i class="fas fa-hourglass-half" title="Movimentação abera"></i> Aberta</span
+                <span
+                  v-if="r.data.status === 'ABERTA'"
+                  class="text-center badge badge-pill badge-info"
+                  style="width: 82px"
+                >
+                  <i class="fas fa-hourglass-half" title="Movimentação aberta"></i> Aberta</span
+                >
+
+                <span
+                  v-if="r.data.status === 'ESTORNADA'"
+                  class="text-center badge badge-pill badge-dark"
+                  style="width: 82px"
+                >
+                  <i class="fas fa-hourglass-half" title="Movimentação estornada"></i>
+                  Estornada</span
                 >
               </div>
             </template>
