@@ -41,6 +41,8 @@ VALUES (null, now(), now(), 'ROLE_FINAN', 'ROLE_FINAN', 1, 1, 1);
 INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, now(), now(), 'ROLE_FINAN_ADMIN', 'ROLE_FINAN_ADMIN', 1, 1, 1);
 INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (null, now(), now(), 'ROLE_FINAN_MASTER', 'Permissão para criar/deletar as entidades de base (Categoria, Modo, Banco, etc)', 1, 1, 1);
+INSERT INTO sec_role(id, inserted, updated, role, descricao, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (null, now(), now(), 'ROLE_FINAN_CAIXAOPERACAO', 'Abertura/Fechamento de Caixas', 1, 1, 1);
 
 
