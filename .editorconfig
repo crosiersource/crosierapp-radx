@@ -17,4 +17,4 @@ max_line_length = 100
 indent_size = 4
 
 [*.sql]
-max_line_length = 299
+max_line_length = 160
