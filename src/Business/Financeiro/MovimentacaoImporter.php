@@ -468,7 +468,7 @@ class MovimentacaoImporter
                     ->findAllByFiltersSimpl([
                         ['dtMoviment', 'EQ', $dtMoviment->format('Y-m-d')],
                         ['valor', 'EQ', $valor],
-                        ['grupoItem', 'EQ', $this->grupoItem],
+                        ['grupoItem', 'EQ', $grupoItem],
                     ]);
 
                 /** @var Movimentacao $importada */
