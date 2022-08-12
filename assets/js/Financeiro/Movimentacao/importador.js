@@ -26,7 +26,6 @@ const store = createStore({
       loading: 0,
       fields: {},
       fieldsErrors: {},
-      filters: {},
     };
   },
 
@@ -34,7 +33,6 @@ const store = createStore({
     isLoading: (state) => state.loading > 0,
     getFields: (state) => state.fields,
     getFieldsErrors: (state) => state.fieldsErrors,
-    getFilters: (state) => state.filters,
   },
 
   mutations: {
@@ -47,24 +45,18 @@ const store = createStore({
     },
 
     setFields(state, fields) {
-      fields.dtMoviment = fields.dtMoviment ? new Date(fields.dtMoviment) : null;
-      fields.dtVencto = fields.dtVencto ? new Date(fields.dtVencto) : null;
-      fields.dtVenctoEfetiva = fields.dtVenctoEfetiva ? new Date(fields.dtVenctoEfetiva) : null;
+      state.fields["dtUtil[after]"] = state.fields["dtUtil[after]"]
+        ? new Date(state.fields["dtUtil[after]"])
+        : null;
+      state.fields["dtUtil[before]"] = state.fields["dtUtil[before]"]
+        ? new Date(state.fields["dtUtil[before]"])
+        : null;
+
       state.fields = fields;
     },
 
     setFieldsErrors(state, formErrors) {
       state.fieldsErrors = formErrors;
-    },
-
-    setFilters(state, filters) {
-      state.filters["dtUtil[after]"] = state.filters["dtUtil[after]"]
-        ? new Date(state.filters["dtUtil[after]"])
-        : null;
-      state.filters["dtUtil[before]"] = state.filters["dtUtil[before]"]
-        ? new Date(state.filters["dtUtil[before]"])
-        : null;
-      state.filters = filters;
     },
   },
 });

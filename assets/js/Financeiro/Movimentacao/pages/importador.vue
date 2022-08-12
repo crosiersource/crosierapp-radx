@@ -47,7 +47,7 @@
               optionLabel="descricaoMontada"
               :optionValue="null"
               :orderBy="{ codigo: 'ASC' }"
-              :filters="{ abertas: true }"
+              :fields="{ abertas: true }"
               label="Carteira"
               id="carteira"
             />
@@ -61,7 +61,7 @@
               optionLabel="descricao"
               :optionValue="null"
               :orderBy="{ descricao: 'ASC' }"
-              :filters="{ ativa: true }"
+              :fields="{ ativa: true }"
               label="Operadora"
               id="operadoraCartao"
             />
@@ -82,24 +82,25 @@
           <div class="form-row" v-if="this.fields.tipoImportacao === 'EXTRATO_GRUPO'">
             <CrosierDropdownEntity
               col="6"
-              v-model="this.filters.grupo"
+              v-model="this.fields.grupo"
               entity-uri="/api/fin/grupo"
               optionLabel="descricao"
               :orderBy="{ descricao: 'ASC' }"
-              :filters="{ ativo: true }"
+              :fields="{ ativo: true }"
               :properties="['id', 'descricao']"
               id="grupo"
               label="Grupo"
             />
             <CrosierDropdownEntity
               col="6"
-              v-if="this.filters.grupo"
-              v-model="this.filters.grupoItem"
+              v-if="this.fields.grupo"
+              v-model="this.fields.grupoItem"
+              :error="this.errors?.grupoItem"
               entity-uri="/api/fin/grupoItem"
               optionLabel="descricaoMontada"
               :optionValue="null"
               :orderBy="{ dtVencto: 'DESC' }"
-              :filters="{ pai: this.filters.grupo }"
+              :fields="{ pai: this.fields.grupo }"
               :properties="['id', 'descricaoMontada', 'pai']"
               id="grupoItem"
               label="Fatura"
@@ -137,7 +138,7 @@
               >.
             </p>
             <p class="card-text" v-if="this.fields.tipoImportacao === 'EXTRATO_GRUPO'">
-              {{ this.results.qtdeImportadas }} movimentações importadas para a operadora
+              As movimentações foram importadas para o grupo
               <b>{{ this.fields.grupoItem.descricaoMontada }}</b
               >.
             </p>
@@ -255,7 +256,7 @@ export default {
 
     visualizarMovimentacoes() {
       if (this.fields.tipoImportacao === "EXTRATO_SIMPLES") {
-        window.location = `/v/fin/movimentacao/extrato?filters={"dtUtil[after]":"${this.results.menorData}T00:00:00-03:00","dtUtil[before]":"${this.results.maiorData}T23:59:59-03:00","carteira":"${this.fields.carteira["@id"]}"}`;
+        window.location = `/v/fin/movimentacao/extrato?fields={"dtUtil[after]":"${this.results.menorData}T00:00:00-03:00","dtUtil[before]":"${this.results.maiorData}T23:59:59-03:00","carteira":"${this.fields.carteira["@id"]}"}`;
       }
     },
   },
@@ -263,7 +264,6 @@ export default {
   computed: {
     ...mapGetters({
       loading: "isLoading",
-      filters: "getFilters",
       fields: "getFields",
       fieldsErrors: "getFieldsErrors",
     }),

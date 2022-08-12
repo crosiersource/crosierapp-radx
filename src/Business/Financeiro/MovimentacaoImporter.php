@@ -308,7 +308,7 @@ class MovimentacaoImporter
                         ['valor', 'EQ', $valor],
                     ]);
                     if (!$movimentacao) {
-                        
+
                         // 2) Ou ela sendo ABERTA e considerando apenas numCartao, parcelaNum, e etc.
                         // 
                         // * Aqui ignora-se o valor, pois em caso de parcelamento a operadora pode usar uma conta diferente da conta do Crosier
@@ -317,7 +317,7 @@ class MovimentacaoImporter
                         // Mas aí pega a primeira e considera como sendo o pagamento.
                         // A única forma de melhorar isso seria através de um POS (em extinção) ou
                         // exigir a digitação do NSU ou outro número (inviável a nível de operação)
-                        
+
                         $rsMovimentacoes = $this->repoMovimentacao->findByFiltersSimpl([
                             ['categoria', 'EQ', $categ191],
                             ['operadoraCartao', 'EQ', $operadoraCartao],
@@ -346,7 +346,7 @@ class MovimentacaoImporter
                     $movimentacao->status = 'REALIZADA';
                     $movimentacao->dtVencto = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtVencto']]);
                     $movimentacao->dtPagto = DateTimeUtils::parseDateStr($campos[$padraoCabecalho['campos']['dtVencto']]);
-                    
+
                     $movimentacao->jsonData['importacao_linha'] = $linha;
                     $movimentacao->jsonData['importacao_campos'] = $campos;
 
@@ -403,21 +403,58 @@ class MovimentacaoImporter
      */
     public function importarExtratoGrupo(GrupoItem $grupoItem, string $linhasExtrato)
     {
-        $conn = $this->movimentacaoEntityHandler->getDoctrine()->getConnection();
+        $linhasImportadas = []; // para exibir no resultado final
+        $linhasNaoImportadas = []; // para exibir no resultado final
+
+        $this->linhasAImportar = [];
+
+        $this->linhas = explode("\n", $linhasExtrato);
+
+        $r = [];
+        $r['LINHAS_RESULT'] = null;
+        $r['movs'] = null;
+        $r['err'] = null;
+
+        $qtdeLinhas = count($this->linhas);
+
+
+        for ($i = 0; $i < $qtdeLinhas; $i++) {
+            $linha = trim($this->linhas[$i]);
+
+            // Verifica se é uma linha (de descrição) complementar já importada
+            if (in_array($i, $this->linhasComplementares, true)) {
+                $this->linhasAImportar[] = $linha;
+                continue;
+            }
+
+            if (!$linha || trim($linha) === TXT_LINHA_IMPORTADA || trim($linha) === TXT_LINHA_NAO_IMPORTADA) {
+                $linhasNaoImportadas[] = $linha;
+                continue;
+            }
+
+            if (!$this->ehLinhaExtratoSimplesOuSaldo($linha)) {
+                $linhasNaoImportadas[] = $linha . ' (NÃO É LINHA DE EXTRATO?)';
+                continue;
+            }
+
+            $this->linhasAImportar[] = $linha;
+        }
 
         try {
+            $conn = $this->movimentacaoEntityHandler->getDoctrine()->getConnection();
             $conn->beginTransaction();
 
             $movimentacoes = [];
 
             $i = 0;
-            foreach ($this->linhasAImportar as $linha) {
+
+            foreach ($this->linhasAImportar as $i => $linha) {
 
                 if (!$linha || $linha === TXT_LINHA_NAO_IMPORTADA || $linha === TXT_LINHA_IMPORTADA) {
                     continue;
                 }
 
-                $camposLinha = $this->importLinhaExtratoSimples($i);
+                $camposLinha = $this->obterCamposLinha($i);
 
                 $descricao = $camposLinha['descricao'];
                 $dtMoviment = $camposLinha['dtMoviment'];
@@ -428,10 +465,10 @@ class MovimentacaoImporter
 
                 // Tenta encontrar uma movimentação com as características passadas.
                 $movs = $this->repoMovimentacao
-                    ->findBy([
-                        'dtMoviment' => $dtMoviment,
-                        'valor' => $valor,
-                        'grupoItem' => $this->grupoItem
+                    ->findAllByFiltersSimpl([
+                        ['dtMoviment', 'EQ', $dtMoviment->format('Y-m-d')],
+                        ['valor', 'EQ', $valor],
+                        ['grupoItem', 'EQ', $this->grupoItem],
                     ]);
 
                 /** @var Movimentacao $importada */
@@ -440,19 +477,21 @@ class MovimentacaoImporter
                     $importada = $movs[0];
                 }
 
-                if ($importada && !$importada->dtPagto) {
-                    $importada->status = 'REALIZADA';
-                    $importada->dtPagto = $dtVenctoEfetiva;
+                if ($importada) {
+                    if (!$importada->dtPagto) {
+                        $importada->status = 'REALIZADA';
+                        $importada->dtPagto = $dtVenctoEfetiva;
+                    }
                 } else {
 
                     $importada = new Movimentacao();
                     $importada->UUID = (StringUtils::guidv4());
 
-                    $importada->grupoItem = ($this->grupoItem);
+                    $importada->grupoItem = $grupoItem;
 
                     /** @var Categoria $categ101 */
-                    $categ101 = $this->repoCategoria->findOneBy(['codigo' => '202001']);  // 2.02.001 - CUSTOS DE MERCADORIAS
-                    $importada->categoria = ($categ101);
+                    $categ295 = $this->repoCategoria->findOneBy(['codigo' => '295']);
+                    $importada->categoria = ($categ295);
 
                     $importada->centroCusto = ($this->repoCentroCusto->find(1));
                     $importada->modo = ($this->repoModo->find(50));
@@ -474,11 +513,25 @@ class MovimentacaoImporter
 
                     $importada->bandeiraCartao = (null);
                 }
+                $this->movimentacaoEntityHandler->save($importada);
 
                 $movimentacoes[] = $importada;
             }
 
-            return $movimentacoes;
+            $r['LINHAS_RESULT'] = '';
+            if (count($linhasNaoImportadas) > 0) {
+                $r['LINHAS_RESULT'] .= TXT_LINHA_NAO_IMPORTADA . "\n" .
+                    implode("\n", $linhasNaoImportadas) . "\n\n\n\n\n";
+            }
+            $r['LINHAS_RESULT'] .= TXT_LINHA_IMPORTADA . "\n" .
+                implode("\n", $linhasImportadas);
+
+            $r['qtdeImportadas'] = count($linhasImportadas);
+            $r['qtdeNaoImportadas'] = count($linhasNaoImportadas);
+
+
+            $r['menorData'] = $this->menorDt ? $this->menorDt->format('Y-m-d') : null;
+            $r['maiorData'] = $this->maiorDt ? $this->maiorDt->format('Y-m-d') : null;
 
             $conn->commit();
             $r['RESULT'] = 'OK';
@@ -793,7 +846,7 @@ class MovimentacaoImporter
             $movimentacao->valorTotal = ($valor);
 
 //            if ($regra->status === 'REALIZADA') {
-                $movimentacao->dtPagto = ($dtVenctoEfetiva);
+            $movimentacao->dtPagto = ($dtVenctoEfetiva);
 //            }
 
             return $movimentacao;
