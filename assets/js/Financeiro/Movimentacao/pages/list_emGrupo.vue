@@ -118,7 +118,7 @@
                   <small>{{ r.data.sacado }}</small>
                 </div>
                 <div v-if="r.data.categoria.codigoSuper === 2 && r.data.cedente">
-                  <small>{{ r.data.sacado }}</small>
+                  <small>{{ r.data.cedente }}</small>
                 </div>
 
                 <div class="text-right w-100">
