@@ -8,20 +8,6 @@
     titulo="Movimentação"
     subtitulo="Transferência entre Carteiras"
   >
-    <template #btns>
-      <div class="dropdown ml-2 float-right">
-        <button
-          v-if="this.fields.id"
-          type="button"
-          class="btn btn-danger"
-          @click="this.deletar"
-          title="Deletar movimentação"
-        >
-          <i class="fa fa-trash" aria-hidden="true"></i> Deletar
-        </button>
-      </div>
-    </template>
-
     <div class="form-row">
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
 

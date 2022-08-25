@@ -385,7 +385,10 @@
               />
             </div>
 
-            <div class="form-row form-group camposEmpilhados" v-if="this.exibirDtPagto">
+            <div
+              class="form-row form-group camposEmpilhados"
+              v-if="this.fields.dtPagto || this.exibirDtPagto"
+            >
               <label class="col-form-label col-sm-3" for="dtPagto">Dt Pagto</label>
               <CrosierCalendar
                 :showLabel="false"

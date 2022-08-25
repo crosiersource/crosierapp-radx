@@ -242,7 +242,7 @@
                   role="button"
                   class="btn btn-primary btn-sm ml-1"
                   title="Editar registro"
-                  :href="'/v/fin/movimentacao/aPagarReceber/form?rPagamento=S&id=' + r.data.id"
+                  :href="'/fin/movimentacao/edit/' + r.data.id"
                   ><i class="fas fa-wrench" aria-hidden="true"></i
                 ></a>
                 <a

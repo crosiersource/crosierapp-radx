@@ -1194,10 +1194,14 @@ CREATE TABLE `fin_fatura`
 (
   `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
 
+  `sacado_documento`   varchar(14)  DEFAULT NULL,
+  `sacado_nome`        varchar(255) DEFAULT NULL,
+  `cedente_documento`  varchar(14)  DEFAULT NULL,
+  `cedente_nome`       varchar(255) DEFAULT NULL,
   `dt_fatura`          datetime   NOT NULL,
   `fechada`            tinyint(1) NOT NULL,
   `quitada`            tinyint(1) NOT NULL,
-  `transacional`       tinyint(1) NOT NULL,
+  `cancelada`          tinyint(1) NOT NULL,
   `json_data`          json,
 
   `inserted`           datetime   NOT NULL,

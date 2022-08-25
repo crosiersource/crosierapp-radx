@@ -89,6 +89,29 @@ class MovimentacaoController extends FormListController
 
     /**
      *
+     * @Route("/fin/movimentacao/edit/{movimentacao}", name="fin_movimentacao_edit", requirements={"movimentacao"="\d+"})
+     * @param Cadeia $cadeia
+     * @return Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_FINAN", statusCode=403)
+     */
+    public function edit(Movimentacao $movimentacao): Response
+    {
+        $url = '/v/fin/movimentacao/aPagarReceber/form';
+        if (in_array($movimentacao->categoria->codigo, [199,299], true)) {
+            $url = '/v/fin/movimentacao/transfEntreCarteiras/form';
+        } elseif ($movimentacao->grupoItem) {
+            $url = '/v/fin/movimentacao/grupo/form';
+        } elseif ($movimentacao->status === 'ABERTA') {
+            $url = '/v/fin/movimentacao/aPagarReceber/form';
+        }
+        $url .= '?id=' . $movimentacao->getId();
+        return $this->redirect($url);
+    }
+    
+    /**
+     *
      * @Route("/fin/movimentacao/listCadeia/{cadeia}", name="movimentacao_listCadeia", requirements={"cadeia"="\d+"})
      * @param Cadeia $cadeia
      * @return Response
