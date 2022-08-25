@@ -247,16 +247,16 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.0.26",
+            "version": "v1.0.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "ae8c317031a70593d0e735ab187d8a14313f6f94"
+                "reference": "32a8bb9017fdf57d216d43629b25e39b2b934b6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/ae8c317031a70593d0e735ab187d8a14313f6f94",
-                "reference": "ae8c317031a70593d0e735ab187d8a14313f6f94",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/32a8bb9017fdf57d216d43629b25e39b2b934b6c",
+                "reference": "32a8bb9017fdf57d216d43629b25e39b2b934b6c",
                 "shasum": ""
             },
             "require": {
@@ -304,9 +304,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.0.26"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.0.27"
             },
-            "time": "2022-08-19T18:08:12+00:00"
+            "time": "2022-08-25T21:07:15+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -546,16 +546,16 @@
         },
         {
             "name": "doctrine/common",
-            "version": "3.3.0",
+            "version": "3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/common.git",
-                "reference": "c824e95d4c83b7102d8bc60595445a6f7d540f96"
+                "reference": "e09556bbdf95b8420e649162b19ae9da2d1a80f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/common/zipball/c824e95d4c83b7102d8bc60595445a6f7d540f96",
-                "reference": "c824e95d4c83b7102d8bc60595445a6f7d540f96",
+                "url": "https://api.github.com/repos/doctrine/common/zipball/e09556bbdf95b8420e649162b19ae9da2d1a80f3",
+                "reference": "e09556bbdf95b8420e649162b19ae9da2d1a80f3",
                 "shasum": ""
             },
             "require": {
@@ -564,6 +564,7 @@
             },
             "require-dev": {
                 "doctrine/coding-standard": "^9.0",
+                "doctrine/collections": "^1",
                 "phpstan/phpstan": "^1.4.1",
                 "phpstan/phpstan-phpunit": "^1",
                 "phpunit/phpunit": "^7.5.20 || ^8.5 || ^9.0",
@@ -574,7 +575,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Doctrine\\Common\\": "lib/Doctrine/Common"
+                    "Doctrine\\Common\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -616,7 +617,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/common/issues",
-                "source": "https://github.com/doctrine/common/tree/3.3.0"
+                "source": "https://github.com/doctrine/common/tree/3.4.0"
             },
             "funding": [
                 {
@@ -632,20 +633,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-02-05T18:28:51+00:00"
+            "time": "2022-08-23T19:46:56+00:00"
         },
         {
             "name": "doctrine/dbal",
-            "version": "3.4.1",
+            "version": "3.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "94e016428884227245fb1219e0de7d8b86ca16d7"
+                "reference": "22de295f10edbe00df74f517612f1fbd711131e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/94e016428884227245fb1219e0de7d8b86ca16d7",
-                "reference": "94e016428884227245fb1219e0de7d8b86ca16d7",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/22de295f10edbe00df74f517612f1fbd711131e2",
+                "reference": "22de295f10edbe00df74f517612f1fbd711131e2",
                 "shasum": ""
             },
             "require": {
@@ -727,7 +728,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.4.1"
+                "source": "https://github.com/doctrine/dbal/tree/3.4.2"
             },
             "funding": [
                 {
@@ -743,7 +744,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-16T18:37:46+00:00"
+            "time": "2022-08-21T14:21:06+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -3300,16 +3301,16 @@
         },
         {
             "name": "nfephp-org/sped-common",
-            "version": "v5.1.3",
+            "version": "v5.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-common.git",
-                "reference": "eec2d219a0910d79f59248bb9ee4d710bdab1a8b"
+                "reference": "57437eb3c568577c0781cf58e732a4e417b393b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-common/zipball/eec2d219a0910d79f59248bb9ee4d710bdab1a8b",
-                "reference": "eec2d219a0910d79f59248bb9ee4d710bdab1a8b",
+                "url": "https://api.github.com/repos/nfephp-org/sped-common/zipball/57437eb3c568577c0781cf58e732a4e417b393b0",
+                "reference": "57437eb3c568577c0781cf58e732a4e417b393b0",
                 "shasum": ""
             },
             "require": {
@@ -3373,9 +3374,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nfephp-org/sped-common/issues",
-                "source": "https://github.com/nfephp-org/sped-common/tree/v5.1.3"
+                "source": "https://github.com/nfephp-org/sped-common/tree/v5.1.4"
             },
-            "time": "2022-06-24T15:22:05+00:00"
+            "time": "2022-08-22T15:02:53+00:00"
         },
         {
             "name": "nfephp-org/sped-da",
