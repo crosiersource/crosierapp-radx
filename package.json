@@ -13,7 +13,7 @@
         "deepmerge": "^4.2.2",
         "mitt": "^2.1.0",
         "moment": "^2.29.4",
-        "moment-timezone": "^0.5.33",
+        "moment-timezone": "^0.5.35",
         "primeflex": "2.0.0",
         "primeicons": "^5.0.0",
         "primevue": "^3.12.4",
