@@ -410,8 +410,8 @@ CREATE TABLE `est_produto_composicao`
   `preco_atual`        decimal(15, 2) NOT NULL,
   `preco_composicao`   decimal(15, 2) NOT NULL,
 
-  UNIQUE KEY `UK_est_produto_composicao` (`produto_pai_id`, `produto_filho_id`),
-
+  KEY `FK_est_produto_composicao_produto_pai` KEY (`produto_pai_id`),
+  KEY `FK_est_produto_composicao_produto_filho` KEY (`produto_filho_id`),
   CONSTRAINT `FK_est_produto_composicao_produto_pai` FOREIGN KEY (`produto_pai_id`) REFERENCES `est_produto` (`id`),
   CONSTRAINT `FK_est_produto_composicao_produto_filho` FOREIGN KEY (`produto_filho_id`) REFERENCES `est_produto` (`id`),
 
@@ -1194,14 +1194,17 @@ CREATE TABLE `fin_fatura`
 (
   `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
 
-  `sacado_documento`   varchar(14)  DEFAULT NULL,
-  `sacado_nome`        varchar(255) DEFAULT NULL,
-  `cedente_documento`  varchar(14)  DEFAULT NULL,
-  `cedente_nome`       varchar(255) DEFAULT NULL,
+  `descricao`          varchar(500)  DEFAULT NULL,
+  `sacado_documento`   varchar(14)   DEFAULT NULL,
+  `sacado_nome`        varchar(255)  DEFAULT NULL,
+  `cedente_documento`  varchar(14)   DEFAULT NULL,
+  `cedente_nome`       varchar(255)  DEFAULT NULL,
   `dt_fatura`          datetime   NOT NULL,
+  `dt_vencto`          datetime   NOT NULL,
   `fechada`            tinyint(1) NOT NULL,
   `quitada`            tinyint(1) NOT NULL,
   `cancelada`          tinyint(1) NOT NULL,
+  `obs`                varchar(2000) DEFAULT NULL,
   `json_data`          json,
 
   `inserted`           datetime   NOT NULL,
@@ -1237,7 +1240,9 @@ CREATE TABLE `fin_movimentacao`
   `documento_banco_id`      bigint(20),
   `documento_num`           varchar(200),
 
+  `sacado_documento`        varchar(14),
   `sacado`                  varchar(500),
+  `cedente_documento`       varchar(14),
   `cedente`                 varchar(500),
 
   `movimentacao_pagante_id` bigint(20)                                       default null,
@@ -1303,6 +1308,12 @@ CREATE TABLE `fin_movimentacao`
 
   PRIMARY KEY (`id`),
 
+  KEY `K_fin_movimentacao_sacado_documento` (`sacado_documento`),
+  KEY `K_fin_movimentacao_sacado` (`sacado`),
+  KEY `K_fin_movimentacao_cedente_documento` (`cedente_documento`),
+  KEY `K_fin_movimentacao_cedente` (`cedente`),
+  KEY `K_fin_movimentacao_descricao` (`descricao`),
+  KEY `K_fin_movimentacao_dt_vencto` (`dt_vencto`),
   KEY `K_fin_movimentacao_dt_vencto_efetiva` (`dt_vencto_efetiva`),
   KEY `K_fin_movimentacao_dt_pagto` (`dt_pagto`),
   KEY `K_fin_movimentacao_dt_util` (`dt_util`),

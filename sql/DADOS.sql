@@ -670,7 +670,6 @@ REPLACE INTO `fin_tipo_lancto` (`id`, `codigo`, `descricao`, `inserted`, `update
 VALUES (20, 20, 'MOVIMENTAÇÃO NORMAL', now(), now(), 0, 1, 1, 1),
        (60, 60, 'TRANSFERÊNCIA ENTRE CARTEIRAS', now(), now(), 0, 1, 1, 1),
        (61, 61, 'TRANSFERÊNCIA DE ENTRADA DE CAIXA', now(), now(), 0, 1, 1, 1),
-       (62, 62, 'FATURA TRANSACIONAL', now(), now(), 0, 1, 1, 1),
        (63, 63, 'MOVIMENTAÇÃO CARTÃO CRÉDITO/DÉBITO', now(), now(), 0, 1, 1, 1),
        (64, 64, 'ENTRADA DE CAIXA POR TRANSF. BANCÁRIA', now(), now(), 0, 1, 1, 1);
 
@@ -710,8 +709,8 @@ INSERT INTO `fin_categoria`
 (id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
  descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
  inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
-
 VALUES (110, 110, 'RECEB. FATURA', 1, 0, 1, '', 0, '', '', 110000000000, now(), now(), 0, 1, 1, 1);
+
 INSERT INTO `fin_categoria`
 (id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
  descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
@@ -825,6 +824,12 @@ INSERT INTO `fin_categoria`
  descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
  inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (209, 209, 'SAÍDAS VIRTUAIS', 2, 0, 2, NULL, 0, NULL, NULL, 209000000000, now(), now(), 0, 1, 1, 1);
+
+INSERT INTO `fin_categoria`
+(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
+ descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
+ inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES (210, 210, 'PAGTO. FATURA', 2, 0, 2, '', 0, '', '', 210000000000, now(), now(), 0, 1, 1, 1);
 
 INSERT INTO `fin_categoria`
 (id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,

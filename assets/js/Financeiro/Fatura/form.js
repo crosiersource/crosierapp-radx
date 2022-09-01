@@ -1,0 +1,85 @@
+import { createApp } from "vue";
+import PrimeVue from "primevue/config";
+import ToastService from "primevue/toastservice";
+import { createStore } from "vuex";
+import { api } from "crosier-vue";
+import primevueOptions from "crosier-vue/src/primevue.config.js";
+import ConfirmationService from "primevue/confirmationservice";
+import Page from "./pages/form_caixa";
+import "primeflex/primeflex.css";
+import "primevue/resources/themes/bootstrap4-light-blue/theme.css"; // theme
+import "primevue/resources/primevue.min.css"; // core css
+import "primeicons/primeicons.css";
+
+import "crosier-vue/src/yup.locale.pt-br.js";
+
+const app = createApp(Page);
+
+app.use(PrimeVue, primevueOptions);
+app.use(ConfirmationService);
+app.use(ToastService);
+
+// Create a new store instance.
+const store = createStore({
+  state() {
+    return {
+      loading: 0,
+      fatura: {},
+      faturaErrors: {},
+    };
+  },
+
+  getters: {
+    isLoading: (state) => state.loading > 0,
+    getFatura: (state) => state.fatura,
+    getFaturaErrors: (state) => state.faturaErrors,
+  },
+
+  mutations: {
+    setLoading(state, loading) {
+      if (loading) {
+        state.loading++;
+      } else {
+        state.loading--;
+      }
+    },
+
+    setFatura(state, fatura) {
+      fatura.dtMoviment = fatura.dtMoviment ? new Date(fatura.dtMoviment) : null;
+      fatura.dtVencto = fatura.dtVencto ? new Date(fatura.dtVencto) : null;
+      fatura.dtVenctoEfetiva = fatura.dtVenctoEfetiva ? new Date(fatura.dtVenctoEfetiva) : null;
+      state.fatura = fatura;
+    },
+
+    setFaturaErrors(state, formErrors) {
+      state.faturaErrors = formErrors;
+    },
+  },
+
+  actions: {
+    async loadData(context) {
+      context.commit("setLoading", true);
+      const id = new URLSearchParams(window.location.search.substring(1)).get("id");
+      if (id) {
+        try {
+          const response = await api.get({
+            apiResource: `/api/fin/movimentacao/${id}`,
+          });
+
+          if (response.data["@id"]) {
+            context.commit("setFatura", response.data);
+          } else {
+            console.error("Id não encontrado");
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      context.commit("setLoading", false);
+    },
+  },
+});
+
+app.use(store);
+
+app.mount("#app");

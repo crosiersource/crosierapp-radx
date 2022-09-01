@@ -629,6 +629,7 @@ export default {
 
           delete formData.tipoLancto;
           delete formData.cadeia;
+          delete formData.fatura;
         },
       });
       this.setLoading(false);

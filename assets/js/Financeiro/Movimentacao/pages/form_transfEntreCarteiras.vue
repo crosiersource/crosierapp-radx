@@ -174,6 +174,8 @@ export default {
           delete formData.centroCusto;
           delete formData.movimentacaoOposta;
           delete formData.grupoItem;
+          delete formData.fatura;
+
           formData.tipoLancto = formData.tipoLancto["@id"];
           formData.categoria = formData.categoria["@id"];
           formData.valor = formData.valorTotal;

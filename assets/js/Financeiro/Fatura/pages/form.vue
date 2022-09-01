@@ -2,12 +2,7 @@
   <Toast position="bottom-right" class="mb-5" />
   <ConfirmDialog></ConfirmDialog>
 
-  <CrosierFormS
-    @submitForm="this.submitForm"
-    formUrl="caixa"
-    :listUrl="null"
-    titulo="Movimentação em Caixa"
-  >
+  <CrosierFormS @submitForm="this.submitForm" titulo="Fatura">
     <template #divCima>
       <div>
         <CrosierDropdownEntity
@@ -462,7 +457,6 @@ export default {
             }
 
             delete formData.cadeia;
-            delete formData.fatura;
           },
         });
       } catch (e) {

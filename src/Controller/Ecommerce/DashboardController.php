@@ -49,7 +49,7 @@ class DashboardController extends BaseController
                 DATE_FORMAT(v.dt_venda, :group) as dt,
                 sum(valor_total) AS valor_total
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim
+            WHERE DATE(v.dt_venda) BETWEEN :dtIni AND :dtFim
             AND v.status NOT LIKE '%CANCELADO%'
             GROUP BY DATE_FORMAT(v.dt_venda, :group)
             ORDER BY DATE_FORMAT(v.dt_venda, :group)
@@ -149,7 +149,7 @@ class DashboardController extends BaseController
             FROM ecomm_tray_venda v,
                  ecomm_cliente_config config,
                  crm_cliente cli
-            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
+            WHERE DATE(v.dt_venda) BETWEEN :dtIni AND :dtFim 
               AND v.cliente_config_id = config.id
               AND config.cliente_id = cli.id 
               AND v.status NOT LIKE '%CANCELADO%'
@@ -163,7 +163,7 @@ class DashboardController extends BaseController
         $sqlTotais = "
             SELECT sum(valor_total) as total_vendido
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
+            WHERE DATE(v.dt_venda) BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
         ";
 
@@ -202,7 +202,7 @@ class DashboardController extends BaseController
             SELECT sum(valor_total) AS valor_total,
                    point_sale
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
+            WHERE DATE(v.dt_venda) BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
             GROUP BY point_sale
             ORDER BY valor_total DESC
@@ -211,7 +211,7 @@ class DashboardController extends BaseController
         $sqlTotais = "
             SELECT sum(valor_total) as total_vendido
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
+            WHERE DATE(v.dt_venda) BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
         ";
 
@@ -252,7 +252,7 @@ class DashboardController extends BaseController
         $rsTotalGeral = $conn->fetchAssociative(
             "SELECT sum(valor_total) AS valor_total
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
+            WHERE DATE(v.dt_venda) BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
             ", [
             'dtIni' => $dtIni->format('Y-m-d'),
@@ -262,7 +262,7 @@ class DashboardController extends BaseController
         $rsQtdeVendas = $conn->fetchAssociative(
             "SELECT count(*) AS qtde_vendas
             FROM ecomm_tray_venda v
-            WHERE v.dt_venda BETWEEN :dtIni AND :dtFim 
+            WHERE DATE(v.dt_venda) BETWEEN :dtIni AND :dtFim 
             AND v.status NOT LIKE '%CANCELADO%'
             ", [
             'dtIni' => $dtIni->format('Y-m-d'),
@@ -272,7 +272,7 @@ class DashboardController extends BaseController
         $rsQtdePerguntas = $conn->fetchAssociative(
             "SELECT count(*) AS qtde_perguntas
             FROM ecomm_ml_pergunta
-            WHERE dt_pergunta BETWEEN :dtIni AND :dtFim
+            WHERE DATE(dt_pergunta) BETWEEN :dtIni AND :dtFim
             ", [
             'dtIni' => $dtIni->format('Y-m-d'),
             'dtFim' => $dtFim->format('Y-m-d'),

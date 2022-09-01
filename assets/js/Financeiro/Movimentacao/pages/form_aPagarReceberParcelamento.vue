@@ -647,6 +647,7 @@ export default {
               };
 
               delete formData.tipoLancto;
+              delete formData.fatura;
             },
           });
 

@@ -340,6 +340,7 @@ export default {
           delete formData.cadeia;
           delete formData.carteira;
           delete formData.modo;
+          delete formData.fatura;
         },
       });
       this.setLoading(false);
