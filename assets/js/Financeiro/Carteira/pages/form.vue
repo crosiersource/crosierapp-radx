@@ -2,7 +2,7 @@
   <Toast position="bottom-right" class="mb-5" />
   <CrosierFormS @submitForm="this.submitForm" titulo="Carteira">
     <div class="form-row">
-      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
+      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" disabled />
 
       <CrosierInputInt
         label="Código"
@@ -104,7 +104,7 @@
         label="Status"
         col="5"
         v-model="this.fields.caixaStatus"
-        :disabled="true"
+        disabled
       />
 
       <CrosierInputText
@@ -113,7 +113,7 @@
         label="Responsável Atual"
         col="7"
         v-model="this.fields.caixaResponsavel.nome"
-        :disabled="true"
+        disabled
       />
     </div>
   </CrosierFormS>

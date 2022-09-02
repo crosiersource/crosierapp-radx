@@ -101,7 +101,7 @@
     </template>
 
     <div class="form-row">
-      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
+      <CrosierInputId col="2" v-model="this.fields.id" disabled />
 
       <CrosierDropdownEntity
         col="10"
@@ -113,6 +113,32 @@
         :orderBy="{ codigoOrd: 'ASC' }"
         label="Categoria"
         id="categoria"
+      />
+    </div>
+
+    <div class="form-row" v-if="this.fields?.fatura?.id">
+      <CrosierInputId
+        label="Id da Fatura"
+        col="2"
+        id="fatura_id"
+        v-model="this.fields.fatura.id"
+        disabled
+      />
+
+      <CrosierInputText
+        col="7"
+        label="Fatura"
+        v-model="this.fields.fatura.descricao"
+        disabled
+        :appendButtonLinkHref="'/v/fin/fatura/form?id=' + this.fields.fatura.id"
+        appendButtonLinkTarget="_self"
+      />
+
+      <CrosierCurrency
+        label="Total da Fatura"
+        col="3"
+        v-model="this.fields.fatura.valorTotal"
+        disabled
       />
     </div>
 
@@ -475,12 +501,12 @@ import Skeleton from "primevue/skeleton";
 import ConfirmDialog from "primevue/confirmdialog";
 import * as yup from "yup";
 import {
+  CrosierInputId,
   CrosierCurrency,
   CrosierDropdown,
   CrosierDropdownEntity,
   CrosierAutoComplete,
   CrosierFormS,
-  CrosierInputInt,
   CrosierInputText,
   CrosierInputTextarea,
   CrosierCalendar,
@@ -502,7 +528,7 @@ export default {
     CrosierFormS,
     CrosierDropdown,
     CrosierInputText,
-    CrosierInputInt,
+    CrosierInputId,
     CrosierAutoComplete,
     CrosierInputTextarea,
     Skeleton,
@@ -629,7 +655,9 @@ export default {
 
           delete formData.tipoLancto;
           delete formData.cadeia;
-          delete formData.fatura;
+          if (formData.fatura && formData.fatura["@id"]) {
+            formData.fatura = formData.fatura["@id"];
+          }
         },
       });
       this.setLoading(false);

@@ -2,7 +2,7 @@
   <Toast position="bottom-right" class="mt-5" />
   <CrosierFormS :withoutCard="true" @submitForm="this.submitForm">
     <div class="form-row">
-      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
+      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" disabled />
 
       <CrosierInputText
         label="Código"
@@ -159,7 +159,7 @@
         :decimais="this.fields.unidadePadrao.casasDecimais"
         v-model="this.fields.qtdeTotal"
         :error="this.formErrors.qtdeTotal"
-        :disabled="true"
+        disabled
       />
       <div class="col-md-4" v-else>
         <div class="form-group">
@@ -196,7 +196,7 @@
         col="3"
         id="preco_ecommerce"
         v-model="this.fields.jsonData['preco_ecommerce']"
-        :disabled="true"
+        disabled
       />
 
       <CrosierCurrency
@@ -204,7 +204,7 @@
         col="3"
         id="preco_tabela"
         v-model="this.fields.jsonData['preco_tabela']"
-        :disabled="true"
+        disabled
       />
 
       <CrosierCurrency
@@ -212,7 +212,7 @@
         col="3"
         id="preco_venda_com_desconto"
         v-model="this.fields.jsonData['preco_venda_com_desconto']"
-        :disabled="true"
+        disabled
       />
 
       <CrosierCurrency
@@ -220,7 +220,7 @@
         col="3"
         id="preco_promocao"
         v-model="this.fields.jsonData['preco_promocao']"
-        :disabled="true"
+        disabled
       />
     </div>
   </CrosierFormS>

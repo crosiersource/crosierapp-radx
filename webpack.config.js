@@ -108,6 +108,8 @@ Encore
   
   .addEntry('fin/cadeia/exibirMovimentacoes', './assets/js/Financeiro/Movimentacao/cadeia_exibirMovimentacoes.js')
   
+  .addEntry('fin/fatura/form', './assets/js/Financeiro/Fatura/form.js')
+  
 
 
   .addEntry('fis/notaFiscal/recebidas/list', './assets/js/Fiscal/NotaFiscal/recebidasList.js')

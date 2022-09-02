@@ -55,7 +55,7 @@
     </template>
 
     <div class="form-row">
-      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" :disabled="true" />
+      <CrosierInputInt label="Id" col="2" id="id" v-model="this.fields.id" disabled />
 
       <CrosierDropdownEntity
         col="10"

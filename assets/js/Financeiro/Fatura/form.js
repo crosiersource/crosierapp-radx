@@ -5,7 +5,7 @@ import { createStore } from "vuex";
 import { api } from "crosier-vue";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
 import ConfirmationService from "primevue/confirmationservice";
-import Page from "./pages/form_caixa";
+import Page from "./pages/form";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
@@ -45,9 +45,6 @@ const store = createStore({
     },
 
     setFatura(state, fatura) {
-      fatura.dtMoviment = fatura.dtMoviment ? new Date(fatura.dtMoviment) : null;
-      fatura.dtVencto = fatura.dtVencto ? new Date(fatura.dtVencto) : null;
-      fatura.dtVenctoEfetiva = fatura.dtVenctoEfetiva ? new Date(fatura.dtVenctoEfetiva) : null;
       state.fatura = fatura;
     },
 
@@ -63,7 +60,7 @@ const store = createStore({
       if (id) {
         try {
           const response = await api.get({
-            apiResource: `/api/fin/movimentacao/${id}`,
+            apiResource: `/api/fin/fatura/${id}`,
           });
 
           if (response.data["@id"]) {

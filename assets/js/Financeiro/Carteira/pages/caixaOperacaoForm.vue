@@ -25,7 +25,7 @@
           label="Status"
           col="6"
           v-model="this.fields.carteira.caixaStatus"
-          :disabled="true"
+          disabled
         />
 
         <CrosierInputText
@@ -34,7 +34,7 @@
           label="Responsável Atual"
           col="6"
           v-model="this.fields.carteira.caixaResponsavel.nome"
-          :disabled="true"
+          disabled
         />
       </div>
       <div class="form-row">
@@ -43,7 +43,7 @@
           label="Operação"
           col="3"
           v-model="this.fields.operacao"
-          :disabled="true"
+          disabled
         />
 
         <CrosierCalendar
@@ -52,7 +52,7 @@
           inputClass="crsr-datetime"
           col="3"
           v-model="this.fields.dtOperacao"
-          :disabled="true"
+          disabled
         />
 
         <CrosierInputText
@@ -60,7 +60,7 @@
           label="Responsável"
           col="3"
           v-model="this.fields.responsavel.nome"
-          :disabled="true"
+          disabled
         />
 
         <CrosierCurrency

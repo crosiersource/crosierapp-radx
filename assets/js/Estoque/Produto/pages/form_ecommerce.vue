@@ -6,7 +6,7 @@
         label="Integrado"
         id="integrado"
         v-model="this.fields.ecommerce"
-        :disabled="true"
+        disabled
       />
     </div>
 
@@ -16,7 +16,7 @@
         label="Integrado por"
         v-model="this.fields.jsonData['ecommerce_integr_por']"
         col="6"
-        :disabled="true"
+        disabled
       />
 
       <CrosierCalendar
@@ -26,7 +26,7 @@
         :showSeconds="true"
         id="dtUltIntegracaoEcommerce"
         v-model="this.fields.dtUltIntegracaoEcommerce"
-        :disabled="true"
+        disabled
       />
 
       <div class="col-2">

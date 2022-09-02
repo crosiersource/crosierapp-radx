@@ -2,7 +2,7 @@
   <Toast position="bottom-right" class="mb-5" />
   <CrosierFormS @submitForm="this.submitForm" titulo="Modo">
     <div class="form-row">
-      <CrosierInputInt label="Id" col="3" id="id" v-model="this.fields.id" :disabled="true" />
+      <CrosierInputInt label="Id" col="3" id="id" v-model="this.fields.id" disabled />
 
       <CrosierInputInt
         label="Código"

@@ -10,7 +10,7 @@
     <CrosierFormS @submitForm="this.submitForm" titulo="Categoria" :withoutCard="true">
       <div class="form-row">
         <CrosierInputText
-          :disabled="true"
+          disabled
           v-if="this.fields.pai"
           label="Pai"
           col="12"
@@ -19,7 +19,7 @@
         />
 
         <CrosierInputText
-          :disabled="true"
+          disabled
           v-if="!this.fields.pai"
           label="Código"
           col="4"

@@ -74,6 +74,22 @@ const store = createStore({
         } catch (err) {
           console.error(err);
         }
+      } else {
+        const faturaId = new URLSearchParams(window.location.search.substring(1)).get("fatura");
+
+        try {
+          const response = await api.get({
+            apiResource: `/api/fin/fatura/${faturaId}`,
+          });
+
+          if (response.data["@id"]) {
+            context.commit("setFields", { fatura: response.data });
+          } else {
+            console.error("Fatura não encontrada");
+          }
+        } catch (err) {
+          console.error(err);
+        }
       }
       context.commit("setLoading", false);
     },
