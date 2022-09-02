@@ -7,37 +7,67 @@ parameters:
 
 doctrine:
     dbal:
-        # configure these for your database server
-        driver: 'pdo_mysql'
-        server_version: '8'
-        charset: utf8mb4
-        default_table_options:
-            charset: utf8mb4
-            collate: utf8mb4_unicode_ci
-        url: '%env(resolve:DATABASE_URL)%'
-        mapping_types:
-            bit: boolean
-            enum: string
-            json: string
+        default_connection: default
         types:
             datetime: CrosierSource\CrosierLibBaseBundle\Doctrine\Types\DefaultTimezoneDateTimeType
+        connections:
+            default:
+                url: '%env(DATABASE_URL)%'
+                driver: 'pdo_mysql'
+                server_version: '8'
+                mapping_types:
+                    bit: boolean
+                    enum: string
+                    json: string
+                default_table_options:
+                    charset: 'utf8mb4'
+                    collate: 'utf8mb4_unicode_ci'
+            logs:
+                url: '%env(DATABASE_LOGS_URL)%'
+                driver: 'pdo_mysql'
+                server_version: '8'
+                mapping_types:
+                    bit: boolean
+                    enum: string
+                    json: string
+                default_table_options:
+                    charset: 'utf8mb4'
+                    collate: 'utf8mb4_unicode_ci'
     orm:
+        default_entity_manager: default
         auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
-        mappings:
-            App:
-                is_bundle: false
-                type: annotation
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
-        dql:
-            datetime_functions:
-                date_format: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\DateFormat
-                date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date
-            string_functions:
-                JSON_UNQUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
-                JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
-                JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
-                CAST: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Cast
+        entity_managers:
+            default:
+                connection: default
+                auto_mapping: true
+                mappings:
+                    CrosierLibBaseBundle:
+                        type: annotation
+                    CrosierLibRadxBundle:
+                        type: annotation
+                    App:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity'
+                        prefix: 'App\Entity'
+                        alias: App
+                dql:
+                    datetime_functions:
+                        date_format: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\DateFormat
+                        date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date
+                    string_functions:
+                        JSON_UNQUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
+                        JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                        JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
+                        CAST: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Cast
+            logs:
+                connection: logs
+                dql:
+                    datetime_functions:
+                        date_format: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\DateFormat
+                        date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date
+                    string_functions:
+                        JSON_UNQUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
+                        JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                        JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
+                        CAST: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Cast
