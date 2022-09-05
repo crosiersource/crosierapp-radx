@@ -10,9 +10,10 @@ use App\Form\Financeiro\MovimentacaoGeralType;
 use App\Form\Financeiro\MovimentacaoPagtoType;
 use App\Form\Financeiro\MovimentacaoTransferenciaEntreCarteirasType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
-use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\Estabelecimento;
+use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\EstabelecimentoRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
@@ -32,12 +33,14 @@ use CrosierSource\CrosierLibRadxBundle\Repository\Financeiro\MovimentacaoReposit
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * @author Carlos Eduardo Pauluk
@@ -99,7 +102,7 @@ class MovimentacaoController extends FormListController
     public function edit(Movimentacao $movimentacao): Response
     {
         $url = '/v/fin/movimentacao/aPagarReceber/form';
-        if (in_array($movimentacao->categoria->codigo, [199,299], true)) {
+        if (in_array($movimentacao->categoria->codigo, [199, 299], true)) {
             $url = '/v/fin/movimentacao/transfEntreCarteiras/form';
         } elseif ($movimentacao->grupoItem) {
             $url = '/v/fin/movimentacao/grupo/form';
@@ -109,7 +112,7 @@ class MovimentacaoController extends FormListController
         $url .= '?id=' . $movimentacao->getId();
         return $this->redirect($url);
     }
-    
+
     /**
      *
      * @Route("/fin/movimentacao/listCadeia/{cadeia}", name="movimentacao_listCadeia", requirements={"cadeia"="\d+"})
@@ -326,43 +329,6 @@ class MovimentacaoController extends FormListController
 
 
     /**
-     *
-     * @Route("/fin/movimentacao/filiais/", name="fin_movimentacao_filiais")
-     * @return Response
-     * @throws \Exception
-     *
-     * @IsGranted("ROLE_FINAN", statusCode=403)
-     */
-    public function filiais(): Response
-    {
-        return new JsonResponse($this->business->getSelect2jsFiliais());
-    }
-
-    /**
-     *
-     * @Route("/fin/movimentacao/findSacadoOuCedente/", name="fin_movimentacao_findSacadoOuCedente")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     *
-     * @IsGranted("ROLE_FINAN", statusCode=403)
-     */
-    public function findSacadoOuCedente(Request $request): Response
-    {
-        $term = $request->get('term');
-        /** @var MovimentacaoRepository $repoMovimentacao */
-        $repoMovimentacao = $this->getDoctrine()->getRepository(Movimentacao::class);
-
-        $rs = $repoMovimentacao->findSacadoOuCedente($term);
-        $fn = function ($e) {
-            return StringUtils::mascararCnpjCpf($e['documento']) . ' - ' . $e['nome'];
-        };
-        $s2js = Select2JsUtils::toSelect2DataFn($rs, $fn, [], $fn);
-        return new JsonResponse(['results' => $s2js]);
-    }
-
-
-    /**
      * @Route("/fin/movimentacao/clonar/{id}", name="fin_movimentacao_clonar", requirements={"movimentacao"="\d+"})
      * @param Request $request
      * @param Movimentacao|null $movimentacao
@@ -416,21 +382,18 @@ class MovimentacaoController extends FormListController
     public function getFiliais(): Response
     {
         try {
-            /** @var AppConfigRepository $repoAppConfig */
-            $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
-            $filiaisR = json_decode($repoAppConfig->findConfigByChaveAndAppNome('financeiro.filiais_prop.json', 'crosierapp-radx')->valor, true);
-            if (!$filiaisR) {
-                throw new \RuntimeException();
-            }
-            $filiais = [];
-            foreach ($filiaisR as $documento => $nome) {
-                $str = StringUtils::mascararCnpjCpf($documento) . ' - ' . $nome;
-                $filiais[] = [
-                    'label' => $str,
-                    'value' => $str
-                ];
-            }
+            /** @var User $usuarioLogado */
+            $usuarioLogado = $this->getUser();
 
+            $cache = new FilesystemAdapter($_SERVER['CROSIERAPPRADX_UUID'] . '.getFiliais_' . $usuarioLogado->getEstabelecimentoId(), 3600, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+            $filiais = $cache->get('getFiliais', function (ItemInterface $item) use ($usuarioLogado) {
+                /** @var EstabelecimentoRepository $repoEstabelecimento */
+                $repoEstabelecimento = $this->getDoctrine()->getRepository(Estabelecimento::class);
+                /** @var Estabelecimento $estabelecimento */
+                $estabelecimento = $repoEstabelecimento->find($usuarioLogado->getEstabelecimentoId());
+
+                return $estabelecimento->jsonData['financeiro']['filiais'] ?? null;
+            });
 
             return new JsonResponse(
                 [
@@ -660,7 +623,6 @@ class MovimentacaoController extends FormListController
     }
 
 
-
     /**
      *
      * @Route("/api/fin/movimentacao/importar", name="api_fin_movimentacao_importar")
@@ -674,21 +636,21 @@ class MovimentacaoController extends FormListController
             $content = json_decode($request->getContent(), true);
 
             $tipoImportacao = $content['tipoImportacao'];
-            
+
             if ($tipoImportacao === 'EXTRATO_SIMPLES') {
-                $carteiraId = substr($content['carteira'], strrpos($content['carteira'], '/')+1);
+                $carteiraId = substr($content['carteira'], strrpos($content['carteira'], '/') + 1);
                 $carteira = $this->getDoctrine()->getRepository(Carteira::class)->find($carteiraId);
                 $r = $importer->importarExtratoSimples($carteira, $content['linhasImportacao']);
             } elseif ($tipoImportacao === 'EXTRATO_CARTAO') {
-                $operadoraCartaoId = substr($content['operadoraCartao'], strrpos($content['operadoraCartao'], '/')+1);
+                $operadoraCartaoId = substr($content['operadoraCartao'], strrpos($content['operadoraCartao'], '/') + 1);
                 $operadora = $this->getDoctrine()->getRepository(OperadoraCartao::class)->find($operadoraCartaoId);
                 $r = $importer->importarExtratoCartaoPagamentos($operadora, $content['linhasImportacao']);
             } elseif ($tipoImportacao === 'EXTRATO_GRUPO') {
-                $grupoItemId = substr($content['grupoItem'], strrpos($content['grupoItem'], '/')+1);
+                $grupoItemId = substr($content['grupoItem'], strrpos($content['grupoItem'], '/') + 1);
                 $grupoItem = $this->getDoctrine()->getRepository(GrupoItem::class)->find($grupoItemId);
                 $r = $importer->importarExtratoGrupo($grupoItem, $content['linhasImportacao']);
             }
-            
+
             return CrosierApiResponse::success($r);
         } catch (\Exception $e) {
             return CrosierApiResponse::error();

@@ -42,9 +42,21 @@
     </div>
 
     <div class="form-row">
-      <CrosierInputText col="6" label="Sacado" v-model="this.fatura.sacado" disabled />
+      <CrosierInputText
+        col="6"
+        label="Sacado"
+        v-model="this.fatura.sacado"
+        disabled
+        helpText="Quem paga o valor"
+      />
 
-      <CrosierInputText col="6" label="Cedente" v-model="this.fatura.cedente" disabled />
+      <CrosierInputText
+        col="6"
+        label="Cedente"
+        v-model="this.fatura.cedente"
+        disabled
+        helpText="Quem recebe o valor"
+      />
     </div>
 
     <Movimentacoes v-if="this.fatura?.id" />

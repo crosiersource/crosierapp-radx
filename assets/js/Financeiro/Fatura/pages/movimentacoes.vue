@@ -23,8 +23,6 @@
       'updated',
       'userUpdatedId',
       'cadeia.id',
-      'sacado',
-      'cedente',
       'recorrente',
       'parcelamento',
       'movimentacaoOposta.categoria.codigo',
@@ -54,13 +52,6 @@
         <template class="text-right" #body="r">
           <div style="max-width: 50em; white-space: pre-wrap">
             <b><div v-html="r.data.descricaoMontada"></div></b>
-
-            <div v-if="r.data.categoria.codigoSuper === 1 && r.data.sacado">
-              <small>{{ r.data.sacado }}</small>
-            </div>
-            <div v-if="r.data.categoria.codigoSuper === 2 && r.data.cedente">
-              <small>{{ r.data.cedente }}</small>
-            </div>
 
             <div class="text-right w-100">
               <template v-if="r.data.chequeNumCheque">
@@ -209,15 +200,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import {
-  CrosierCalendar,
-  CrosierCurrency,
-  CrosierDropdown,
-  CrosierInputInt,
-  CrosierInputText,
-  CrosierDropdownEntity,
-  CrosierListS,
-} from "crosier-vue";
+import { CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
 import moment from "moment";
 import printJS from "print-js";

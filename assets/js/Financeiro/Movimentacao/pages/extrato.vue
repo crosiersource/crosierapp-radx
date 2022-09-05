@@ -733,7 +733,6 @@ export default {
             0,
             10
           )}`;
-          console.log(url);
           try {
             const rs = await axios.get(url, {
               validateStatus(status) {

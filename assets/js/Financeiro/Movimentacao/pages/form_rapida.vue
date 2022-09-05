@@ -108,76 +108,7 @@
       />
     </div>
 
-    <div class="form-row" v-if="!this.fields.categoria">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Sacado</label>
-          <div class="input-group">
-            <Skeleton class="form-control" height="2rem" />
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Cedente</label>
-          <div class="input-group">
-            <Skeleton class="form-control" height="2rem" />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-row" v-if="this.fields.categoria && this.fields.categoria.codigoSuper === 1">
-      <!-- Em um RECEBIMENTO, o sacado é um terceiro paganado para uma das filiais (cedente) -->
-      <CrosierDropdown
-        col="6"
-        v-model="this.fields.cedente"
-        :options="this.filiais"
-        :optionValue="id"
-        label="Cedente"
-        id="dd_cedente"
-        helpText="Quem recebe o valor"
-      />
-
-      <CrosierAutoComplete
-        label="Sacado"
-        id="ac_sacado"
-        col="6"
-        v-model="this.fields.sacado"
-        :values="this.sacadosOuCedentes"
-        @complete="this.pesquisarSacadoOuCedente"
-        field="id"
-        helpText="Quem paga o valor"
-      >
-        <template #item="r"> {{ r.item.text }}</template>
-      </CrosierAutoComplete>
-    </div>
-
-    <div class="form-row" v-if="this.fields.categoria && this.fields.categoria.codigoSuper === 2">
-      <!-- Em um PAGAMENTO, o sacado é uma das filiais pagando para um terceiro (cedente) -->
-      <CrosierAutoComplete
-        col="6"
-        label="Cedente"
-        id="ac_cedente"
-        v-model="this.fields.cedente"
-        :values="this.sacadosOuCedentes"
-        @complete="this.pesquisarSacadoOuCedente"
-        field="text"
-        helpText="Quem recebe o valor"
-      >
-        <template #item="r"> {{ r.item.text }}</template>
-      </CrosierAutoComplete>
-
-      <CrosierDropdown
-        col="6"
-        v-model="this.fields.sacado"
-        :options="this.filiais"
-        :optionValue="id"
-        label="Sacado"
-        id="sacado"
-        helpText="Quem paga o valor"
-      />
-    </div>
+    <SacadoCedente />
 
     <div class="form-row">
       <CrosierDropdownEntity
@@ -286,14 +217,11 @@
 
 <script>
 import Toast from "primevue/toast";
-import Skeleton from "primevue/skeleton";
 import ConfirmDialog from "primevue/confirmdialog";
 import * as yup from "yup";
 import {
   CrosierCurrency,
-  CrosierDropdown,
   CrosierDropdownEntity,
-  CrosierAutoComplete,
   CrosierFormS,
   CrosierInputInt,
   CrosierInputText,
@@ -307,6 +235,7 @@ import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 import moment from "moment";
 import printJS from "print-js";
+import SacadoCedente from "./sacadoCedente";
 
 export default {
   components: {
@@ -315,20 +244,16 @@ export default {
     CrosierCalendar,
     Toast,
     CrosierFormS,
-    CrosierDropdown,
     CrosierInputText,
     CrosierInputInt,
-    CrosierAutoComplete,
     CrosierInputTextarea,
-    Skeleton,
     ConfirmDialog,
+    SacadoCedente,
   },
 
   data() {
     return {
       schemaValidator: {},
-      sacadosOuCedentes: null,
-      filiais: null,
       dtVencto_cache: null,
       exibirDtPagto: false,
       exibirCamposChequeTerceiros: false,
@@ -351,26 +276,6 @@ export default {
       valorTotal: yup.number().required().typeError(),
     });
 
-    const rs = await axios.get("/api/fin/movimentacao/filiais/", {
-      headers: {
-        "Content-Type": "application/ld+json",
-      },
-      validateStatus(status) {
-        return status < 500;
-      },
-    });
-    if (rs?.data?.RESULT === "OK") {
-      this.filiais = rs.data.DATA;
-    } else {
-      console.error(rs?.data?.MSG);
-      this.$toast.add({
-        severity: "error",
-        summary: "Erro",
-        detail: rs?.data?.MSG,
-        life: 5000,
-      });
-    }
-
     const rPagamento = new URLSearchParams(window.location.search.substring(1)).get("rPagamento");
     if (rPagamento || this.fields.dtPagto) {
       this.setarParaPagto();
@@ -390,20 +295,6 @@ export default {
 
     moment(date) {
       return moment(date);
-    },
-
-    async pesquisarSacadoOuCedente(event) {
-      try {
-        const response = await axios.get(
-          `/api/fin/movimentacao/findSacadoOuCedente/?term=${event.query}`
-        );
-
-        if (response.status === 200) {
-          this.sacadosOuCedentes = response.data.DATA;
-        }
-      } catch (err) {
-        console.error(err);
-      }
     },
 
     async submitForm() {
@@ -431,14 +322,6 @@ export default {
             formData.chequeBanco && formData.chequeBanco["@id"]
               ? formData.chequeBanco["@id"]
               : null;
-
-          if (formData.cedente && formData.cedente.text) {
-            formData.cedente = formData.cedente.text;
-          }
-
-          if (formData.sacado && formData.sacado.text) {
-            formData.sacado = formData.sacado.text;
-          }
 
           delete formData.tipoLancto;
           delete formData.cadeia;
