@@ -261,6 +261,7 @@ export default {
   },
 
   watch: {
+    // eslint-disable-next-line func-names
     "$store.state.fields.sacadoDocumento": function (n) {
       if (n && !this.sacadoDocumentoLocal) {
         this.sacadoDocumentoLocal = n;
@@ -275,6 +276,7 @@ export default {
       }
     },
 
+    // eslint-disable-next-line func-names
     "$store.state.fields.sacadoNome": function (n) {
       if (this.fields.categoria && this.fields.categoria.codigoSuper === 1) {
         // campo autocomplete para sacado
@@ -284,6 +286,7 @@ export default {
       }
     },
 
+    // eslint-disable-next-line func-names
     "$store.state.fields.cedenteDocumento": function (n) {
       if (n && !this.cedenteDocumentoLocal) {
         this.cedenteDocumentoLocal = n;
@@ -297,6 +300,7 @@ export default {
       }
     },
 
+    // eslint-disable-next-line func-names
     "$store.state.fields.cedenteNome": function (n) {
       if (this.fields.categoria && this.fields.categoria.codigoSuper === 2) {
         // campo autocomplete para cedente
@@ -306,6 +310,7 @@ export default {
       }
     },
 
+    // eslint-disable-next-line func-names
     "$store.state.fields.categoria": function (n, v) {
       if (v && n?.id !== v?.id) {
         this.fields.sacadoDocumento = null;

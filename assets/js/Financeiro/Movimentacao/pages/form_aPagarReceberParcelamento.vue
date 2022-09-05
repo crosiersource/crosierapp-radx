@@ -369,16 +369,13 @@
 
 <script>
 import Toast from "primevue/toast";
-import Skeleton from "primevue/skeleton";
 import ConfirmDialog from "primevue/confirmdialog";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import * as yup from "yup";
 import {
   CrosierCurrency,
-  CrosierDropdown,
   CrosierDropdownEntity,
-  CrosierAutoComplete,
   CrosierFormS,
   CrosierInputInt,
   CrosierInputText,

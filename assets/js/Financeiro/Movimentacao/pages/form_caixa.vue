@@ -230,15 +230,12 @@
 
 <script>
 import Toast from "primevue/toast";
-import Skeleton from "primevue/skeleton";
 import ConfirmDialog from "primevue/confirmdialog";
 import * as yup from "yup";
 import {
   api,
-  CrosierAutoComplete,
   CrosierCalendar,
   CrosierCurrency,
-  CrosierDropdown,
   CrosierDropdownEntity,
   CrosierFormS,
   CrosierInputInt,
@@ -247,7 +244,6 @@ import {
   submitForm,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
-import axios from "axios";
 import moment from "moment";
 import SacadoCedente from "./sacadoCedente";
 

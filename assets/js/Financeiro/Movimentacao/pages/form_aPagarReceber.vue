@@ -428,15 +428,12 @@
 
 <script>
 import Toast from "primevue/toast";
-import Skeleton from "primevue/skeleton";
 import ConfirmDialog from "primevue/confirmdialog";
 import * as yup from "yup";
 import {
   CrosierInputId,
   CrosierCurrency,
-  CrosierDropdown,
   CrosierDropdownEntity,
-  CrosierAutoComplete,
   CrosierFormS,
   CrosierInputText,
   CrosierInputTextarea,
@@ -462,7 +459,6 @@ export default {
     CrosierInputText,
     CrosierInputId,
     CrosierInputTextarea,
-    Skeleton,
     ConfirmDialog,
   },
 
