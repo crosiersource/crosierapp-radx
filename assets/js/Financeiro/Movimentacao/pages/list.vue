@@ -3,7 +3,7 @@
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
   <CrosierListS
-    :filtrosNaSidebar="true"
+    filtrosNaSidebar
     titulo="Movimentações"
     subtitulo="Pesquisa"
     apiResource="/api/fin/movimentacao/"

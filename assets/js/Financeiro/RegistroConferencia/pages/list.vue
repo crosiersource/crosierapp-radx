@@ -3,7 +3,7 @@
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
   <CrosierListS
-    :filtrosNaSidebar="true"
+    filtrosNaSidebar
     titulo="Registros para Conferências"
     apiResource="/api/fin/registroConferencia/"
     ref="dt"

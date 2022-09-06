@@ -5,7 +5,7 @@
   <CrosierListS
     titulo="Produto"
     apiResource="/api/est/produto/"
-    :filtrosNaSidebar="true"
+    filtrosNaSidebar
     ref="dt"
     :formUrl="null"
   >

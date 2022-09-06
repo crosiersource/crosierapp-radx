@@ -100,6 +100,19 @@ VALUES (NULL, '0558f998-b936-415b-a1b9-5f1ed6b54395', 'Recorrente', 'fas fa-redo
         now(), 1, 1, 1, '/v/fin/movimentacao/recorrente/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', 'ROLE_FINAN');
 
 
+-- Faturasr
+DELETE
+FROM cfg_entmenu
+WHERE uuid = '68d6193c-2df4-11ed-b9d1-57e3b2d94ab2';
+
+SET @ordem = @ordem + 1;
+
+INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id,
+                        user_updated_id)
+VALUES ('68d6193c-2df4-11ed-b9d1-57e3b2d94ab2', 'Faturas', 'fas fa-file-invoice', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/v/fin/fatura/list',
+        'ROLE_FINAN', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
+
+
 -- Extrato de Contas a Pagar/Receber
 DELETE
 FROM cfg_entmenu

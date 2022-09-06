@@ -2,7 +2,7 @@
   <CrosierListS
     titulo="Vendas"
     subtitulo="Tray"
-    :filtrosNaSidebar="true"
+    filtrosNaSidebar
     apiResource="/api/ecommerce/trayVenda/"
     :columns="columns"
     ref="list"
