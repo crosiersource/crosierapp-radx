@@ -37,13 +37,29 @@ doctrine:
         default_entity_manager: default
         auto_generate_proxy_classes: true
         entity_managers:
+            logs:
+                connection: logs
+                mappings:
+                    CrosierSource\CrosierLibBaseBundle\Entity\Logs:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/vendor/crosiersource/crosierlib-base/src/Entity/Logs'
+                        prefix: 'CrosierSource\CrosierLibBaseBundle\Entity\Logs'
+                        alias: EntityLogs
+                dql:
+                    datetime_functions:
+                        date_format: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\DateFormat
+                        date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date
+                    string_functions:
+                        JSON_UNQUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
+                        JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                        JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
+                        CAST: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Cast
             default:
                 connection: default
                 auto_mapping: true
                 mappings:
                     CrosierLibBaseBundle:
-                        type: annotation
-                    CrosierLibRadxBundle:
                         type: annotation
                     App:
                         is_bundle: false
@@ -60,14 +76,4 @@ doctrine:
                         JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
                         JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
                         CAST: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Cast
-            logs:
-                connection: logs
-                dql:
-                    datetime_functions:
-                        date_format: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\DateFormat
-                        date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date
-                    string_functions:
-                        JSON_UNQUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
-                        JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
-                        JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
-                        CAST: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Cast
+            
