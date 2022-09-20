@@ -95,21 +95,7 @@ class IntegradorSimplo7 implements IntegradorEcommerce
 
     private IntegradorMercadoPago $integradorMercadoPago;
 
-    /**
-     * IntegradorWebStorm constructor.
-     * @param AppConfigEntityHandler $appConfigEntityHandler
-     * @param Security $security
-     * @param ProdutoEntityHandler $produtoEntityHandler
-     * @param VendaEntityHandler $vendaEntityHandler
-     * @param VendaItemEntityHandler $vendaItemEntityHandler
-     * @param NotaFiscalBusiness $notaFiscalBusiness
-     * @param VendaBusiness $vendaBusiness
-     * @param ClienteEntityHandler $clienteEntityHandler
-     * @param ParameterBagInterface $params
-     * @param MessageBusInterface $bus
-     * @param SyslogBusiness $syslog
-     * @param IntegradorMercadoPago $integradorMercadoPago
-     */
+    
     public function __construct(AppConfigEntityHandler $appConfigEntityHandler,
                                 Security $security,
                                 ProdutoEntityHandler $produtoEntityHandler,

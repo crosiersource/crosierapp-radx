@@ -75,20 +75,7 @@ class IntegradorMercadoPago
 
     public const CANAL = 'MERCADOLIVRE';
 
-    /**
-     * IntegradorWebStorm constructor.
-     * @param AppConfigEntityHandler $appConfigEntityHandler
-     * @param Security $security
-     * @param ProdutoEntityHandler $produtoEntityHandler
-     * @param ProdutoPrecoEntityHandler $produtoPrecoEntityHandler
-     * @param VendaEntityHandler $vendaEntityHandler
-     * @param VendaItemEntityHandler $vendaItemEntityHandler
-     * @param VendaPagtoEntityHandler $vendaPagtoEntityHandler
-     * @param ClienteEntityHandler $clienteEntityHandler
-     * @param ParameterBagInterface $params
-     * @param MessageBusInterface $bus
-     * @param SyslogBusiness $syslog
-     */
+    
     public function __construct(AppConfigEntityHandler $appConfigEntityHandler,
                                 Security $security,
                                 ProdutoEntityHandler $produtoEntityHandler,

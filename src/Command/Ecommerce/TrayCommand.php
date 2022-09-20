@@ -2,10 +2,7 @@
 
 namespace App\Command\Ecommerce;
 
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use App\Business\Ecommerce\IntegradorTray;
-use App\Business\Ecommerce\IntegradorWebStorm;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,7 +34,7 @@ class TrayCommand extends Command
         $this->addArgument('dtBase', InputArgument::OPTIONAL, 'Data Base');
     }
 
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tipoIntegracao = $input->getArgument('tipoIntegracao');

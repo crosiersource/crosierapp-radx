@@ -28,7 +28,6 @@ class IntegradorEcommerceFactory implements ServiceSubscriberInterface
     public static function getSubscribedServices(): array
     {
         return [
-            "WEBSTORM" => IntegradorWebStorm::class,
             "TRAY" => IntegradorTray::class,
             "SIMPLO7" => IntegradorSimplo7::class,
             "MERCADOPAGO" => IntegradorMercadoPago::class,

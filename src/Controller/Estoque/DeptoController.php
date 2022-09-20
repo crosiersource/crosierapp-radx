@@ -6,7 +6,6 @@ use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use App\Business\Ecommerce\IntegradorTray;
-use App\Business\Ecommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
@@ -262,53 +261,6 @@ class DeptoController extends BaseController
         return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $subgrupo->grupo->getId()]);
     }
 
-    /**
-     *
-     * @Route("/est/deptoGrupoSubgrupo/integraDepto/{depto}", name="est_deptoGrupoSubgrupo_integraDepto", requirements={"depto"="\d+"})
-     * @param IntegradorWebStorm $integraWebStorm
-     * @param Depto $depto
-     * @return RedirectResponse
-     * @throws ViewException
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function integraDepto(IntegradorWebStorm $integraWebStorm, Depto $depto)
-    {
-        $integraWebStorm->integraDepto($depto);
-        $this->addFlash('success', 'Depto integrado com sucesso');
-        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['deptoId' => $depto->getId()]);
-    }
-
-    /**
-     *
-     * @Route("/est/deptoGrupoSubgrupo/integraGrupo/{grupo}", name="est_deptoGrupoSubgrupo_integraGrupo", requirements={"grupo"="\d+"})
-     * @param IntegradorWebStorm $integraWebStorm
-     * @param Grupo $grupo
-     * @return RedirectResponse
-     * @throws ViewException
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function integraGrupo(IntegradorWebStorm $integraWebStorm, Grupo $grupo)
-    {
-        $integraWebStorm->integraGrupo($grupo);
-        $this->addFlash('success', 'Grupo integrado com sucesso');
-        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['grupoId' => $grupo->getId()]);
-    }
-
-    /**
-     *
-     * @Route("/est/deptoGrupoSubgrupo/integraSubgrupo/{subgrupo}", name="est_deptoGrupoSubgrupo_integraSubgrupo", requirements={"subgrupo"="\d+"})
-     * @param IntegradorWebStorm $integraWebStorm
-     * @param Subgrupo $subgrupo
-     * @return RedirectResponse
-     * @throws ViewException
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function integraSubgrupo(IntegradorWebStorm $integraWebStorm, Subgrupo $subgrupo)
-    {
-        $integraWebStorm->integraSubgrupo($subgrupo);
-        $this->addFlash('success', 'Subgrupo integrado com sucesso');
-        return $this->redirectToRoute('est_deptoGrupoSubgrupo_form', ['subgrupoId' => $subgrupo->getId()]);
-    }
 
     /**
      * Corrige os json_data de est_subgrupo e est_grupo
