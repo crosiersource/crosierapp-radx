@@ -2,19 +2,19 @@
 
 namespace App\Controller\Ecommerce;
 
+use App\Business\Ecommerce\IntegradorTray;
+use App\Business\Ecommerce\TrayBusiness;
+use App\Entity\Ecommerce\ClienteConfig;
+use App\EntityHandler\Ecommerce\ClienteConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorTray;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\TrayBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\ClienteConfig;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Ecommerce\ClienteConfigEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -100,7 +100,7 @@ class TrayController extends BaseController
         $this->syslog->info('ecomm_tray_endpoint', implode(PHP_EOL, $r));
 
         if ($request->get("code")) {
-            $r[] = '<h3>Código Tray: <b style="color: orangered">' . $request->get("code") . '</b></h3>';  
+            $r[] = '<h3>Código Tray: <b style="color: orangered">' . $request->get("code") . '</b></h3>';
             if ($clienteConfig) {
                 $clienteConfig->jsonData['tray']['code'] = $request->get("code");
                 $this->clienteConfigEntityHandler->save($clienteConfig);
@@ -430,7 +430,6 @@ class TrayController extends BaseController
     }
 
 
-
     /**
      * @Route("/ecommerce/tray/consultaProduto/{produto}", name="ecommerce_tray_consultaProduto", requirements={"produto"="\d+"})
      * @IsGranted("ROLE_ADMIN", statusCode=403)
@@ -442,6 +441,6 @@ class TrayController extends BaseController
         $r = $this->integradorTray->consultaProduto($produto);
         return new Response('<pre>' . print_r($r, true));
     }
-    
+
 
 }

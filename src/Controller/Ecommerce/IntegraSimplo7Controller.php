@@ -2,10 +2,10 @@
 
 namespace App\Controller\Ecommerce;
 
+use App\Business\Ecommerce\IntegradorSimplo7;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorSimplo7;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;

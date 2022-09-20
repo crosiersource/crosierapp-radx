@@ -2,8 +2,8 @@
 
 namespace App\Command\Ecommerce;
 
-use App\Business\ECommerce\EcommerceBusiness;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorTray;
+use App\Business\Ecommerce\EcommerceBusiness;
+use App\Business\Ecommerce\IntegradorTray;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

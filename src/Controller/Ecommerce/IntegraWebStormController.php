@@ -2,9 +2,9 @@
 
 namespace App\Controller\Ecommerce;
 
+use App\Business\Ecommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorWebStorm;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Vendas\Venda;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;

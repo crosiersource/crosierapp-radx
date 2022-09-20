@@ -2,12 +2,12 @@
 
 namespace App\Controller\Ecommerce;
 
+use App\Business\Ecommerce\MercadoLivreBusiness;
+use App\Entity\Ecommerce\MercadoLivreItem;
+use App\Messenger\Ecommerce\Message\MlNotification;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\MercadoLivreBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\MercadoLivreItem;
-use CrosierSource\CrosierLibRadxBundle\Messenger\Ecommerce\Message\MlNotification;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

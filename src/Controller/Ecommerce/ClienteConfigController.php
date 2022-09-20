@@ -3,12 +3,12 @@
 
 namespace App\Controller\Ecommerce;
 
+use App\Business\Ecommerce\MercadoLivreBusiness;
+use App\Business\Ecommerce\TrayBusiness;
+use App\Entity\Ecommerce\ClienteConfig;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\MercadoLivreBusiness;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\TrayBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\ClienteConfig;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;

@@ -3,12 +3,9 @@
 
 namespace App\Controller\Ecommerce;
 
+use App\Business\Ecommerce\MercadoLivreBusiness;
+use App\Entity\Ecommerce\MercadoLivrePergunta;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorMercadoLivre;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\MercadoLivreBusiness;
-use CrosierSource\CrosierLibRadxBundle\Entity\Ecommerce\MercadoLivrePergunta;
-use CrosierSource\CrosierLibRadxBundle\EntityHandler\Ecommerce\ClienteConfigEntityHandler;
-use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,9 +80,6 @@ class MercadoLivrePerguntaController extends BaseController
             ]
         );
     }
-
-
-
 
 
 }

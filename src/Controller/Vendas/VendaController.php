@@ -2,6 +2,7 @@
 
 namespace App\Controller\Vendas;
 
+use App\Business\Ecommerce\IntegradorEcommerceFactory;
 use App\Form\Vendas\VendaType;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
@@ -15,7 +16,6 @@ use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorEcommerceFactory;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Vendas\VendaBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
@@ -902,8 +902,8 @@ class VendaController extends FormListController
 
         $status = $jsonMetadata['status']['opcoes'] ?? [];
         $params['statuss'] = json_encode(Select2JsUtils::arrayToSelect2Data(array_combine($status, $status)));
-        $statusECommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
-        $params['statusECommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusECommerce));
+        $statusEcommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
+        $params['statusEcommerce'] = json_encode(Select2JsUtils::arrayToSelect2Data($statusEcommerce));
 
 
         $filter = $request->get('filter');
@@ -929,7 +929,7 @@ class VendaController extends FormListController
                 new FilterData(['dtVenda'], 'BETWEEN_DATE_CONCAT', 'dtsVenda', $params),
                 new FilterData(['canal'], 'EQ', 'canal', $params, null, true),
                 new FilterData(['status'], 'EQ', 'status', $params),
-                new FilterData(['statusECommerce'], 'EQ', 'statusECommerce', $params, null, true),
+                new FilterData(['statusEcommerce'], 'EQ', 'statusEcommerce', $params, null, true),
                 new FilterData(['vendedor_codigo'], 'EQ', 'vendedor', $params, null, true),
             ];
         };
@@ -1080,12 +1080,12 @@ class VendaController extends FormListController
         $sugestoes = array_combine($sugestoes, $sugestoes);
         $params['canais'] = json_encode(Select2JsUtils::arrayToSelect2Data($sugestoes, null, '...'));
 
-        $statusECommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
+        $statusEcommerce = $jsonMetadata['campos']['ecommerce_status']['sugestoes'] ?? [];
         $arrStatusEcommerce = [];
-        foreach ($statusECommerce as $s) {
+        foreach ($statusEcommerce as $s) {
             $arrStatusEcommerce[] = $s;
         }
-        $params['statusECommerce'] = implode(',', $arrStatusEcommerce);
+        $params['statusEcommerce'] = implode(',', $arrStatusEcommerce);
 
         $coresStatus = json_decode($repoAppConfig->findByChave('ecomm_info.status.json'), true);
         $params['coresStatus'] = $coresStatus;
@@ -1119,7 +1119,7 @@ class VendaController extends FormListController
                 new FilterData(['status'], 'IN', 'status', $params),
                 new FilterData(['cliente_nome'], 'LIKE', 'cliente_nome', $params, null, true),
                 new FilterData(['ecommerce_idPedido'], 'EQ', 'ecommerce_idPedido', $params, null, true),
-                new FilterData(['ecommerce_status_descricao'], 'IN', 'statusECommerce', $params, 'string', true),
+                new FilterData(['ecommerce_status_descricao'], 'IN', 'statusEcommerce', $params, 'string', true),
                 new FilterData(['vendedor_codigo'], 'EQ', 'vendedor', $params, null, true),
             ];
         };
@@ -1594,33 +1594,33 @@ class VendaController extends FormListController
                 $parameters['codVendedor']['i'] = 0;
                 $parameters['codVendedor']['f'] = 99;
             }
-            
+
             $dtIni = DateTimeUtils::parseDateStr($parameters['dtVenda']['after']);
             $dtFim = DateTimeUtils::parseDateStr($parameters['dtVenda']['before']);
             $codVendedorIni = $parameters['codVendedor']['i'];
             $codVendedorFim = $parameters['codVendedor']['f'];
-            
+
             $repoVendas = $this->getDoctrine()->getRepository(Venda::class);
-            
+
             $dados = $repoVendas->findTotalVendasPorPeriodoVendedores($dtIni, $dtFim, $codVendedorIni, $codVendedorFim);
-            
+
             $r['dados'] = $dados;
-            
+
             $tt = 8;
-            
-            for ($i=0;$i<$tt;$i++) {
+
+            for ($i = 0; $i < $tt; $i++) {
                 $dados = $repoVendas->findTotalVendasPorPeriodoVendedores($dtIni, $dtFim, $codVendedorIni, $codVendedorFim);
                 $r['compa'][] = [
                     'periodo' => 'Entre ' . $dtIni->format('d/m/Y') . ' e ' . $dtFim->format('d/m/Y'),
                     'dados' => $dados,
                 ];
-                
+
                 $dtIni = DateTimeUtils::incMes($dtIni, -12);
                 $dtFim = DateTimeUtils::incMes($dtFim, -12);
-                
+
             }
-            
-            for ($i=0 ; $i < $tt-1 ; $i++) {
+
+            for ($i = 0; $i < $tt - 1; $i++) {
                 $fator = null;
                 try {
                     $dFator = bcdiv($r['compa'][$i]['dados']['total'], $r['compa'][$i + 1]['dados']['total'], 4);
@@ -1630,11 +1630,11 @@ class VendaController extends FormListController
                 } catch (\Exception $e) {
                     $e->getTraceAsString();
                 }
-                
+
                 $r['compa'][$i]['dados']['fator'] = $fator;
             }
-            
-            
+
+
             return CrosierApiResponse::success($r);
         } catch (\Exception $e) {
             return CrosierApiResponse::error();

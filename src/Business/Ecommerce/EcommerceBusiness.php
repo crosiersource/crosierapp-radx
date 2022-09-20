@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Business\ECommerce;
+namespace App\Business\Ecommerce;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
-use CrosierSource\CrosierLibRadxBundle\Business\Ecommerce\IntegradorEcommerce;
+use App\Business\Ecommerce\IntegradorEcommerce;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use Doctrine\ORM\EntityManagerInterface;
 
