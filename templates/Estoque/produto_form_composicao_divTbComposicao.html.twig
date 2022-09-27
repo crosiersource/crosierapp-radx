@@ -26,7 +26,7 @@
                 {{ produtoComposicao.qtde }}
             </td>
             <td>
-                {{ produtoComposicao.produtoFilho.jsonData.titulo ? produtoComposicao.produtoFilho.jsonData.titulo : produtoComposicao.produtoFilho.nome }}
+                {{ produtoComposicao.produtoFilho.jsonData.titulo|default('') ? produtoComposicao.produtoFilho.jsonData.titulo : produtoComposicao.produtoFilho.nome }}
                 ({{ produtoComposicao.produtoFilho.id }})
             </td>
             <td class="text-right text-nowrap">

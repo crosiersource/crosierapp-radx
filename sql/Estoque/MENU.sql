@@ -61,7 +61,7 @@ INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid,
                         estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES ('a1c75606-0114-11ec-8e35-4bb6e339954f', 'Cadastros', 'fas fa-clipboard-list', 'DROPDOWN',
         '9121ea11-dc5d-4a22-9596-187f5452f95a', '', '', '75f3e22e-0114-11ec-b1db-47f2e75c14df', 99,
-        'background-color: #0f2944;', now(), now(), 1, 1, 1);
+        'background-color: rgb(252, 186, 3)', now(), now(), 1, 1, 1);
 
 
 -- Deptos/Grupos/Subgrupos

@@ -410,8 +410,8 @@ CREATE TABLE `est_produto_composicao`
   `preco_atual`        decimal(15, 2) NOT NULL,
   `preco_composicao`   decimal(15, 2) NOT NULL,
 
-  KEY `FK_est_produto_composicao_produto_pai` KEY (`produto_pai_id`),
-  KEY `FK_est_produto_composicao_produto_filho` KEY (`produto_filho_id`),
+  KEY `FK_est_produto_composicao_produto_pai` (`produto_pai_id`),
+  KEY `FK_est_produto_composicao_produto_filho` (`produto_filho_id`),
   CONSTRAINT `FK_est_produto_composicao_produto_pai` FOREIGN KEY (`produto_pai_id`) REFERENCES `est_produto` (`id`),
   CONSTRAINT `FK_est_produto_composicao_produto_filho` FOREIGN KEY (`produto_filho_id`) REFERENCES `est_produto` (`id`),
 
@@ -1241,9 +1241,9 @@ CREATE TABLE `fin_movimentacao`
   `documento_num`           varchar(200),
 
   `sacado_documento`        varchar(14),
-  `sacado`                  varchar(500),
+  `sacado_nome`             varchar(500),
   `cedente_documento`       varchar(14),
-  `cedente`                 varchar(500),
+  `cedente_nome`            varchar(500),
 
   `movimentacao_pagante_id` bigint(20)                                       default null,
 
@@ -1309,9 +1309,9 @@ CREATE TABLE `fin_movimentacao`
   PRIMARY KEY (`id`),
 
   KEY `K_fin_movimentacao_sacado_documento` (`sacado_documento`),
-  KEY `K_fin_movimentacao_sacado` (`sacado`),
+  KEY `K_fin_movimentacao_sacado` (`sacado_nome`),
   KEY `K_fin_movimentacao_cedente_documento` (`cedente_documento`),
-  KEY `K_fin_movimentacao_cedente` (`cedente`),
+  KEY `K_fin_movimentacao_cedente` (`cedente_nome`),
   KEY `K_fin_movimentacao_descricao` (`descricao`),
   KEY `K_fin_movimentacao_dt_vencto` (`dt_vencto`),
   KEY `K_fin_movimentacao_dt_vencto_efetiva` (`dt_vencto_efetiva`),
@@ -1779,7 +1779,7 @@ CREATE TABLE `fis_nf_cartacorrecao`
   `estabelecimento_id` bigint(20) NOT NULL,
   `user_inserted_id`   bigint(20) NOT NULL,
   `user_updated_id`    bigint(20) NOT NULL,
-  `msg_retorno`        varchar(20000),
+  `msg_retorno`        varchar(15000),
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_fis_nf_cartacorrecao` (`nota_fiscal_id`, `seq`),
   KEY `K_fis_nf_cartacorrecao_estabelecimento` (`estabelecimento_id`),
