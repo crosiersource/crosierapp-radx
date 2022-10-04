@@ -57,8 +57,8 @@ class UploadController extends BaseController
         }
 
         $dir_fila = $_SERVER['PASTA_UPLOADS'] . $tipoArquivo . '/fila/';
-        $dir_ok = $_SERVER['PASTA_UPLOADS'] . $tipoArquivo . '/fila/';
-        $dir_erro = $_SERVER['PASTA_UPLOADS'] . $tipoArquivo . '/fila/';
+        $dir_ok = $_SERVER['PASTA_UPLOADS'] . $tipoArquivo . '/ok/';
+        $dir_erro = $_SERVER['PASTA_UPLOADS'] . $tipoArquivo . '/erro/';
         @mkdir($dir_fila, 0777, true);
         @mkdir($dir_ok, 0777, true);
         @mkdir($dir_erro, 0777, true);

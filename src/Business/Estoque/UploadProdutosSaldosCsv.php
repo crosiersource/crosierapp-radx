@@ -61,7 +61,7 @@ class UploadProdutosSaldosCsv
         @mkdir($pastaFila, 0777, true);
         @mkdir($this->pasta . 'falha/', 0777, true);
         @mkdir($this->pasta . 'ok/', 0777, true);
-        $this->syslog->info('Processando arquivos na fila.');
+        $this->syslog->info('Processando arquivos na fila (UploadProdutosSaldosCsv).');
         $files = scandir($pastaFila, 0);
         if (count($files) < 3) { // conta sempre mais o "." e o ".."
             $this->syslog->info('Nenhum arquivo para processar. Finalizando.');
@@ -87,7 +87,7 @@ class UploadProdutosSaldosCsv
                 }
             }
         }
-        $this->syslog->info('Finalizando com sucesso.');
+        $this->syslog->info('Finalizando com sucesso (UploadProdutosSaldosCsv).');
     }
 
     /**
