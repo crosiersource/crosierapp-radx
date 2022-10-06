@@ -369,6 +369,7 @@ export default {
     ConfirmDialog,
     CrosierCurrency,
   },
+  
   data() {
     return {
       movimentacoesSelecionadas: null,
