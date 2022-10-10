@@ -169,16 +169,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.3.5",
+            "version": "v1.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "3c19fae50011860b676f055c7b8a5f7752a08fe4"
+                "reference": "88d24188d1706e45227442bf59fee4181a64a787"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/3c19fae50011860b676f055c7b8a5f7752a08fe4",
-                "reference": "3c19fae50011860b676f055c7b8a5f7752a08fe4",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/88d24188d1706e45227442bf59fee4181a64a787",
+                "reference": "88d24188d1706e45227442bf59fee4181a64a787",
                 "shasum": ""
             },
             "require": {
@@ -214,6 +214,7 @@
                 "symfony/orm-pack": "^2.2",
                 "symfony/security-bundle": "5.3.*",
                 "symfony/security-guard": "5.3.*",
+                "symfony/semaphore": "5.3.*",
                 "symfony/serializer": "5.3.*",
                 "symfony/validator": "5.3.*",
                 "symfony/webpack-encore-bundle": "^1.12"
@@ -242,22 +243,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.3.5"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.3.6"
             },
-            "time": "2022-09-28T20:25:06+00:00"
+            "time": "2022-10-10T14:58:25+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.3.8",
+            "version": "v1.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "c859ba12e6e4ceda2e78849d86417f2bce459070"
+                "reference": "f7a57c6bdc3f7fbf40da10d04bdcb78db8d64fe1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/c859ba12e6e4ceda2e78849d86417f2bce459070",
-                "reference": "c859ba12e6e4ceda2e78849d86417f2bce459070",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/f7a57c6bdc3f7fbf40da10d04bdcb78db8d64fe1",
+                "reference": "f7a57c6bdc3f7fbf40da10d04bdcb78db8d64fe1",
                 "shasum": ""
             },
             "require": {
@@ -305,9 +306,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.3.8"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.3.9"
             },
-            "time": "2022-09-26T18:32:21+00:00"
+            "time": "2022-10-10T14:59:09+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -547,16 +548,16 @@
         },
         {
             "name": "doctrine/common",
-            "version": "3.4.2",
+            "version": "3.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/common.git",
-                "reference": "609c3a7b6af49a7b4b13945ca2fdf4af801946af"
+                "reference": "8b5e5650391f851ed58910b3e3d48a71062eeced"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/common/zipball/609c3a7b6af49a7b4b13945ca2fdf4af801946af",
-                "reference": "609c3a7b6af49a7b4b13945ca2fdf4af801946af",
+                "url": "https://api.github.com/repos/doctrine/common/zipball/8b5e5650391f851ed58910b3e3d48a71062eeced",
+                "reference": "8b5e5650391f851ed58910b3e3d48a71062eeced",
                 "shasum": ""
             },
             "require": {
@@ -618,7 +619,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/common/issues",
-                "source": "https://github.com/doctrine/common/tree/3.4.2"
+                "source": "https://github.com/doctrine/common/tree/3.4.3"
             },
             "funding": [
                 {
@@ -634,7 +635,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-09-28T14:20:50+00:00"
+            "time": "2022-10-09T11:47:59+00:00"
         },
         {
             "name": "doctrine/dbal",
@@ -1425,16 +1426,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "2.13.2",
+            "version": "2.13.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/orm.git",
-                "reference": "a8b02fd70fa777ca8278b9604fdef75c15c6a12f"
+                "reference": "e750360bd52b080c4cbaaee1b48b80f7dc873b36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/a8b02fd70fa777ca8278b9604fdef75c15c6a12f",
-                "reference": "a8b02fd70fa777ca8278b9604fdef75c15c6a12f",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/e750360bd52b080c4cbaaee1b48b80f7dc873b36",
+                "reference": "e750360bd52b080c4cbaaee1b48b80f7dc873b36",
                 "shasum": ""
             },
             "require": {
@@ -1519,9 +1520,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/2.13.2"
+                "source": "https://github.com/doctrine/orm/tree/2.13.3"
             },
-            "time": "2022-09-22T13:36:43+00:00"
+            "time": "2022-10-07T06:37:17+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -9557,6 +9558,78 @@
                 }
             ],
             "time": "2022-01-02T09:51:59+00:00"
+        },
+        {
+            "name": "symfony/semaphore",
+            "version": "v5.3.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/semaphore.git",
+                "reference": "b24d17389f618885aecbae37982114bf5a5eeaad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/semaphore/zipball/b24d17389f618885aecbae37982114bf5a5eeaad",
+                "reference": "b24d17389f618885aecbae37982114bf5a5eeaad",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "psr/log": "^1|^2|^3"
+            },
+            "require-dev": {
+                "predis/predis": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Semaphore\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Grégoire Pineau",
+                    "email": "lyrixx@lyrixx.info"
+                },
+                {
+                    "name": "Jérémy Derussé",
+                    "email": "jeremy@derusse.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Semaphore Component",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "semaphore"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/semaphore/tree/v5.3.14"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-01-02T09:52:31+00:00"
         },
         {
             "name": "symfony/serializer",
