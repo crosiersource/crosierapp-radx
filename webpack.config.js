@@ -60,6 +60,8 @@ Encore
   .addEntry('est/listaPreco/list', './assets/js/Estoque/ListaPreco/list.js')
   .addEntry('est/listaPreco/form', './assets/js/Estoque/ListaPreco/form.js')
   
+  .addEntry('est/deptoGrupoSubgrupo/migrador', './assets/js/Estoque/DeptoGrupoSubgrupo/migrador.js')
+  
   
   // Financeiro
   
@@ -110,8 +112,6 @@ Encore
   
   .addEntry('fin/fatura/list', './assets/js/Financeiro/Fatura/list.js')
   .addEntry('fin/fatura/form', './assets/js/Financeiro/Fatura/form.js')
-  
-
 
   .addEntry('fis/notaFiscal/recebidas/list', './assets/js/Fiscal/NotaFiscal/recebidasList.js')
   .addEntry('fis/notaFiscal/emitidas/list', './assets/js/Fiscal/NotaFiscal/emitidasList.js')

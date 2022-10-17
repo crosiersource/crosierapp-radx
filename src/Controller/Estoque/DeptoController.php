@@ -2,21 +2,25 @@
 
 namespace App\Controller\Estoque;
 
+use App\Business\Ecommerce\IntegradorTray;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
-use App\Business\Ecommerce\IntegradorTray;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Produto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Subgrupo;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\DeptoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\GrupoEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\ProdutoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Estoque\SubgrupoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\DeptoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\GrupoRepository;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\SubgrupoRepository;
 use Doctrine\DBAL\Connection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -311,7 +315,7 @@ class DeptoController extends BaseController
      */
     public function importar(DeptoEntityHandler $deptoEntityHandler, GrupoEntityHandler $grupoEntityHandler, SubgrupoEntityHandler $subgrupoEntityHandler): Response
     {
-        $txt = file_get_contents('categorias.txt');
+        $txt = file_get_contents('/home/carlos/Downloads/categorias+ecommerce.csv');
 
         $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
 
@@ -320,63 +324,77 @@ class DeptoController extends BaseController
 
         $linhas = explode("\n", $txt);
 
-        $deptoCodigo = 9;
-        $grupoCodigo = 1;
-        $subgrupoCodigo = 1;
+        $deptoCodigo = 100;
+        $grupoCodigo = 100;
+        $subgrupoCodigo = 100;
+        $deptoNome = '';
+        $grupoNome = '';
 
-        foreach ($linhas as $linha) {
-            $campos = explode("\t", $linha);
+        try {
+            foreach ($linhas as $i => $linha) {
+                $campos = explode(";", $linha);
+                if ($campos[0] === '<<FIM>>') {
+                    break;
+                }
 
-            $deptoNome = trim(mb_strtoupper($campos[0]));
-            $grupoNome = trim(mb_strtoupper($campos[1]));
-            $subgrupoNome = trim(mb_strtoupper($campos[2]));
+                $deptoNome_novo = str_replace('"', '', trim(mb_strtoupper($campos[0])));
+                if ($deptoNome_novo !== '-') {
+                    $deptoNome = $deptoNome_novo . ' (NOVO)';
+                }
 
-            $depto = $repoDepto->findOneByNome($deptoNome);
-            if (!$depto) {
-                $depto = new Depto();
-                $depto->codigo = $deptoCodigo;
-                $depto->nome = mb_strtoupper($deptoNome);
-                $depto = $deptoEntityHandler->save($depto);
+                $grupoNome_novo = str_replace('"', '', trim(mb_strtoupper($campos[1])));
+                if ($grupoNome_novo !== '-') {
+                    $grupoNome = $grupoNome_novo . ' (NOVO)';
+                }
+
+                $subgrupoNome = str_replace('"', '', trim(mb_strtoupper($campos[2])));
+
+                /** @var Depto $depto */
+                $depto = $repoDepto->findOneByNome($deptoNome);
+                if ($depto) {
+                    $deptoCodigo = $depto->codigo;
+                } else {
+                    $depto = new Depto();
+                    $deptoCodigo++;
+                    $depto->codigo = $deptoCodigo;
+                    $depto->nome = mb_strtoupper($deptoNome);
+                    $depto = $deptoEntityHandler->save($depto);
+                }
+
+                /** @var Grupo $grupo */
+                $grupo = $repoGrupo->findOneByFiltersSimpl([['nome', 'EQ', $grupoNome], ['depto', 'EQ', $depto]]);
+                if ($grupo) {
+                    $grupoCodigo = $grupo->codigo;
+                } else {
+                    $grupo = new grupo();
+                    $grupo->depto = $depto;
+                    $grupoCodigo++;
+                    $grupo->codigo = str_pad($grupoCodigo, 2, '0', STR_PAD_LEFT);
+                    $grupo->nome = mb_strtoupper($grupoNome);
+                    $grupo = $grupoEntityHandler->save($grupo);
+                }
+
+
+                /** @var Subgrupo $subgrupo */
+                $subgrupo = $repoSubgrupo->findOneByFiltersSimpl([['nome', 'EQ', $subgrupoNome], ['grupo', 'EQ', $grupo]]);
+                if ($subgrupo) {
+                    $subgrupoCodigo = $subgrupo->codigo;
+                } else {
+                    $subgrupo = new Subgrupo();
+                    $subgrupo->grupo = $grupo;
+                    $subgrupoCodigo++;
+                    $subgrupo->codigo = str_pad($subgrupoCodigo, 2, '0', STR_PAD_LEFT);
+                    $subgrupo->nome = mb_strtoupper($subgrupoNome);
+                    $subgrupoEntityHandler->save($subgrupo);
+                }
+
+
             }
-            $deptoCodigo = $depto->codigo + 1;
-
-            $grupo = $repoGrupo->findOneByFiltersSimpl([['nome', 'EQ', $grupoNome], ['depto', 'EQ', $depto]]);
-            if (!$grupo) {
-                $grupo = new grupo();
-                $grupo->depto = $depto;
-                $grupo->codigo = str_pad($grupoCodigo, 2, '0', STR_PAD_LEFT);
-                $grupoCodigo++;
-                $grupo->nome = mb_strtoupper($grupoNome);
-                $grupo = $grupoEntityHandler->save($grupo);
-            }
-            $grupoCodigo = $grupo->codigo + 1;
-
-            $subgrupo = $repoSubgrupo->findOneByFiltersSimpl([['nome', 'EQ', $subgrupoNome], ['grupo', 'EQ', $grupo]]);
-            if (!$subgrupo) {
-                $subgrupo = new Subgrupo();
-                $subgrupo->grupo = $grupo;
-                $subgrupo->codigo = str_pad($subgrupoCodigo, 2, '0', STR_PAD_LEFT);
-                $subgrupoCodigo++;
-                $subgrupo->nome = mb_strtoupper($subgrupoNome);
-                $subgrupoEntityHandler->save($subgrupo);
-            }
-            $subgrupoCodigo = $subgrupo->codigo + 1;
-
+        } catch (\Throwable $e) {
+            $bla = 1;
         }
 
 
-    }
-
-
-    /**
-     * @Route("/est/deptoGrupoSubgrupo/apagarCategorias", name="est_deptoGrupoSubgrupo_apagarCategorias")
-     * @return Response
-     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
-     */
-    public function apagarCategorias(IntegradorTray $integradorTray): Response
-    {
-        $integradorTray->apagarCategorias();
-        return new Response('ok');
     }
 
 
@@ -431,5 +449,51 @@ class DeptoController extends BaseController
         return new Response('OK');
     }
 
+
+    /**
+     * @Route("/api/est/deptoGrupoSubgrupo/migrar", name="est_deptoGrupoSubgrupo_migrar")
+     * @return Response
+     * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
+     */
+    public function migrar(Request $request, ProdutoEntityHandler $produtoEntityHandler): JsonResponse
+    {
+        try {
+            $content = json_decode($request->getContent(), true);
+            $repoProduto = $this->getDoctrine()->getRepository(Produto::class);
+
+            $repoDepto = $this->getDoctrine()->getRepository(Depto::class);
+            $repoGrupo = $this->getDoctrine()->getRepository(Grupo::class);
+            $repoSubgrupo = $this->getDoctrine()->getRepository(Subgrupo::class);
+
+            $deptoDe = $repoSubgrupo->find($content['deptoDe']['id']);
+            $grupoDe = $repoSubgrupo->find($content['grupoDe']['id']);
+            $subgrupoDe = $repoSubgrupo->find($content['subgrupoDe']['id']);
+
+            $deptoPara = $repoDepto->find($content['deptoPara']['id']);
+            $grupoPara = $repoGrupo->find($content['grupoPara']['id']);
+            $subgrupoPara = $repoSubgrupo->find($content['subgrupoPara']['id']);
+
+            $produtos = $repoProduto->findAllByFiltersSimpl([
+                ['depto', 'EQ', $deptoDe],
+                ['grupo', 'EQ', $grupoDe],
+                ['subgrupo', 'EQ', $subgrupoDe],
+            ]);
+            /** @var Connection $conn */
+            $conn = $this->getDoctrine()->getConnection();
+            $conn->beginTransaction();
+            /** @var Produto $produto */
+            foreach ($produtos as $produto) {
+                $produto->depto = $deptoPara;
+                $produto->grupo = $grupoPara;
+                $produto->subgrupo = $subgrupoPara;
+                $produtoEntityHandler->save($produto);
+            }
+            $conn->commit();
+            return CrosierApiResponse::success();
+        } catch (\Throwable $e) {
+            return CrosierApiResponse::error();
+        }
+
+    }
 
 }
