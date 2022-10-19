@@ -253,8 +253,12 @@ class TrayController extends BaseController
     {
 //        $integradorTray->endpoint = $clienteConfig->jsonData['url_loja'];
 //        $integradorTray->accessToken = $clienteConfig->jsonData['tray']['access_token'];
-        $this->integradorTray->integraProduto($produto);
-        return new Response('Produto integrado com sucesso');
+        try {
+            $this->integradorTray->integraProduto($produto);
+            return CrosierApiResponse::success();
+        } catch (\Throwable $e) {
+            return CrosierApiResponse::error();
+        }
     }
 
 

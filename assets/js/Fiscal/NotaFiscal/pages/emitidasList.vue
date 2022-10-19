@@ -40,7 +40,7 @@
       <div class="form-row">
         <CrosierDropdown
           label="Emitente"
-          col="4"
+          col="3"
           id="emitente"
           :options="this.contribuintes"
           optionLabel="empresa"
@@ -49,7 +49,9 @@
           v-model="this.filters.documentoEmitente"
         />
 
-        <CrosierInputInt label="Número" col="2" id="codigo" v-model="this.filters.numero" />
+        <CrosierInputInt label="Número" col="1" id="codigo" v-model="this.filters.numero" />
+
+        <CrosierInputInt label="Série" col="1" id="serie" v-model="this.filters.serie" />
 
         <CrosierInputText
           label="CPF/CNPJ Destinatário"

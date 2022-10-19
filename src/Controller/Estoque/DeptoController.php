@@ -313,7 +313,10 @@ class DeptoController extends BaseController
      * @return Response
      * @IsGranted("ROLE_ESTOQUE_ADMIN", statusCode=403)
      */
-    public function importar(DeptoEntityHandler $deptoEntityHandler, GrupoEntityHandler $grupoEntityHandler, SubgrupoEntityHandler $subgrupoEntityHandler): Response
+    public function importar(DeptoEntityHandler    $deptoEntityHandler,
+                             GrupoEntityHandler    $grupoEntityHandler,
+                             SubgrupoEntityHandler $subgrupoEntityHandler,
+                             IntegradorTray        $integradorTray): Response
     {
         $txt = file_get_contents('/home/carlos/Downloads/categorias+ecommerce.csv');
 
@@ -324,16 +327,17 @@ class DeptoController extends BaseController
 
         $linhas = explode("\n", $txt);
 
-        $deptoCodigo = 100;
-        $grupoCodigo = 100;
-        $subgrupoCodigo = 100;
         $deptoNome = '';
         $grupoNome = '';
+
+        /** @var Connection $conn */
+        $conn = $this->getDoctrine()->getConnection();
+
 
         try {
             foreach ($linhas as $i => $linha) {
                 $campos = explode(";", $linha);
-                if ($campos[0] === '<<FIM>>') {
+                if ($campos[0] === '"<<FIM>>"') {
                     break;
                 }
 
@@ -351,25 +355,31 @@ class DeptoController extends BaseController
 
                 /** @var Depto $depto */
                 $depto = $repoDepto->findOneByNome($deptoNome);
-                if ($depto) {
-                    $deptoCodigo = $depto->codigo;
-                } else {
+                if (!$depto) {
                     $depto = new Depto();
-                    $deptoCodigo++;
-                    $depto->codigo = $deptoCodigo;
+
+                    $proximo = $conn->fetchAssociative('SELECT max(codigo) as proximo FROM est_depto');
+                    if (!($proximo['proximo'] ?? false)) {
+                        $depto->codigo = '9001';
+                    } else {
+                        $depto->codigo = ((int)$proximo['proximo']) + 1;
+                    }
+
                     $depto->nome = mb_strtoupper($deptoNome);
                     $depto = $deptoEntityHandler->save($depto);
                 }
 
                 /** @var Grupo $grupo */
                 $grupo = $repoGrupo->findOneByFiltersSimpl([['nome', 'EQ', $grupoNome], ['depto', 'EQ', $depto]]);
-                if ($grupo) {
-                    $grupoCodigo = $grupo->codigo;
-                } else {
+                if (!$grupo) {
                     $grupo = new grupo();
                     $grupo->depto = $depto;
-                    $grupoCodigo++;
-                    $grupo->codigo = str_pad($grupoCodigo, 2, '0', STR_PAD_LEFT);
+                    $proximo = $conn->fetchAssociative('SELECT max(codigo) as proximo FROM est_grupo WHERE depto_id = :deptoId', ['deptoId' => $depto->getId()]);
+                    if (!($proximo['proximo'] ?? false)) {
+                        $grupo->codigo = $depto->codigo . '01';
+                    } else {
+                        $grupo->codigo = str_pad(($proximo['proximo'] ?? 0) + 1, 2, '0', STR_PAD_LEFT);
+                    }
                     $grupo->nome = mb_strtoupper($grupoNome);
                     $grupo = $grupoEntityHandler->save($grupo);
                 }
@@ -377,24 +387,32 @@ class DeptoController extends BaseController
 
                 /** @var Subgrupo $subgrupo */
                 $subgrupo = $repoSubgrupo->findOneByFiltersSimpl([['nome', 'EQ', $subgrupoNome], ['grupo', 'EQ', $grupo]]);
-                if ($subgrupo) {
-                    $subgrupoCodigo = $subgrupo->codigo;
-                } else {
+                if (!$subgrupo) {
                     $subgrupo = new Subgrupo();
                     $subgrupo->grupo = $grupo;
-                    $subgrupoCodigo++;
-                    $subgrupo->codigo = str_pad($subgrupoCodigo, 2, '0', STR_PAD_LEFT);
+
+                    $proximo = $conn->fetchAssociative('SELECT max(codigo) as proximo FROM est_subgrupo WHERE grupo_id = :grupoId', ['grupoId' => $grupo->getId()]);
+                    if (!($proximo['proximo'] ?? false)) {
+                        $subgrupo->codigo = $grupo->codigo . '01';
+                    } else {
+                        $subgrupo->codigo = str_pad(($proximo['proximo'] ?? 0) + 1, 2, '0', STR_PAD_LEFT);
+                    }
+
                     $subgrupo->nome = mb_strtoupper($subgrupoNome);
                     $subgrupoEntityHandler->save($subgrupo);
+                }
+                if (!($subgrupo->jsonData['ecommerce_id'] ?? false)) {
+                    $integradorTray->integraSubgrupo($subgrupo);
                 }
 
 
             }
         } catch (\Throwable $e) {
+            $msg = ExceptionUtils::treatException($e);
             $bla = 1;
         }
 
-
+        return new Response('OK');
     }
 
 
@@ -486,6 +504,9 @@ class DeptoController extends BaseController
                 $produto->depto = $deptoPara;
                 $produto->grupo = $grupoPara;
                 $produto->subgrupo = $subgrupoPara;
+                if ($produto->ecommerce) {
+                    $produto->json_data['ecommerce_desatualizado'] = 'S';
+                }
                 $produtoEntityHandler->save($produto);
             }
             $conn->commit();

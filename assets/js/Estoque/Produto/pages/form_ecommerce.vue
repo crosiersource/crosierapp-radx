@@ -111,7 +111,7 @@ export default {
           this.setLoading(true);
           const rs = await axios.get(
             // eslint-disable-next-line max-len
-            `/api/est/produto/ecommerce/integrarProduto/${this.fields.id}`,
+            `/ecommerce/tray/integraProduto/${this.fields.id}`,
             {
               validateStatus(status) {
                 return status < 500;
