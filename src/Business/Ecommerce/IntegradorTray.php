@@ -258,6 +258,14 @@ class IntegradorTray implements IntegradorEcommerce
         } catch (GuzzleException $e) {
             if ($e instanceof ClientException) {
                 $msg = $e->getResponse()->getBody()->getContents();
+                try {
+                    $msgJson = json_decode($msg, true);
+                    if (($msgJson['causes'][0] ?? '') === 'Invalid or expired token') {
+                        return $this->autorizarApp();
+                    }
+                } catch (\Exception $e) {
+                    throw new ViewException('Erro (PROBLEMA GRAVE) - renewAccessToken (Erro ao tentar reautorizar o app depois de receber um "Invalid or expired token")', 0, $e);
+                }
             } else {
                 $msg = ExceptionUtils::treatException($e);
             }
