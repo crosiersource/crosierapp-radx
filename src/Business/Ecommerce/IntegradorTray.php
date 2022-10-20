@@ -633,7 +633,7 @@ class IntegradorTray implements IntegradorEcommerce
 
         } catch (\Exception $e) {
             $msg = ExceptionUtils::treatException($e);
-            throw new ViewException('Erro ao integrar produto na tray (Id: ' . $produto->getId() . '): ' . $e->getMessage(), 0, $e);
+            throw new ViewException('Erro ao integrar produto na tray (Id: ' . $produto->getId() . '): ' . $msg, 0, $e);
         }
     }
 

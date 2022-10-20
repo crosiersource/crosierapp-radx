@@ -257,6 +257,9 @@ class TrayController extends BaseController
             $this->integradorTray->integraProduto($produto);
             return CrosierApiResponse::success();
         } catch (\Throwable $e) {
+            if ($e instanceof ViewException) {
+                return CrosierApiResponse::error($e, true);
+            }
             return CrosierApiResponse::error();
         }
     }
