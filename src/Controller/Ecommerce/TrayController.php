@@ -247,7 +247,7 @@ class TrayController extends BaseController
 
     /**
      * @Route("/ecommerce/tray/integraProduto/{produto}", name="ecommerce_tray_integraProduto", requirements={"produto"="\d+"})
-     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     * @IsGranted("ROLE_ESTOQUE_ECOMMERCE", statusCode=403)
      */
     public function integraProduto(Produto $produto): Response
     {
