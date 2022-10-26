@@ -76,6 +76,7 @@
           </div>
         </div>
       </div>
+
       <div class="form-row">
         <CrosierDropdownEntity
           ref="subgrupo"
@@ -94,6 +95,21 @@
             <Skeleton class="form-control" height="2rem" />
           </div>
         </div>
+      </div>
+
+      <div class="form-row">
+        <CrosierInputDecimal
+          id="qtdeTotal_min"
+          col="6"
+          label="Estoque (de)..."
+          v-model="this.filters['qtdeTotal[gte]']"
+        />
+        <CrosierInputDecimal
+          id="qtdeTotal_max"
+          col="6"
+          label="... (até)"
+          v-model="this.filters['qtdeTotal[lte]']"
+        />
       </div>
     </template>
 
@@ -188,6 +204,7 @@ import {
   CrosierDropdownEntity,
   CrosierDropdown,
   CrosierInputText,
+  CrosierInputDecimal,
   CrosierListS,
 } from "crosier-vue";
 import Column from "primevue/column";
@@ -202,6 +219,7 @@ export default {
     CrosierDropdownBoolean,
     CrosierDropdown,
     CrosierInputText,
+    CrosierInputDecimal,
     Toast,
     ConfirmDialog,
     CrosierDropdownEntity,
