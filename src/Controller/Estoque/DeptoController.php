@@ -610,6 +610,7 @@ class DeptoController extends BaseController
 
             if ($subgrupoCodigo) {
                 $subgrupo = $subgrupo ?? new Subgrupo();
+                $subgrupo->depto = $depto;
                 $subgrupo->grupo = $grupo;
                 $subgrupo->codigo = $r['Category']['id'];
                 $subgrupo->nome = $r['Category']['name'];
