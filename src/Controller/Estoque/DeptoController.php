@@ -277,7 +277,35 @@ class DeptoController extends BaseController
     {
         try {// corrige os subgrupos
             $conn = $this->deptoEntityHandler->getDoctrine()->getConnection();
-            $subgrupos = $conn->fetchAllAssociative('SELECT s.id as subgrupo_id, s.codigo as subgrupo_codigo, s.nome as subgrupo_nome, g.id as grupo_id, g.codigo as grupo_codigo, g.nome as grupo_nome, d.id as depto_id, d.codigo as depto_codigo, d.nome as depto_nome FROM est_subgrupo s, est_grupo g, est_depto d WHERE s.grupo_id = g.id AND g.depto_id = d.id');
+
+            $conn->executeQuery('
+                UPDATE 
+                    est_produto p, est_subgrupo sg, est_grupo g, est_depto d 
+                SET 
+                    p.grupo_id = g.id, 
+                    p.depto_id = d.id 
+                WHERE 
+                      p.subgrupo_id = sg.id AND 
+                      sg.grupo_id = g.id AND 
+                      g.depto_id = d.id');
+
+
+            $subgrupos = $conn->fetchAllAssociative('
+                SELECT 
+                       s.id as subgrupo_id, 
+                       s.codigo as subgrupo_codigo, 
+                       s.nome as subgrupo_nome, 
+                       g.id as grupo_id, 
+                       g.codigo as grupo_codigo, 
+                       g.nome as grupo_nome, 
+                       d.id as depto_id, 
+                       d.codigo as depto_codigo, 
+                       d.nome as depto_nome 
+                FROM 
+                     est_subgrupo s, est_grupo g, est_depto d 
+                WHERE 
+                      s.grupo_id = g.id AND g.depto_id = d.id'
+            );
             foreach ($subgrupos as $s) {
                 $conn->update('est_subgrupo',
                     [
