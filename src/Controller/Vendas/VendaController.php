@@ -817,7 +817,6 @@ class VendaController extends FormListController
     public function gerarNotaFiscalEcommerce(Request $request, Venda $venda): RedirectResponse
     {
         try {
-
             /** @var NotaFiscal $notaFiscal */
             $notaFiscal = $this->notaFiscalBusiness->findNotaFiscalByVenda($venda);
 
@@ -845,9 +844,8 @@ class VendaController extends FormListController
             }
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
         } catch (\Exception $e) {
-            if ($e instanceof ViewException) {
-                $msg = $e->getMessage();
-            } else {
+            $msg = ExceptionUtils::treatException($e);
+            if (!$msg) {
                 $msg = 'Ocorreu um erro ao faturar';
             }
             $this->addFlash('error', $msg);

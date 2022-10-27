@@ -526,7 +526,7 @@ class IntegradorTray implements IntegradorEcommerce
             if (!$produto->marca) {
                 throw new ViewException('É necessário informar a marca do produto para realizar a integração');
             }
-            
+
             $this->init();
             $syslog_obs = 'produto = ' . $produto->nome . ' (' . $produto->getId() . ')';
             $this->syslog->debug('integraProduto - ini', $syslog_obs);
@@ -550,7 +550,7 @@ class IntegradorTray implements IntegradorEcommerce
             $precoPromocional = null;
 
             $sobConsulta = $produto->jsonData['preco_sob_consulta'] ?? false;
-            
+
             if (!$sobConsulta) {
                 if ((float)($produto->jsonData['preco_ecommerce'] ?? 0) > 0) {
                     $preco = (float)$produto->jsonData['preco_ecommerce'];
@@ -637,6 +637,32 @@ class IntegradorTray implements IntegradorEcommerce
         }
     }
 
+
+    public function obterCategorias()
+    {
+        $this->init();
+        $temResults = true;
+        $page = 1;
+        $rs = [];
+        while ($temResults) {
+            $url = $this->getEndpoint() . 'web_api/categories/?limit=50&access_token=' . $this->getAccessToken() . '&page=' . $page;
+            $method = 'GET';
+            $response = $this->client->request($method, $url);
+            $bodyContents = $response->getBody()->getContents();
+            $json = json_decode($bodyContents, true);
+
+            if (count($json['Categories'] ?? []) > 0) {
+                $rs = array_merge($rs, $json['Categories']);
+                $page++;
+            } else {
+                $temResults = false;
+            }
+        }
+
+        return $rs;
+
+    }
+
     /**
      * @param array $item
      * @throws ViewException
@@ -660,7 +686,7 @@ class IntegradorTray implements IntegradorEcommerce
 
             /** @var ProdutoRepository $repoProduto */
             $repoProduto = $this->produtoEntityHandler->getDoctrine()->getRepository(Produto::class);
-            
+
             $produto = new Produto();
             $produto->nome = $item['name'];
             $produto->jsonData['dados_ecommerce'] = $product ?? null;
@@ -676,7 +702,7 @@ class IntegradorTray implements IntegradorEcommerce
             $produto->grupo = $this->grupoIndefinido;
             $produto->subgrupo = $this->subgrupoIndefinido;
             $produto->ncm = $repoProduto->getNcmPadrao();
-            
+
 
             /** @var FornecedorRepository $repoFornecedor */
             $repoFornecedor = $this->produtoEntityHandler->getDoctrine()->getRepository(Fornecedor::class);
@@ -1273,7 +1299,7 @@ class IntegradorTray implements IntegradorEcommerce
 
                 $carteiraId = null;
 
-                if ((strpos($tipoFormaPagamento, 'YAPAY') !== FALSE) || 
+                if ((strpos($tipoFormaPagamento, 'YAPAY') !== FALSE) ||
                     (strpos($tipoFormaPagamento, 'VINDI') !== FALSE)) {
                     $carteiraId = $this->getCarteiraYapay($jsonPedido['codigo_loja_tray']);
                     $integrador = 'YAPAY';
