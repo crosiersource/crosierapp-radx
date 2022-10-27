@@ -584,7 +584,7 @@ class DeptoController extends BaseController
             if (strlen($r['Category']['id']) === 6) {
                 $grupoCodigo = substr($r['Category']['id'], 0, 6);
                 $grupo = $repoGrupo->findOneByCodigo($grupoCodigo);
-                unset($grupoCodigo); // para não salvar errado (um subgrupo vai para o grupo)
+                $grupoCodigo = null; // para não salvar errado (um subgrupo vai para o grupo)
                 $subgrupoCodigo = $r['Category']['id'];
                 $subgrupo = $repoSubgrupo->findOneByCodigo($subgrupoCodigo);
             }
