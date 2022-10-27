@@ -598,7 +598,7 @@ class DeptoController extends BaseController
             if ($grupoCodigo) {
                 $grupo = $grupo ?? new Grupo();
                 $grupo->depto = $depto;
-                $grupo->codigo = $r['Category']['id'];
+                $grupo->codigo = $grupoCodigo;
                 $grupo->nome = $r['Category']['name'];
                 $grupo->jsonData['ecommerce_id'] = $r['Category']['id'];
                 $grupoEntityHandler->save($grupo);
