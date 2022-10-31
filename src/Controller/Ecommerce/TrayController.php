@@ -207,7 +207,7 @@ class TrayController extends BaseController
      */
     public function integraSubgrupo(Subgrupo $subgrupo): Response
     {
-        $this->integradorTray->integraSubgrupo($subgrupo);
+        $this->integradorTray->integraSubgrupo($subgrupo, true);
         return new Response('Subgrupo integrado com sucesso');
     }
 

@@ -3,6 +3,7 @@
 
 namespace App\Business\Ecommerce;
 
+use App\Entity\Ecommerce\ClienteConfig;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
@@ -12,7 +13,6 @@ use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringAssembler;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Vendas\VendaBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
-use App\Entity\Ecommerce\ClienteConfig;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Depto;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Fornecedor;
 use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Grupo;
@@ -308,14 +308,16 @@ class IntegradorTray implements IntegradorEcommerce
     /**
      * @throws ViewException
      */
-    public function integraSubgrupo(Subgrupo $subgrupo): int
+    public function integraSubgrupo(Subgrupo $subgrupo, ?bool $atualiza = false): int
     {
         $this->init();
-        if (!($idDepto_ecommerce = ($subgrupo->grupo->depto->jsonData['ecommerce_id'] ?? false))) {
+        if ($atualiza || !($idDepto_ecommerce = ($subgrupo->grupo->depto->jsonData['ecommerce_id'] ?? false))) {
             $idDepto_ecommerce = $this->integraCategoriaTray(
                 $subgrupo->grupo->depto->nome,
                 $subgrupo->grupo->depto->codigo,
-                mb_strtolower(str_replace(' ', '-', $subgrupo->grupo->depto->nome))
+                mb_strtolower(str_replace(' ', '-', $subgrupo->grupo->depto->nome)),
+                null,
+                $subgrupo->grupo->depto->jsonData['ecommerce_id'] ?? null
             );
             $subgrupo->grupo->depto->jsonData['ecommerce_id'] = $idDepto_ecommerce;
             $this->deptoEntityHandler->save($subgrupo->grupo->depto);
@@ -326,12 +328,14 @@ class IntegradorTray implements IntegradorEcommerce
             return $idDepto_ecommerce;
         }
 
-        if (!($idGrupo_ecommerce = ($subgrupo->grupo->jsonData['ecommerce_id'] ?? false))) {
+        if ($atualiza || !($idGrupo_ecommerce = ($subgrupo->grupo->jsonData['ecommerce_id'] ?? false))) {
             $idGrupo_ecommerce = $this->integraCategoriaTray(
                 $subgrupo->grupo->nome,
                 $subgrupo->grupo->codigo,
                 mb_strtolower(str_replace(' ', '-', $subgrupo->grupo->depto->nome . '_' . $subgrupo->grupo->nome)),
-                $idDepto_ecommerce);
+                $idDepto_ecommerce,
+                $subgrupo->grupo->jsonData['ecommerce_id'] ?? null
+            );
             $subgrupo->grupo->jsonData['ecommerce_id'] = $idGrupo_ecommerce;
             $this->grupoEntityHandler->save($subgrupo->grupo);
         }
@@ -341,12 +345,14 @@ class IntegradorTray implements IntegradorEcommerce
             return $idGrupo_ecommerce;
         }
 
-        if (!($idSubgrupo_ecommerce = ($subgrupo->jsonData['ecommerce_id'] ?? false))) {
+        if ($atualiza || !($idSubgrupo_ecommerce = ($subgrupo->jsonData['ecommerce_id'] ?? false))) {
             $idSubgrupo_ecommerce = $this->integraCategoriaTray(
                 $subgrupo->nome,
                 $subgrupo->codigo,
                 mb_strtolower(str_replace(' ', '-', $subgrupo->grupo->depto->nome . '_' . $subgrupo->grupo->nome . '_' . $subgrupo->nome)),
-                $idGrupo_ecommerce);
+                $idGrupo_ecommerce,
+                $subgrupo->jsonData['ecommerce_id'] ?? null
+            );
             $subgrupo->jsonData['ecommerce_id'] = $idSubgrupo_ecommerce;
             $this->subgrupoEntityHandler->save($subgrupo);
         }

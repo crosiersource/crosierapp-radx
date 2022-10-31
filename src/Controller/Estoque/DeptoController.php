@@ -454,7 +454,7 @@ class DeptoController extends BaseController
         $todosOsSubgrupos = $this->getDoctrine()->getRepository(Subgrupo::class)->findAll();
         foreach ($todosOsSubgrupos as $subgrupo) {
             // if ($subgrupo->grupo->depto->codigo === '00') continue;
-            $integradorTray->integraSubgrupo($subgrupo);
+            $integradorTray->integraSubgrupo($subgrupo, true);
         }
         return new Response('ok');
     }
