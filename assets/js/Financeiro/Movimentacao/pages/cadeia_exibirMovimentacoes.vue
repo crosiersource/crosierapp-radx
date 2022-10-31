@@ -229,7 +229,7 @@
                   role="button"
                   class="btn btn-danger btn-sm ml-1"
                   title="Deletar registro"
-                  @click="this.$refs.dt.deletar(r.data.id)"
+                  @click="this.deletar(r.data.id)"
                   ><i class="fas fa-trash" aria-hidden="true"></i
                 ></a>
               </div>
@@ -353,11 +353,11 @@ export default {
         message: "Confirmar a operação?",
         header: "Atenção!",
         icon: "pi pi-exclamation-triangle",
-        group: "confirmDialog_aPagarReceberList",
+        group: "confirmDialog_crosierListS",
         accept: async () => {
           this.setLoading(true);
           try {
-            const deleteUrl = `${this.apiResource}${id}`;
+            const deleteUrl = `/api/fin/movimentacao/${id}`;
             const rsDelete = await api.delete(deleteUrl);
             if (!rsDelete) {
               throw new Error("rsDelete n/d");
@@ -369,7 +369,7 @@ export default {
                 detail: "Registro deletado com sucesso",
                 life: 5000,
               });
-              await this.doFilter();
+              this.$refs.dt.doFilter();
             } else if (rsDelete?.data && rsDelete.data["hydra:description"]) {
               throw new Error(`status !== 204: ${rsDelete?.data["hydra:description"]}`);
             } else if (rsDelete?.statusText) {

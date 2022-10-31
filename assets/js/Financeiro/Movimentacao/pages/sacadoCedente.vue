@@ -88,7 +88,6 @@
     >
       <template #item="r"> {{ r.item.text }}</template>
     </CrosierAutoComplete>
-    && !this.fields?.fatura?.id
 
     <CrosierDropdown
       col="5"
