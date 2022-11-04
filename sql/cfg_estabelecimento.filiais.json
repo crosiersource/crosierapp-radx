@@ -1,0 +1,20 @@
+update cfg_estabelecimento set json_data = '
+{
+    "financeiro": {
+        "filiais": [
+            {
+                "cnpj": "00000000000100",
+                "label": "00.000.000/0001-00 - EMPRESA DE TESTE 01 LTDA",
+                "razao_social": "EMPRESA DE TESTE 01 LTDA",
+                "nome_fantasia": "EMPRESA DE TESTE 01"
+            },
+            {
+                "cnpj": "00000000000200",
+                "label": "00.000.000/0002-00 - EMPRESA DE TESTE 02 LTDA",
+                "razao_social": "EMPRESA DE TESTE 02 LTDA",
+                "nome_fantasia": "EMPRESA DE TESTE 02"
+            }
+        ]
+    }
+}
+';

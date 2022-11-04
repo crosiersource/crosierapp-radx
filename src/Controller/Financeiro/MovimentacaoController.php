@@ -385,7 +385,7 @@ class MovimentacaoController extends FormListController
             /** @var User $usuarioLogado */
             $usuarioLogado = $this->getUser();
 
-            $cache = new FilesystemAdapter($_SERVER['CROSIERAPPRADX_UUID'] . '.getFiliais_' . $usuarioLogado->getEstabelecimentoId(), 3600, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+            $cache = new FilesystemAdapter($_SERVER['CROSIERAPPRADX_UUID'] . '.getFiliais_' . $usuarioLogado->getEstabelecimentoId(), 600, $_SERVER['CROSIER_SESSIONS_FOLDER']);
             $filiais = $cache->get('getFiliais', function (ItemInterface $item) use ($usuarioLogado) {
                 /** @var EstabelecimentoRepository $repoEstabelecimento */
                 $repoEstabelecimento = $this->getDoctrine()->getRepository(Estabelecimento::class);
