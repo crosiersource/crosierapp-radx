@@ -3,10 +3,22 @@
   <CrosierFormS :withoutCard="true" :disabledSubmit="true">
     <div class="form-row">
       <CrosierDropdownBoolean
+        col="11"
         label="Integrado"
         id="integrado"
         v-model="this.fields.ecommerce"
         disabled
+      />
+
+      <CrosierButton
+        tipo="link"
+        cor="outline-info"
+        title="Abrir produto na Tray"
+        :href="
+          'https://www.precobaixonline.com.br/admin/#/mvc/adm/products/edit/' +
+          this.fields.jsonData.ecommerce_id
+        "
+        icon="fas fa-link"
       />
     </div>
 
@@ -22,8 +34,8 @@
       <CrosierCalendar
         label="Dt Última Integração"
         col="4"
-        :showTime="true"
-        :showSeconds="true"
+        showTime
+        showSeconds
         id="dtUltIntegracaoEcommerce"
         v-model="this.fields.dtUltIntegracaoEcommerce"
         disabled
@@ -55,6 +67,7 @@ import {
   CrosierDropdownBoolean,
   CrosierFormS,
   CrosierInputText,
+  CrosierButton,
   SetFocus,
 } from "crosier-vue";
 
@@ -65,6 +78,7 @@ export default {
     CrosierDropdownBoolean,
     CrosierInputText,
     CrosierCalendar,
+    CrosierButton,
   },
 
   data() {
