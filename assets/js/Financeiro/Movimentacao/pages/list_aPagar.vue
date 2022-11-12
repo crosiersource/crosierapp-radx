@@ -16,9 +16,10 @@
           <div class="form-row">
             <CrosierMultiSelectEntity
               style="z-index: 99999"
-              v-model="this.filters.carteira"
+              v-model="this.filters.carteirasIds"
               entity-uri="/api/fin/carteira"
               optionLabel="descricaoMontada"
+              optionValue="id"
               :orderBy="{ codigo: 'ASC' }"
               :filters="{ abertas: true }"
               label="Carteiras"

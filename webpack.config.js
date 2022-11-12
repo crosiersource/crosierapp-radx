@@ -107,6 +107,8 @@ Encore
   
   .addEntry('fin/movimentacao/grupo/form', './assets/js/Financeiro/Movimentacao/form_emGrupo.js')
   .addEntry('fin/movimentacao/grupo/list', './assets/js/Financeiro/Movimentacao/list_emGrupo.js')
+
+  .addEntry('fin/caixa/form', './assets/js/Financeiro/Caixa/form.js')
   
   .addEntry('fin/cadeia/exibirMovimentacoes', './assets/js/Financeiro/Movimentacao/cadeia_exibirMovimentacoes.js')
   
