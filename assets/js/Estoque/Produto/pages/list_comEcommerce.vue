@@ -32,9 +32,9 @@
           label="Status"
           id="status"
           v-model="this.filters.status"
-          :values="[
-            { name: 'Ativo', value: 'ATIVO' },
-            { name: 'Inativo', value: 'INATIVO' },
+          :options="[
+            { label: 'Ativo', value: 'ATIVO' },
+            { label: 'Inativo', value: 'INATIVO' },
           ]"
         />
 
