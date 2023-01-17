@@ -28,6 +28,17 @@
           </div>
 
           <div class="form-row">
+            <CrosierMultiSelectEntity
+              v-model="this.filters.categoria"
+              entity-uri="/api/fin/categoria"
+              optionLabel="descricaoMontadaTree"
+              :orderBy="{ codigoOrd: 'ASC' }"
+              label="Categoria"
+              id="categoria"
+            />
+          </div>
+
+          <div class="form-row">
             <CrosierCalendar
               label="Desde..."
               col="5"
