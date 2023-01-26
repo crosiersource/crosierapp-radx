@@ -169,16 +169,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.4.1",
+            "version": "v1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "d9d90ad4a76e81822617e88f6fbaac111ffff2e0"
+                "reference": "45032d57243c726e3a2130e271c67d9d22638b7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/d9d90ad4a76e81822617e88f6fbaac111ffff2e0",
-                "reference": "d9d90ad4a76e81822617e88f6fbaac111ffff2e0",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/45032d57243c726e3a2130e271c67d9d22638b7d",
+                "reference": "45032d57243c726e3a2130e271c67d9d22638b7d",
                 "shasum": ""
             },
             "require": {
@@ -243,22 +243,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.4.1"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.4.2"
             },
-            "time": "2023-01-17T12:42:10+00:00"
+            "time": "2023-01-26T20:04:11+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.4.9",
+            "version": "v1.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "5996bfa1d50c8a5527a80364f930d003bb992e7b"
+                "reference": "516b7002fdf2b7d2497015ccf329847c875889d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/5996bfa1d50c8a5527a80364f930d003bb992e7b",
-                "reference": "5996bfa1d50c8a5527a80364f930d003bb992e7b",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/516b7002fdf2b7d2497015ccf329847c875889d0",
+                "reference": "516b7002fdf2b7d2497015ccf329847c875889d0",
                 "shasum": ""
             },
             "require": {
@@ -306,9 +306,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.4.9"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.4.10"
             },
-            "time": "2023-01-17T16:23:33+00:00"
+            "time": "2023-01-26T20:09:47+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -10671,16 +10671,16 @@
         },
         {
             "name": "symfony/webpack-encore-bundle",
-            "version": "v1.16.0",
+            "version": "v1.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/webpack-encore-bundle.git",
-                "reference": "bb399930c0299866258b616a74a27b50b94c5d45"
+                "reference": "1862d71e483769b40278548a30e756ce13ef9d4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/webpack-encore-bundle/zipball/bb399930c0299866258b616a74a27b50b94c5d45",
-                "reference": "bb399930c0299866258b616a74a27b50b94c5d45",
+                "url": "https://api.github.com/repos/symfony/webpack-encore-bundle/zipball/1862d71e483769b40278548a30e756ce13ef9d4c",
+                "reference": "1862d71e483769b40278548a30e756ce13ef9d4c",
                 "shasum": ""
             },
             "require": {
@@ -10724,7 +10724,7 @@
             "description": "Integration with your Symfony app & Webpack Encore!",
             "support": {
                 "issues": "https://github.com/symfony/webpack-encore-bundle/issues",
-                "source": "https://github.com/symfony/webpack-encore-bundle/tree/v1.16.0"
+                "source": "https://github.com/symfony/webpack-encore-bundle/tree/v1.16.1"
             },
             "funding": [
                 {
@@ -10740,7 +10740,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-18T15:21:06+00:00"
+            "time": "2023-01-18T19:37:55+00:00"
         },
         {
             "name": "symfony/yaml",
