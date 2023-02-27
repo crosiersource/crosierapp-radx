@@ -169,16 +169,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.4.2",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "45032d57243c726e3a2130e271c67d9d22638b7d"
+                "reference": "5f900654d0adb8350b5abaccd71359d62424d892"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/45032d57243c726e3a2130e271c67d9d22638b7d",
-                "reference": "45032d57243c726e3a2130e271c67d9d22638b7d",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/5f900654d0adb8350b5abaccd71359d62424d892",
+                "reference": "5f900654d0adb8350b5abaccd71359d62424d892",
                 "shasum": ""
             },
             "require": {
@@ -219,6 +219,10 @@
                 "symfony/validator": "5.3.*",
                 "symfony/webpack-encore-bundle": "^1.12"
             },
+            "require-dev": {
+                "phpunit/phpunit": "^9",
+                "symfony/phpunit-bridge": "^5.3"
+            },
             "type": "symfony-bundle",
             "extra": {
                 "symfony": {
@@ -243,22 +247,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.4.2"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.5.0"
             },
-            "time": "2023-01-26T20:04:11+00:00"
+            "time": "2023-02-27T19:21:30+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.5.1",
+            "version": "v1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "b734bbb62960a94eba109c763b3d09b6312bbaac"
+                "reference": "ae6ecfc9e40020312091e9f9ad63a1698279459f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/b734bbb62960a94eba109c763b3d09b6312bbaac",
-                "reference": "b734bbb62960a94eba109c763b3d09b6312bbaac",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/ae6ecfc9e40020312091e9f9ad63a1698279459f",
+                "reference": "ae6ecfc9e40020312091e9f9ad63a1698279459f",
                 "shasum": ""
             },
             "require": {
@@ -306,9 +310,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.5.1"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.5.2"
             },
-            "time": "2023-02-24T18:44:18+00:00"
+            "time": "2023-02-27T20:06:38+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1753,19 +1757,23 @@
         },
         {
             "name": "econea/nusoap",
-            "version": "v0.9.13",
+            "version": "v0.9.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/f00b4r/nusoap.git",
-                "reference": "c177861ed6232668845a86b4aec40d5b61cab7f5"
+                "reference": "ae53073db524180a70a0e9007110e21cf065753c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/f00b4r/nusoap/zipball/c177861ed6232668845a86b4aec40d5b61cab7f5",
-                "reference": "c177861ed6232668845a86b4aec40d5b61cab7f5",
+                "url": "https://api.github.com/repos/f00b4r/nusoap/zipball/ae53073db524180a70a0e9007110e21cf065753c",
+                "reference": "ae53073db524180a70a0e9007110e21cf065753c",
                 "shasum": ""
             },
             "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-xml": "*",
+                "ext-zlib": "*",
                 "php": ">=5.4"
             },
             "require-dev": {
@@ -1806,7 +1814,7 @@
             ],
             "support": {
                 "issues": "https://github.com/f00b4r/nusoap/issues",
-                "source": "https://github.com/f00b4r/nusoap/tree/v0.9.13"
+                "source": "https://github.com/f00b4r/nusoap/tree/v0.9.14"
             },
             "funding": [
                 {
@@ -1814,7 +1822,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-12-11T11:15:03+00:00"
+            "time": "2023-02-13T07:42:38+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -3503,16 +3511,16 @@
         },
         {
             "name": "nfephp-org/sped-nfe",
-            "version": "v5.1.11",
+            "version": "v5.1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-nfe.git",
-                "reference": "6a060e5e7673cdd3c56a978f16655b315d113f06"
+                "reference": "8b3e71f98c13fbc18f3142b3e4e2934968aff0ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/6a060e5e7673cdd3c56a978f16655b315d113f06",
-                "reference": "6a060e5e7673cdd3c56a978f16655b315d113f06",
+                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/8b3e71f98c13fbc18f3142b3e4e2934968aff0ad",
+                "reference": "8b3e71f98c13fbc18f3142b3e4e2934968aff0ad",
                 "shasum": ""
             },
             "require": {
@@ -3579,9 +3587,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nfephp-org/sped-nfe/issues",
-                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.1.11"
+                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.1.12"
             },
-            "time": "2022-12-26T19:44:56+00:00"
+            "time": "2023-02-22T19:49:20+00:00"
         },
         {
             "name": "phenx/php-font-lib",
