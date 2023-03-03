@@ -62,7 +62,6 @@
                     <div class="col-sm-12 col-md-3">
                         {{ form_row(form.unidade) }}
                     </div>
-
                     <div class="col-sm-12 col-md-4">
                         {{ form_row(form.cfop) }}
                     </div>
@@ -87,16 +86,16 @@
                     <legend class="w-auto p-2">ICMS</legend>
                     <div class="row">
                         <div class="col-sm-12 col-md-3">
-                            {{ form_row(form.icmsValor) }}
-                        </div>
-                        <div class="col-sm-12 col-md-3">
-                            {{ form_row(form.icmsModBC) }}
+                            {{ form_row(form.icmsValorBc) }}
                         </div>
                         <div class="col-sm-12 col-md-3">
                             {{ form_row(form.icmsAliquota) }}
                         </div>
                         <div class="col-sm-12 col-md-3">
-                            {{ form_row(form.icmsValorBc) }}
+                            {{ form_row(form.icmsModBC) }}
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            {{ form_row(form.icmsValor) }}
                         </div>
                     </div>
                 </fieldset>
@@ -105,13 +104,13 @@
                     <legend class="w-auto p-2">PIS</legend>
                     <div class="row">
                         <div class="col-sm-12 col-md-4">
-                            {{ form_row(form.pisValor) }}
+                            {{ form_row(form.pisValorBc) }}
                         </div>
                         <div class="col-sm-12 col-md-4">
                             {{ form_row(form.pisAliquota) }}
                         </div>
                         <div class="col-sm-12 col-md-4">
-                            {{ form_row(form.pisValorBc) }}
+                            {{ form_row(form.pisValor) }}
                         </div>
                     </div>
                 </fieldset>
@@ -120,13 +119,13 @@
                     <legend class="w-auto p-2">COFINS</legend>
                     <div class="row">
                         <div class="col-sm-12 col-md-4">
-                            {{ form_row(form.cofinsValor) }}
+                            {{ form_row(form.cofinsValorBc) }}
                         </div>
                         <div class="col-sm-12 col-md-4">
                             {{ form_row(form.cofinsAliquota) }}
                         </div>
                         <div class="col-sm-12 col-md-4">
-                            {{ form_row(form.cofinsValorBc) }}
+                            {{ form_row(form.cofinsValor) }}
                         </div>
                     </div>
                 </fieldset>
