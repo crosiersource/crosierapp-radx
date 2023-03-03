@@ -36,8 +36,6 @@ $(document).ready(function () {
     let desconto = $desconto.maskMoney('unmasked')[0] ?? 0.00;
     let valorTotal = (subTotal - desconto).toFixed(2);
     
-    console.log('valorTotal: ' + valorTotal);
-    
     let valorTotalString = valorTotal.replace('.', ',');
     
     $valorTotal.val(valorTotalString).maskMoney('mask');
@@ -45,19 +43,16 @@ $(document).ready(function () {
     $icmsValorBc.val(valorTotalString).maskMoney('mask');
     let icmsValorAliquota = $icmsValorAliquota.maskMoney('unmasked')[0];
     let icmsValor = valorTotal * (icmsValorAliquota / 100.0);
-    console.log('icmsValor: ' + icmsValor);
     $icmsValor.val(icmsValor.toFixed(2).replace('.', ',')).maskMoney('mask');
 
     $pisValorBc.val(valorTotalString).maskMoney('mask');
     let pisValorAliquota = $pisValorAliquota.maskMoney('unmasked')[0];
     let pisValor = valorTotal * (pisValorAliquota / 100.0);
-    console.log('pisValor: ' + pisValor);
     $pisValor.val(pisValor.toFixed(2).replace('.', ',')).maskMoney('mask');
 
     $cofinsValorBc.val(valorTotalString).maskMoney('mask');
     let cofinsValorAliquota = $cofinsValorAliquota.maskMoney('unmasked')[0];
     let cofinsValor = valorTotal * (cofinsValorAliquota / 100.0);
-    console.log('cofinsValor: ' + cofinsValor);
     $cofinsValor.val(cofinsValor.toFixed(2).replace('.', ',')).maskMoney('mask');
     
     CrosierMasks.maskDecs();
