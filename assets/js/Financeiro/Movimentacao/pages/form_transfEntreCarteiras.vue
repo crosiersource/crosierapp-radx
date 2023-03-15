@@ -1,5 +1,5 @@
 <template>
-  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <Toast position="bottom-right" class="mb-5" />
   <ConfirmDialog></ConfirmDialog>
 
   <CrosierFormS
@@ -191,6 +191,15 @@ export default {
       if (!this.fields.dtMoviment) {
         this.fields.dtMoviment = new Date();
       }
+    },
+
+    teste() {
+      this.$toast.add({
+        severity: "success",
+        summary: "Sucesso",
+        detail: "teste",
+        life: 5000,
+      });
     },
 
     deletar() {

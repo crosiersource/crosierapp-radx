@@ -49,6 +49,23 @@ INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style
 VALUES (NULL, '58e75b9e-9bc8-11ec-afd2-c304c19f57c3', 'Lancto Rápido', 'fas fa-bolt', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(),
         1, 1, 1, '/v/fin/movimentacao/rapida', '9121ea11-dc5d-4a22-9596-187f5452f95a', 'ROLE_FINAN');
 
+
+SET @ordem = @ordem + 1;
+
+-- Lançamento de caixa
+DELETE
+FROM cfg_entmenu
+WHERE uuid = '79c10300-39f8-4192-ac45-af4113d97ea7';
+
+SET @ordem = @ordem + 1;
+
+INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url,
+                         app_uuid, roles)
+VALUES (NULL, '79c10300-39f8-4192-ac45-af4113d97ea7', 'Caixa', 'fas fa-hand-holding-usd', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(), now(),
+        1, 1, 1, '/v/fin/movimentacao/caixa', '9121ea11-dc5d-4a22-9596-187f5452f95a', 'ROLE_FINAN');
+
+
+
 SET @ordem = @ordem + 1;
 
 
@@ -99,7 +116,7 @@ VALUES (NULL, '0558f998-b936-415b-a1b9-5f1ed6b54395', 'Recorrente', 'fas fa-redo
         now(), 1, 1, 1, '/v/fin/movimentacao/recorrente/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', 'ROLE_FINAN');
 
 
--- Faturasr
+-- Faturas
 DELETE
 FROM cfg_entmenu
 WHERE uuid = '68d6193c-2df4-11ed-b9d1-57e3b2d94ab2';
@@ -164,18 +181,6 @@ VALUES ('fdabfbb2-197f-4cd4-87dd-f3ea02ef7a06', 'Importação', 'fas fa-file-imp
         '/v/fin/movimentacao/importador', 'ROLE_FINAN', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
 
 
--- Lançamento de caixa
-DELETE
-FROM cfg_entmenu
-WHERE uuid = '79c10300-39f8-4192-ac45-af4113d97ea7';
-
-SET @ordem = @ordem + 1;
-
-INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id,
-                        user_updated_id)
-VALUES ('79c10300-39f8-4192-ac45-af4113d97ea7', 'Caixas', 'fas fa-hand-holding-usd', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a', '/fin/movimentacao/caixa',
-        'ROLE_FINAN', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
-
 
 -- Abertura e Fechamento de Caixa
 DELETE
@@ -186,7 +191,7 @@ SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id,
                         user_updated_id)
-VALUES ('e31a61ee-22f6-11ec-b802-2f8810a1181b', 'Abertura e Fechamento de Caixa', 'fas fa-book-open', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a',
+VALUES ('e31a61ee-22f6-11ec-b802-2f8810a1181b', 'Abrir/Fechar Caixa', 'fas fa-book-open', 'ENT', '9121ea11-dc5d-4a22-9596-187f5452f95a',
         '/v/fin/carteira/caixaOperacaoForm', 'ROLE_FINAN', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
 
 
