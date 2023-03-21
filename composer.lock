@@ -1756,16 +1756,16 @@
         },
         {
             "name": "econea/nusoap",
-            "version": "v0.9.14",
+            "version": "v0.9.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/f00b4r/nusoap.git",
-                "reference": "ae53073db524180a70a0e9007110e21cf065753c"
+                "reference": "a5fd9cbbb0b83c94a099dadc8936ec7c2e1acfe1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/f00b4r/nusoap/zipball/ae53073db524180a70a0e9007110e21cf065753c",
-                "reference": "ae53073db524180a70a0e9007110e21cf065753c",
+                "url": "https://api.github.com/repos/f00b4r/nusoap/zipball/a5fd9cbbb0b83c94a099dadc8936ec7c2e1acfe1",
+                "reference": "a5fd9cbbb0b83c94a099dadc8936ec7c2e1acfe1",
                 "shasum": ""
             },
             "require": {
@@ -1813,7 +1813,7 @@
             ],
             "support": {
                 "issues": "https://github.com/f00b4r/nusoap/issues",
-                "source": "https://github.com/f00b4r/nusoap/tree/v0.9.14"
+                "source": "https://github.com/f00b4r/nusoap/tree/v0.9.15"
             },
             "funding": [
                 {
@@ -1821,7 +1821,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-13T07:42:38+00:00"
+            "time": "2023-03-09T11:29:13+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -11205,16 +11205,16 @@
         },
         {
             "name": "vich/uploader-bundle",
-            "version": "1.21.1",
+            "version": "1.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dustin10/VichUploaderBundle.git",
-                "reference": "6b428642694cbfeb1be6e956ba59382d89ae1ee6"
+                "reference": "8655c362102ec7cbb277faeb864af9756358ffbc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dustin10/VichUploaderBundle/zipball/6b428642694cbfeb1be6e956ba59382d89ae1ee6",
-                "reference": "6b428642694cbfeb1be6e956ba59382d89ae1ee6",
+                "url": "https://api.github.com/repos/dustin10/VichUploaderBundle/zipball/8655c362102ec7cbb277faeb864af9756358ffbc",
+                "reference": "8655c362102ec7cbb277faeb864af9756358ffbc",
                 "shasum": ""
             },
             "require": {
@@ -11307,9 +11307,9 @@
             ],
             "support": {
                 "issues": "https://github.com/dustin10/VichUploaderBundle/issues",
-                "source": "https://github.com/dustin10/VichUploaderBundle/tree/1.21.1"
+                "source": "https://github.com/dustin10/VichUploaderBundle/tree/1.22.0"
             },
-            "time": "2022-08-12T07:38:44+00:00"
+            "time": "2023-03-18T12:46:44+00:00"
         },
         {
             "name": "webmozart/assert",
