@@ -536,6 +536,11 @@ export default {
               ? formData.chequeBanco["@id"]
               : null;
 
+          formData.carteiraDestino =
+            formData.carteiraDestino && formData.carteiraDestino["@id"]
+              ? formData.carteiraDestino["@id"]
+              : null;
+
           delete formData.tipoLancto;
           delete formData.cadeia;
           if (formData.fatura && formData.fatura["@id"]) {

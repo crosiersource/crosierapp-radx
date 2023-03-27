@@ -17,7 +17,6 @@ return [
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
     CrosierSource\CrosierLibRadxBundle\CrosierLibRadxBundle::class => ['all' => true],
     Knp\Bundle\SnappyBundle\KnpSnappyBundle::class => ['all' => true],
-    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
     Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
 ];
