@@ -80,6 +80,14 @@
         </template>
       </Column>
 
+      <Column field="dtFatura" header="Dt Fatura" :sortable="true">
+        <template #body="r">
+          <div class="text-center">
+            {{ new Date(r.data.dtFatura).toLocaleString() }}
+          </div>
+        </template>
+      </Column>
+
       <Column field="descricao" header="Descrição">
         <template #body="r">
           <div>{{ r.data.descricao }}</div>

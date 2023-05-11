@@ -280,7 +280,6 @@ export default {
       subgrupo: yup.mixed().required().typeError(),
       fornecedor: yup.mixed().required().typeError(),
       unidadePadrao: yup.mixed().required().typeError(),
-      qtdeTotal: yup.number().required().typeError(),
     });
 
     SetFocus("codigo", 100);
