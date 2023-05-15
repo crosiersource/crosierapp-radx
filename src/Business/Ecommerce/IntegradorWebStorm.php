@@ -593,6 +593,7 @@ class IntegradorWebStorm implements IntegradorEcommerce
      */
     public function integrarDeptosGruposSubgrupos()
     {
+        $this->syslog->info('Iniciando... integrarDeptosGruposSubgrupos');
         /** @var DeptoRepository $repoDepto */
         $repoDepto = $this->deptoEntityHandler->getDoctrine()->getRepository(Depto::class);
         $deptos = $repoDepto->findAll(['id' => 'ASC']);
@@ -1473,6 +1474,7 @@ class IntegradorWebStorm implements IntegradorEcommerce
      */
     public function obterVendas(\DateTime $dtVenda, ?bool $resalvar = false): int
     {
+        $this->syslog->info('Iniciando... obterVendas para o dia ' . $dtVenda->format('d/m/Y') . '... (resalvar? ' . ($resalvar ? 'SIM' : 'NÃO') . ')');
         $pedidos = $this->obterVendasPorData($dtVenda);
         $i = 0;
         if ($pedidos->pedido ?? false) {

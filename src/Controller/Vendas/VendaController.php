@@ -1021,7 +1021,6 @@ class VendaController extends FormListController
     }
 
     /**
-     *
      * @Route("/ven/venda/obterVendasEcommerce/{dtVenda}", name="ven_venda_obterVendasEcommerce", defaults={"dtVenda": null})
      * @ParamConverter("dtVenda", options={"format": "Y-m-d"})
      *
@@ -1050,6 +1049,28 @@ class VendaController extends FormListController
         }
 
         return $this->redirect($request->server->get('HTTP_REFERER'));
+    }
+
+
+    /**
+     * @Route("/ven/venda/reobterVendaEcommerce/{venda}", name="ven_venda_reobterVendaEcommerce")
+     *
+     * @param Request $request
+     * @param IntegradorEcommerceFactory $integradorBusinessFactory
+     * @param \DateTime $dtVenda
+     * @return RedirectResponse
+     * @throws \Exception
+     * @IsGranted("ROLE_VENDAS_ADMIN", statusCode=403)
+     */
+    public function reobterVendaEcommerce(
+        Venda                      $venda,
+        IntegradorEcommerceFactory $integradorBusinessFactory
+    ): JsonResponse
+    {
+        $idVendaEcommerce = $venda->jsonData['ecommerce_idPedido'];
+        $integrador = $integradorBusinessFactory->getIntegrador();
+        $integrador->obterVendaPorId($idVendaEcommerce, true);
+        return CrosierApiResponse::success();
     }
 
 
@@ -1212,14 +1233,14 @@ class VendaController extends FormListController
 
             // Pesquisa o produto e seu preço já levando em consideração a unidade padrão
             $sql = $sqlConf['valor'] ?? 'SELECT prod.id, prod.codigo, prod.nome, prod.json_data->>"$.qtde_min_para_atacado" as qtde_min_para_atacado, ' .
-                'preco.preco_prazo as precoVenda, u.id as unidade_id, ' .
-                'u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
-                'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
-                'JOIN est_unidade u ON preco.unidade_id = u.id AND u.id = prod.unidade_padrao_id ' .
-                'JOIN est_lista_preco lista ON preco.lista_id = lista.id ' .
-                'WHERE preco.atual AND lista.descricao = \'VAREJO\' AND (' .
-                'prod.nome LIKE :nome OR ' .
-                'prod.codigo LIKE :codigo) ORDER BY prod.nome LIMIT 20';
+            'preco.preco_prazo as precoVenda, u.id as unidade_id, ' .
+            'u.label as unidade_label, u.casas_decimais as unidade_casas_decimais ' .
+            'FROM est_produto prod LEFT JOIN est_produto_preco preco ON prod.id = preco.produto_id ' .
+            'JOIN est_unidade u ON preco.unidade_id = u.id AND u.id = prod.unidade_padrao_id ' .
+            'JOIN est_lista_preco lista ON preco.lista_id = lista.id ' .
+            'WHERE preco.atual AND lista.descricao = \'VAREJO\' AND (' .
+            'prod.nome LIKE :nome OR ' .
+            'prod.codigo LIKE :codigo) ORDER BY prod.nome LIMIT 20';
 
             $rs = $conn->fetchAllAssociative($sql,
                 [
