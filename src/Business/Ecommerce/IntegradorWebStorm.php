@@ -1038,7 +1038,7 @@ class IntegradorWebStorm implements IntegradorEcommerce
         }
         $xml .= '<descricao-especificacoes-tecnicas>' . $especif_tec . '</descricao-especificacoes-tecnicas>';
 
-
+        $ecommerceId_caracteristica_jaAdicionadas = [];
         foreach ($produto->jsonData as $campo => $valor) {
             if (isset($jsonCampos[$campo]['info_integr_ecommerce']['tipo_campo_ecommerce']) && $jsonCampos[$campo]['info_integr_ecommerce']['tipo_campo_ecommerce'] === 'caracteristica') {
 
@@ -1052,11 +1052,17 @@ class IntegradorWebStorm implements IntegradorEcommerce
                     $valoresTags = explode(',', $valor);
                     foreach ($valoresTags as $valorTag) {
                         $ecommerceId_caracteristica = $this->integraCaracteristica($ecommerceId_tipoCaracteristica, $valorTag);
-                        $xml .= '<caracteristicaProduto><idCaracteristica>' . $ecommerceId_caracteristica . '</idCaracteristica></caracteristicaProduto>';
+                        if (!in_array($ecommerceId_caracteristica, $ecommerceId_caracteristica_jaAdicionadas, true)) {
+                            $xml .= '<caracteristicaProduto><idCaracteristica>' . $ecommerceId_caracteristica . '</idCaracteristica></caracteristicaProduto>';
+                            $ecommerceId_caracteristica_jaAdicionadas[] = $ecommerceId_caracteristica;
+                        }
                     }
                 } else {
                     $ecommerceId_caracteristica = $this->integraCaracteristica($ecommerceId_tipoCaracteristica, $valor);
-                    $xml .= '<caracteristicaProduto><idCaracteristica>' . $ecommerceId_caracteristica . '</idCaracteristica></caracteristicaProduto>';
+                    if (!in_array($ecommerceId_caracteristica, $ecommerceId_caracteristica_jaAdicionadas, true)) {
+                        $xml .= '<caracteristicaProduto><idCaracteristica>' . $ecommerceId_caracteristica . '</idCaracteristica></caracteristicaProduto>';
+                        $ecommerceId_caracteristica_jaAdicionadas[] = $ecommerceId_caracteristica;
+                    }
                 }
             }
         }
@@ -1086,8 +1092,7 @@ class IntegradorWebStorm implements IntegradorEcommerce
                             } else {
                                 $imgUtils->resizeToHeight(1080);
                             }
-                            // '%kernel.project_dir%/public/images/produtos'
-                            $file1080 = $this->params->get('kernel.project_dir') . '/public' .
+                            $file1080 = $_SERVER['PASTA_FOTOS_PRODUTOS'] .
                                 str_replace($pathinfo['basename'], '', $parsedUrl['path']) .
                                 $pathinfo['filename'] . '_1080.' . $pathinfo['extension'];
                             $imgUtils->save($file1080);
@@ -1098,7 +1103,7 @@ class IntegradorWebStorm implements IntegradorEcommerce
                 } catch (\Exception $e) {
                     $err = 'Erro ao processar imagens: ' . $e->getMessage();
                     $this->syslog->err($err);
-                    throw new \RuntimeException($err);
+                    throw new ViewException($err);
                 }
 
                 $xml .= '<imagens>
@@ -1173,6 +1178,9 @@ class IntegradorWebStorm implements IntegradorEcommerce
             throw new \RuntimeException($xmlResult->erros->erro->__toString());
         }
 
+        /** @var User $user */
+        $user = $this->security->getUser();
+        $integradoEm = (new \DateTime())->modify('+1 minutes')->format('Y-m-d H:i:s');
         // está fazendo UPDATE
         if ($produtoEcommerceId) {
             $ecommerceId = (int)$xmlResult->produtos->produto->idProduto->__toString();
@@ -1200,15 +1208,15 @@ class IntegradorWebStorm implements IntegradorEcommerce
             } else {
                 throw new ViewException('ecommerceItemVendaId não encontrada no xmlResult');
             }
+            $produto->jsonData['ecommerce_dt_primeira_integracao'] = $integradoEm;
+            $produto->jsonData['ecommerce_integrado_primeiro_por'] = $user ? $user->nome : 'n/d';
         }
 
 
-        $produto->jsonData['ecommerce_dt_integr'] = (new \DateTime())->modify('+1 minutes')->format('Y-m-d H:i:s');
+        $produto->jsonData['ecommerce_dt_integr'] = $integradoEm;
         $produto->jsonData['ecommerce_dt_marcado_integr'] = null;
         $produto->jsonData['ecommerce_desatualizado'] = 0;
 
-        /** @var User $user */
-        $user = $this->security->getUser();
         $produto->jsonData['ecommerce_integr_por'] = $user ? $user->nome : 'n/d';
 
 
@@ -1519,14 +1527,21 @@ class IntegradorWebStorm implements IntegradorEcommerce
 
         $client = $this->getNusoapClientExportacaoInstance();
 
-        $arResultado = $client->call('pedidoSelect', [
-            'xml' => utf8_decode($xml)
-        ]);
+        try {
+            $arResultado = $client->call('pedidoSelect', [
+                'xml' => utf8_decode($xml)
+            ]);
+        } catch (\Exception $e) {
+            $msg = ExceptionUtils::treatException($e);
+            $this->syslog->info('ERRO ao obter vendas entre ' . $dtIni->format('d/m/Y H:i:s') . ' e ' . $dtFim->format('d/m/Y H:i:s') . '. Mensagem: ' . $msg, $e->getTraceAsString());
+        }
 
         if ($client->faultcode) {
+            $this->syslog->info('ERRO ao obter vendas entre ' . $dtIni->format('d/m/Y H:i:s') . ' e ' . $dtFim->format('d/m/Y H:i:s') . '. faultCode: ' . $client->faultcode, $arResultado);
             throw new \RuntimeException($client->faultcode);
         }
         if ($client->getError()) {
+            $this->syslog->info('ERRO ao obter vendas entre ' . $dtIni->format('d/m/Y H:i:s') . ' e ' . $dtFim->format('d/m/Y H:i:s') . '. error: ' . $client->getError(), $arResultado);
             throw new \RuntimeException($client->getError());
         }
 
