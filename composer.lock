@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.7.6",
+            "version": "v1.7.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "1d8c4345fac2663ba9b5618e2a71898fac7b51e3"
+                "reference": "457f69cc1710cbbe0a3bbf5f0b7919b7892670b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/1d8c4345fac2663ba9b5618e2a71898fac7b51e3",
-                "reference": "1d8c4345fac2663ba9b5618e2a71898fac7b51e3",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/457f69cc1710cbbe0a3bbf5f0b7919b7892670b0",
+                "reference": "457f69cc1710cbbe0a3bbf5f0b7919b7892670b0",
                 "shasum": ""
             },
             "require": {
@@ -290,22 +290,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.7.6"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.7.7"
             },
-            "time": "2023-05-12T12:13:01+00:00"
+            "time": "2023-05-16T22:13:54+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.7.7",
+            "version": "v1.7.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "7c90b9ae29f18b2bee98fe5577b53823c2a005c0"
+                "reference": "117964f152c46d3690b18739c44267de0726e1b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/7c90b9ae29f18b2bee98fe5577b53823c2a005c0",
-                "reference": "7c90b9ae29f18b2bee98fe5577b53823c2a005c0",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/117964f152c46d3690b18739c44267de0726e1b7",
+                "reference": "117964f152c46d3690b18739c44267de0726e1b7",
                 "shasum": ""
             },
             "require": {
@@ -341,9 +341,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.7.7"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.7.8"
             },
-            "time": "2023-05-12T12:15:09+00:00"
+            "time": "2023-05-16T22:14:34+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1915,16 +1915,16 @@
         },
         {
             "name": "friendsofphp/proxy-manager-lts",
-            "version": "v1.0.14",
+            "version": "v1.0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/proxy-manager-lts.git",
-                "reference": "a527c9d9d5348e012bd24482d83a5cd643bcbc9e"
+                "reference": "3ca65b8edb8d96b46fedc9bb4911396516347129"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/proxy-manager-lts/zipball/a527c9d9d5348e012bd24482d83a5cd643bcbc9e",
-                "reference": "a527c9d9d5348e012bd24482d83a5cd643bcbc9e",
+                "url": "https://api.github.com/repos/FriendsOfPHP/proxy-manager-lts/zipball/3ca65b8edb8d96b46fedc9bb4911396516347129",
+                "reference": "3ca65b8edb8d96b46fedc9bb4911396516347129",
                 "shasum": ""
             },
             "require": {
@@ -1981,7 +1981,7 @@
             ],
             "support": {
                 "issues": "https://github.com/FriendsOfPHP/proxy-manager-lts/issues",
-                "source": "https://github.com/FriendsOfPHP/proxy-manager-lts/tree/v1.0.14"
+                "source": "https://github.com/FriendsOfPHP/proxy-manager-lts/tree/v1.0.15"
             },
             "funding": [
                 {
@@ -1993,7 +1993,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-30T10:40:19+00:00"
+            "time": "2023-05-16T13:18:04+00:00"
         },
         {
             "name": "friendsofsymfony/jsrouting-bundle",
