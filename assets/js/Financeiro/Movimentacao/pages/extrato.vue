@@ -31,7 +31,7 @@
               optionLabel="descricaoMontada"
               :optionValue="null"
               :orderBy="{ codigo: 'ASC' }"
-              :filters="{ concreta: true }"
+              :filters="{ concreta: true, caixa: false, atual: true }"
               label="Carteira"
               id="carteira"
             />

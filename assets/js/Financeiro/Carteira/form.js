@@ -26,6 +26,7 @@ const store = createStore({
       loading: 0,
       fields: {
         caixaResponsavel: {},
+        limite: 0,
       },
       fieldsErrors: {
         caixaResponsavel: {},

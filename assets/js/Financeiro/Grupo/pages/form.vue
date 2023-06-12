@@ -1,5 +1,6 @@
 <template>
   <Toast position="bottom-right" class="mb-5" />
+
   <CrosierFormS @submitForm="this.submitForm" titulo="Grupo de Movimentação">
     <div class="form-row">
       <CrosierInputInt label="Id" col="3" id="id" v-model="this.fields.id" disabled />
@@ -35,12 +36,7 @@
         helpText="Informe o dia posterior ao dia de fechamento da fatura"
       />
 
-      <CrosierDropdownBoolean
-        label="Utilizado"
-        col="4"
-        id="utilizado"
-        v-model="this.fields.ativo"
-      />
+      <CrosierDropdownBoolean label="Ativo" col="4" id="ativo" v-model="this.fields.ativo" />
     </div>
 
     <div class="form-row">
@@ -48,6 +44,7 @@
         col="5"
         v-model="this.fields.carteiraPagantePadrao"
         :error="this.formErrors.carteiraPagantePadrao"
+        :filters="{ atual: true, concreta: true }"
         entity-uri="/api/fin/carteira"
         optionLabel="descricaoMontada"
         :optionValue="null"
@@ -59,7 +56,6 @@
       <CrosierDropdownEntity
         col="7"
         v-model="this.fields.categoriaPadrao"
-        :error="this.formErrors.categoriaPadrao"
         entity-uri="/api/fin/categoria"
         optionLabel="descricaoMontadaTree"
         :optionValue="null"
@@ -68,6 +64,40 @@
         id="categoriaPadrao"
       />
     </div>
+
+    <DataTable
+      sortField="dtVencto"
+      :sortOrder="-1"
+      class="p-datatable-sm p-datatable-striped"
+      :value="this.fields.itens"
+      :paginator="false"
+      resizableColumns
+      columnResizeMode="fit"
+      responsiveLayout="scroll"
+      ref="dt"
+      rowHover
+    >
+      <Column field="id" header="Id">
+        <template #body="r">
+          {{ ("00000000" + r.data.id).slice(-8) }}
+        </template>
+      </Column>
+
+      <Column field="descricao" header="Descrição"></Column>
+
+      <Column field="valorLanctos" header="Total" :sortable="true">
+        <template #body="r">
+          <div class="text-right">
+            {{
+              parseFloat(r.data.valorLanctos ?? 0).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })
+            }}
+          </div>
+        </template>
+      </Column>
+    </DataTable>
   </CrosierFormS>
 </template>
 
@@ -84,6 +114,8 @@ import {
   SetFocus,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
 
 export default {
   components: {
@@ -93,6 +125,8 @@ export default {
     CrosierInputText,
     CrosierInputInt,
     CrosierDropdownEntity,
+    DataTable,
+    Column,
   },
 
   data() {
@@ -111,7 +145,6 @@ export default {
       diaVencto: yup.number().required().typeError(),
       diaInicioAprox: yup.number().required().typeError(),
       ativo: yup.boolean().required().typeError(),
-      categoriaPadrao: yup.mixed().required().typeError(),
       carteiraPagantePadrao: yup.mixed().required().typeError(),
     });
 

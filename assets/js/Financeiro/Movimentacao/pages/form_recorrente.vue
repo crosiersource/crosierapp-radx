@@ -455,6 +455,8 @@ export default {
             formData.centroCusto && formData.centroCusto["@id"]
               ? formData.centroCusto["@id"]
               : null;
+          formData.grupoItem =
+            formData.grupoItem && formData.grupoItem["@id"] ? formData.grupoItem["@id"] : null;
           formData.documentoBanco =
             formData.documentoBanco && formData.documentoBanco["@id"]
               ? formData.documentoBanco["@id"]
@@ -473,6 +475,16 @@ export default {
           delete formData.fatura;
         },
       });
+      localStorage.setItem(
+        "dadosUltimaMovimentacao",
+        JSON.stringify({
+          categoria: this.fields?.categoria,
+          carteira: this.fields?.carteira,
+          modo: this.fields?.modo,
+          centroCusto: this.fields?.centroCusto,
+          grupo: this.fields?.grupo,
+        })
+      );
       this.setLoading(false);
     },
 

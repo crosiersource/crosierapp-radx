@@ -7,7 +7,13 @@
     apiResource="/api/fin/grupo/"
     ref="dt"
     :properties="['id', 'descricao', 'carteiraPagantePadrao', 'ativo', 'updated']"
+    filtrosNaSidebar
   >
+    <template v-slot:filter-fields>
+      <CrosierInputText label="Descrição" id="descricao" v-model="this.filters.descricao" />
+
+      <CrosierDropdownBoolean label="Ativo" id="ativo" v-model="this.filters.ativo" />
+    </template>
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true">
         <template #body="r">
@@ -64,7 +70,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierListS } from "crosier-vue";
+import { CrosierListS, CrosierInputText, CrosierDropdownBoolean } from "crosier-vue";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -75,6 +81,8 @@ export default {
     Column,
     Toast,
     ConfirmDialog,
+    CrosierInputText,
+    CrosierDropdownBoolean,
   },
 
   methods: {

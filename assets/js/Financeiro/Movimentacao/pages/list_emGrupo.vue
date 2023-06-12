@@ -72,27 +72,19 @@
           :stateKey="this.dataTableStateKey"
           :value="tableData"
           :totalRecords="totalRecords"
-          :lazy="true"
           :paginator="false"
-          @page="doFilter($event)"
-          @sort="doFilter($event)"
           :multiSortMeta="multiSortMeta"
-          :removable-sort="true"
-          v-model:selection="this.selection"
-          @update:selection="this.onUpdateSelection($event)"
-          selectionMode="multiple"
+          removable-sort
           :metaKeySelection="false"
           dataKey="id"
-          @rowSelect="this.onRowSelect"
-          @rowUnselect="this.onRowUnselect"
-          :resizableColumns="true"
+          resizableColumns
           columnResizeMode="fit"
           responsiveLayout="scroll"
           :first="firstRecordIndex"
           ref="dt"
-          :rowHover="true"
+          rowHover
         >
-          <Column field="id">
+          <Column field="id" :sortable="true">
             <template #header>
               <Checkbox
                 :binary="true"
@@ -172,13 +164,15 @@
           </Column>
 
           <!-- Não sei pq se colocar a dtVencto ele não renderiza a coluna -->
-          <Column field="id" header="Dt Vencto">
+          <Column field="dtMoviment" header="Dt Movto" sortable>
             <template #body="r">
               <div
                 class="text-center"
-                :title="'Dt Vencto: ' + new Date(r.data.dtVencto).toLocaleString().substring(0, 10)"
+                :title="
+                  'Dt Movto: ' + new Date(r.data.dtMoviment).toLocaleString().substring(0, 10)
+                "
               >
-                {{ new Date(r.data.dtVencto).toLocaleString().substring(0, 10) }}
+                {{ new Date(r.data.dtMoviment).toLocaleString().substring(0, 10) }}
                 <div class="clearfix"></div>
                 <span
                   v-if="r.data.status === 'REALIZADA'"
@@ -327,7 +321,6 @@ export default {
 
   data() {
     return {
-      aux: {},
       savedFilter: {},
       totalRecords: 0,
       tableData: null,
@@ -396,7 +389,6 @@ export default {
         apiResource: this.apiResource,
         page,
         rows,
-        order: { dtVencto: "ASC", "categoria.codigoSuper": "ASC", valorTotal: "ASC" },
         filters: this.filters,
         defaultFilters: this.defaultFilters,
         properties: [
@@ -404,6 +396,7 @@ export default {
           "descricao",
           "status",
           "descricaoMontada",
+          "dtMoviment",
           "dtVencto",
           "valorTotalFormatted",
           "categoria.descricaoMontada",

@@ -78,28 +78,16 @@
 
     <div class="form-row">
       <CrosierDropdownEntity
-        col="6"
-        v-model="this.aux.grupo"
+        label="Grupo"
+        id="grupo"
+        v-model="this.fields.grupo"
+        :error="this.fieldsErrors.grupo"
         entity-uri="/api/fin/grupo"
+        :properties="['descricao', 'id', 'itens.id']"
+        :optionValue="null"
         optionLabel="descricao"
         :orderBy="{ descricao: 'ASC' }"
         :filters="{ ativo: true }"
-        label="Grupo"
-        id="grupo"
-      />
-
-      <CrosierDropdownEntity
-        v-if="this.aux.grupo"
-        col="6"
-        v-model="this.fields.grupoItem"
-        :error="this.fieldsErrors.grupoItem"
-        entity-uri="/api/fin/grupoItem"
-        optionLabel="descricaoMontada"
-        :orderBy="{ descricao: 'ASC' }"
-        :filters="{ pai: this.aux.grupo }"
-        id="grupoItem"
-        @change="this.doFilterNextTick"
-        label="Fatura"
       />
     </div>
 
@@ -188,11 +176,18 @@
     <div class="form-row">
       <CrosierCalendar
         label="Dt Moviment"
-        col="7"
+        col="5"
         id="dtMoviment"
         v-model="this.fields.dtMoviment"
         :error="this.fieldsErrors.dtMoviment"
         @focus="this.onDtMovimentFocus"
+      />
+
+      <CrosierInputInt
+        label="Qtde Parcelas"
+        col="2"
+        id="qtdeParcelas"
+        v-model="this.fields.qtdeParcelas"
       />
 
       <CrosierCurrency
@@ -225,8 +220,9 @@ import {
   CrosierInputText,
   CrosierInputTextarea,
   CrosierCalendar,
-  submitForm,
   api,
+  SetFocus,
+  submitForm,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
@@ -264,6 +260,7 @@ export default {
     this.schemaValidator = yup.object().shape({
       categoria: yup.mixed().required().typeError(),
       descricao: yup.mixed().required().typeError(),
+      grupo: yup.mixed().required().typeError(),
       dtMoviment: yup.date().required().typeError(),
       valorTotal: yup.number().required().typeError(),
     });
@@ -287,6 +284,8 @@ export default {
         life: 5000,
       });
     }
+
+    SetFocus("categoria", 40);
 
     this.setLoading(false);
   },
@@ -314,35 +313,70 @@ export default {
 
     async submitForm() {
       this.setLoading(true);
-      await submitForm({
+      const rs = await submitForm({
         apiResource: "/api/fin/movimentacao",
         schemaValidator: this.schemaValidator,
         $store: this.$store,
         formDataStateName: "fields",
         $toast: this.$toast,
-        fnBeforeSave: (formData) => {
+        fnBeforeSave: async (formData) => {
           formData.tipoLancto = "/api/fin/tipoLancto/20";
-          formData.categoria = formData.categoria["@id"];
-
-          formData.centroCusto =
-            formData.centroCusto && formData.centroCusto["@id"]
-              ? formData.centroCusto["@id"]
-              : null;
+          formData.categoria = formData?.categoria?.["@id"] ?? formData.categoria;
+          formData.carteira = formData?.carteira?.["@id"] ?? formData.carteira;
+          formData.modo = formData?.modo?.["@id"] ?? formData.modo;
+          formData.centroCusto = formData?.centroCusto?.["@id"] ?? formData.centroCusto;
 
           if (formData.cedente && formData.cedente.text) {
             formData.cedente = formData.cedente.text;
           }
-
           if (formData.sacado && formData.sacado.text) {
             formData.sacado = formData.sacado.text;
           }
 
+          if (!formData?.grupoItem) {
+            console.log("não tem grupoItem");
+            if (!formData?.grupo?.itens?.[0]?.["@id"]) {
+              console.log("não tem itens");
+              const rsGrupo = await axios.get(formData.grupo["@id"], {
+                headers: {
+                  "Content-Type": "application/ld+json",
+                },
+                validateStatus(status) {
+                  return status < 500;
+                },
+              });
+              console.log("rsGrupo");
+              console.log(rsGrupo);
+              formData.grupoItem = rsGrupo?.data?.itens?.[0]?.["@id"];
+              console.log(rsGrupo?.data?.itens?.[0]?.["@id"]);
+              console.log(formData);
+            }
+          }
+
+          delete formData.grupo;
           delete formData.cadeia;
           delete formData.carteira;
           delete formData.modo;
           delete formData.fatura;
+          console.log("finalizando");
+          console.log(formData);
+          return formData;
         },
       });
+      console.log(rs);
+      if (rs?.data?.["@id"]) {
+        localStorage.setItem(
+          "dadosUltimaMovimentacao",
+          JSON.stringify({
+            categoria: rs.data?.categoria,
+            carteira: rs.data?.carteira,
+            modo: rs.data?.modo,
+            centroCusto: rs.data?.centroCusto,
+            grupo: rs.data?.grupo,
+            grupoItem: rs.data?.grupoItem,
+          })
+        );
+      }
       this.setLoading(false);
     },
 
@@ -430,7 +464,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters({ fields: "getFields", fieldsErrors: "getFieldsErrors", aux: "getAux" }),
+    ...mapGetters({ fields: "getFields", fieldsErrors: "getFieldsErrors" }),
   },
 };
 </script>

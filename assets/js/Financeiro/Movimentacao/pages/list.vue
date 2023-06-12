@@ -20,6 +20,7 @@
       'categoria.descricaoMontada',
       'carteira.descricaoMontada',
       'modo.descricaoMontada',
+      'grupoItem.descricaoMontada',
       'descricaoMontada',
       'valorTotalFormatted',
       'dtVencto',
@@ -185,6 +186,12 @@
         <template class="text-right" #body="r">
           <div style="max-width: 50em; white-space: pre-wrap">
             <b><div v-html="r.data.descricaoMontada"></div></b>
+
+            <div v-if="r.data.grupoItem?.descricaoMontada">
+              <span class="badge badge-info"
+                ><i class="fas fa-layer-group"></i> {{ r.data.grupoItem?.descricaoMontada }}</span
+              >
+            </div>
 
             <div v-if="r.data.categoria.codigoSuper === 1 && r.data.sacado">
               <small>{{ r.data.sacado }}</small>

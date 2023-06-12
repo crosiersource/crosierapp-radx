@@ -1,6 +1,6 @@
 <template>
   <Toast position="bottom-right" class="mb-5" />
-  <ConfirmDialog></ConfirmDialog>
+  <ConfirmDialog />
 
   <CrosierFormS
     @submitForm="this.submitForm"
@@ -79,7 +79,7 @@
         optionLabel="descricaoMontada"
         :optionValue="null"
         :orderBy="{ codigo: 'ASC' }"
-        :filters="{ abertas: true, caixa: false }"
+        :filters="{ atual: true, concreta: true, caixa: false }"
         label="Carteira"
         id="carteira"
       />
@@ -328,6 +328,17 @@ export default {
           delete formData.fatura;
         },
       });
+      localStorage.setItem(
+        "dadosUltimaMovimentacao",
+        JSON.stringify({
+          categoria: this.fields?.categoria,
+          carteira: this.fields?.carteira,
+          modo: this.fields?.modo,
+          centroCusto: this.fields?.centroCusto,
+          grupo: this.fields?.grupo,
+        })
+      );
+
       this.setLoading(false);
     },
 

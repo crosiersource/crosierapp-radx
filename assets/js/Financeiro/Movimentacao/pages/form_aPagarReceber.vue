@@ -311,12 +311,23 @@
               <label class="col-form-label col-sm-3" for="dtMoviment">Dt Moviment</label>
               <CrosierCalendar
                 :showLabel="false"
-                col="9"
+                col="8"
                 id="dtMoviment"
                 v-model="this.fields.dtMoviment"
                 :error="this.fieldsErrors.dtMoviment"
                 @focus="this.onDtMovimentFocus"
               />
+              <div class="col-1">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  role="button"
+                  title="Igualar datas"
+                  @click="this.igualarDatas(this.fields.dtMoviment)"
+                >
+                  <i class="fas fa-equals" aria-hidden="true"></i>
+                </button>
+              </div>
             </div>
 
             <div class="form-row form-group camposEmpilhados">
@@ -356,6 +367,22 @@
                 :error="this.fieldsErrors.dtPagto"
                 helpText="Movimentação com Dt Pagto é considerada como 'REALIZADA'"
               />
+            </div>
+
+            <div class="form-row form-group camposEmpilhados" v-else>
+              <label class="col-form-label col-sm-3" for="dtPagto">Dt Pagto</label>
+              <div class="col-9">
+                <button
+                  @click="this.setarParaPagto"
+                  type="button"
+                  :class="
+                    'btn btn-block btn-' +
+                    (this.fields?.categoria?.codigoSuper === 1 ? 'success' : 'danger')
+                  "
+                >
+                  <i class="fas fa-dollar-sign"></i> Registrar Pagto
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -438,6 +465,7 @@ import {
   CrosierInputText,
   CrosierInputTextarea,
   CrosierCalendar,
+  CrosierButton,
   submitForm,
   SetFocus,
   api,
@@ -455,6 +483,7 @@ export default {
     CrosierCalendar,
     Toast,
     CrosierFormS,
+    CrosierButton,
     SacadoCedente,
     CrosierInputText,
     CrosierInputId,
@@ -526,6 +555,8 @@ export default {
             formData.centroCusto && formData.centroCusto["@id"]
               ? formData.centroCusto["@id"]
               : null;
+          formData.grupoItem =
+            formData.grupoItem && formData.grupoItem["@id"] ? formData.grupoItem["@id"] : null;
           formData.documentoBanco =
             formData.documentoBanco && formData.documentoBanco["@id"]
               ? formData.documentoBanco["@id"]
@@ -692,6 +723,15 @@ export default {
         targetStyles: "*",
       });
       this.setLoading(false);
+    },
+
+    igualarDatas(data) {
+      this.fields.dtMoviment = data;
+      this.fields.dtVencto = data;
+      this.fields.dtVenctoEfetiva = data;
+      if (this.fields?.dtPagto) {
+        this.fields.dtPagto = data;
+      }
     },
   },
 

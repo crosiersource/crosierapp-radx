@@ -98,7 +98,7 @@ SET @ordem = @ordem + 1;
 
 INSERT INTO cfg_entmenu (id, uuid, label, icon, tipo, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, url,
                          app_uuid, roles)
-VALUES (NULL, '88281506-754e-4d54-bd68-299593918e03', 'Em Grupo', 'far fa-object-group', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(),
+VALUES (NULL, '88281506-754e-4d54-bd68-299593918e03', 'Para Grupo', 'far fa-object-group', 'ENT', '3984a4f5-cd55-4525-87b9-01212fb1952c', @ordem, NULL, now(),
         now(), 1, 1, 1, '/v/fin/movimentacao/grupo/form', '9121ea11-dc5d-4a22-9596-187f5452f95a', 'ROLE_FINAN');
 
 SET @ordem = @ordem + 1;

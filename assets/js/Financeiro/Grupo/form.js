@@ -71,6 +71,7 @@ const store = createStore({
               "diaInicioAprox",
               "diaVencto",
               "updated",
+              "itens",
             ],
           });
 

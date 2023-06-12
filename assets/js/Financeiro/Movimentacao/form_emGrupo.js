@@ -25,7 +25,6 @@ const store = createStore({
     return {
       loading: 0,
       fields: {},
-      aux: { pai: null },
       fieldsErrors: {},
     };
   },
@@ -39,7 +38,6 @@ const store = createStore({
     },
 
     getFieldsErrors: (state) => state.fieldsErrors,
-    getAux: (state) => state.aux,
   },
 
   mutations: {
@@ -56,8 +54,10 @@ const store = createStore({
       fields.dtVencto = fields.dtVencto ? new Date(fields.dtVencto) : null;
       fields.dtVenctoEfetiva = fields.dtVenctoEfetiva ? new Date(fields.dtVenctoEfetiva) : null;
 
-      state.aux.grupo = fields?.grupoItem?.pai ? fields?.grupoItem?.pai["@id"] : null;
-      fields.grupoItem = fields.grupoItem["@id"];
+      if (fields?.grupoItem?.pai) {
+        fields.grupo = fields?.grupoItem?.pai;
+      }
+      fields.grupoItem = fields.grupoItem?.["@id"] ?? null;
       state.fields = fields;
     },
 
@@ -84,6 +84,11 @@ const store = createStore({
         } catch (err) {
           console.error(err);
         }
+      } else {
+        const dadosUltimaMovimentacao = JSON.parse(
+          localStorage.getItem("dadosUltimaMovimentacao") ?? "{}"
+        );
+        context.commit("setFields", dadosUltimaMovimentacao);
       }
       context.commit("setLoading", false);
     },

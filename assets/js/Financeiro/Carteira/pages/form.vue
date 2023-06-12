@@ -29,13 +29,7 @@
         :error="this.formErrors.dtConsolidado"
       />
 
-      <CrosierDropdownBoolean
-        label="Atual"
-        col="2"
-        id="atual"
-        v-model="this.fields.atual"
-        :error="this.formErrors.atual"
-      />
+      <CrosierSwitch label="Atual" col="2" id="atual" v-model="this.fields.atual" />
     </div>
 
     <div class="form-row">
@@ -132,6 +126,7 @@ import {
   CrosierDropdownEntity,
   CrosierInputText,
   CrosierInputInt,
+  CrosierSwitch,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 
@@ -146,6 +141,7 @@ export default {
     CrosierInputText,
     CrosierInputInt,
     CrosierCalendar,
+    CrosierSwitch,
   },
 
   data() {

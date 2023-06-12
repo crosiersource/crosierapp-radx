@@ -347,6 +347,16 @@ export default {
             delete formData.fatura;
           },
         });
+        localStorage.setItem(
+          "dadosUltimaMovimentacao",
+          JSON.stringify({
+            categoria: this.fields?.categoria,
+            carteira: this.fields?.carteira,
+            modo: this.fields?.modo,
+            centroCusto: this.fields?.centroCusto,
+            grupo: this.fields?.grupo,
+          })
+        );
       } catch (e) {
         console.error(e);
       }

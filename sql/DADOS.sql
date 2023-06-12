@@ -666,12 +666,12 @@ ALTER TABLE fin_carteira
 
 TRUNCATE TABLE fin_tipo_lancto;
 
-REPLACE INTO `fin_tipo_lancto` (`id`, `codigo`, `descricao`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (20, 20, 'MOVIMENTAÇÃO NORMAL', now(), now(), 0, 1, 1, 1),
-       (60, 60, 'TRANSFERÊNCIA ENTRE CARTEIRAS', now(), now(), 0, 1, 1, 1),
-       (61, 61, 'TRANSFERÊNCIA DE ENTRADA DE CAIXA', now(), now(), 0, 1, 1, 1),
-       (63, 63, 'MOVIMENTAÇÃO CARTÃO CRÉDITO/DÉBITO', now(), now(), 0, 1, 1, 1),
-       (64, 64, 'ENTRADA DE CAIXA POR TRANSF. BANCÁRIA', now(), now(), 0, 1, 1, 1);
+REPLACE INTO `fin_tipo_lancto` (`id`, `codigo`, `descricao`, `obs`, `url`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+VALUES (20, 20, 'MOVIMENTAÇÃO NORMAL', '', '', now(), now(), 0, 1, 1, 1),
+       (60, 60, 'TRANSFERÊNCIA ENTRE CARTEIRAS', '', '', now(), now(), 0, 1, 1, 1),
+       (61, 61, 'TRANSFERÊNCIA DE ENTRADA DE CAIXA', '', '', now(), now(), 0, 1, 1, 1),
+       (63, 63, 'MOVIMENTAÇÃO CARTÃO CRÉDITO/DÉBITO', '', '', now(), now(), 0, 1, 1, 1),
+       (64, 64, 'ENTRADA DE CAIXA POR TRANSF. BANCÁRIA', '', '', now(), now(), 0, 1, 1, 1);
 
 TRUNCATE TABLE fin_categoria;
 

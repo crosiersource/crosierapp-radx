@@ -77,6 +77,13 @@ const store = createStore({
         } catch (err) {
           console.error(err);
         }
+      } else {
+        const dadosUltimaMovimentacao = JSON.parse(
+          localStorage.getItem("dadosUltimaMovimentacao") ?? "{}"
+        );
+        delete dadosUltimaMovimentacao.grupo;
+        delete dadosUltimaMovimentacao.grupoItem;
+        context.commit("setFields", dadosUltimaMovimentacao);
       }
       context.commit("setLoading", false);
     },

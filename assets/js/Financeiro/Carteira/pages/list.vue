@@ -14,12 +14,13 @@
       'codigo',
       'operadoraCartao.descricao',
       'dtConsolidado',
+      'atual',
     ]"
   >
     <template v-slot:filter-fields>
-      <div class="form-row">
-        <CrosierInputText label="Descrição" id="descricao" v-model="this.filters.descricao" />
-      </div>
+      <CrosierInputText label="Descrição" id="descricao" v-model="this.filters.descricao" />
+
+      <CrosierDropdownBoolean label="Atual" id="atual" v-model="this.filters.atual" />
     </template>
 
     <template v-slot:columns>
@@ -31,13 +32,28 @@
 
       <Column field="codigo" header="Código" :sortable="true"></Column>
 
-      <Column field="descricao" header="Descrição" :sortable="true"></Column>
-
-      <Column field="operadoraCartao.descricao" header="Operadora Cartão"></Column>
+      <Column field="descricao" header="Descrição" :sortable="true">
+        <template #body="r">
+          {{ r.data.descricao }}
+          <div v-if="r.data.operadoraCartao?.descricao">
+            <span class="badge badge-info">
+              Operadora de Cartão: {{ r.data.operadoraCartao?.descricao }}
+            </span>
+          </div>
+        </template>
+      </Column>
 
       <Column field="dtConsolidado" header="Consolidada em" :sortable="true">
         <template #body="r">
-          {{ new Date(r.data.dtConsolidado).toLocaleString().substring(0, 10) }}
+          <div v-if="r.data.dtConsolidado">
+            {{ new Date(r.data.dtConsolidado).toLocaleString().substring(0, 10) }}
+          </div>
+        </template>
+      </Column>
+
+      <Column field="atual" header="Atual" :sortable="true">
+        <template #body="r">
+          {{ r.data.atual ? "Sim" : "Não" }}
         </template>
       </Column>
 
@@ -76,7 +92,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierListS, CrosierInputText } from "crosier-vue";
+import { CrosierInputText, CrosierListS, CrosierDropdownBoolean } from "crosier-vue";
 import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -88,6 +104,7 @@ export default {
     Toast,
     ConfirmDialog,
     CrosierInputText,
+    CrosierDropdownBoolean,
   },
   data() {
     return {
