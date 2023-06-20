@@ -24,6 +24,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\Select2JsUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\MovimentacaoBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Cadeia;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\GrupoItem;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Movimentacao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\OperadoraCartao;
@@ -624,10 +625,8 @@ class MovimentacaoController extends FormListController
 
 
     /**
-     *
      * @Route("/api/fin/movimentacao/importar", name="api_fin_movimentacao_importar")
      * @return RedirectResponse
-     *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
     public function importar(Request $request, MovimentacaoImporter $importer): JsonResponse
@@ -657,5 +656,97 @@ class MovimentacaoController extends FormListController
         }
     }
 
+
+    /**
+     * @Route("/api/fin/movimentacao/corrigirTiposLancto", name="api_fin_movimentacao_corrigirTiposLancto")
+     * @return RedirectResponse
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function corrigirTiposLancto(MovimentacaoEntityHandler $movimentacaoEntityHandler): JsonResponse
+    {
+        // 63 - ENTRADA POR CARTÃO DE CRÉDITO OU DÉBITO
+        // movimentação em caixa contendo dados de cartão
+        // deve ser 101 ou 102 e estar em uma cadeia contendo mais 2 movimentações.
+        // antigamente eram 199+299, agora é 191+291
+
+        $repoCategoria = $this->doctrine->getRepository(Categoria::class);
+        $categ299 = $repoCategoria->findOneByCodigo(299);
+        $categ291 = $repoCategoria->findOneByCodigo(291);
+        
+        $repoCarteira = $this->doctrine->getRepository(Carteira::class);
+        $caixas = $repoCarteira->findAllByFiltersSimpl([['caixa', 'EQ', true], ['atual', 'EQ', true]]);
+
+        $repoMovimentacao = $this->doctrine->getRepository(Movimentacao::class);
+        $movimentacoesDeCaixaComOperadora = $repoMovimentacao->findAllByFiltersSimpl(
+            [
+                ['categoria', 'EQ', $categ299],
+                ['categoria', 'NEQ', $categ291],
+                ['carteira', 'IN', $caixas],
+                ['bandeiraCartao', 'IS_NOT_NULL'],
+                ['dtMoviment', 'BETWEEN', ['2021-01-20', '2021-01-31']]
+            ],
+            ['dtMoviment' => 'ASC', 'valor' => 'ASC']
+        );
+        /** @var Movimentacao $movimentacao */
+        foreach ($movimentacoesDeCaixaComOperadora as $movimentacao) {
+            $this->extracted($movimentacaoEntityHandler, $movimentacao);
+        }
+
+        return CrosierApiResponse::success();
+
+    }
+
+
+    /**
+     * @throws ViewException
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function extracted(
+        MovimentacaoEntityHandler $movimentacaoEntityHandler,
+        Movimentacao              $movimentacao
+    ): void
+    {
+        $conn = $movimentacaoEntityHandler->getDoctrine()->getConnection();
+
+        $repoTipoLancto = $this->doctrine->getRepository(TipoLancto::class);
+        $tipoLancto63 = $repoTipoLancto->findOneByFiltersSimpl([['codigo', 'EQ', '63']]);
+
+        $repoCategoria = $this->doctrine->getRepository(Categoria::class);
+        $vendasInternas = $repoCategoria->findOneByFiltersSimpl([['codigo', 'EQ', 101]]);
+
+        /** @var Movimentacao $novaMovimentacao */
+        $novaMovimentacao = $movimentacaoEntityHandler->cloneEntityId($movimentacao);
+        $novaMovimentacao->fatura = null;
+        $novaMovimentacao->faturaOrdem = null;
+        $novaMovimentacao->cadeia = null;
+        $novaMovimentacao->cadeiaQtde = null;
+        $novaMovimentacao->cadeiaOrdem = null;
+        if ($movimentacao->cadeia) {
+            $conn->executeQuery(
+                'DELETE FROM fin_movimentacao WHERE cadeia_id = :cadeiaId',
+                [
+                    'cadeiaId' => $movimentacao->cadeia->getId(),
+                ]
+            );
+            $conn->executeQuery(
+                'DELETE FROM fin_cadeia WHERE id = :cadeiaId',
+                [
+                    'cadeiaId' => $movimentacao->cadeia->getId(),
+                ]
+            );
+        }
+        $conn->executeQuery(
+            'DELETE FROM fin_movimentacao WHERE id = :id',
+            [
+                'id' => $movimentacao->getId(),
+            ]
+        );
+
+        if (!in_array($novaMovimentacao->categoria->codigo, [101, 102], true)) {
+            $novaMovimentacao->categoria = $vendasInternas;
+        }
+        $novaMovimentacao->tipoLancto = $tipoLancto63;
+        $movimentacaoEntityHandler->save($novaMovimentacao);
+    }
 
 }

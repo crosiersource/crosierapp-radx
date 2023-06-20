@@ -1,5 +1,5 @@
 <template>
-  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <Toast position="bottom-right" class="mb-5" />
   <ConfirmDialog></ConfirmDialog>
 
   <CrosierFormS
@@ -432,7 +432,7 @@ export default {
           categoria: yup.mixed().required().typeError(),
           carteira: yup.mixed().required().typeError(),
           modo: yup.mixed().required().typeError(),
-          descricao: yup.mixed().required().typeError(),
+          descricao: yup.string().required().typeError(),
           dtMoviment: yup.date().required().typeError(),
           dtVencto: yup.date().required().typeError(),
           valor: yup.number().required().typeError(),

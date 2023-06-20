@@ -71,7 +71,6 @@ Encore
   .addEntry('fin/bandeiraCartao/form', './assets/js/Financeiro/BandeiraCartao/form.js')
   .addEntry('fin/carteira/list', './assets/js/Financeiro/Carteira/list.js')
   .addEntry('fin/carteira/form', './assets/js/Financeiro/Carteira/form.js')
-  .addEntry('fin/carteira/caixaOperacaoForm', './assets/js/Financeiro/Carteira/caixaOperacaoForm.js')
   .addEntry('fin/categoria/form', './assets/js/Financeiro/Categoria/form.js')
   .addEntry('fin/centroCusto/list', './assets/js/Financeiro/CentroCusto/list.js')
   .addEntry('fin/centroCusto/form', './assets/js/Financeiro/CentroCusto/form.js')
@@ -94,7 +93,6 @@ Encore
   .addEntry('fin/cliente/form', './assets/js/CRM/Cliente/form.js')
 
   .addEntry('fin/movimentacao/rapida', './assets/js/Financeiro/Movimentacao/form_rapida.js')
-  .addEntry('fin/movimentacao/caixa', './assets/js/Financeiro/Movimentacao/form_caixa.js')
   .addEntry('fin/movimentacao/importador', './assets/js/Financeiro/Movimentacao/importador.js')
   .addEntry('fin/movimentacao/list', './assets/js/Financeiro/Movimentacao/list.js')
   .addEntry('fin/movimentacao/extrato', './assets/js/Financeiro/Movimentacao/extrato.js')
@@ -108,7 +106,7 @@ Encore
   .addEntry('fin/movimentacao/grupo/form', './assets/js/Financeiro/Movimentacao/form_emGrupo.js')
   .addEntry('fin/movimentacao/grupo/list', './assets/js/Financeiro/Movimentacao/list_emGrupo.js')
 
-  .addEntry('fin/caixa/form', './assets/js/Financeiro/Caixa/form.js')
+  .addEntry('fin/caixa', './assets/js/Financeiro/Caixa/caixa.js')
   
   .addEntry('fin/cadeia/exibirMovimentacoes', './assets/js/Financeiro/Movimentacao/cadeia_exibirMovimentacoes.js')
   

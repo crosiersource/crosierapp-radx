@@ -1,6 +1,6 @@
 <template>
-  <ConfirmDialog group="confirmDialog_crosierListS" />
-  <Toast group="mainToast" position="bottom-right" class="mb-5" />
+  <ConfirmDialog />
+  <Toast position="bottom-right" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
   <div class="container-fluid">
@@ -43,21 +43,12 @@
           stateKey="cadeia_exibirMovimentacoes"
           :value="this.cadeia.movimentacoes"
           :paginator="false"
-          @page="doFilter($event)"
-          @sort="doFilter($event)"
-          :removable-sort="true"
-          v-model:selection="this.selection"
-          @update:selection="this.onUpdateSelection($event)"
-          selectionMode="multiple"
-          :metaKeySelection="false"
+          removable-sort
           dataKey="id"
-          @rowSelect="this.onRowSelect"
-          @rowUnselect="this.onRowUnselect"
-          :resizableColumns="true"
+          resizableColumns
           columnResizeMode="fit"
           responsiveLayout="scroll"
-          ref="dt"
-          :rowHover="true"
+          rowHover
         >
           <Column field="id">
             <template #header>
@@ -273,7 +264,7 @@ import ConfirmDialog from "primevue/confirmdialog";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Checkbox from "primevue/checkbox";
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import moment from "moment";
 import { api, CrosierBlock } from "crosier-vue";
 import axios from "axios";
@@ -300,12 +291,13 @@ export default {
 
   async mounted() {
     this.setLoading(true);
-    await this.$store.dispatch("loadData");
+    await this.loadData();
     this.setLoading(false);
   },
 
   methods: {
     ...mapMutations(["setLoading"]),
+    ...mapActions(["loadData"]),
 
     moment(date) {
       return moment(date);
@@ -353,7 +345,6 @@ export default {
         message: "Confirmar a operação?",
         header: "Atenção!",
         icon: "pi pi-exclamation-triangle",
-        group: "confirmDialog_crosierListS",
         accept: async () => {
           this.setLoading(true);
           try {
@@ -369,7 +360,7 @@ export default {
                 detail: "Registro deletado com sucesso",
                 life: 5000,
               });
-              this.$refs.dt.doFilter();
+              await this.loadData();
             } else if (rsDelete?.data && rsDelete.data["hydra:description"]) {
               throw new Error(`status !== 204: ${rsDelete?.data["hydra:description"]}`);
             } else if (rsDelete?.statusText) {

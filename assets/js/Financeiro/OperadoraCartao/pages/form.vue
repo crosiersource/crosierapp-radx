@@ -19,17 +19,12 @@
         optionLabel="descricaoMontada"
         :optionValue="null"
         :orderBy="{ codigo: 'ASC' }"
+        :filters="{ atual: true, concreta: true, abertas: true }"
         label="Carteira"
         id="carteira"
       />
 
-      <CrosierDropdownBoolean
-        label="Ativa"
-        col="2"
-        id="ativa"
-        v-model="this.fields.ativa"
-        :error="this.formErrors.ativa"
-      />
+      <CrosierSwitch label="Ativa" col="2" id="ativa" v-model="this.fields.ativa" />
     </div>
   </CrosierFormS>
 </template>
@@ -43,7 +38,7 @@ import {
   CrosierDropdownEntity,
   CrosierInputText,
   CrosierInputInt,
-  CrosierDropdownBoolean,
+  CrosierSwitch,
 } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 
@@ -53,7 +48,7 @@ export default {
     CrosierFormS,
     CrosierDropdownEntity,
     CrosierInputText,
-    CrosierDropdownBoolean,
+    CrosierSwitch,
     CrosierInputInt,
   },
 

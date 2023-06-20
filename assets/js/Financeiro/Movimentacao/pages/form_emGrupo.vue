@@ -350,6 +350,8 @@ export default {
               formData.grupoItem = rsGrupo?.data?.itens?.[0]?.["@id"];
               console.log(rsGrupo?.data?.itens?.[0]?.["@id"]);
               console.log(formData);
+            } else {
+              formData.grupoItem = formData.grupo.itens[0]["@id"];
             }
           }
 

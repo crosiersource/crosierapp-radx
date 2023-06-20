@@ -2,7 +2,12 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
-  <CrosierListS titulo="Operadoras de Cartões" apiResource="/api/fin/operadoraCartao/" ref="dt">
+  <CrosierListS
+    :comFiltragem="false"
+    titulo="Operadoras de Cartões"
+    apiResource="/api/fin/operadoraCartao/"
+    ref="dt"
+  >
     <template v-slot:columns>
       <Column field="id" header="Id" :sortable="true">
         <template #body="r">

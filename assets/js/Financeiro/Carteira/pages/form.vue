@@ -87,6 +87,7 @@
         entity-uri="/api/fin/operadoraCartao"
         optionLabel="descricao"
         :orderBy="{ descricao: 'ASC' }"
+        :filters="{ ativa: true }"
         label="Operadora Cartão"
         id="operadoraCartao"
       />

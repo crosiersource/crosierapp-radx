@@ -10,7 +10,8 @@ WHERE uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a';
 
 INSERT INTO `cfg_app` (`id`, `uuid`, `inserted`, `updated`, `nome`, `obs`, `estabelecimento_id`, `user_inserted_id`,
                        `user_updated_id`)
-VALUES (null, '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 'crosierapp-radx', 'Módulos "raíz" do Crosier: CRM, RH, Financeiro, Vendas, Estoque, Fiscal', 1,
+VALUES (null, '9121ea11-dc5d-4a22-9596-187f5452f95a', now(), now(), 'crosierapp-radx',
+        'Módulos "raíz" do Crosier: CRM, RH, Financeiro, Vendas, Estoque, Fiscal', 1,
         1, 1);
 
 
@@ -31,7 +32,7 @@ WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
   AND chave = 'financeiro.filiais_prop.json';
 
 INSERT INTO cfg_app_config
-  (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+(id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
 VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'financeiro.filiais_prop.json',
         '{ "00000000000000": "EMPRESA TESTE LTDA" }');
 
@@ -42,7 +43,7 @@ WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
   AND chave = 'fin.extratos_cartoes.padroes_cabecalhos';
 
 INSERT INTO cfg_app_config
-  (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+(id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
 VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'fin.extratos_cartoes.padroes_cabecalhos',
         '[ { "descricao": "Stone Recebimentos 2022", "cabecalho": "STONECODE\\tDOCUMENTO\\tNOME FANTASIA\\tCATEGORIA\\tHORA DA VENDA\\tDATA DE VENCIMENTO\\tTIPO\\tNº DA PARCELA\\tQTD DE PARCELAS\\tBANDEIRA\\tSTONE ID\\tN° CARTÃO\\tVALOR BRUTO\\tVALOR LÍQUIDO\\tDESCONTO DE ANTECIPAÇÃO\\tDESCONTO DE MDR\\tÚLTIMO STATUS\\tDATA DO ÚLTIMO STATUS\\tCHAVE EXTERNA", "campos": { "status": "ÚLTIMO STATUS", "dtMoviment": "HORA DA VENDA", "dtVencto": "DATA DE VENCIMENTO", "debitoOuCredito": "TIPO", "qtdeParcelasCartao": "QTD DE PARCELAS", "parcelaNum": "Nº DA PARCELA", "bandeira": "BANDEIRA", "numCartao": "N° CARTÃO", "idTransacaoCartao": "STONE ID", "valor": "VALOR BRUTO", "descontoMdr": "DESCONTO DE MDR", "descontoAntecip": "DESCONTO DE ANTECIPAÇÃO" } }, { "descricao": "Stone Vendas 2022", "cabecalho": "HORA DA VENDA\\tTIPO\\tBANDEIRA\\tMEIO DE CAPTURA\\tSTONE ID\\tVALOR BRUTO\\tVALOR LÍQUIDO\\tN° CARTÃO\\tSERIAL NUMBER\\tÚLTIMO STATUS\\tDATA DO ÚLTIMO STATUS\\tSTONE CODE", "campos": { "status": "ÚLTIMO STATUS", "dtMoviment": "HORA DA VENDA", "dtVencto": "DATA DE VENCIMENTO", "debitoOuCredito": "TIPO", "bandeira": "BANDEIRA", "idTransacaoCartao": "STONE ID", "valor": "VALOR BRUTO", "numCartao": "N° CARTÃO" } } ]');
 
@@ -53,7 +54,7 @@ WHERE app_uuid = '9121ea11-dc5d-4a22-9596-187f5452f95a'
   AND chave = 'manifestarCienciaParaUltimas.dias';
 
 INSERT INTO cfg_app_config
-  (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+(id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
 VALUES (null, now(), now(), 1, 1, 1, '9121ea11-dc5d-4a22-9596-187f5452f95a', 'manifestarCienciaParaUltimas.dias',
         '10');
 
@@ -65,8 +66,9 @@ WHERE app_uuid = '440e429c-b711-4411-87ed-d95f7281cd43'
   AND chave = 'produto_form.ordem_abas';
 
 INSERT INTO cfg_app_config
-  (id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
-VALUES (null, now(), now(), 1, 1, 1, '440e429c-b711-4411-87ed-d95f7281cd43', 'produto_form.ordem_abas', 'Produto,Descritivos,Complementos,Fotos,Preços,ERP,Fiscal');
+(id, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id, app_uuid, chave, valor)
+VALUES (null, now(), now(), 1, 1, 1, '440e429c-b711-4411-87ed-d95f7281cd43', 'produto_form.ordem_abas',
+        'Produto,Descritivos,Complementos,Fotos,Preços,ERP,Fiscal');
 
 
 
@@ -619,43 +621,54 @@ VALUES (1, 1, 'GLOBAL', now(), now(), NULL, 1, 1, 1);
 
 TRUNCATE TABLE fin_operadora_cartao;
 
-INSERT INTO `fin_operadora_cartao` (`id`, `descricao`, `carteira_id`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_operadora_cartao` (`id`, `descricao`, `carteira_id`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                    `user_updated_id`)
 VALUES (1, 'CIELO', 21, now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_operadora_cartao` (`id`, `descricao`, `carteira_id`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_operadora_cartao` (`id`, `descricao`, `carteira_id`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                    `user_updated_id`)
 VALUES (2, 'REDECARD', 22, now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_operadora_cartao` (`id`, `descricao`, `carteira_id`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_operadora_cartao` (`id`, `descricao`, `carteira_id`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                    `user_updated_id`)
 VALUES (3, 'STONE', 23, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_operadora_cartao` (`id`, `descricao`, `carteira_id`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_operadora_cartao` (`id`, `descricao`, `carteira_id`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                    `user_updated_id`)
 VALUES (4, 'MODERNINHA', 24, now(), now(), 0, 1, 1, 1);
 
 TRUNCATE TABLE fin_carteira;
 
-INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
+INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id,
+                            inserted, updated, version, estabelecimento_id,
                             user_inserted_id, user_updated_id, atual)
 VALUES (1, 1, 'GERAL', null, null, null, true, false, false, true, '1900-01-01', 0, null, now(), now(), 0, 1, 1, 1, true);
 
-INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
+INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id,
+                            inserted, updated, version, estabelecimento_id,
                             user_inserted_id, user_updated_id, atual)
 VALUES (21, 21, 'CIELO', null, null, null, true, false, false, true, '1900-01-01', 0, 1, now(), now(), 0, 1, 1, 1, true);
 
-INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
+INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id,
+                            inserted, updated, version, estabelecimento_id,
                             user_inserted_id, user_updated_id, atual)
 VALUES (22, 22, 'REDECARD', null, null, null, true, false, false, true, '1900-01-01', 0, 2, now(), now(), 0, 1, 1, 1, true);
 
-INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
+INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id,
+                            inserted, updated, version, estabelecimento_id,
                             user_inserted_id, user_updated_id, atual)
 VALUES (23, 23, 'STONE', null, null, null, true, false, false, true, '1900-01-01', 0, 3, now(), now(), 0, 1, 1, 1, true);
 
-INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
+INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id,
+                            inserted, updated, version, estabelecimento_id,
                             user_inserted_id, user_updated_id, atual)
 VALUES (24, 24, 'MODERNINHA', null, null, null, true, false, false, true, '1900-01-01', 0, 4, now(), now(), 0, 1, 1, 1, true);
 
 
-INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
+INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id,
+                            inserted, updated, version, estabelecimento_id,
                             user_inserted_id, user_updated_id, atual)
 VALUES (50, 50, 'MOVIMENTAÇÕES AGRUPADAS', null, null, null, true, false, false, true, '1900-01-01', 0, null, now(), now(), 0, 1, 1, 1, true);
 
-INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id, inserted, updated, version, estabelecimento_id,
+INSERT INTO `fin_carteira` (id, codigo, descricao, banco_id, agencia, conta, abertas, caixa, cheque, concreta, dt_consolidado, limite, operadora_cartao_id,
+                            inserted, updated, version, estabelecimento_id,
                             user_inserted_id, user_updated_id, atual)
 VALUES (99, 99, 'INDEFINIDA', null, null, null, true, false, false, false, '1900-01-01', 0, null, now(), now(), 0, 1, 1, 1, true);
 
@@ -666,12 +679,17 @@ ALTER TABLE fin_carteira
 
 TRUNCATE TABLE fin_tipo_lancto;
 
-REPLACE INTO `fin_tipo_lancto` (`id`, `codigo`, `descricao`, `obs`, `url`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
-VALUES (20, 20, 'MOVIMENTAÇÃO NORMAL', '', '', now(), now(), 0, 1, 1, 1),
-       (60, 60, 'TRANSFERÊNCIA ENTRE CARTEIRAS', '', '', now(), now(), 0, 1, 1, 1),
-       (61, 61, 'TRANSFERÊNCIA DE ENTRADA DE CAIXA', '', '', now(), now(), 0, 1, 1, 1),
-       (63, 63, 'MOVIMENTAÇÃO CARTÃO CRÉDITO/DÉBITO', '', '', now(), now(), 0, 1, 1, 1),
-       (64, 64, 'ENTRADA DE CAIXA POR TRANSF. BANCÁRIA', '', '', now(), now(), 0, 1, 1, 1);
+REPLACE INTO `fin_tipo_lancto` (`id`, `codigo`, `descricao`, `obs`, `url`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                `user_updated_id`)
+VALUES (20, 20, 'MOVIMENTAÇÃO NORMAL', 'MOVIMENTAÇÃO NORMAL (A PAGAR/RECEBER OU JÁ REALIZADA)', '', now(), now(), 0, 1, 1, 1),
+       (60, 60, 'TRANSFERÊNCIA ENTRE CARTEIRAS', 'MOVIMENTAÇÃO ENTRE CARTEIRAS DO SISTEMA', '', now(), now(), 0, 1, 1, 1),
+       (61, 61, 'ENTRADA DE CAIXA COM TRANSFERÊNCIA',
+        'SÃO GERADAS 3 MOVIMENTAÇÕES: ENTRADA NO CAIXA (COM CATEGORIAS PERMITIDAS CONFIGURÁVEIS), 299 PARA SAÍDA DO CAIXA E 199 PARA ENTRADA NA CARTEIRA DESTINO',
+        '', now(), now(), 0, 1, 1, 1),
+       (63, 63, 'ENTRADA POR CARTÃO DE CRÉDITO OU DÉBITO',
+        'SÃO GERADAS 3 MOVIMENTAÇÕES: ENTRADA NO CAIXA (COM CATEGORIAS PERMITIDAS CONFIGURÁVEIS), 291 PARA SAÍDA DO CAIXA (TRANSFERÊNCIA PARA FATURA) E 191 PARA ENTRADA NA CARTEIRA DESTINO, QUE É A VINCULADA A OPERADORA DO CARTÃO (191 - TRANSFERÊNCIA DE FATURA)',
+        '', now(), now(), 0, 1, 1, 1)
+;
 
 TRUNCATE TABLE fin_categoria;
 
@@ -710,18 +728,6 @@ INSERT INTO `fin_categoria`
  descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
  inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES (110, 110, 'RECEB. FATURA', 1, 0, 1, '', 0, '', '', 110000000000, now(), now(), 0, 1, 1, 1);
-
-INSERT INTO `fin_categoria`
-(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
- descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
- inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES (121, 121, 'PAGTO. PROCEDIMENTO', 1, 0, 1, '', 0, '', '', 121000000000, now(), now(), 3, 1, 1, 1);
-
-INSERT INTO `fin_categoria`
-(id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
- descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
- inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES (122, 122, 'RECEB. COMISS/TAXA CLÍNICA', 1, 0, 1, NULL, 0, NULL, NULL, 122000000000, now(), now(), 1, 1, 1, 1);
 
 INSERT INTO `fin_categoria`
 (id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
@@ -1159,13 +1165,15 @@ INSERT INTO `fin_categoria`
 (id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
  descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
  inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES (202005001, 202005001, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 202005, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 0, NULL, NULL, 202005001000, now(), now(), 1, 1, 1, 1);
+VALUES (202005001, 202005001, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 202005, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE CRÉDITO', 0, NULL, NULL, 202005001000, now(),
+        now(), 1, 1, 1, 1);
 
 INSERT INTO `fin_categoria`
 (id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
  descricao_padrao_moviment, totalizavel, descricao_alternativa, roles_acess, codigo_ord,
  inserted, updated, version, estabelecimento_id, user_inserted_id, user_updated_id)
-VALUES (202005002, 202005002, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 202005, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 0, NULL, NULL, 202005002000, now(), now(), 1, 1, 1, 1);
+VALUES (202005002, 202005002, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 202005, 0, 2, 'CUSTO FINANCEIRO CARTÕES DE DÉBITO', 0, NULL, NULL, 202005002000, now(),
+        now(), 1, 1, 1, 1);
 
 INSERT INTO `fin_categoria`
 (id, codigo, descricao, pai_id, centro_custo_dif, codigo_super,
@@ -1190,43 +1198,56 @@ VALUES (203002003, 203002003, 'PAGTO. DDPCG', 203002, 0, 2, NULL, 0, NULL, NULL,
 TRUNCATE TABLE fin_modo;
 
 
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (1, 1, 'EM ESPÉCIE', 0, 0, 0, 1, 0, 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (2, 2, 'DÉBITO AUTOMÁTICO', 1, 0, 0, 0, 0, 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (3, 3, 'CHEQUE PRÓPRIO', 0, 0, 0, 1, 0, 1, now(), now(), 2, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (7, 7, 'PIX/TRANSF. BANCÁRIA', 1, 0, 1, 1, 0, 0, now(), now(), 4, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (5, 5, 'DEPÓSITO BANCÁRIO', 1, 0, 0, 1, 0, 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (99, 99, 'INDEFINIDO', 0, 0, 0, 0, 0, 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (6, 6, 'BOLETO/GUIA/DDA', 1, 0, 0, 0, 0, 0, now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (4, 4, 'CHEQUE TERCEIROS', 0, 0, 1, 1, 0, 1, now(), now(), 2, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (9, 9, 'RECEB. CARTÃO CRÉDITO', 0, 0, 0, 0, 1, 0, now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (10, 10, 'RECEB. CARTÃO DÉBITO', 0, 0, 0, 0, 1, 0, now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (11, 11, 'TRANSF. ENTRE CONTAS', 0, 0, 1, 1, 0, 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (50, 50, 'MOVIMENTAÇÃO AGRUPADA', 0, 1, 0, 0, 0, 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`, `inserted`, `updated`, `version`, `estabelecimento_id`,
+INSERT INTO `fin_modo` (`id`, `codigo`, `descricao`, `com_banco_origem`, `moviment_agrup`, `transf_caixa`, `transf_propria`, `modo_cartao`, `modo_cheque`,
+                        `inserted`, `updated`, `version`, `estabelecimento_id`,
                         `user_inserted_id`, `user_updated_id`)
 VALUES (60, 60, 'VIRTUAL', 0, 0, 0, 0, 0, 0, now(), now(), 0, 1, 1, 1);
 
@@ -1234,329 +1255,489 @@ VALUES (60, 60, 'VIRTUAL', 0, 0, 0, 0, 0, 0, now(), now(), 0, 1, 1, 1);
 
 TRUNCATE TABLE fin_banco;
 
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (266, 1, 'BANCO DO BRASIL', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (267, 3, 'BANCO DA AMAZONIA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (268, 4, 'BANCO DO NORDESTE DO BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (269, 12, 'BANCO STANDARD DE INVESTIMENTOS', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (270, 21, 'BANESTES BANCO DO ESTADO DO ESPIRITO SANTO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (271, 24, 'BANCO DE PERNAMBUCO -BANDEPE', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (272, 25, 'BANCO ALFA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (273, 27, 'BANCO DO ESTADO DE SANTA CATARINA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (274, 29, 'BANCO BANERJ', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (275, 31, 'BANCO BEG', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (276, 33, 'BANCO SANTANDER', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (277, 34, 'BANCO DO ESTADO DO AMAZONAS', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (278, 36, 'BANCO BRADESCO BBI', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (279, 37, 'BANCO DO ESTADO DO PARA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (280, 38, 'BANCO BANESTADO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (281, 39, 'BANCO DO ESTADO DO PIAUI - BEP', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (282, 40, 'BANCO CARGILL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (283, 41, 'BANCO DO ESTADO DO RIO GRANDE DO SUL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (284, 44, 'BANCO BVA SA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (285, 45, 'BANCO OPPORTUNITY', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (286, 47, 'BANCO DO ESTADO DE SERGIPE', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (287, 62, 'HIPERCARD BANCO MÚLTIPLO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (288, 63, 'BANCO IBI - BANCO MULTIPLO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (289, 64, 'GOLDMAN SACHS DO BRASIL BANCO MÚLTIPLO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (290, 65, 'LEMON BANK BANCO MÚLTIPLO S..A', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (291, 66, 'BANCO MORGAN STANLEY', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (292, 69, 'BPN BRASIL BANCO MÚLTIPLO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (293, 70, 'BRB - BANCO DE BRASILIA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (294, 72, 'BANCO RURAL MAIS', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (295, 73, 'BB BANCO POPULAR DO BRASL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (296, 74, 'BANCO J.SAFRA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (297, 75, 'BANCO CR2', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (298, 76, 'BANCO KDB DO BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (299, 78, 'BES INVESTIMENTO DO BRASIL - BANCO DE INVESTIMENTO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (300, 95, 'BANCO CONFIDENCE DE CÂMBIO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (301, 96, 'BANCO BM&F DE SERVIÇOS DE LIQUIDAÇÃO E CUSTÓDIA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (302, 104, 'CAIXA ECONÔMICA FEDERAL', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (303, 107, 'BANCO BBM', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (304, 116, 'BANCO ÚNICO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (305, 119, 'BANCO WESTERN UNION DO BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (306, 125, 'BRASIL PLURAL - BANCO MÚLTIPLO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (307, 151, 'BANCO NOSSA CAIXA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (308, 175, 'BANCO FINASA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (309, 184, 'BANCO ITAÚ - BBA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (310, 204, 'BANCO BRADESCO CARTÕES', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (311, 208, 'BANCO UBS PACTUAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (312, 212, 'BANCO MATONE', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (313, 213, 'BANCO ARBI', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (314, 214, 'BANCO DIBENS', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (315, 215, 'BANCO ACOMERCIAL E DE INVESTIMENTO SUDAMERIS', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (316, 217, 'BANCO JOHN DEERE', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (317, 218, 'BANCO BONSUCESSO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (318, 222, 'BANCO CLAYON BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (319, 224, 'BANCO FIBRA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (320, 225, 'BANCO BRASCAN', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (321, 229, 'BANCO CRUZEIRO DO SUL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (322, 230, 'UNICARD BANCO MÚLTIPLO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (323, 233, 'BANCO GE CAPITAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (324, 237, 'BANCO BRADESCO', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (325, 241, 'BANCO CLASSICO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (326, 243, 'BANCO MAXIMA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (327, 246, 'BANCO ABC-BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (328, 248, 'BANCO BOAVISTA INTERATLANTICO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (329, 249, 'BANCO INVESTCRED UNIBANCO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (330, 250, 'BANCO SCHAHIN', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (331, 252, 'BANCO FININVEST', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (332, 254, 'PARANÁ BANCO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (333, 263, 'BANCO CACIQUE', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (334, 265, 'BANCO FATOR', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (335, 266, 'BANCO CEDULA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (336, 300, 'BANCO DE LA NACION ARGENTINA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (337, 318, 'BANCO BMG', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (338, 320, 'BANCO INDUSTRIAL E COMERCIAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (339, 341, 'BANCO ITAU', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (340, 356, 'BANCO ABN AMRO REAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (341, 366, 'BANCO SOCIETE GENERALE BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (342, 370, 'BANCO WESTLB DO BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (343, 376, 'BANCO J.P. MORGAN', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (344, 389, 'BANCO MERCANTIL DO BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (345, 394, 'BANCO BMC', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (346, 399, 'HSBC BANK BRASIL -BANCO MULTIPLO', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (347, 409, 'UNIBANCO - UNIAO DE BANCOS BRASILEIROS', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (348, 412, 'BANCO CAPITAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (349, 422, 'BANCO SAFRA', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (350, 453, 'BANCO RURAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (351, 456, 'BANCO DE TOKYO-MITSUBISHI UFJ BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (352, 464, 'BANCO SUMITOMO MITSUI BRASILEIRO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (353, 473, 'BANCO CAIXA GERAL - BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (354, 477, 'CITIBANK N.A.', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (355, 479, 'BANCO ITAUBANK', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (356, 487, 'DEUTSCHE BANK S. A. - BANCO ALEMAO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (357, 488, 'JPMORGAN CHASE BANK, NATIONAL ASSOCIATION', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (358, 492, 'ING BANK N.V.', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (359, 494, 'BANCO DE LA REPUBLICA ORIENTAL DEL URUGUAY', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (360, 495, 'BANCO DE LA PROVINCIA DE BUENOS AIRES', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (361, 505, 'BANCO CREDIT SUISSE (BRASIL)', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (362, 600, 'BANCO LUSO BRASILEIRO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (363, 604, 'BANCO INDUSTRIAL DO BRASIL S. A.', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (364, 610, 'BANCO VR', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (365, 611, 'BANCO PAULISTA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (366, 612, 'BANCO GUANABARA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (367, 613, 'BANCO PECUNIA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (368, 623, 'BANCO PANAMERICANO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (369, 626, 'BANCO FICSA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (370, 630, 'BANCO INTERCAP', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (371, 633, 'BANCO RENDIMENTO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (372, 634, 'BANCO TRIANGULO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (373, 637, 'BANCO SOFISA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (374, 638, 'BANCO PROSPER', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (375, 641, 'BANCO ALVORADA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (376, 643, 'BANCO PINE', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (377, 652, 'BANCO ITAÚ HOLDING FINANCEIRA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (378, 653, 'BANCO INDUSVAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (379, 654, 'BANCO A.J. RENNER', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (380, 655, 'BANCO VOTORANTIM', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (381, 707, 'BANCO DAYCOVAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (382, 719, 'BANIF - BANCO INTERNACIONAL DO FUNCHAL (BRASIL),', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (383, 721, 'BANCO CREDIBEL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (384, 734, 'BANCO GERDAU', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (385, 735, 'BANCO POTTENCIAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (386, 738, 'BANCO MORADA', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (387, 739, 'BANCO BGN', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (388, 740, 'BANCO BARCLAYS', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (389, 741, 'BANCO RIBEIRAO PRETO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (390, 743, 'BANCO SEMEAR', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (391, 744, 'BANKBOSTON N.A.', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (392, 745, 'BANCO CITIBANK', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (393, 746, 'BANCO MODAL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (394, 747, 'BANCO RABOBANK INTERNATIONAL BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (395, 748, 'BANCO COOPERATIVO SICREDI', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (396, 749, 'BANCO SIMPLES', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (397, 751, 'DRESDNER BANK BRASIL BANCO MULTIPLO.', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (398, 752, 'BANCO BNP PARIBAS BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (399, 753, 'BANCO COMERCIAL URUGUAI', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (400, 755, 'BANK OF AMERICA MERRILL LYNCH BANCO MÚLTIPLO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (402, 757, 'BANCO KEB DO BRASIL', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (403, 756, 'BANCO COOPERATIVO DO BRASIL - BANCOOB (SICOOB)', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (404, 999, 'INDEFINIDO', 0, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (NULL, 197, 'STONE PAGAMENTOS S.A.', true, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (NULL, 136, 'UNICRED', 1, now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_banco` (`id`, `codigo_banco`, `nome`, `utilizado`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                         `user_updated_id`)
 VALUES (NULL, 260, 'NUBANK', 1, now(), now(), 0, 1, 1, 1);
 
 
 
 TRUNCATE TABLE fin_bandeira_cartao;
 
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (1, 'MASTER MAESTRO', 10, 'MC MAESTRO\r\nMASTERCARD\r\nMASTERCARD MAESTRO', now(), now(), 2, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (2, 'VISA ELECTRON', 10, 'VISA ELECTRON', now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (3, 'ELO DÉBITO', 10, 'ELO DÉBITO\r\nELO', now(), now(), 2, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (4, 'VISA', 9, 'VISA\r\nVISA PARCELADO\r\nVISA CRÉDITO', now(), now(), 2, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (5, 'MASTERCARD', 9, 'MASTERCARD\r\nMC PARCELADO\r\nMC CRÉDITO', now(), now(), 2, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (6, 'HIPERCARD', 9, 'HIPERCARD', now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (7, 'ELO CRÉDITO', 9, 'ELO PARCELADO\r\nELO', now(), now(), 2, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (8, 'AGIPLAN CRÉDITO', 9, 'AGIPLAN CRÉDITO', now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (9, 'DINERS', 9, 'DINERS\r\nDINERS CLUB', now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (10, 'SICREDI', 9, 'SICREDI', now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (11, 'CABAL CRÉDITO', 9, 'CABAL CRÉDITO', now(), now(), 0, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (12, 'AMEX', 9, 'AMEX\r\nAMERICANEXPRESS', now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (13, 'N INF CRÉD', 9, ' ', now(), now(), 1, 1, 1, 1);
-INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+INSERT INTO `fin_bandeira_cartao` (`id`, `descricao`, `modo_id`, `labels`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                   `user_updated_id`)
 VALUES (14, 'N INF DÉB', 10, ' ', now(), now(), 3, 1, 1, 1);
 
 
 
-REPLACE INTO `ven_plano_pagto` (`id`, `codigo`, `descricao`, `ativo`, `json_data`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`, `user_updated_id`)
+REPLACE INTO `ven_plano_pagto` (`id`, `codigo`, `descricao`, `ativo`, `json_data`, `inserted`, `updated`, `version`, `estabelecimento_id`, `user_inserted_id`,
+                                `user_updated_id`)
 VALUES (null, '001', 'A VISTA (ESPÉCIE)', 1, '{\"modo_id\": \"1\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false}', now(), now(), 0, 1, 1, 1),
        (null, '002', 'A VISTA (CHEQUE)', 1, '{\"modo_id\": \"8\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false}', now(), now(), 0, 1, 1, 1),
-       (null, '003', 'CARTÃO DÉBITO', 1, '{\"modo_id\": \"10\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false, \"tipo_carteiras_destino\": \"operadora_cartao\"}', now(), now(), 0, 1, 1, 1),
-       (null, '010', 'CARTÃO DE CRÉDITO', 1, '{\"modo_id\": \"9\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": true, \"tipo_carteiras_destino\": \"operadora_cartao\"}', now(), now(), 0, 1, 1, 1),
+       (null, '003', 'CARTÃO DÉBITO', 1,
+        '{\"modo_id\": \"10\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": false, \"tipo_carteiras_destino\": \"operadora_cartao\"}', now(), now(), 0,
+        1, 1, 1),
+       (null, '010', 'CARTÃO DE CRÉDITO', 1,
+        '{\"modo_id\": \"9\", \"tipo_carteiras\": \"caixa\", \"aceita_parcelas\": true, \"tipo_carteiras_destino\": \"operadora_cartao\"}', now(), now(), 0, 1,
+        1, 1),
        (null, '020', 'DEPÓSITO/TRANSFERÊNCIA', 1, '{\"modo_id\": \"5\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": true}', now(), now(), 0, 1, 1, 1),
        (null, '030', 'BOLETO', 1, '{\"modo_id\": \"7\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": true}', now(), now(), 0, 1, 1, 1),
        (null, '040', 'PIX', 1, '{\"modo_id\": \"7\", \"tipo_carteiras\": \"banco\", \"aceita_parcelas\": false}', now(), now(), 0, 1, 1, 1),
