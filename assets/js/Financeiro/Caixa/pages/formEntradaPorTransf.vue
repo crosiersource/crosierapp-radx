@@ -1,5 +1,11 @@
 <template>
-  <CrosierFormS withoutCard @submitForm="this.submitForm" :formUrl="null" :listUrl="null">
+  <CrosierFormS
+    withoutCard
+    @submitForm="this.submitForm"
+    :formUrl="null"
+    :listUrl="null"
+    semBotaoSalvar
+  >
     <div class="form-row">
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.movimentacao.id" disabled />
 
@@ -63,11 +69,13 @@
       />
     </div>
 
-    <SacadoCedente />
+    <SacadoCedente v-if="this.$store.state.exibirCampos?.sacadoCedente" />
 
-    <div class="form-row mt-2">
+    <div class="form-row mt-2" v-if="this.$store.state.exibirCampos?.obs">
       <CrosierInputTextarea label="Obs" id="obs" v-model="this.movimentacao.obs" />
     </div>
+
+    <Rodape />
   </CrosierFormS>
 </template>
 
@@ -87,6 +95,7 @@ import {
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import moment from "moment";
 import SacadoCedente from "../../Movimentacao/pages/sacadoCedente";
+import Rodape from "./rodape.vue";
 
 export default {
   components: {
@@ -97,6 +106,7 @@ export default {
     CrosierInputInt,
     CrosierInputTextarea,
     SacadoCedente,
+    Rodape,
   },
 
   data() {
@@ -111,7 +121,6 @@ export default {
       modo: yup.mixed().required().typeError(),
       carteiraDestino: yup.mixed().required().typeError(),
       descricao: yup.mixed().required().typeError(),
-      dtMoviment: yup.date().required().typeError(),
       valorTotal: yup.number().required().typeError(),
     });
     SetFocus("descricao", 40);
@@ -119,7 +128,7 @@ export default {
 
   methods: {
     ...mapMutations(["setLoading", "setMovimentacao", "setMovimentacaoErrors"]),
-    ...mapActions(["doFilter"]),
+    ...mapActions(["doFilter", "salvarUltimaMovimentacaoNoLocalStorage"]),
 
     moment(date) {
       return moment(date);
@@ -153,6 +162,7 @@ export default {
       if ([200, 201].includes(rs?.status)) {
         this.doFilter();
         this.$store.state.exibeDialogMovimentacao = false;
+        this.salvarUltimaMovimentacaoNoLocalStorage();
       }
       this.setLoading(false);
     },

@@ -683,7 +683,7 @@ class MovimentacaoController extends FormListController
                 ['categoria', 'NEQ', $categ291],
                 ['carteira', 'IN', $caixas],
                 ['bandeiraCartao', 'IS_NOT_NULL'],
-                ['dtMoviment', 'BETWEEN', ['2021-01-20', '2021-01-31']]
+                ['dtMoviment', 'BETWEEN', ['2021-04-01', '2021-07-31']]
             ],
             ['dtMoviment' => 'ASC', 'valor' => 'ASC']
         );

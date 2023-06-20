@@ -1,22 +1,42 @@
 <template>
-  <CrosierFormS withoutCard @submitForm="this.submitForm" :formUrl="null" :listUrl="null">
+  <CrosierFormS
+    withoutCard
+    @submitForm="this.submitForm"
+    :formUrl="null"
+    :listUrl="null"
+    semBotaoSalvar
+  >
     <div class="form-row">
       <CrosierInputInt label="Id" col="2" id="id" v-model="this.movimentacao.id" disabled />
 
+      <CrosierDropdownEntity
+        col="7"
+        v-model="this.movimentacao.categoria"
+        :error="this.movimentacaoErrors.categoria"
+        entity-uri="/api/fin/categoria"
+        optionLabel="descricaoMontadaTree"
+        :optionValue="null"
+        :orderBy="{ codigoOrd: 'ASC' }"
+        :filters="{ codigoSuper: 2 }"
+        label="Categoria"
+        id="categoria"
+      />
+
+      <CrosierCurrency
+        col="3"
+        id="valor"
+        label="Valor"
+        v-model="this.movimentacao.valorTotal"
+        :error="this.movimentacaoErrors.valorTotal"
+      />
+    </div>
+
+    <div class="form-row">
       <CrosierInputText
-        col="6"
         label="Descrição"
         id="descricao"
         v-model="this.movimentacao.descricao"
         :error="this.movimentacaoErrors.descricao"
-      />
-
-      <CrosierCurrency
-        label="Valor"
-        col="4"
-        id="valorTotal"
-        v-model="this.movimentacao.valorTotal"
-        :error="this.movimentacaoErrors.valorTotal"
       />
     </div>
 
@@ -34,11 +54,13 @@
       />
     </div>
 
-    <SacadoCedente />
+    <SacadoCedente v-if="this.$store.state.exibirCampos?.sacadoCedente" />
 
-    <div class="form-row mt-2">
+    <div class="form-row mt-2" v-if="this.$store.state.exibirCampos?.obs">
       <CrosierInputTextarea label="Obs" id="obs" v-model="this.movimentacao.obs" />
     </div>
+
+    <Rodape />
   </CrosierFormS>
 </template>
 
@@ -57,6 +79,7 @@ import {
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import moment from "moment";
 import SacadoCedente from "../../Movimentacao/pages/sacadoCedente";
+import Rodape from "./rodape.vue";
 
 export default {
   components: {
@@ -67,6 +90,7 @@ export default {
     CrosierInputInt,
     CrosierInputTextarea,
     SacadoCedente,
+    Rodape,
   },
 
   data() {
@@ -85,15 +109,11 @@ export default {
       valorTotal: yup.number().required().typeError(),
     });
     SetFocus("descricao", 40);
-    this.movimentacao.categoria = {
-      "@id": "/api/fin/categoria/299",
-      codigoSuper: 2,
-    };
   },
 
   methods: {
     ...mapMutations(["setLoading", "setMovimentacao", "setMovimentacaoErrors"]),
-    ...mapActions(["doFilter"]),
+    ...mapActions(["doFilter", "salvarUltimaMovimentacaoNoLocalStorage"]),
 
     moment(date) {
       return moment(date);
@@ -114,10 +134,12 @@ export default {
           delete formData.movimentacaoOposta;
           delete formData.grupoItem;
           delete formData.fatura;
+          delete formData.operadoraCartao;
+          delete formData.bandeiraCartao;
 
           formData.dtMoviment = moment(this.filters.dtMoviment).format();
           formData.carteira = this.filters.carteira;
-          formData.tipoLancto = "/api/fin/tipoLancto/60";
+          formData.tipoLancto = "/api/fin/tipoLancto/20";
           formData.categoria = formData.categoria["@id"];
           formData.valor = formData.valorTotal;
           formData.modo = formData.modo["@id"];
@@ -126,6 +148,7 @@ export default {
       if ([200, 201].includes(rs?.status)) {
         this.doFilter();
         this.$store.state.exibeDialogMovimentacao = false;
+        this.salvarUltimaMovimentacaoNoLocalStorage();
       }
       this.setLoading(false);
     },

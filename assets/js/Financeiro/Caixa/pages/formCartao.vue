@@ -1,5 +1,11 @@
 <template>
-  <CrosierFormS withoutCard @submitForm="this.submitForm" :formUrl="null" :listUrl="null">
+  <CrosierFormS
+    withoutCard
+    @submitForm="this.submitForm"
+    :formUrl="null"
+    :listUrl="null"
+    semBotaoSalvar
+  >
     <div class="form-row">
       <CrosierInputInt label="Id" col="3" id="id" v-model="this.movimentacao.id" disabled />
 
@@ -120,25 +126,7 @@
       <CrosierInputTextarea label="Obs" id="obs" v-model="this.movimentacao.obs" />
     </div>
 
-    <div class="form-row">
-      <ToggleButton
-        v-model="this.$store.state.exibirCampos.sacadoCedente"
-        @click="this.salvarExibirCampos"
-        onLabel="Esconder campos Sacado/Cedente"
-        offLabel="Exibir campos Sacado/Cedente"
-        onIcon="pi pi-check"
-        offIcon="pi pi-times"
-      />
-      <ToggleButton
-        v-model="this.$store.state.exibirCampos.obs"
-        @click="this.salvarExibirCampos"
-        onLabel="Esconder campo Obs"
-        offLabel="Exibir campo Obs"
-        onIcon="pi pi-check"
-        offIcon="pi pi-times"
-        class="ml-1"
-      />
-    </div>
+    <Rodape />
   </CrosierFormS>
 </template>
 
@@ -157,6 +145,7 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import moment from "moment";
 import ToggleButton from "primevue/togglebutton";
 import SacadoCedente from "../../Movimentacao/pages/sacadoCedente";
+import Rodape from "./rodape.vue";
 
 export default {
   components: {
@@ -168,6 +157,7 @@ export default {
     CrosierInputTextarea,
     SacadoCedente,
     ToggleButton,
+    Rodape,
   },
 
   data() {
