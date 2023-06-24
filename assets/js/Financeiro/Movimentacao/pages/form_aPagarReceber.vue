@@ -152,7 +152,7 @@
         optionLabel="descricaoMontada"
         :optionValue="null"
         :orderBy="{ codigo: 'ASC' }"
-        :filters="{ abertas: true }"
+        :filters="{ abertas: true, atual: true }"
         label="Carteira"
         id="carteira"
       />
@@ -166,7 +166,7 @@
         optionLabel="descricaoMontada"
         :optionValue="null"
         :orderBy="{ codigo: 'ASC' }"
-        :filters="{ cheque: true }"
+        :filters="{ cheque: true, atual: true }"
         label="Carteira"
         id="carteira"
       />

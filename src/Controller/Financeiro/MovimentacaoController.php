@@ -670,6 +670,7 @@ class MovimentacaoController extends FormListController
         // antigamente eram 199+299, agora é 191+291
 
         $repoCategoria = $this->doctrine->getRepository(Categoria::class);
+        $categ101 = $repoCategoria->findOneByCodigo(101);
         $categ299 = $repoCategoria->findOneByCodigo(299);
         $categ291 = $repoCategoria->findOneByCodigo(291);
         
@@ -679,11 +680,13 @@ class MovimentacaoController extends FormListController
         $repoMovimentacao = $this->doctrine->getRepository(Movimentacao::class);
         $movimentacoesDeCaixaComOperadora = $repoMovimentacao->findAllByFiltersSimpl(
             [
-                ['categoria', 'EQ', $categ299],
-                ['categoria', 'NEQ', $categ291],
+                ['categoria', 'EQ', $categ101],
+                // ['categoria', 'EQ', $categ299],
+                // ['categoria', 'NEQ', $categ291],
                 ['carteira', 'IN', $caixas],
                 ['bandeiraCartao', 'IS_NOT_NULL'],
-                ['dtMoviment', 'BETWEEN', ['2021-04-01', '2021-07-31']]
+                ['dtMoviment', 'BETWEEN', ['2022-01-01', '2022-01-26']]
+                // ['dtMoviment', 'BETWEEN', ['2021-08-28', '2022-01-26']]
             ],
             ['dtMoviment' => 'ASC', 'valor' => 'ASC']
         );

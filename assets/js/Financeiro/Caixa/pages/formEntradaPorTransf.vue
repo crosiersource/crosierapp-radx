@@ -62,7 +62,7 @@
         optionLabel="descricaoMontada"
         :optionValue="null"
         :orderBy="{ codigo: 'ASC' }"
-        :filters="{ concreta: true }"
+        :filters="{ concreta: true, atual: true }"
         label="Carteira (Destino)"
         id="carteira"
         @change="this.onChangeCarteiras"

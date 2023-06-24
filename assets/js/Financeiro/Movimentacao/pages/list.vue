@@ -135,6 +135,7 @@
           entity-uri="/api/fin/carteira"
           optionLabel="descricaoMontada"
           :orderBy="{ codigo: 'ASC' }"
+          :filters="{ atual: true }"
           label="Carteira"
           id="carteira"
         />

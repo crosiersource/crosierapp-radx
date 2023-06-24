@@ -11,7 +11,7 @@
         optionLabel="descricao"
         :optionValue="null"
         :orderBy="{ descricao: 'ASC' }"
-        :filters="{ caixa: true }"
+        :filters="{ caixa: true, atual: true }"
         label="Caixa"
         id="caixa"
         @change="this.onChangeCaixa"

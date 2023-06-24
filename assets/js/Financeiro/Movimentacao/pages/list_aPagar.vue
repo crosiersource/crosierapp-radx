@@ -21,7 +21,7 @@
               optionLabel="descricaoMontada"
               optionValue="id"
               :orderBy="{ codigo: 'ASC' }"
-              :filters="{ abertas: true }"
+              :filters="{ abertas: true, atual: true }"
               label="Carteiras"
               id="carteiras"
             />

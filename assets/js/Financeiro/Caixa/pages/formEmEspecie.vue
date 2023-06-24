@@ -125,6 +125,7 @@ export default {
                 : null;
             formData.operadoraCartao = null;
             formData.bandeiraCartao = null;
+            delete formData.carteiraDestino;
             delete formData.cadeia;
             delete formData.fatura;
           },
