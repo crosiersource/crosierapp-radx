@@ -5,8 +5,9 @@
         class="btn btn-outline-secondary ml-1"
         type="button"
         @click="this.$store.state.tipoMovimentacao = null"
+        title="Selecionar tipo de movimentação para lançar"
       >
-        <i class="fas fa-file"></i> Selecionar Tipo
+        <i class="fas fa-file"></i>
       </button>
       <ToggleButton
         v-model="this.$store.state.exibirCampos.sacadoCedente"

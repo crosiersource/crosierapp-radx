@@ -73,9 +73,9 @@ const store = createStore({
         this.commit("setMovimentacao", dadosUltimaMovimentacao);
       } else {
         state.movimentacao = {};
-        state.movimentacao.dtMoviment = state.filters.dtMoviment;
-        state.movimentacao.carteira = state.filters.carteira;
       }
+      state.movimentacao.dtMoviment = state.filters.dtMoviment;
+      state.movimentacao.carteira = { "@id": state.filters.carteira };
     },
 
     setMovimentacao(state, movimentacao) {
@@ -95,7 +95,9 @@ const store = createStore({
         } else if (movimentacao.tipoLancto.id === 60) {
           state.tipoMovimentacao = "SANGRIA";
         } else if (movimentacao.tipoLancto.id === 20) {
-          if (movimentacao.categoria.codigoSuper === 1) {
+          if ([151, 251].includes(movimentacao.categoria.codigo)) {
+            state.tipoMovimentacao = "AJUSTE_DE_CAIXA";
+          } else if (movimentacao.categoria.codigoSuper === 1) {
             state.tipoMovimentacao = "EM_ESPECIE";
           } else {
             state.tipoMovimentacao = "SAIDA";
@@ -258,6 +260,7 @@ const store = createStore({
           tipoLancto: context.state.movimentacao.tipoLancto,
           categoria: context.state.movimentacao.categoria,
           carteira: context.state.movimentacao.carteira,
+          carteiraDestino: context.state.movimentacao.carteiraDestino,
           modo: context.state.movimentacao.modo,
           centroCusto: context.state.movimentacao.centroCusto,
           operadoraCartao: context.state.movimentacao.operadoraCartao,

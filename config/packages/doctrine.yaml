@@ -50,6 +50,7 @@ doctrine:
                     datetime_functions:
                         date_format: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\DateFormat
                         date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date
+                        str_to_date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\StrToDate
                     string_functions:
                         JSON_UNQUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
                         JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
@@ -71,6 +72,7 @@ doctrine:
                     datetime_functions:
                         date_format: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\DateFormat
                         date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date
+                        str_to_date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\StrToDate
                     string_functions:
                         JSON_UNQUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
                         JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract

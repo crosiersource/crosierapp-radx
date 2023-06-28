@@ -31,13 +31,14 @@
               :filters="{ caixa: true, atual: true }"
               label="Caixa"
               id="carteira"
+              @change="this.doFilterNextTick"
             />
           </div>
 
           <button
             type="button"
             class="btn btn-success ml-1 mt-3"
-            @click="this.doFilter"
+            @click="this.doFilterNextTick"
             title="Filtrar relatório do extrato"
           >
             <i class="fas fa-search"></i> Filtrar

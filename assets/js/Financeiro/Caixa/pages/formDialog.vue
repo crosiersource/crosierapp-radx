@@ -13,6 +13,7 @@
     <FormEntradaPorTransf v-if="this.tipoMovimentacao === 'ENTRADA_POR_TRANSF'" />
     <FormSaida v-if="this.tipoMovimentacao === 'SAIDA'" />
     <FormSangria v-if="this.tipoMovimentacao === 'SANGRIA'" />
+    <FormAjusteDeCaixa v-if="this.tipoMovimentacao === 'AJUSTE_DE_CAIXA'" />
   </Dialog>
 </template>
 
@@ -25,6 +26,7 @@ import FormCartao from "./formCartao.vue";
 import FormEntradaPorTransf from "./formEntradaPorTransf.vue";
 import FormSaida from "./formSaida.vue";
 import FormSangria from "./formSangria.vue";
+import FormAjusteDeCaixa from "./formAjusteDeCaixa.vue";
 
 export default {
   components: {
@@ -35,6 +37,7 @@ export default {
     FormEntradaPorTransf,
     FormSaida,
     FormSangria,
+    FormAjusteDeCaixa,
   },
 
   methods: {},
@@ -54,6 +57,8 @@ export default {
           return "Lançamento de Saída";
         case "SANGRIA":
           return "Lançamento de Sangria";
+        case "AJUSTE_DE_CAIXA":
+          return "Lançamento de Ajuste de Caixa";
         default:
           return "Selecione o tipo de movimentação";
       }

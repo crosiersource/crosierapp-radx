@@ -149,6 +149,8 @@ export default {
           delete formData.movimentacaoOposta;
           delete formData.grupoItem;
           delete formData.fatura;
+          delete formData.operadoraCartao;
+          delete formData.bandeiraCartao;
 
           formData.dtMoviment = moment(this.filters.dtMoviment).format();
           formData.carteira = this.filters.carteira;
