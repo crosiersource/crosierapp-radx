@@ -16,8 +16,9 @@
         label="Categoria"
         id="categoria"
         :options="[
-          { label: 'Positivo', value: { '@id': '/api/fin/categoria/151' } },
-          { label: 'Negativo', value: { '@id': '/api/fin/categoria/251' } },
+          { label: 'Positivo (Diferença)', value: { '@id': '/api/fin/categoria/151' } },
+          { label: 'Negativo (Diferença)', value: { '@id': '/api/fin/categoria/251' } },
+          { label: 'Positivo (Complemento)', value: { '@id': '/api/fin/categoria/152' } },
         ]"
       />
 
