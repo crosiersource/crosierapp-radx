@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.8.0",
+            "version": "v1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "d3410a8a00724453d99c393c36f9f1e112b69ee2"
+                "reference": "aa6759a81ecc9cd74147b1572ce2e7dfcb2381fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/d3410a8a00724453d99c393c36f9f1e112b69ee2",
-                "reference": "d3410a8a00724453d99c393c36f9f1e112b69ee2",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/aa6759a81ecc9cd74147b1572ce2e7dfcb2381fb",
+                "reference": "aa6759a81ecc9cd74147b1572ce2e7dfcb2381fb",
                 "shasum": ""
             },
             "require": {
@@ -290,22 +290,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.8.0"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.8.1"
             },
-            "time": "2023-06-28T14:48:42+00:00"
+            "time": "2023-07-11T18:11:22+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.8.3",
+            "version": "v1.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "d59eb42c88738c83040e3835ddfb5e6049e0c510"
+                "reference": "49be1689fdd657351b78c5f2a585959403b3f161"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/d59eb42c88738c83040e3835ddfb5e6049e0c510",
-                "reference": "d59eb42c88738c83040e3835ddfb5e6049e0c510",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/49be1689fdd657351b78c5f2a585959403b3f161",
+                "reference": "49be1689fdd657351b78c5f2a585959403b3f161",
                 "shasum": ""
             },
             "require": {
@@ -341,9 +341,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.8.3"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.8.4"
             },
-            "time": "2023-06-28T14:49:25+00:00"
+            "time": "2023-07-11T18:13:12+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -3171,16 +3171,16 @@
         },
         {
             "name": "nfephp-org/sped-nfe",
-            "version": "v5.1.16",
+            "version": "v5.1.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-nfe.git",
-                "reference": "d4bf8b43076e2061302a75e9c27543b248fb98ee"
+                "reference": "29d62ba505ac258f9dab9a0b1132ac77d9f77383"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/d4bf8b43076e2061302a75e9c27543b248fb98ee",
-                "reference": "d4bf8b43076e2061302a75e9c27543b248fb98ee",
+                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/29d62ba505ac258f9dab9a0b1132ac77d9f77383",
+                "reference": "29d62ba505ac258f9dab9a0b1132ac77d9f77383",
                 "shasum": ""
             },
             "require": {
@@ -3247,9 +3247,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nfephp-org/sped-nfe/issues",
-                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.1.16"
+                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.1.17"
             },
-            "time": "2023-06-19T18:33:54+00:00"
+            "time": "2023-07-10T19:56:07+00:00"
         },
         {
             "name": "phenx/php-font-lib",
@@ -3692,16 +3692,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.22.0",
+            "version": "1.22.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "ec58baf7b3c7f1c81b3b00617c953249fb8cf30c"
+                "reference": "65c39594fbd8c67abfc68bb323f86447bab79cc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/ec58baf7b3c7f1c81b3b00617c953249fb8cf30c",
-                "reference": "ec58baf7b3c7f1c81b3b00617c953249fb8cf30c",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/65c39594fbd8c67abfc68bb323f86447bab79cc0",
+                "reference": "65c39594fbd8c67abfc68bb323f86447bab79cc0",
                 "shasum": ""
             },
             "require": {
@@ -3733,9 +3733,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.22.0"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.22.1"
             },
-            "time": "2023-06-01T12:35:21+00:00"
+            "time": "2023-06-29T20:46:06+00:00"
         },
         {
             "name": "psr/cache",
