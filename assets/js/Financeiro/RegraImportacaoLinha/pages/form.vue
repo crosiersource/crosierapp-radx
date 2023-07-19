@@ -28,7 +28,6 @@
       <CrosierDropdownEntity
         col="5"
         v-model="this.fields.centroCusto"
-        :error="this.formErrors.centroCusto"
         entity-uri="/api/fin/centroCusto"
         optionLabel="descricaoMontada"
         :optionValue="null"
@@ -73,6 +72,7 @@
         ]"
         label="Sinal"
         id="sinalValor"
+        :error="this.formErrors.sinalValor"
       />
 
       <CrosierInputText
@@ -188,7 +188,6 @@ export default {
       sinalValor: yup.number().required(),
       padraoDescricao: yup.string().required(),
       tipoLancto: yup.mixed().required(),
-      centroCusto: yup.mixed().required(),
       modo: yup.mixed().required(),
       categoria: yup.mixed().required(),
     });

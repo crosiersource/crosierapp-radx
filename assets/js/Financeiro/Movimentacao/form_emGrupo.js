@@ -85,10 +85,15 @@ const store = createStore({
           console.error(err);
         }
       } else {
-        const dadosUltimaMovimentacao = JSON.parse(
-          localStorage.getItem("dadosUltimaMovimentacao") ?? "{}"
-        );
-        context.commit("setFields", dadosUltimaMovimentacao);
+        const grupo = new URLSearchParams(window.location.search.substring(1)).get("grupo");
+        if (grupo) {
+          this.$store.state.fields.grupo = grupo;
+        } else {
+          const dadosUltimaMovimentacao = JSON.parse(
+            localStorage.getItem("dadosUltimaMovimentacao") ?? "{}"
+          );
+          context.commit("setFields", dadosUltimaMovimentacao);
+        }
       }
       context.commit("setLoading", false);
     },

@@ -515,6 +515,10 @@ export default {
         this.$emit("afterFilter", this.tableData);
         this.handleTudoSelecionado();
 
+        this.$nextTick(() => {
+          this.corrigirLinhasSaldos();
+        });
+
         this.visibleRight = false;
       } catch (e) {
         console.error(e);
@@ -771,6 +775,51 @@ export default {
 
           this.setLoading(false);
         },
+      });
+    },
+
+    async delay(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+
+    async corrigirLinhasSaldos() {
+      this.doCorrigeLinhasSaldos();
+      await this.delay(1500); // RTA demais... Aguarda e chama de novo
+      this.doCorrigeLinhasSaldos();
+    },
+
+    async doCorrigeLinhasSaldos() {
+      // Obtém o elemento <tr> com a classe "p-rowgroup-footer"
+      const rows = document.querySelectorAll(".p-rowgroup-footer");
+
+      rows.forEach((row) => {
+        // Obtém o conteúdo do primeiro <td>
+        const saldoTexto = row.querySelector("td").textContent.trim();
+
+        // Divide o conteúdo em partes
+        const parts = saldoTexto.split(":");
+        const descricao = parts[0].trim();
+        const saldoValor = parts[1].trim();
+
+        // Cria os elementos e atribui as classes e conteúdos necessários
+        const td1 = document.createElement("td");
+        td1.classList.add("h5", "text-right");
+        td1.setAttribute("colspan", "4");
+        td1.textContent = descricao;
+
+        const td2 = document.createElement("td");
+        td2.classList.add("text-right", "h5");
+        td2.textContent = saldoValor;
+
+        const td3 = document.createElement("td");
+
+        // Remove os elementos <td> existentes
+        row.innerHTML = "";
+
+        // Insere os elementos criados na estrutura HTML existente
+        row.appendChild(td1);
+        row.appendChild(td2);
+        row.appendChild(td3);
       });
     },
   },

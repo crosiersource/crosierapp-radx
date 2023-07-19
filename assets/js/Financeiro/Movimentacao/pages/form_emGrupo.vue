@@ -334,9 +334,7 @@ export default {
           }
 
           if (!formData?.grupoItem) {
-            console.log("não tem grupoItem");
             if (!formData?.grupo?.itens?.[0]?.["@id"]) {
-              console.log("não tem itens");
               const rsGrupo = await axios.get(formData.grupo["@id"], {
                 headers: {
                   "Content-Type": "application/ld+json",
@@ -345,11 +343,7 @@ export default {
                   return status < 500;
                 },
               });
-              console.log("rsGrupo");
-              console.log(rsGrupo);
               formData.grupoItem = rsGrupo?.data?.itens?.[0]?.["@id"];
-              console.log(rsGrupo?.data?.itens?.[0]?.["@id"]);
-              console.log(formData);
             } else {
               formData.grupoItem = formData.grupo.itens[0]["@id"];
             }
@@ -360,12 +354,9 @@ export default {
           delete formData.carteira;
           delete formData.modo;
           delete formData.fatura;
-          console.log("finalizando");
-          console.log(formData);
           return formData;
         },
       });
-      console.log(rs);
       if (rs?.data?.["@id"]) {
         localStorage.setItem(
           "dadosUltimaMovimentacao",
@@ -376,6 +367,7 @@ export default {
             centroCusto: rs.data?.centroCusto,
             grupo: rs.data?.grupo,
             grupoItem: rs.data?.grupoItem,
+            dtMoviment: rs.data?.dtMoviment,
           })
         );
       }

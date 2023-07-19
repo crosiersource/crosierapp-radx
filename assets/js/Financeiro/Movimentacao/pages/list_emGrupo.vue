@@ -39,7 +39,12 @@
             </div>
           </div>
           <div class="d-sm-flex flex-nowrap ml-auto">
-            <a type="button" class="btn btn-outline-info" href="form" title="Novo">
+            <a
+              type="button"
+              class="btn btn-outline-info"
+              :href="'form?grupoId=' + this.filters?.grupo"
+              title="Novo"
+            >
               <i class="fas fa-file" aria-hidden="true"></i>
             </a>
 

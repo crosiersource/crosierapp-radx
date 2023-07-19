@@ -438,9 +438,6 @@ export default {
     },
 
     totalPorCategoriaEModo(categoriaCodigo, modoCodigo) {
-      console.log(
-        `vou tentar somar para categoriaCodigo: ${categoriaCodigo} e modoCodigo: ${modoCodigo}`
-      );
       return this.data[categoriaCodigo].movimentacoes
         .filter((e) => e.modo.codigo === modoCodigo)
         .reduce((a, b) => a + b.valorTotal, 0);

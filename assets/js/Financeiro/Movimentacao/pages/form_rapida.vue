@@ -336,6 +336,7 @@ export default {
           modo: this.fields?.modo,
           centroCusto: this.fields?.centroCusto,
           grupo: this.fields?.grupo,
+          descricao: this.fields?.descricao,
         })
       );
 
