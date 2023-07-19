@@ -102,6 +102,7 @@ class EmissaoFiscalPVController extends BaseController
             $permiteFaturamento = true;
         } else {
             $permiteFaturamento = $this->notaFiscalBusiness->permiteFaturamento($notaFiscal);
+            $permiteSalvar = $this->notaFiscalBusiness->permiteSalvar($notaFiscal);
         }
         $permiteReimpressao = $this->notaFiscalBusiness->permiteReimpressao($notaFiscal);
         $permiteReimpressaoCancelamento = $this->notaFiscalBusiness->permiteReimpressaoCancelamento($notaFiscal);
@@ -113,6 +114,7 @@ class EmissaoFiscalPVController extends BaseController
             'form' => $form->createView(),
             'venda' => $venda,
             'notaFiscal' => $notaFiscal,
+            'permiteSalvar' => $permiteSalvar,
             'permiteFaturamento' => $permiteFaturamento,
             'permiteCancelamento' => $permiteCancelamento,
             'permiteReimpressao' => $permiteReimpressao,
