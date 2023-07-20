@@ -97,9 +97,10 @@ class EmissaoFiscalPVController extends BaseController
             }
             $form->getErrors(true, true);
         }
-
+        
         if (!$notaFiscal->getId()) {
             $permiteFaturamento = true;
+            $permiteSalvar = false;
         } else {
             $permiteFaturamento = $this->notaFiscalBusiness->permiteFaturamento($notaFiscal);
             $permiteSalvar = $this->notaFiscalBusiness->permiteSalvar($notaFiscal);
