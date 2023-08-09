@@ -844,6 +844,7 @@ class VendaController extends FormListController
             }
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
         } catch (\Exception $e) {
+            $this->syslog->err('Erro ao faturar venda (id: ' . $venda->getId() . ')', $e->getTraceAsString());
             $msg = ExceptionUtils::treatException($e);
             if (!$msg) {
                 $msg = 'Ocorreu um erro ao faturar';

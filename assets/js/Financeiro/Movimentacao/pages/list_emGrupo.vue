@@ -210,7 +210,7 @@
             </template>
           </Column>
 
-          <Column field="valorTotal" header="Valor">
+          <Column field="valorTotal" header="Valor" sortable>
             <template #body="r">
               <div
                 class="text-right"

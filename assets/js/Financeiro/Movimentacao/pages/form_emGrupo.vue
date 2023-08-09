@@ -368,6 +368,7 @@ export default {
             grupo: rs.data?.grupo,
             grupoItem: rs.data?.grupoItem,
             dtMoviment: rs.data?.dtMoviment,
+            descricao: rs.data?.descricao,
           })
         );
       }

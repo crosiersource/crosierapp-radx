@@ -52,9 +52,6 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Regras de negócio para a integração com a Tray.
- *
- * (como está classe ficou muito específica para a Conecta, foi movida do crosierlib-radx para cá).
- *
  * @author Carlos Eduardo Pauluk
  */
 class IntegradorTray implements IntegradorEcommerce
