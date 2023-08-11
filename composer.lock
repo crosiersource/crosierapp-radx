@@ -296,16 +296,16 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.8.6",
+            "version": "v1.8.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "849dc05e86d509ba21d1621bff88f750fc78def5"
+                "reference": "082415c6e82228f5b53243c12d860a72da44e4ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/849dc05e86d509ba21d1621bff88f750fc78def5",
-                "reference": "849dc05e86d509ba21d1621bff88f750fc78def5",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/082415c6e82228f5b53243c12d860a72da44e4ac",
+                "reference": "082415c6e82228f5b53243c12d860a72da44e4ac",
                 "shasum": ""
             },
             "require": {
@@ -341,9 +341,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.8.6"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.8.8"
             },
-            "time": "2023-07-18T18:16:47+00:00"
+            "time": "2023-08-11T13:51:53+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1783,16 +1783,16 @@
         },
         {
             "name": "econea/nusoap",
-            "version": "v0.9.15",
+            "version": "v0.9.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/f00b4r/nusoap.git",
-                "reference": "a5fd9cbbb0b83c94a099dadc8936ec7c2e1acfe1"
+                "reference": "9ead68ec7ad8d1e14943658ce1559435247d14bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/f00b4r/nusoap/zipball/a5fd9cbbb0b83c94a099dadc8936ec7c2e1acfe1",
-                "reference": "a5fd9cbbb0b83c94a099dadc8936ec7c2e1acfe1",
+                "url": "https://api.github.com/repos/f00b4r/nusoap/zipball/9ead68ec7ad8d1e14943658ce1559435247d14bf",
+                "reference": "9ead68ec7ad8d1e14943658ce1559435247d14bf",
                 "shasum": ""
             },
             "require": {
@@ -1808,8 +1808,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.10.x-dev",
-                    "dev-develop": "1.0.x-dev"
+                    "dev-master": "0.10.x-dev"
                 }
             },
             "autoload": {
@@ -1819,7 +1818,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL-2.0-only"
+                "LGPL-2.1-or-later"
             ],
             "authors": [
                 {
@@ -1840,7 +1839,7 @@
             ],
             "support": {
                 "issues": "https://github.com/f00b4r/nusoap/issues",
-                "source": "https://github.com/f00b4r/nusoap/tree/v0.9.15"
+                "source": "https://github.com/f00b4r/nusoap/tree/v0.9.16"
             },
             "funding": [
                 {
@@ -1848,7 +1847,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-09T11:29:13+00:00"
+            "time": "2023-07-19T12:40:31+00:00"
         },
         {
             "name": "egulias/email-validator",
