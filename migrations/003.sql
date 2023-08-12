@@ -1,0 +1,1 @@
+ALTER TABLE fin_carteira CHANGE descricao descricao VARCHAR(255) NOT NULL;

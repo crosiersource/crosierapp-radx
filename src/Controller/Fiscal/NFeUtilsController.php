@@ -13,6 +13,7 @@ use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use Doctrine\DBAL\Connection;
+use NFePHP\Common\Certificate;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -229,10 +230,19 @@ class NFeUtilsController extends BaseController
             $idAtual = $this->nfeUtils->getNfeConfigsIdEmUso();
             foreach ($rContribuintes as $rContribuinte) {
                 $nfeConfigs = json_decode($rContribuinte['valor'], true);
+                $pfx = base64_decode($nfeConfigs['certificado']);
+                $certificadoValidoAte = 'ERRO';
+                try {
+                    $certificate = Certificate::readPfx($pfx, $nfeConfigs['certificadoPwd']);
+                    $certificadoValidoAte = $certificate->getValidTo()->format('d/m/Y H:i:s');
+                } catch (\Throwable $e) {
+                    throw new ViewException('Erro ao ler certificado');
+                }                
                 $contribuintes[] = [
                     'id' => $rContribuinte['id'],
                     'empresa' => StringUtils::mascararCnpjCpf($nfeConfigs['cnpj']) . ' - ' . $nfeConfigs['razaosocial'],
-                    'checked' => $idAtual === (int)$rContribuinte['id'] ? 'checked' : ''
+                    'checked' => $idAtual === (int)$rContribuinte['id'] ? 'checked' : '',
+                    'certificadoValidoAte' => $certificadoValidoAte,
                 ];
             }
             $params['contribuintes'] = $contribuintes;

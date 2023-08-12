@@ -31,7 +31,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="contribuinteId" id="contribuinte_{{ contribuinte.id }}" value="{{ contribuinte.id }}" {{ contribuinte.checked }}>
                                 <label class="form-check-label" for="exampleRadios1">
-                                    {{ contribuinte.empresa }}
+                                    {{ contribuinte.empresa }} <b>(Certificado válido até {{  contribuinte.certificadoValidoAte }})</b>
                                 </label>
                             </div>
 
