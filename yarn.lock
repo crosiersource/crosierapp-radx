@@ -4086,10 +4086,10 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-crosier-vue@1.4.25:
-  version "1.4.25"
-  resolved "https://registry.yarnpkg.com/crosier-vue/-/crosier-vue-1.4.25.tgz#e456c8c1e024fbf6a598e33cfbcf167d1c5216dc"
-  integrity sha512-GH+dhlMyljQKZ+iYl16si+jThXgoObpx8row+i4G4V40xri+XQADzDDgtcdfh1zqhpiDCApBLmYyrzrz4aVJXQ==
+crosier-vue@1.4.26:
+  version "1.4.26"
+  resolved "https://registry.yarnpkg.com/crosier-vue/-/crosier-vue-1.4.26.tgz#99f38137bb25200fe59c2ba3b330e393421644d9"
+  integrity sha512-wpvdCAKKlbxHJUgkrV5O3pnSOMF1HE55rDqsTCFaN6w+OCAdo0W1+snMrU8F9L06GvWolvwN4ZAGflAocqQL2A==
   dependencies:
     "@fullcalendar/core" "^5.6.0"
     "@fullcalendar/daygrid" "^5.5.0"
