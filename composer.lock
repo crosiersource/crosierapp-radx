@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.8.6",
+            "version": "v1.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "aec1f1cec3b162c723d4929631d04e063e6392ee"
+                "reference": "b6fe86818da9e54e4ecb0ef837455a2ae477beed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/aec1f1cec3b162c723d4929631d04e063e6392ee",
-                "reference": "aec1f1cec3b162c723d4929631d04e063e6392ee",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/b6fe86818da9e54e4ecb0ef837455a2ae477beed",
+                "reference": "b6fe86818da9e54e4ecb0ef837455a2ae477beed",
                 "shasum": ""
             },
             "require": {
@@ -290,22 +290,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.8.6"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.8.7"
             },
-            "time": "2023-08-14T14:02:01+00:00"
+            "time": "2023-08-18T18:10:19+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.1",
+            "version": "v1.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "dffe88ac2b1831913d6a4986d7a3a8dd3e839c43"
+                "reference": "cd38a39c01e1673b46c3dd6324c6baa2bff22e09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/dffe88ac2b1831913d6a4986d7a3a8dd3e839c43",
-                "reference": "dffe88ac2b1831913d6a4986d7a3a8dd3e839c43",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/cd38a39c01e1673b46c3dd6324c6baa2bff22e09",
+                "reference": "cd38a39c01e1673b46c3dd6324c6baa2bff22e09",
                 "shasum": ""
             },
             "require": {
@@ -341,9 +341,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.1"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.2"
             },
-            "time": "2023-08-14T14:43:33+00:00"
+            "time": "2023-08-18T18:10:51+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -677,16 +677,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "3.6.5",
+            "version": "3.6.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "96d5a70fd91efdcec81fc46316efc5bf3da17ddf"
+                "reference": "63646ffd71d1676d2f747f871be31b7e921c7864"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/96d5a70fd91efdcec81fc46316efc5bf3da17ddf",
-                "reference": "96d5a70fd91efdcec81fc46316efc5bf3da17ddf",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/63646ffd71d1676d2f747f871be31b7e921c7864",
+                "reference": "63646ffd71d1676d2f747f871be31b7e921c7864",
                 "shasum": ""
             },
             "require": {
@@ -702,10 +702,11 @@
                 "doctrine/coding-standard": "12.0.0",
                 "fig/log-test": "^1",
                 "jetbrains/phpstorm-stubs": "2023.1",
-                "phpstan/phpstan": "1.10.21",
+                "phpstan/phpstan": "1.10.29",
                 "phpstan/phpstan-strict-rules": "^1.5",
                 "phpunit/phpunit": "9.6.9",
                 "psalm/plugin-phpunit": "0.18.4",
+                "slevomat/coding-standard": "8.13.1",
                 "squizlabs/php_codesniffer": "3.7.2",
                 "symfony/cache": "^5.4|^6.0",
                 "symfony/console": "^4.4|^5.4|^6.0",
@@ -769,7 +770,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.6.5"
+                "source": "https://github.com/doctrine/dbal/tree/3.6.6"
             },
             "funding": [
                 {
@@ -785,7 +786,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-17T09:15:50+00:00"
+            "time": "2023-08-17T05:38:17+00:00"
         },
         {
             "name": "doctrine/deprecations",
