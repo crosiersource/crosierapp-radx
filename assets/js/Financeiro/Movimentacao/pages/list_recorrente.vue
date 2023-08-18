@@ -53,6 +53,8 @@
         </div>
       </div>
       <div class="card-body">
+        <MensagensDeErro :erros="this.errorMessages" />
+
         <DataTable
           rowGroupMode="subheader"
           groupRowsBy="dtVencto"
@@ -325,6 +327,7 @@ import { api, CrosierBlock, CrosierMesAno } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
 import printJS from "print-js";
+import MensagensDeErro from "./list_recorrentes_erros.vue";
 
 export default {
   name: "list_recorrente",
@@ -337,6 +340,7 @@ export default {
     Column,
     Toast,
     CrosierMesAno,
+    MensagensDeErro,
   },
 
   emits: [
@@ -362,6 +366,7 @@ export default {
       visibleRight: false,
       apiResource: "/api/fin/movimentacao",
       selection: [],
+      errorMessages: null,
     };
   },
 
@@ -589,6 +594,7 @@ export default {
     },
 
     processar() {
+      this.errorMessages = null;
       if (!this.selection || this.selection.length < 1) {
         this.$toast.add({
           severity: "error",
@@ -617,6 +623,21 @@ export default {
                 detail: "Movimentações processadas com sucesso",
                 life: 5000,
               });
+
+              const errorMessages = [];
+
+              rs.data.DATA.msgs.forEach((entry) => {
+                Object.values(entry).forEach((messages) => {
+                  messages.forEach((message) => {
+                    if (message.tipo === "ERROR") {
+                      errorMessages.push(message.msg);
+                    }
+                  });
+                });
+              });
+
+              this.errorMessages = errorMessages;
+
               await this.doFilter();
             } else {
               throw new Error("Erro ao processar (status <> 200)");

@@ -461,10 +461,7 @@ class MovimentacaoController extends FormListController
     /**
      *
      * @Route("/fin/movimentacao/recorrente/processar", name="fin_movimentacao_recorrente_processar")
-     * @param Request $request
-     * @return JsonResponse
      * @throws \Exception
-     *
      * @IsGranted("ROLE_FINAN", statusCode=403)
      */
     public function processarRecorrentes(Request $request): JsonResponse
@@ -476,8 +473,7 @@ class MovimentacaoController extends FormListController
                 $rMovs[] = $this->getDoctrine()->getRepository(Movimentacao::class)->find($mov['id']);
             }
             $msgs = $this->business->processarRecorrentes($rMovs);
-            $sMsgs = explode("\r\n", $msgs);
-            return CrosierApiResponse::success(['msgs' => $sMsgs]);
+            return CrosierApiResponse::success(['msgs' => $msgs]);
         } catch (\Exception $e) {
             return CrosierApiResponse::error($e, true);
         }
@@ -673,7 +669,7 @@ class MovimentacaoController extends FormListController
         $categ101 = $repoCategoria->findOneByCodigo(101);
         $categ299 = $repoCategoria->findOneByCodigo(299);
         $categ291 = $repoCategoria->findOneByCodigo(291);
-        
+
         $repoCarteira = $this->doctrine->getRepository(Carteira::class);
         $caixas = $repoCarteira->findAllByFiltersSimpl([['caixa', 'EQ', true], ['atual', 'EQ', true]]);
 

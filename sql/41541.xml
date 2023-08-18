@@ -1,0 +1,195 @@
+<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+    <infNFe Id="NFe41230804669397000160550020000117681924266838" versao="4.00">
+        <ide>
+            <cUF>41</cUF>
+            <cNF>92426683</cNF>
+            <natOp>VENDA</natOp>
+            <mod>55</mod>
+            <serie>2</serie>
+            <nNF>11768</nNF>
+            <dhEmi>2023-08-14T08:54:05-03:00</dhEmi>
+            <dhSaiEnt>2023-08-14T08:54:05-03:00</dhSaiEnt>
+            <tpNF>1</tpNF>
+            <idDest>2</idDest>
+            <cMunFG>4119905</cMunFG>
+            <tpImp>1</tpImp>
+            <tpEmis>1</tpEmis>
+            <cDV>8</cDV>
+            <tpAmb>1</tpAmb>
+            <finNFe>1</finNFe>
+            <indFinal>1</indFinal>
+            <indPres>1</indPres>
+            <procEmi>0</procEmi>
+            <verProc>02014-6</verProc>
+        </ide>
+        <emit>
+            <CNPJ>04669397000160</CNPJ>
+            <xNome>PEREIRA, DA LUZ, SIMIONATTO &amp; TELEGINSKI LTDA</xNome>
+            <xFant>PEREIRA, DA LUZ, SIMIONATTO &amp; TELEGINSKI LTDA</xFant>
+            <enderEmit>
+                <xLgr>AV PRESIDENTE KENNEDY</xLgr>
+                <nro>400</nro>
+                <xBairro>CONTORNO</xBairro>
+                <cMun>4119905</cMun>
+                <xMun>PONTA GROSSA</xMun>
+                <UF>PR</UF>
+                <CEP>84052465</CEP>
+                <cPais>1058</cPais>
+                <xPais>BRASIL</xPais>
+                <fone>4232396323</fone>
+            </enderEmit>
+            <IE>9024417350</IE>
+            <CRT>3</CRT>
+        </emit>
+        <dest>
+            <CPF>04777443116</CPF>
+            <xNome>FRANCIELE MELO</xNome>
+            <enderDest>
+                <xLgr>RUA LOS ANGELES WE 25 LT 3 A</xLgr>
+                <nro>SN</nro>
+                <xCpl>REFERENCIA: SIM NESSE</xCpl>
+                <xBairro>VILA FERREIRA</xBairro>
+                <cMun>5210208</cMun>
+                <xMun>Iporá</xMun>
+                <UF>GO</UF>
+                <CEP>76200000</CEP>
+                <cPais>1058</cPais>
+                <xPais>BRASIL</xPais>
+                <fone>64984492065</fone>
+            </enderDest>
+            <indIEDest>9</indIEDest>
+        </dest>
+        <det nItem="1">
+            <prod>
+                <cProd>10715</cProd>
+                <cEAN>SEM GTIN</cEAN>
+                <xProd>VIDRO FAROL SC S5 LE (1760551)</xProd>
+                <NCM>70140000</NCM>
+                <CEST>0101700</CEST>
+                <CFOP>6102</CFOP>
+                <uCom>UN</uCom>
+                <qCom>1.00</qCom>
+                <vUnCom>184.90</vUnCom>
+                <vProd>184.90</vProd>
+                <cEANTrib>SEM GTIN</cEANTrib>
+                <uTrib>UN</uTrib>
+                <qTrib>1.00</qTrib>
+                <vUnTrib>184.90</vUnTrib>
+                <indTot>1</indTot>
+            </prod>
+            <imposto>
+                <ICMS>
+                    <ICMS00>
+                        <orig>0</orig>
+                        <CST>00</CST>
+                        <modBC>3</modBC>
+                        <vBC>184.90</vBC>
+                        <pICMS>7.00</pICMS>
+                        <vICMS>12.93</vICMS>
+                    </ICMS00>
+                </ICMS>
+                <IPI>
+                    <cEnq>999</cEnq>
+                    <IPINT>
+                        <CST>53</CST>
+                    </IPINT>
+                </IPI>
+                <PIS>
+                    <PISNT>
+                        <CST>04</CST>
+                    </PISNT>
+                </PIS>
+                <COFINS>
+                    <COFINSNT>
+                        <CST>04</CST>
+                    </COFINSNT>
+                </COFINS>
+                <ICMSUFDest>
+                    <vBCUFDest>184.90</vBCUFDest>
+                    <vBCFCPUFDest>0</vBCFCPUFDest>
+                    <pFCPUFDest>0</pFCPUFDest>
+                    <pICMSUFDest>17.00</pICMSUFDest>
+                    <pICMSInter>7.00</pICMSInter>
+                    <pICMSInterPart>100</pICMSInterPart>
+                    <vFCPUFDest>0</vFCPUFDest>
+                    <vICMSUFDest>18.49</vICMSUFDest>
+                    <vICMSUFRemet>0</vICMSUFRemet>
+                </ICMSUFDest>
+            </imposto>
+        </det>
+        <total>
+            <ICMSTot>
+                <vBC>184.90</vBC>
+                <vICMS>12.93</vICMS>
+                <vICMSDeson>0.00</vICMSDeson>
+                <vFCPUFDest>0.00</vFCPUFDest>
+                <vICMSUFDest>18.49</vICMSUFDest>
+                <vFCP>0.00</vFCP>
+                <vBCST>0.00</vBCST>
+                <vST>0.00</vST>
+                <vFCPST>0.00</vFCPST>
+                <vFCPSTRet>0.00</vFCPSTRet>
+                <vProd>184.90</vProd>
+                <vFrete>0.00</vFrete>
+                <vSeg>0.00</vSeg>
+                <vDesc>0.00</vDesc>
+                <vII>0.00</vII>
+                <vIPI>0.00</vIPI>
+                <vIPIDevol>0.00</vIPIDevol>
+                <vPIS>0.00</vPIS>
+                <vCOFINS>0.00</vCOFINS>
+                <vOutro>0.00</vOutro>
+                <vNF>184.90</vNF>
+                <vTotTrib>0.00</vTotTrib>
+            </ICMSTot>
+        </total>
+        <transp>
+            <modFrete>9</modFrete>
+        </transp>
+        <pag>
+            <detPag>
+                <tPag>01</tPag>
+                <vPag>184.90</vPag>
+            </detPag>
+        </pag>
+        <infAdic>
+            <infCpl>PEDIDO E-COMMERCE: 13208;MKT;**CONF DECRETO 3529/2016, ALT 926. PARÁGRAFO 13 ART 14. *VENDA
+                PRESENCIAL. POLÍTICA DE TROCA E DEVOLUÇÕES: A DEVOLUÇÃO POR INSATISFAÇÃO OU DESISTÊNCIA DEVERÁ SER FEITA
+                ATÉ NO PRAZO MÁXIMO DE 7 DIA CORRIDOS, A PARTIR DA DATA DO RECEBIMENTO DO PRODUTO. NESSE CASO O CLIENTE
+                PODE SOLICITAR A RESTITUIÇÃO DO VALOR DA COMPRA INCLUINDO O FRETE. AS MERCADORIAS CONSTANTES NA NOTA SÃO
+                EXCLUSIVAMENTE PARA USO PRÓPRIO DO COMPRADOR! CASO TENHA DÚVIDAS PODE ENTRAR EM CONTATO PELO WHATSAPP
+                (42) 999907-0793, OU TELEFONE (42) 3239-633 OU SAC@RODOPONTA.COM.BR.
+            </infCpl>
+        </infAdic>
+        <infRespTec>
+            <CNPJ>04669397000160</CNPJ>
+            <xContato>EKT Plus</xContato>
+            <email>ekt@ekt.com.br</email>
+            <fone>4232396323</fone>
+        </infRespTec>
+    </infNFe>
+    <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <SignedInfo>
+            <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+            <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+            <Reference URI="#NFe41230804669397000160550020000117681924266838">
+                <Transforms>
+                    <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                    <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+                </Transforms>
+                <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                <DigestValue>CjIbw5ueOYgrWdZ1PsCuAoopd64=</DigestValue>
+            </Reference>
+        </SignedInfo>
+        <SignatureValue>
+            WwKBuyXyEGfYcsO5WjeJyLjKxmmfwqQsWpyOFk81jX4XGc7i6LRpDMoHo85VkO7IwLpK6c3BqoJN0MAGsBgd/axKv81bd6ZQu4ZkjaRtVBr3CDfWMV+93ksg91ctHTnguijtNHfp5yRlz0+xQo920kreZbvqBtuT2fJNj1LtuS03Su0/J9nNL5C6I8pbtewbWkqo0CCjIRVDVX4VLI1r2hS1kygkWehNrr64w7JFbuqLBa1XtcmCAA98LMs4xSYjiDWCuWOWC4IASjy7EgJjtU671YUXQdrr3mCk/gR8rLZcHjC4f/UC7mHWg96h86TnknyTc/FcrWfz5imRU0I0bA==
+        </SignatureValue>
+        <KeyInfo>
+            <X509Data>
+                <X509Certificate>
+                    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
+                </X509Certificate>
+            </X509Data>
+        </KeyInfo>
+    </Signature>
+</NFe>

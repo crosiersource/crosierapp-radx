@@ -266,8 +266,14 @@
           </Column>
 
           <template #header>
-            <div class="h5 text-right mr-5">
-              Saldo anterior: {{ this.getSaldoFormatted("ANTERIOR") }}
+            <div class="h5 text-right mr-5" v-if="this.saldoAnterior">
+              Saldo anterior: {{ this.getValorFormatted(this.saldoAnterior) }}
+            </div>
+          </template>
+
+          <template #footer>
+            <div class="h5 text-right mr-5" v-if="this.saldoFinal && totalRecords === 0">
+              Saldo posterior: {{ this.getValorFormatted(this.saldoFinal) }}
             </div>
           </template>
 
@@ -346,6 +352,8 @@ export default {
       totalRecords: 0,
       tableData: null,
       saldos: null, // deve ficar como null até ser preenchido para poder exibir a DataTable corretamente
+      saldoAnterior: 0,
+      saldoFinal: 0,
       firstRecordIndex: 0,
       multiSortMeta: [],
       accordionActiveIndex: null,
@@ -407,6 +415,16 @@ export default {
     },
 
     async doFilter() {
+      if (!this.filters.carteira) {
+        this.$toast.add({
+          group: "mainToast",
+          severity: "error",
+          summary: "Erro",
+          detail: "Selecione a carteira!",
+          life: 5000,
+        });
+        return;
+      }
       this.setLoading(true);
 
       try {
@@ -504,6 +522,8 @@ export default {
         );
 
         this.saldos = rsSaldos.data["hydra:member"];
+        this.saldoAnterior = this.saldos[0].totalRealizadas;
+        this.saldoFinal = this.saldos[this.saldos.length - 1].totalRealizadas;
 
         // salva os filtros no localStorage
         localStorage.setItem(this.filtersOnLocalStorage, JSON.stringify(this.filters));
@@ -717,7 +737,12 @@ export default {
     },
 
     getSaldoFormatted(saldo) {
-      return parseFloat(this.getSaldo(saldo)).toLocaleString("pt-BR", {
+      const valor = this.getSaldo(saldo);
+      return this.getValorFormatted(valor);
+    },
+
+    getValorFormatted(valor) {
+      return parseFloat(valor).toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL",
       });
@@ -783,9 +808,9 @@ export default {
     },
 
     async corrigirLinhasSaldos() {
-      this.doCorrigeLinhasSaldos();
-      await this.delay(1500); // RTA demais... Aguarda e chama de novo
-      this.doCorrigeLinhasSaldos();
+      // this.doCorrigeLinhasSaldos();
+      // await this.delay(1500); // RTA demais... Aguarda e chama de novo
+      // this.doCorrigeLinhasSaldos();
     },
 
     async doCorrigeLinhasSaldos() {
@@ -798,8 +823,8 @@ export default {
 
         // Divide o conteúdo em partes
         const parts = saldoTexto.split(":");
-        const descricao = parts[0].trim();
-        const saldoValor = parts[1].trim();
+        const descricao = parts[0]?.trim() ?? "";
+        const saldoValor = parts[1]?.trim() ?? "";
 
         // Cria os elementos e atribui as classes e conteúdos necessários
         const td1 = document.createElement("td");

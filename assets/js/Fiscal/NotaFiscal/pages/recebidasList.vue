@@ -60,7 +60,7 @@
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierDropdown
-          label="Contribuinte"
+          label="Destinatário"
           col="4"
           id="contribuinte"
           :options="this.contribuintes"
@@ -315,7 +315,7 @@ export default {
 
   async mounted() {
     this.setLoading(true);
-
+    await this.loadData();
     this.setLoading(false);
   },
 
@@ -328,7 +328,6 @@ export default {
     },
 
     async beforeFilter() {
-      await this.loadData();
       this.filters["dtEmissao[after]"] = this.filters["dtEmissao[after]"]
         ? `${moment(this.filters["dtEmissao[after]"]).format("YYYY-MM-DD")}T00:00:00-03:00`
         : null;
