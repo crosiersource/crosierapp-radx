@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.8.8",
+            "version": "v1.8.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "5aeda0fae7f511bb92db9b562f81496448dcc841"
+                "reference": "d7304af017a875ac178264cad44deb4a173c5c3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/5aeda0fae7f511bb92db9b562f81496448dcc841",
-                "reference": "5aeda0fae7f511bb92db9b562f81496448dcc841",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/d7304af017a875ac178264cad44deb4a173c5c3b",
+                "reference": "d7304af017a875ac178264cad44deb4a173c5c3b",
                 "shasum": ""
             },
             "require": {
@@ -290,13 +290,13 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.8.8"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.8.9"
             },
-            "time": "2023-08-21T20:42:41+00:00"
+            "time": "2023-08-22T20:24:51+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.3",
+            "version": "v1.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
@@ -341,7 +341,7 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.3"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.4"
             },
             "time": "2023-08-21T20:45:22+00:00"
         },
@@ -3171,16 +3171,16 @@
         },
         {
             "name": "nfephp-org/sped-nfe",
-            "version": "v5.1.17",
+            "version": "v5.1.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-nfe.git",
-                "reference": "29d62ba505ac258f9dab9a0b1132ac77d9f77383"
+                "reference": "f3e1577760acc5f9de12c6ca24ef4ffbbe8e6945"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/29d62ba505ac258f9dab9a0b1132ac77d9f77383",
-                "reference": "29d62ba505ac258f9dab9a0b1132ac77d9f77383",
+                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/f3e1577760acc5f9de12c6ca24ef4ffbbe8e6945",
+                "reference": "f3e1577760acc5f9de12c6ca24ef4ffbbe8e6945",
                 "shasum": ""
             },
             "require": {
@@ -3247,9 +3247,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nfephp-org/sped-nfe/issues",
-                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.1.17"
+                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.1.18"
             },
-            "time": "2023-07-10T19:56:07+00:00"
+            "time": "2023-08-22T17:47:25+00:00"
         },
         {
             "name": "phenx/php-font-lib",
