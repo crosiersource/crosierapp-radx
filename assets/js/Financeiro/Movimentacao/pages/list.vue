@@ -26,6 +26,7 @@
       'dtVencto',
       'dtVenctoEfetiva',
       'dtUtil',
+      'dtPagto',
       'dtMoviment',
       'updated',
       'userUpdatedId',
@@ -253,11 +254,15 @@
 
       <Column field="dtUtil" header="Data" :sortable="true">
         <template #body="r">
-          <div
-            class="text-center"
-            :title="'Dt Vencto: ' + new Date(r.data.dtVencto).toLocaleString().substring(0, 10)"
-          >
-            {{ new Date(r.data.dtUtil).toLocaleString().substring(0, 10) }}
+          <div class="text-center">
+            <div
+              :title="'Dt Vencto: ' + new Date(r.data.dtVencto).toLocaleString().substring(0, 10)"
+            >
+              V: {{ new Date(r.data.dtVenctoEfetiva).toLocaleString().substring(0, 10) }}
+            </div>
+            <div v-if="r.data.status === 'REALIZADA'" titl="Dt Pagto">
+              P: {{ new Date(r.data.dtPagto).toLocaleString().substring(0, 10) }}
+            </div>
             <div class="clearfix"></div>
             <span
               v-if="r.data.status === 'REALIZADA'"

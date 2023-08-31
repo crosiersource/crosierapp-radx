@@ -98,8 +98,9 @@
           <Column field="id">
             <template #header>Categoria<br />Modo</template>
             <template class="text-right" #body="r">
-              {{ r.data.categoria.descricaoMontada }}<br />
-              {{ r.data.modo.descricaoMontada }}
+              <span title="{{ r.data.modo.descricaoMontada }}">{{
+                r.data.categoria.descricaoMontada
+              }}</span>
             </template>
           </Column>
 
@@ -165,7 +166,7 @@
             </template>
           </Column>
 
-          <Column field="id" header="Dt Vencto" style="width: 1% !important">
+          <Column field="id" header="Data" style="width: 1% !important">
             <template #body="r">
               <div
                 class="text-center"
@@ -173,7 +174,7 @@
                   'Dt Vencto: ' + new Date(r.data.dtVenctoEfetiva).toLocaleString().substring(0, 10)
                 "
               >
-                {{ new Date(r.data.dtVencto).toLocaleString().substring(0, 10) }}
+                {{ new Date(r.data.dtUtil).toLocaleString().substring(0, 10) }}
                 <div class="clearfix"></div>
                 <span
                   v-if="r.data.status === 'REALIZADA'"
