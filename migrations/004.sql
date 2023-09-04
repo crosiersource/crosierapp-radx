@@ -1,0 +1,1 @@
+ALTER TABLE fin_movimentacao CHANGE descricao descricao varchar(5000) NOT NULL;
