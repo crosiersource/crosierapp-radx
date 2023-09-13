@@ -32,7 +32,7 @@
     ]"
   >
     <template v-slot:columns>
-      <Column field="id" :sortable="true">
+      <Column field="id" sortable>
         <template #body="r">
           {{ ("0".repeat(8) + r.data.id).slice(-8) }}
         </template>
@@ -40,7 +40,7 @@
 
       <Column field="carteira.codigo">
         <template #header> Carteira<br />Categoria<br />Modo</template>
-        <template class="text-right" #body="r">
+        <template #body="r">
           <b>{{ r.data.carteira.descricaoMontada }}</b
           ><br />
           {{ r.data.categoria.descricaoMontada }}<br />
@@ -48,8 +48,8 @@
         </template>
       </Column>
 
-      <Column field="descricao" header="Descrição" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="descricao" header="Descrição" sortable>
+        <template #body="r">
           <div style="max-width: 50em; white-space: pre-wrap">
             <b><div v-html="r.data.descricaoMontada"></div></b>
 
@@ -103,7 +103,7 @@
         </template>
       </Column>
 
-      <Column field="dtUtil" header="Data" :sortable="true">
+      <Column field="dtUtil" header="Data" sortable>
         <template #body="r">
           <div
             class="text-center"
@@ -141,7 +141,7 @@
         </template>
       </Column>
 
-      <Column field="valorTotal" header="Valor" :sortable="true">
+      <Column field="valorTotal" header="Valor" sortable>
         <template #body="r">
           <div class="text-right">
             {{
@@ -154,8 +154,8 @@
         </template>
       </Column>
 
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="d-flex justify-content-end">
             <a
               v-if="r.data.status === 'ABERTA'"

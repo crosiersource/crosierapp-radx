@@ -176,7 +176,7 @@
                 </Column>
 
                 <Column field="descricao" header="Descrição" style="width: 60%">
-                  <template class="text-right" #body="r">
+                  <template #body="r">
                     <b>{{ r.data.descricaoMontada }}</b>
                   </template>
                 </Column>
@@ -201,7 +201,7 @@
                 </Column>
 
                 <Column field="updated" header="" style="width: 10%">
-                  <template class="text-right" #body="r">
+                  <template #body="r">
                     <div class="d-flex justify-content-end">
                       <button
                         type="button"

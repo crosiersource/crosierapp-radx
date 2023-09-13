@@ -85,7 +85,7 @@
 
       <Column field="descricao" header="Descrição"></Column>
 
-      <Column field="valorLanctos" header="Total" :sortable="true">
+      <Column field="valorLanctos" header="Total" sortable>
         <template #body="r">
           <div class="text-right">
             {{

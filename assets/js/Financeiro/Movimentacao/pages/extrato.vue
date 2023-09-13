@@ -97,7 +97,7 @@
 
           <Column field="id">
             <template #header>Categoria<br />Modo</template>
-            <template class="text-right" #body="r">
+            <template #body="r">
               <span title="{{ r.data.modo.descricaoMontada }}">{{
                 r.data.categoria.descricaoMontada
               }}</span>
@@ -105,7 +105,7 @@
           </Column>
 
           <Column field="descricao" header="Descrição">
-            <template class="text-right" #body="r">
+            <template #body="r">
               <div style="max-width: 50em; white-space: pre-wrap">
                 <b>{{ r.data.descricaoMontada }}</b>
 
@@ -227,7 +227,7 @@
           </Column>
 
           <Column field="updated" header="" style="width: 1% !important">
-            <template class="text-right" #body="r">
+            <template #body="r">
               <div class="d-flex justify-content-end">
                 <a
                   v-if="r.data.status === 'ABERTA'"

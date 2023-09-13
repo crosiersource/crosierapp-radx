@@ -69,15 +69,15 @@
       </div>
     </template>
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true" />
-      <Column field="mercadoLivreItem.clienteConfig.cliente.nome" header="Loja" :sortable="true" />
-      <Column field="dtPergunta" header="Dt Pergunta" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="id" header="Id" sortable />
+      <Column field="mercadoLivreItem.clienteConfig.cliente.nome" header="Loja" sortable />
+      <Column field="dtPergunta" header="Dt Pergunta" sortable>
+        <template #body="r">
           {{ this.moment(r.data.dtPergunta).format("DD/MM/YYYY HH:mm") }}
         </template>
       </Column>
       <Column field="jsonData" header="Pergunta">
-        <template class="text-right" #body="r">
+        <template #body="r">
           <div style="max-width: 350px; white-space: pre-line">
             <b>P: {{ r.data.jsonData.r.text }}</b>
             <hr />
@@ -85,9 +85,9 @@
           </div>
         </template>
       </Column>
-      <Column field="status" header="Status" :sortable="true"></Column>
-      <Column field="produto" header="Produto" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="status" header="Status" sortable></Column>
+      <Column field="produto" header="Produto" sortable>
+        <template #body="r">
           <div style="max-width: 250px; white-space: pre-line">
             <a :href="r.data.mercadoLivreItem.jsonData?.r?.permalink" target="_blank">
               {{ r.data.mercadoLivreItem.descricao }}
@@ -101,8 +101,8 @@
           </div>
         </template>
       </Column>
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="row d-flex justify-content-end mr-2 ml-2">
             <button
               type="button"

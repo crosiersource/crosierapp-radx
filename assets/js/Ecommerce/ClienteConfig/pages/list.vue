@@ -5,30 +5,30 @@
     subtitulo="Clientes"
   >
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true" />
-      <Column field="cliente.nome" header="Loja" :sortable="true" />
-      <Column field="ativo" header="Ativo" :sortable="true">
+      <Column field="id" header="Id" sortable />
+      <Column field="cliente.nome" header="Loja" sortable />
+      <Column field="ativo" header="Ativo" sortable>
         <template class="text-center" #body="r">
           {{ r.data.ativo ? "Sim" : "Não" }}
         </template>
       </Column>
-      <Column field="jsonData.url_loja" header="URL" :sortable="true" />
-      <Column field="mercadolivreExpiraEm" header="Dt Expiração (ML)" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="jsonData.url_loja" header="URL" sortable />
+      <Column field="mercadolivreExpiraEm" header="Dt Expiração (ML)" sortable>
+        <template #body="r">
           <span v-if="r.data.mercadolivreExpiraEm">
             {{ this.moment(r.data.mercadolivreExpiraEm).format("DD/MM/YYYY HH:mm") }}
           </span>
         </template>
       </Column>
-      <Column field="trayDtExpRefreshToken" header="Dt Expiração (Tray)" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="trayDtExpRefreshToken" header="Dt Expiração (Tray)" sortable>
+        <template #body="r">
           <span v-if="r.data.trayDtExpRefreshToken">
             {{ this.moment(r.data.trayDtExpRefreshToken).format("DD/MM/YYYY HH:mm") }}
           </span>
         </template>
       </Column>
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="d-flex justify-content-end">
             <a
               role="button"

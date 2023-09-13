@@ -4,7 +4,7 @@
   <CrosierListS
     titulo="Emitidas"
     apiResource="/api/fis/notaFiscal/"
-    formUrl="/fis/emissaonfe/form"
+    formUrl="/fis/notaFiscal/form"
     @beforeFilter="this.beforeFilter"
     v-model:selection="this.selection"
     filtersStoreName="emitidasFilters"
@@ -97,7 +97,7 @@
     </template>
 
     <template v-slot:columns>
-      <Column field="id" header="Número / Série / Chave" :sortable="true">
+      <Column field="id" header="Número / Série / Chave" sortable>
         <template #body="r">
           {{ new String(r.data.numero ?? "0").padStart(6, "0") }} /
           {{ new String(r.data.serie ?? "0").padStart(3, "0") }}
@@ -107,7 +107,7 @@
           </div>
         </template>
       </Column>
-      <Column field="id" header="Destinatario" :sortable="true">
+      <Column field="id" header="Destinatario" sortable>
         <template #body="r">
           <div class="float-left" v-if="r.data?.documentoDestinatario">
             {{
@@ -140,14 +140,14 @@
           </div>
         </template>
       </Column>
-      <Column field="dtEmissao" header="Dt Emissão" :sortable="true">
+      <Column field="dtEmissao" header="Dt Emissão" sortable>
         <template #body="r">
           <div class="text-center">
             {{ this.moment(r.data.dtEmissao).format("DD/MM/YYYY HH:mm:ss") }}
           </div>
         </template>
       </Column>
-      <Column field="valorTotal" header="Valor Total" :sortable="true">
+      <Column field="valorTotal" header="Valor Total" sortable>
         <template #body="r">
           <div class="text-right">
             {{
@@ -159,7 +159,7 @@
           </div>
         </template>
       </Column>
-      <Column field="updated" header="" :sortable="true">
+      <Column field="updated" header="" sortable>
         <template #body="r">
           <div class="d-flex justify-content-end">
             <a
@@ -187,7 +187,7 @@
               role="button"
               title="Ver PDF"
               class="ml-1 btn btn-sm btn-outline-success"
-              :href="'/fis/emissaonfe/imprimir/' + r.data.id"
+              :href="'/fis/notaFiscal/imprimir/' + r.data.id"
               target="_blank"
             >
               <i class="fas fa-file-pdf" aria-hidden="true"></i
@@ -197,7 +197,7 @@
               role="button"
               class="ml-1 btn btn-primary btn-sm"
               title="Editar registro"
-              :href="'/fis/emissaonfe/form/' + r.data.id"
+              :href="'/fis/notaFiscal/form/' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
           </div>

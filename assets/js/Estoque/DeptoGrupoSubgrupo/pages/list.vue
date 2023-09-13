@@ -4,15 +4,15 @@
 
   <CrosierListS titulo="Unidades" apiResource="/api/est/unidade/" ref="dt">
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true">
+      <Column field="id" header="Id" sortable>
         <template #body="r">
           {{ ("00000000" + r.data.id).slice(-8) }}
         </template>
       </Column>
-      <Column field="label" header="Label" :sortable="true"></Column>
-      <Column field="descricao" header="Descrição" :sortable="true"></Column>
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="label" header="Label" sortable></Column>
+      <Column field="descricao" header="Descrição" sortable></Column>
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="d-flex justify-content-end">
             <a
               role="button"

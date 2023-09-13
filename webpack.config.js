@@ -32,14 +32,8 @@ Encore
   .addEntry('Vendas/ven_venda_listVendasPorDiaComEcommerce', './assets/js/Vendas/ven_venda_listVendasPorDiaComEcommerce.js')
   .addEntry('Vendas/venda_ecommerceForm', './assets/js/Vendas/venda_ecommerceForm.js')
 
-  .addEntry('Fiscal/emissaoNFe/form', './assets/js/Fiscal/emissaoNFe/form.js')
-  .addEntry('Fiscal/emissaoNFe/formItem', './assets/js/Fiscal/emissaoNFe/formItem.js')
-  .addEntry('Fiscal/emissaoNFe/list', './assets/js/Fiscal/emissaoNFe/list.js')
   .addEntry('fis/notaFiscal/form', './assets/js/Fiscal/NotaFiscal/form.js')
   
-  
-  .addEntry('Fiscal/distDFeList', './assets/js/Fiscal/distDFeList.js')
-
   
   // --------------------------------------------
   

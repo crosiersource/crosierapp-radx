@@ -74,13 +74,13 @@
     </template>
 
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true">
+      <Column field="id" header="Id" sortable>
         <template #body="r">
           {{ ("00000000" + r.data.id).slice(-8) }}
         </template>
       </Column>
 
-      <Column field="dtFatura" header="Dt Fatura" :sortable="true">
+      <Column field="dtFatura" header="Dt Fatura" sortable>
         <template #body="r">
           <div class="text-center">
             {{ new Date(r.data.dtFatura).toLocaleString() }}
@@ -113,8 +113,8 @@
         </template>
       </Column>
 
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="d-flex justify-content-end">
             <a
               role="button"

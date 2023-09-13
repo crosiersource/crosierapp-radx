@@ -59,18 +59,18 @@
       </div>
     </template>
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true" />
-      <Column field="idTray" header="Id Venda Tray" :sortable="true" />
-      <Column field="clienteConfig.cliente.nome" header="Loja" :sortable="true" />
-      <Column field="dtVenda" header="Dt Venda" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="id" header="Id" sortable />
+      <Column field="idTray" header="Id Venda Tray" sortable />
+      <Column field="clienteConfig.cliente.nome" header="Loja" sortable />
+      <Column field="dtVenda" header="Dt Venda" sortable>
+        <template #body="r">
           {{ this.moment(r.data.dtVenda).format("DD/MM/YYYY HH:mm") }}
         </template>
       </Column>
-      <Column field="statusTray" header="Status" :sortable="true"> </Column>
-      <Column field="pointSale" header="Canal" :sortable="true"> </Column>
-      <Column field="valorTotal" header="Valor Total" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="statusTray" header="Status" sortable> </Column>
+      <Column field="pointSale" header="Canal" sortable> </Column>
+      <Column field="valorTotal" header="Valor Total" sortable>
+        <template #body="r">
           {{
             r.data.valorTotal.toLocaleString("pt-BR", {
               style: "currency",
@@ -79,8 +79,8 @@
           }}
         </template>
       </Column>
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="row mt-1 d-flex justify-content-end">
             <span v-if="r.data.updated" class="badge badge-info">
               {{ new Date(r.data.updated).toLocaleString() }}

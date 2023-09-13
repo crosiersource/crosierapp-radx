@@ -114,30 +114,30 @@
     </template>
 
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true">
+      <Column field="id" header="Id" sortable>
         <template #body="r">
           {{ ("00000000" + r.data.id).slice(-8) }}
         </template>
       </Column>
 
-      <Column field="codigo" header="Código" :sortable="true"></Column>
+      <Column field="codigo" header="Código" sortable></Column>
 
-      <Column field="nome" header="Nome" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="nome" header="Nome" sortable>
+        <template #body="r">
           <div style="max-width: 250px; white-space: break-spaces">{{ r.data.nome }}</div>
         </template>
       </Column>
 
-      <Column field="depto.codigo" header="Depto/Grupo/Subgrupo" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="depto.codigo" header="Depto/Grupo/Subgrupo" sortable>
+        <template #body="r">
           {{ r.data.depto.descricaoMontada }} <br />
           {{ r.data.grupo.descricaoMontada }} <br />
           {{ r.data.subgrupo.descricaoMontada }}
         </template>
       </Column>
 
-      <Column field="dtUltIntegracaoEcommerce" header="E-comm" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="dtUltIntegracaoEcommerce" header="E-comm" sortable>
+        <template #body="r">
           <div>
             {{ r.data.ecommerce ? "Sim" : "Não" }}
           </div>
@@ -147,7 +147,7 @@
         </template>
       </Column>
 
-      <Column field="qtdeTotal" header="Estoque" :sortable="true"></Column>
+      <Column field="qtdeTotal" header="Estoque" sortable></Column>
 
       <Column field="id" header="Preço Tabela" style="width: 1% !important">
         <template #body="r">
@@ -171,8 +171,8 @@
         </template>
       </Column>
 
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="d-flex justify-content-end">
             <a
               role="button"

@@ -60,23 +60,23 @@
     </template>
 
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true">
+      <Column field="id" header="Id" sortable>
         <template #body="r">
           {{ ("00000000" + r.data.id).slice(-8) }}
         </template>
       </Column>
 
-      <Column field="descricao" header="Descrição" :sortable="true"></Column>
+      <Column field="descricao" header="Descrição" sortable></Column>
 
-      <Column field="carteira.descricaoMontada" header="Carteira" :sortable="true"></Column>
+      <Column field="carteira.descricaoMontada" header="Carteira" sortable></Column>
 
-      <Column field="dtRegistro" header="Dt do Registro" :sortable="true">
+      <Column field="dtRegistro" header="Dt do Registro" sortable>
         <template #body="r">
           {{ new Date(r.data.dtRegistro).toLocaleString().substring(0, 10) }}
         </template>
       </Column>
 
-      <Column field="valor" header="Valor" :sortable="true">
+      <Column field="valor" header="Valor" sortable>
         <template #body="r">
           <div class="text-right">
             {{
@@ -89,8 +89,8 @@
         </template>
       </Column>
 
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="d-flex justify-content-end">
             <button
               type="button"

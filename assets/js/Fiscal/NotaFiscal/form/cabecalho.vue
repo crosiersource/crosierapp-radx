@@ -143,6 +143,7 @@
           <CrosierInputCpfCnpj
             col="3"
             label="CPF/CNPJ"
+            id="documentoDestinatario"
             v-model="this.notaFiscal.documentoDestinatario"
             :error="this.errors.documentoDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
@@ -469,9 +470,9 @@ export default {
 
     async consultarDestinatario() {
       this.setLoading(true);
-      // /api/fis/emissaonfe/consultarCNPJ
+      // /api/fis/notaFiscal/consultarCNPJ
       const rs = await axios.get(
-        `/api/fis/emissaonfe/consultarCNPJ?cnpj=${this.notaFiscal.documentoDestinatario}&uf=${this.notaFiscal.estadoDestinatario}`
+        `/api/fis/notaFiscal/consultarCNPJ?cnpj=${this.notaFiscal.documentoDestinatario}&uf=${this.notaFiscal.estadoDestinatario}`
       );
       if (rs?.data?.dados) {
         this.notaFiscal.xNomeDestinatario = rs.data.dados.razaoSocial[0];

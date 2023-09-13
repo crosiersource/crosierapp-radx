@@ -13,14 +13,14 @@
     </template>
 
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true">
+      <Column field="id" header="Id" sortable>
         <template #body="r">
           {{ ("00000000" + r.data.id).slice(-8) }}
         </template>
       </Column>
 
-      <Column field="documento" header="CPF/CNPJ" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="documento" header="CPF/CNPJ" sortable>
+        <template #body="r">
           {{
             (r.data?.documento ?? "").length === 11
               ? String(r.data?.documento ?? "").replace(
@@ -35,10 +35,10 @@
         </template>
       </Column>
 
-      <Column field="nome" header="Nome" :sortable="true"></Column>
+      <Column field="nome" header="Nome" sortable></Column>
 
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="d-flex justify-content-end">
             <a
               role="button"

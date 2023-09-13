@@ -153,14 +153,14 @@
           ref="dt"
           :rowHover="true"
         >
-          <Column field="id" header="Vendedor" :sortable="true">
+          <Column field="id" header="Vendedor" sortable>
             <template #body="r">
               {{ ("00" + r.data?.vendedor?.jsonData?.codigo).slice(-2) }} -
               {{ r.data.vendedor.nome }}
             </template>
           </Column>
 
-          <Column field="total" header="Total" :sortable="true">
+          <Column field="total" header="Total" sortable>
             <template #body="r">
               <div class="text-right">
                 {{
@@ -199,9 +199,9 @@
           ref="dt"
           :rowHover="true"
         >
-          <Column field="periodo" header="Período" :sortable="true" />
+          <Column field="periodo" header="Período" sortable />
 
-          <Column field="total" header="Total" :sortable="true">
+          <Column field="total" header="Total" sortable>
             <template #body="r">
               <div class="text-right">
                 {{
@@ -214,7 +214,7 @@
             </template>
           </Column>
 
-          <Column field="dados.fator" header="Fator" :sortable="true">
+          <Column field="dados.fator" header="Fator" sortable>
             <template #body="r">
               <div class="text-center">
                 {{ r.data.dados.fator ?? 0 }}

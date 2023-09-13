@@ -73,8 +73,8 @@
           </div>
         </template>
       </Column>
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="d-flex justify-content-end">
             <button
               type="button"

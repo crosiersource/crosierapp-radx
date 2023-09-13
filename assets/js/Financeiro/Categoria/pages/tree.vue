@@ -47,7 +47,7 @@
             </template>
           </Column>
           <Column field="id" header="">
-            <template class="text-right" #body="r">
+            <template #body="r">
               <div class="d-flex justify-content-end">
                 <button
                   v-if="r.node.data.codigo.toString().length <= 9"

@@ -151,20 +151,6 @@ class NotaFiscalController extends FormListController
 
 
     /**
-     * @Route("/api/fis/notaFiscal/reenviarCartaCorrecao/{cartaCorrecao}", name="api_fis_notaFiscal_reenviarCartaCorrecao", requirements={"cartaCorrecao"="\d+"})
-     */
-    public function reenviarCartaCorrecao(NotaFiscalCartaCorrecao $cartaCorrecao): JsonResponse
-    {
-        try {
-            $this->notaFiscalBusiness->cartaCorrecao($cartaCorrecao);
-            return CrosierApiResponse::success();
-        } catch (\Throwable $e) {
-            return CrosierApiResponse::viewExceptionError($e, 'Erro ao reenviar a carta de correção');
-        }
-    }
-
-
-    /**
      * @Route("/api/fis/notaFiscal/consultarStatus/{notaFiscal}", name="api_fis_notaFiscal_consultarStatus")
      */
     public function consultarStatus(NotaFiscal $notaFiscal): JsonResponse
@@ -179,7 +165,7 @@ class NotaFiscalController extends FormListController
 
 
     /**
-     * @Route("/fis/emissaonfe/deleteItem/{item}", name="fis_emissaonfe_deleteItem", requirements={"item"="\d+"})
+     * @Route("//api/fis/notaFiscal/deleteItem/{item}", name="fis_emissaonfe_deleteItem", requirements={"item"="\d+"})
      */
     public function deleteItem(Request $request, NotaFiscalItem $item): RedirectResponse
     {
@@ -213,7 +199,7 @@ class NotaFiscalController extends FormListController
 
 
     /**
-     * @Route("/fis/emissaonfe/getPessoaByDocumento/{documento}", name="fis_emissaonfe_getPessoaByDocumento")
+     * @Route("//api/fis/notaFiscal/getPessoaByDocumento/{documento}", name="fis_emissaonfe_getPessoaByDocumento")
      */
     public function getPessoaByDocumento(string $documento): JsonResponse
     {

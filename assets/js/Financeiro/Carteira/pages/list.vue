@@ -24,15 +24,15 @@
     </template>
 
     <template v-slot:columns>
-      <Column field="id" header="Id" :sortable="true">
+      <Column field="id" header="Id" sortable>
         <template #body="r">
           {{ ("00000000" + r.data.id).slice(-8) }}
         </template>
       </Column>
 
-      <Column field="codigo" header="Código" :sortable="true"></Column>
+      <Column field="codigo" header="Código" sortable></Column>
 
-      <Column field="descricao" header="Descrição" :sortable="true">
+      <Column field="descricao" header="Descrição" sortable>
         <template #body="r">
           {{ r.data.descricao }}
           <div v-if="r.data.operadoraCartao?.descricao">
@@ -43,7 +43,7 @@
         </template>
       </Column>
 
-      <Column field="dtConsolidado" header="Consolidada em" :sortable="true">
+      <Column field="dtConsolidado" header="Consolidada em" sortable>
         <template #body="r">
           <div v-if="r.data.dtConsolidado">
             {{ new Date(r.data.dtConsolidado).toLocaleString().substring(0, 10) }}
@@ -51,14 +51,14 @@
         </template>
       </Column>
 
-      <Column field="atual" header="Atual" :sortable="true">
+      <Column field="atual" header="Atual" sortable>
         <template #body="r">
           {{ r.data.atual ? "Sim" : "Não" }}
         </template>
       </Column>
 
-      <Column field="updated" header="" :sortable="true">
-        <template class="text-right" #body="r">
+      <Column field="updated" header="" sortable>
+        <template #body="r">
           <div class="d-flex justify-content-end">
             <a
               role="button"

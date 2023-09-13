@@ -14,8 +14,8 @@
         responsiveLayout="scroll"
         :rowHover="true"
       >
-        <Column field="lista.descricao" header="Nome" :sortable="true"></Column>
-        <Column field="unidade.label" header="Unidade" :sortable="true"></Column>
+        <Column field="lista.descricao" header="Nome" sortable></Column>
+        <Column field="unidade.label" header="Unidade" sortable></Column>
         <Column field="margem" header="Margem">
           <template #body="r">
             <div class="text-right">
@@ -62,8 +62,8 @@
           </template>
         </Column>
 
-        <Column field="updated" header="" :sortable="true">
-          <template class="text-right" #body="r">
+        <Column field="updated" header="" sortable>
+          <template #body="r">
             <div class="d-flex justify-content-end">
               <a
                 role="button"

@@ -30,8 +30,11 @@ const store = createStore({
       loading: 0,
       exibirDialogItem: false,
       exibirDialogCancelamento: false,
+      exibirDialogCartaCorrecao: false,
       dtItensKey: 0,
+      dtCartasCorrecaoKey: 0,
       notaFiscal: {
+        permiteSalvar: true,
         nossaEmissao: true,
         idDest: 1,
         entradaSaida: "S",
@@ -43,7 +46,12 @@ const store = createStore({
       notaFiscalErrors: {},
       notaFiscalItem: {},
       notaFiscalItemErrors: {},
+
+      notaFiscalCartaCorrecao: {},
+      notaFiscalCartaCorrecaoErrors: {},
+
       defaultItensFilters: {},
+      defaultCartasCorrecaoFilters: {},
     };
   },
 
@@ -54,6 +62,9 @@ const store = createStore({
     getNotaFiscalItem: (state) => state.notaFiscalItem,
     getNotaFiscalItemErrors: (state) => state.notaFiscalItemErrors,
     getDefaultItensFilters: (state) => state.defaultItensFilters,
+    getDefaultCartasCorrecaoFilters: (state) => state.defaultCartasCorrecaoFilters,
+    getNotaFiscalCartaCorrecao: (state) => state.notaFiscalCartaCorrecao,
+    getNotaFiscalCartaCorrecaoErrors: (state) => state.notaFiscalCartaCorrecaoErrors,
   },
 
   mutations: {
@@ -87,6 +98,18 @@ const store = createStore({
     setNotaFiscalItemErrors(state, payload) {
       state.notaFiscalItemErrors = payload;
     },
+
+    setNotaFiscalCartaCorrecao(state, payload) {
+      state.notaFiscalCartaCorrecao = payload;
+    },
+
+    setNotaFiscalCartaCorrecaoErrors(state, payload) {
+      state.notaFiscalCartaCorrecaoErrors = payload;
+    },
+
+    setDefaultCartasCorrecaoFilters(state, payload) {
+      state.defaultCartasCorrecaoFilters = payload;
+    },
   },
 
   actions: {
@@ -103,6 +126,7 @@ const store = createStore({
           if (response.data["@id"]) {
             context.commit("setNotaFiscal", response.data);
             context.commit("setDefaultItensFilters", { notaFiscal: response.data["@id"] });
+            context.commit("setDefaultCartasCorrecaoFilters", { notaFiscal: response.data["@id"] });
           } else {
             console.error("Id não encontrado");
           }

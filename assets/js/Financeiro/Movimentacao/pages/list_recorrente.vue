@@ -100,7 +100,7 @@
 
           <Column field="carteira.codigo">
             <template #header> Carteira<br />Categoria<br />Modo</template>
-            <template class="text-right" #body="r">
+            <template #body="r">
               <b>{{ r.data.carteira.descricaoMontada }}</b
               ><br />
               {{ r.data.categoria.descricaoMontada }}<br />
@@ -109,7 +109,7 @@
           </Column>
 
           <Column field="descricao" header="Descrição">
-            <template class="text-right" #body="r">
+            <template #body="r">
               <div style="max-width: 50em; white-space: pre-wrap">
                 <b>{{ r.data.descricaoMontada }}</b>
 
@@ -230,7 +230,7 @@
           </Column>
 
           <Column field="updated" header="">
-            <template class="text-right" #body="r">
+            <template #body="r">
               <div class="d-flex justify-content-end">
                 <a
                   v-if="r.data.status === 'ABERTA'"

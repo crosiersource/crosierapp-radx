@@ -3,6 +3,7 @@
 namespace App\Controller\Fiscal;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
@@ -45,7 +46,7 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("/fis/emissaonfe/imprimirCancelamento/{notaFiscal}", name="fis_emissaonfe_imprimirCancelamento")
+     * @Route("//api/fis/notaFiscal/imprimirCancelamento/{notaFiscal}", name="fis_emissaonfe_imprimirCancelamento")
      */
     public function imprimirCancelamento(NotaFiscal $notaFiscal): void
     {
@@ -95,7 +96,7 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("/fis/emissaonfe/imprimir/{notaFiscal}", name="fis_emissaonfe_imprimir")
+     * @Route("//api/fis/notaFiscal/imprimir/{notaFiscal}", name="fis_emissaonfe_imprimir")
      */
     public function imprimir(NotaFiscal $notaFiscal): void
     {
@@ -113,13 +114,15 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("/fis/emissaonfe/imprimirCartaCorrecao/{cartaCorrecao}", name="fis_emissaonfe_imprimirCartaCorrecao")
+     * @Route("//api/fis/notaFiscal/imprimirCartaCorrecao/{cartaCorrecao}", name="fis_emissaonfe_imprimirCartaCorrecao")
      */
     public function imprimirCartaCorrecao(NotaFiscalCartaCorrecao $cartaCorrecao): void
     {
         try {
             $xml = $cartaCorrecao->msgRetorno;
-
+            if (!$xml) {
+                throw new ViewException("Carta de Correção sem retorno da SEFAZ");
+            }
             $nfeConfigsEmUso = $this->nfeUtils->getNFeConfigsByCNPJ($cartaCorrecao->notaFiscal->documentoEmitente);
 
             $dadosEmitente = [
@@ -134,7 +137,7 @@ class ImpressoesController extends FormListController
                 'telefone' => $nfeConfigsEmUso['telefone'],
                 'email' => ''
             ];
-
+            
             $daevento = new Daevento($xml, $dadosEmitente);
             $daevento->debugMode(true);
 
@@ -160,7 +163,7 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("/fis/emissaonfe/imprimirDANFCE", name="fis_emissaonfe_imprimirDANFCE")
+     * @Route("//api/fis/notaFiscal/imprimirDANFCE", name="fis_emissaonfe_imprimirDANFCE")
      * @IsGranted("ROLE_FISCAL", statusCode=403)
      */
     public function imprimirDANFCE(Request $request): Response
@@ -236,7 +239,7 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("/fis/emissaonfe/imprimirDANFCEhtml", name="fis_emissaonfe_imprimirDANFCEhtml")
+     * @Route("//api/fis/notaFiscal/imprimirDANFCEhtml", name="fis_emissaonfe_imprimirDANFCEhtml")
      * @IsGranted("ROLE_FISCAL", statusCode=403)
      */
     public function imprimirDANFCEhtml(Request $request): Response

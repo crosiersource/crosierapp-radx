@@ -141,7 +141,7 @@
     </template>
 
     <template v-slot:columns>
-      <Column field="id" header="Número / Série / Chave" :sortable="true">
+      <Column field="id" header="Número / Série / Chave" sortable>
         <template #body="r">
           <div class="float-left">
             {{ new String(r.data.numero ?? "0").padStart(6, "0") }} /
@@ -154,7 +154,7 @@
           </div>
         </template>
       </Column>
-      <Column field="documento" header="Emitente" :sortable="true">
+      <Column field="documento" header="Emitente" sortable>
         <template #body="r">
           <div class="float-left">
             {{
@@ -174,14 +174,14 @@
           </div>
         </template>
       </Column>
-      <Column field="dtEmissao" header="Dt Emissão" :sortable="true">
+      <Column field="dtEmissao" header="Dt Emissão" sortable>
         <template #body="r">
           <div class="text-center">
             {{ this.moment(r.data.dtEmissao).format("DD/MM/YYYY HH:mm:ss") }}
           </div>
         </template>
       </Column>
-      <Column field="valorTotal" header="Valor Total" :sortable="true">
+      <Column field="valorTotal" header="Valor Total" sortable>
         <template #body="r">
           <div class="text-right">
             {{
@@ -193,7 +193,7 @@
           </div>
         </template>
       </Column>
-      <Column field="updated" header="" :sortable="true">
+      <Column field="updated" header="" sortable>
         <template #body="r">
           <div class="d-flex justify-content-end">
             <a
@@ -221,7 +221,7 @@
               role="button"
               title="Ver PDF"
               class="ml-1 btn btn-sm btn-outline-success"
-              :href="'/fis/emissaonfe/imprimir/' + r.data.id"
+              :href="'/fis/notaFiscal/imprimir/' + r.data.id"
               target="_blank"
             >
               <i class="fas fa-file-pdf" aria-hidden="true"></i

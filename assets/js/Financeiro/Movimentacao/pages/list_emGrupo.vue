@@ -89,7 +89,7 @@
           ref="dt"
           rowHover
         >
-          <Column field="id" :sortable="true">
+          <Column field="id" sortable>
             <template #header>
               <Checkbox
                 :binary="true"
@@ -104,10 +104,10 @@
             </template>
           </Column>
 
-          <Column field="categoria.descricaoMontada" header="Categoria" :sortable="true" />
+          <Column field="categoria.descricaoMontada" header="Categoria" sortable />
 
           <Column field="descricao" header="Descrição">
-            <template class="text-right" #body="r">
+            <template #body="r">
               <div style="max-width: 50em; white-space: pre-wrap">
                 <b>{{ r.data.descricaoMontada }}</b>
 
@@ -230,7 +230,7 @@
           </Column>
 
           <Column field="updated" header="">
-            <template class="text-right" #body="r">
+            <template #body="r">
               <div class="d-flex justify-content-end">
                 <a
                   v-if="r.data.status === 'ABERTA'"
