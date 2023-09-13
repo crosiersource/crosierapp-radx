@@ -8,7 +8,7 @@
     @beforeFilter="this.beforeFilter"
     v-model:selection="this.selection"
     filtersStoreName="recebidasFilters"
-    :ativarSelecao="true"
+    ativarSelecao
     ref="dt"
     :properties="[
       'id',
@@ -232,7 +232,7 @@
               role="button"
               class="ml-1 btn btn-primary btn-sm"
               title="Editar registro"
-              :href="'/fis/nfesFornecedores/form/' + r.data.id"
+              :href="this.formUrl + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
           </div>
@@ -286,6 +286,7 @@ export default {
 
   data() {
     return {
+      formUrl: "/fis/emissaonfe/form/",
       selection: [],
       itensMenuManifestar: [
         {
@@ -334,10 +335,6 @@ export default {
       this.filters["dtEmissao[before]"] = this.filters["dtEmissao[before]"]
         ? `${moment(this.filters["dtEmissao[before]"]).format("YYYY-MM-DD")}T23:59:59-03:00`
         : null;
-    },
-
-    edit(data) {
-      return data.resumo ? "nfesFornecedores_formResumo" : "nfesFornecedores_form";
     },
 
     manifestarEmLote(operacao) {

@@ -35,6 +35,8 @@ Encore
   .addEntry('Fiscal/emissaoNFe/form', './assets/js/Fiscal/emissaoNFe/form.js')
   .addEntry('Fiscal/emissaoNFe/formItem', './assets/js/Fiscal/emissaoNFe/formItem.js')
   .addEntry('Fiscal/emissaoNFe/list', './assets/js/Fiscal/emissaoNFe/list.js')
+  .addEntry('fis/notaFiscal/form', './assets/js/Fiscal/NotaFiscal/form.js')
+  
   
   .addEntry('Fiscal/distDFeList', './assets/js/Fiscal/distDFeList.js')
 

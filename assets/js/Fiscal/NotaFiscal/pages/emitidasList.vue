@@ -8,7 +8,7 @@
     @beforeFilter="this.beforeFilter"
     v-model:selection="this.selection"
     filtersStoreName="emitidasFilters"
-    :ativarSelecao="true"
+    ativarSelecao
     ref="dt"
     :properties="[
       'id',

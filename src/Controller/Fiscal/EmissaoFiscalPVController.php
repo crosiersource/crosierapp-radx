@@ -29,36 +29,15 @@ use Symfony\Component\Serializer\Serializer;
 class EmissaoFiscalPVController extends BaseController
 {
 
-    private NotaFiscalBusiness $notaFiscalBusiness;
+    /** @required */
+    public NotaFiscalBusiness $notaFiscalBusiness;
 
-    private NFeUtils $nfeUtils;
-
-
-    /**
-     * @required
-     * @param NotaFiscalBusiness $notaFiscalBusiness
-     */
-    public function setNotaFiscalBusiness(NotaFiscalBusiness $notaFiscalBusiness): void
-    {
-        $this->notaFiscalBusiness = $notaFiscalBusiness;
-    }
-
-    /**
-     * @required
-     * @param NFeUtils $nfeUtils
-     */
-    public function setNfeUtils(NFeUtils $nfeUtils): void
-    {
-        $this->nfeUtils = $nfeUtils;
-    }
+    /** @required */
+    public NFeUtils $nfeUtils;
 
 
     /**
-     *
      * @Route("/fis/emissaofiscalpv/form/{venda}", name="fis_emissaofiscalpv_form", requirements={"venda"="\d+"})
-     * @param Request $request
-     * @param Venda $venda
-     * @return RedirectResponse|Response
      * @throws ViewException
      */
     public function form(Request $request, Venda $venda)
@@ -97,17 +76,6 @@ class EmissaoFiscalPVController extends BaseController
             }
             $form->getErrors(true, true);
         }
-        
-        if (!$notaFiscal->getId()) {
-            $permiteFaturamento = true;
-            $permiteSalvar = false;
-        } else {
-            $permiteFaturamento = $this->notaFiscalBusiness->permiteFaturamento($notaFiscal);
-            $permiteSalvar = $this->notaFiscalBusiness->permiteSalvar($notaFiscal);
-        }
-        $permiteReimpressao = $this->notaFiscalBusiness->permiteReimpressao($notaFiscal);
-        $permiteReimpressaoCancelamento = $this->notaFiscalBusiness->permiteReimpressaoCancelamento($notaFiscal);
-        $permiteCancelamento = $this->notaFiscalBusiness->permiteCancelamento($notaFiscal);
 
         $dadosEmitente = $this->nfeUtils->getNFeConfigsEmUso();
 
@@ -115,23 +83,19 @@ class EmissaoFiscalPVController extends BaseController
             'form' => $form->createView(),
             'venda' => $venda,
             'notaFiscal' => $notaFiscal,
-            'permiteSalvar' => $permiteSalvar,
-            'permiteFaturamento' => $permiteFaturamento,
-            'permiteCancelamento' => $permiteCancelamento,
-            'permiteReimpressao' => $permiteReimpressao,
-            'permiteReimpressaoCancelamento' => $permiteReimpressaoCancelamento,
+            'permiteSalvar' => $notaFiscal->isPermiteSalvar(),
+            'permiteFaturamento' => $notaFiscal->isPermiteFaturamento(),
+            'permiteCancelamento' => $notaFiscal->isPermiteCancelamento(),
+            'permiteReimpressao' => $notaFiscal->isPermiteReimpressao(),
+            'permiteReimpressaoCancelamento' => $notaFiscal->isPermiteReimpressaoCancelamento(),
+            'permiteCartaCorrecao' => $notaFiscal->isPermiteCartaCorrecao(),
             'dadosEmitente' => $dadosEmitente
         ]);
     }
 
+    
     /**
-     *
      * @Route("/fis/emissaofiscalpv/cancelarForm/{notaFiscal}/{venda}", name="fis_emissaofiscalpv_cancelarForm")
-     *
-     * @param Request $request
-     * @param NotaFiscal $notaFiscal
-     * @param Venda $venda
-     * @return RedirectResponse|Response
      * @throws ViewException
      */
     public function cancelarForm(Request $request, NotaFiscal $notaFiscal, Venda $venda)
@@ -153,24 +117,18 @@ class EmissaoFiscalPVController extends BaseController
             $form->getErrors(true, true);
         }
 
-        $permiteCancelamento = $this->notaFiscalBusiness->permiteCancelamento($notaFiscal);
-        $permiteReimpressaoCancelamento = $this->notaFiscalBusiness->permiteReimpressaoCancelamento($notaFiscal);
-
-        return $this->doRender('/Fiscal/emissaoFiscalPV/cancelarForm.html.twig', array(
+        return $this->doRender('/Fiscal/emissaoFiscalPV/cancelarForm.html.twig', [
             'form' => $form->createView(),
             'venda' => $venda,
             'notaFiscal' => $notaFiscal,
-            'permiteCancelamento' => $permiteCancelamento,
-            'permiteReimpressaoCancelamento' => $permiteReimpressaoCancelamento
-        ));
+            'permiteCancelamento' => $notaFiscal->isPermiteCancelamento(),
+            'permiteReimpressaoCancelamento' => $notaFiscal->isPermiteReimpressaoCancelamento(),
+        ]);
     }
 
+
     /**
-     *
      * @Route("/fis/emissaofiscalpv/consultarStatus/{notaFiscal}/{venda}", name="fis_emissaofiscalpv_consultarStatus")
-     * @param NotaFiscal $notaFiscal
-     * @param Venda $venda
-     * @return RedirectResponse
      * @throws ViewException
      */
     public function consultarStatus(NotaFiscal $notaFiscal, Venda $venda): RedirectResponse
@@ -179,12 +137,9 @@ class EmissaoFiscalPVController extends BaseController
         return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
     }
 
+
     /**
-     *
      * @Route("/fis/emissaofiscalpv/consultarCNPJ/{cnpj}/{uf}", name="fis_emissaofiscalpv_consultarCNPJ")
-     * @param string $cnpj
-     * @param string $uf
-     * @return Response
      * @throws ViewException
      */
     public function consultarCNPJ(string $cnpj, string $uf): Response
@@ -201,10 +156,7 @@ class EmissaoFiscalPVController extends BaseController
 
 
     /**
-     *
      * @Route("/fis/emissaofiscalpv/corrigirNCMs/{venda}", name="fis_emissaofiscalpv_corrigirNCMs")
-     * @param Venda $venda
-     * @return Response
      */
     public function corrigirNCMs(Venda $venda): Response
     {
@@ -225,15 +177,11 @@ class EmissaoFiscalPVController extends BaseController
             $this->addFlash('error', 'Ocorreu um erro ao corrigir NCMs');
         }
         return $this->redirectToRoute('fis_emissaofiscalpv_form', ['venda' => $venda->getId()]);
-
     }
 
 
     /**
-     *
      * @Route("/fis/emissaofiscalpv/corrigirNCM/{vendaItem}", name="fis_emissaofiscalpv_corrigirNCM")
-     * @param Venda $venda
-     * @return Response
      */
     public function corrigirNCM(VendaItem $vendaItem, VendaItemEntityHandler $vendaItemEntityHandler): Response
     {

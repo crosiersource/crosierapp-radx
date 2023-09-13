@@ -11,7 +11,8 @@
     ],
     "require": {
         "crosiersource/crosierlib-radx": "^1.6.1",
-        "knplabs/knp-snappy-bundle": "^1.7"
+        "knplabs/knp-snappy-bundle": "^1.7",
+        "ext-zip": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
