@@ -2,7 +2,6 @@
 
 namespace App\Controller\Fiscal;
 
-use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
@@ -11,12 +10,12 @@ use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
-use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalCartaCorrecao;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalItem;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalCartaCorrecaoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,11 +25,11 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @author Carlos Eduardo Pauluk
  */
-class NotaFiscalController extends FormListController
+class NotaFiscalController extends AbstractController
 {
 
-    /** @var NotaFiscalEntityHandler */
-    protected $entityHandler;
+    /** @required */
+    public NotaFiscalEntityHandler $notaFiscalEntityHandler;
 
     /** @required */
     public NotaFiscalBusiness $notaFiscalBusiness;
@@ -165,7 +164,7 @@ class NotaFiscalController extends FormListController
 
 
     /**
-     * @Route("//api/fis/notaFiscal/deleteItem/{item}", name="fis_emissaonfe_deleteItem", requirements={"item"="\d+"})
+     * @Route("/api/fis/notaFiscal/deleteItem/{item}", name="fis_emissaonfe_deleteItem", requirements={"item"="\d+"})
      */
     public function deleteItem(Request $request, NotaFiscalItem $item): RedirectResponse
     {
@@ -190,7 +189,7 @@ class NotaFiscalController extends FormListController
     public function clonar(NotaFiscal $notaFiscal): JsonResponse
     {
         try {
-            $nova = $this->notaFiscalBusiness->clonar($notaFiscal);
+            $nova = $this->notaFiscalEntityHandler->doClone($notaFiscal);
             return CrosierApiResponse::success(['id' => $nova->getId()]);
         } catch (\Throwable $e) {
             return CrosierApiResponse::viewExceptionError($e, 'Erro ao clonar');
@@ -199,7 +198,7 @@ class NotaFiscalController extends FormListController
 
 
     /**
-     * @Route("//api/fis/notaFiscal/getPessoaByDocumento/{documento}", name="fis_emissaonfe_getPessoaByDocumento")
+     * @Route("/api/fis/notaFiscal/getPessoaByDocumento/{documento}", name="fis_emissaonfe_getPessoaByDocumento")
      */
     public function getPessoaByDocumento(string $documento): JsonResponse
     {

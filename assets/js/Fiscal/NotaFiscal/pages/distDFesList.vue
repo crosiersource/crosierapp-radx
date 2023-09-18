@@ -221,7 +221,7 @@
               role="button"
               title="Ver PDF"
               class="ml-1 btn btn-sm btn-outline-success"
-              :href="'/fis/notaFiscal/imprimir/' + r.data.id"
+              :href="'/api/fis/notaFiscal/imprimir/' + r.data.id"
               target="_blank"
             >
               <i class="fas fa-file-pdf" aria-hidden="true"></i

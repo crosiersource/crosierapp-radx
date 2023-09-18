@@ -6,6 +6,7 @@
     </button>
   </div>
   <CrosierListS
+    :comPaginador="false"
     withoutCard
     :key="this.$store.state.dtItensKey"
     v-if="this.notaFiscal.id"
@@ -107,11 +108,45 @@
       </Column>
     </template>
   </CrosierListS>
+
+  <div class="row mt-3">
+    <div class="col-7"></div>
+    <div class="col-5">
+      <div class="form-group row">
+        <label class="col-form-label col-sm-4 font-weight-bold">Subtotal: </label>
+        <div class="col-sm-8">
+          <CrosierCurrency :showLabel="false" v-model="this.notaFiscal.subtotal" disabled />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-7"></div>
+    <div class="col-5">
+      <div class="form-group row">
+        <label class="col-form-label col-sm-4 font-weight-bold">Descontos: </label>
+        <div class="col-sm-8">
+          <CrosierCurrency :showLabel="false" v-model="this.notaFiscal.totalDescontos" disabled />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-7"></div>
+    <div class="col-5">
+      <div class="form-group row">
+        <label class="col-form-label col-sm-4 font-weight-bold">Total: </label>
+        <div class="col-sm-8">
+          <CrosierCurrency :showLabel="false" v-model="this.notaFiscal.valorTotal" disabled />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
-import { CrosierListS } from "crosier-vue";
+import { CrosierListS, CrosierCurrency } from "crosier-vue";
 import Column from "primevue/column";
 import Item from "./item.vue";
 
@@ -120,6 +155,7 @@ export default {
     CrosierListS,
     Column,
     Item,
+    CrosierCurrency,
   },
 
   methods: {

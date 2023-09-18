@@ -13,6 +13,7 @@
   </div>
 
   <CrosierListS
+    :comPaginador="false"
     withoutCard
     :key="this.$store.state.dtCartasCorrecaoKey"
     v-if="this.notaFiscal.id"

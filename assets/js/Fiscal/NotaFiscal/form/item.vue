@@ -76,7 +76,7 @@
         <CrosierCurrency
           col="3"
           id="total"
-          v-model="this.item.valorTotal"
+          v-model="this.valorTotal"
           :error="this.errors.valorTotal"
           label="Valor Total"
           disabled
@@ -331,6 +331,10 @@ export default {
       item: "getNotaFiscalItem",
       errors: "getNotaFiscalItemErrors",
     }),
+
+    valorTotal() {
+      return this.item.qtde * this.item.valorUnit;
+    },
   },
 };
 </script>

@@ -243,7 +243,6 @@
 <script>
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-import Row from "primevue/row";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import { mapActions, mapGetters, mapMutations } from "vuex";
@@ -261,7 +260,6 @@ export default {
     CrosierBlock,
     DataTable,
     Column,
-    Row,
     Toast,
     CrosierDropdownEntity,
     CrosierCalendar,

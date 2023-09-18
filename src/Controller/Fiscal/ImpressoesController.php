@@ -46,7 +46,7 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("//api/fis/notaFiscal/imprimirCancelamento/{notaFiscal}", name="fis_emissaonfe_imprimirCancelamento")
+     * @Route("/api/fis/notaFiscal/imprimirCancelamento/{notaFiscal}", name="fis_emissaonfe_imprimirCancelamento")
      */
     public function imprimirCancelamento(NotaFiscal $notaFiscal): void
     {
@@ -96,7 +96,7 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("//api/fis/notaFiscal/imprimir/{notaFiscal}", name="fis_emissaonfe_imprimir")
+     * @Route("/api/fis/notaFiscal/imprimir/{notaFiscal}", name="fis_emissaonfe_imprimir")
      */
     public function imprimir(NotaFiscal $notaFiscal): void
     {
@@ -114,7 +114,7 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("//api/fis/notaFiscal/imprimirCartaCorrecao/{cartaCorrecao}", name="fis_emissaonfe_imprimirCartaCorrecao")
+     * @Route("/api/fis/notaFiscal/imprimirCartaCorrecao/{cartaCorrecao}", name="fis_emissaonfe_imprimirCartaCorrecao")
      */
     public function imprimirCartaCorrecao(NotaFiscalCartaCorrecao $cartaCorrecao): void
     {
@@ -163,10 +163,10 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("//api/fis/notaFiscal/imprimirDANFCE", name="fis_emissaonfe_imprimirDANFCE")
+     * @Route("/api/fis/notaFiscal/imprimirDANFCE", name="fis_emissaonfe_imprimirDANFCE")
      * @IsGranted("ROLE_FISCAL", statusCode=403)
      */
-    public function imprimirDANFCE(Request $request): Response
+    public function imprimirDANFCE(Request $request): void
     {
         gc_collect_cycles();
         gc_disable();
@@ -239,7 +239,7 @@ class ImpressoesController extends FormListController
 
 
     /**
-     * @Route("//api/fis/notaFiscal/imprimirDANFCEhtml", name="fis_emissaonfe_imprimirDANFCEhtml")
+     * @Route("/api/fis/notaFiscal/imprimirDANFCEhtml", name="fis_emissaonfe_imprimirDANFCEhtml")
      * @IsGranted("ROLE_FISCAL", statusCode=403)
      */
     public function imprimirDANFCEhtml(Request $request): Response

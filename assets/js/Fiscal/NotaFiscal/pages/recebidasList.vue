@@ -210,7 +210,7 @@
             <a
               role="button"
               title="Download do XML"
-              :href="'/fis/nfesFornecedores/downloadXML/' + r.data.id"
+              :href="'/api/fis/notaFiscal/downloadXML/' + r.data.id"
               target="_blank"
               class="ml-1 btn btn-outline-primary btn-sm"
             >
@@ -222,7 +222,7 @@
               role="button"
               title="Ver PDF"
               class="ml-1 btn btn-sm btn-outline-success"
-              :href="'/fis/notaFiscal/imprimir/' + r.data.id"
+              :href="'/api/fis/notaFiscal/imprimir/' + r.data.id"
               target="_blank"
             >
               <i class="fas fa-file-pdf" aria-hidden="true"></i
@@ -232,7 +232,7 @@
               role="button"
               class="ml-1 btn btn-primary btn-sm"
               title="Editar registro"
-              :href="this.formUrl + r.data.id"
+              :href="'/v/fis/notaFiscal/form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
           </div>

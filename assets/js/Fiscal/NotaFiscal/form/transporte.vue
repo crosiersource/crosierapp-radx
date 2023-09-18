@@ -94,7 +94,7 @@
             id="transpDocumento"
             v-model="this.notaFiscal.transpDocumento"
             :disabled="!this.notaFiscal.permiteSalvar"
-            appendButton
+            :appendButton="this.notaFiscal.permiteSalvar"
             appendButtonTitle="Pesquisar (é necessário informar a UF)"
             @appendButtonClicked="this.consultarDestinatario"
           />
@@ -187,28 +187,6 @@ export default {
 
   async mounted() {
     this.setLoading(true);
-
-    await this.loadData();
-
-    // this.schemaValidator = yup.object().shape({
-    //   documentoEmitente: yup.string().required().typeError(),
-    //   naturezaOperacao: yup.string().required().typeError(),
-    //   finalidadeNf: yup.string().required().typeError(),
-    //   dtSaiEnt: yup.date().required().typeError(),
-    //   entradaSaida: yup.string().required().typeError(),
-    //   idDest: yup.string().required().typeError(),
-    //   documentoDestinatario: yup.string().required().typeError(),
-    //   xNomeDestinatario: yup.string().required().typeError(),
-    //   logradouroDestinatario: yup.string().required().typeError(),
-    //   numeroDestinatario: yup.string().required().typeError(),
-    //   bairroDestinatario: yup.string().required().typeError(),
-    //   cepDestinatario: yup.string().required().typeError(),
-    //   cidadeDestinatario: yup.string().required().typeError(),
-    //   estadoDestinatario: yup.string().required().typeError(),
-    //   transpModalidadeFrete: yup.string().required().typeError(),
-    //   indicadorFormaPagto: yup.string().required().typeError(),
-    // });
-
     this.setLoading(false);
   },
 

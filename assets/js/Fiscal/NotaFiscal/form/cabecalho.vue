@@ -147,7 +147,7 @@
             v-model="this.notaFiscal.documentoDestinatario"
             :error="this.errors.documentoDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
-            appendButton
+            :appendButton="this.notaFiscal.permiteSalvar"
             appendButtonTitle="Pesquisar (é necessário informar a UF)"
             @appendButtonClicked="this.consultarDestinatario"
           />
@@ -207,6 +207,7 @@
             id="cepDestinatario"
             v-model="this.notaFiscal.cepDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
+            :comConsulta="this.notaFiscal.permiteSalvar"
             @consultaCep="this.consultaCep"
             col="2"
           />
@@ -320,6 +321,7 @@
           style="width: 15rem"
           class="btn btn-sm btn-outline-success ml-1"
           @click="this.consultarStatus()"
+          v-if="this.notaFiscal.infoStatus && this.notaFiscal.infoStatus !== 'SEM STATUS'"
         >
           <i class="fas fa-search"></i> Consultar Status
         </button>
@@ -339,9 +341,30 @@
           class="btn btn-sm btn-outline-warning ml-1"
           :href="'/api/fis/notaFiscal/downloadXML/' + this.notaFiscal.id"
           target="_blank"
+          v-if="this.notaFiscal.possuiXml"
         >
           <i class="fas fa-file-code"></i> XML
         </a>
+
+        <a
+          role="button"
+          value="Imprimir PDF"
+          class="btn btn-sm btn-outline-primary ml-1"
+          :href="'/api/fis/notaFiscal/imprimir/' + this.notaFiscal.id"
+          target="_blank"
+          v-if="this.notaFiscal.possuiXml"
+        >
+          <i class="fas fa-print" aria-hidden="true"></i> PDF
+        </a>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary ml-1"
+          @click="this.clonar"
+          v-if="this.notaFiscal.nossaEmissao"
+        >
+          <i class="fas fa-copy" aria-hidden="true"></i> Clonar
+        </button>
       </div>
     </div>
   </CrosierFormS>
@@ -565,6 +588,48 @@ export default {
                 detail: "Cancelado com sucesso!",
                 life: 5000,
               });
+            }
+          } catch (e) {
+            this.$toast.add({
+              severity: "error",
+              summary: "Erro",
+              detail: e?.response?.data?.EXCEPTION_MSG ?? "Ocorreu um erro ao efetuar a operação",
+              life: 5000,
+            });
+          }
+
+          this.setLoading(false);
+        },
+      });
+    },
+
+    clonar() {
+      this.$confirm.require({
+        header: "Confirmação",
+        message: "Confirmar a operação?",
+        icon: "pi pi-exclamation-triangle",
+        group: "confirmDialog_crosierListS",
+        accept: async () => {
+          this.setLoading(true);
+
+          try {
+            const rs = await axios.post(`/api/fis/notaFiscal/clonar/${this.notaFiscal.id}`);
+
+            console.log(rs);
+
+            if (rs?.status === 200) {
+              const url = new URL(window.location.href);
+              url.searchParams.set("id", rs.data.DATA.id);
+              window.history.replaceState({}, "", url.toString());
+
+              this.$toast.add({
+                severity: "success",
+                summary: "Sucesso",
+                detail: "Nota Fiscal clonada com sucesso!",
+                life: 5000,
+              });
+
+              await this.loadData();
             }
           } catch (e) {
             this.$toast.add({

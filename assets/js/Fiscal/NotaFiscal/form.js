@@ -42,6 +42,8 @@ const store = createStore({
         transpModalidadeFrete: "SEM_FRETE",
         indicadorFormaPagto: "VISTA",
         jsonData: {},
+        dtEmissao: new Date(),
+        dtSaiEnt: new Date(),
       },
       notaFiscalErrors: {},
       notaFiscalItem: {},
@@ -52,6 +54,7 @@ const store = createStore({
 
       defaultItensFilters: {},
       defaultCartasCorrecaoFilters: {},
+      defaultHistoricoFilters: {},
     };
   },
 
@@ -63,6 +66,7 @@ const store = createStore({
     getNotaFiscalItemErrors: (state) => state.notaFiscalItemErrors,
     getDefaultItensFilters: (state) => state.defaultItensFilters,
     getDefaultCartasCorrecaoFilters: (state) => state.defaultCartasCorrecaoFilters,
+    getDefaultHistoricoFilters: (state) => state.defaultHistoricoFilters,
     getNotaFiscalCartaCorrecao: (state) => state.notaFiscalCartaCorrecao,
     getNotaFiscalCartaCorrecaoErrors: (state) => state.notaFiscalCartaCorrecaoErrors,
   },
@@ -110,6 +114,10 @@ const store = createStore({
     setDefaultCartasCorrecaoFilters(state, payload) {
       state.defaultCartasCorrecaoFilters = payload;
     },
+
+    setDefaultHistoricoFilters(state, payload) {
+      state.defaultHistoricoFilters = payload;
+    },
   },
 
   actions: {
@@ -127,6 +135,7 @@ const store = createStore({
             context.commit("setNotaFiscal", response.data);
             context.commit("setDefaultItensFilters", { notaFiscal: response.data["@id"] });
             context.commit("setDefaultCartasCorrecaoFilters", { notaFiscal: response.data["@id"] });
+            context.commit("setDefaultHistoricoFilters", { notaFiscal: response.data["@id"] });
           } else {
             console.error("Id não encontrado");
           }
