@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "075db0aaaaa142a3dde9744e71baf61a",
+    "content-hash": "ed52ce9eb4d3240147638003c50fb1a9",
     "packages": [
         {
             "name": "api-platform/core",
@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.9.1",
+            "version": "v1.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "d41f4640849cf9a47c0566477a788ccdce97d4ee"
+                "reference": "f64b36aa68f904ccb12062b5bedd0bed6e5131ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/d41f4640849cf9a47c0566477a788ccdce97d4ee",
-                "reference": "d41f4640849cf9a47c0566477a788ccdce97d4ee",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/f64b36aa68f904ccb12062b5bedd0bed6e5131ac",
+                "reference": "f64b36aa68f904ccb12062b5bedd0bed6e5131ac",
                 "shasum": ""
             },
             "require": {
@@ -290,22 +290,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.9.1"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.9.2"
             },
-            "time": "2023-09-13T17:41:40+00:00"
+            "time": "2023-09-18T21:10:42+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.9",
+            "version": "v1.9.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "4dce0929ecda56f2ef6b2aa4817c6bfe9bd4449b"
+                "reference": "a653cc10c9cf372d845fdc40a2b7377db3074252"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/4dce0929ecda56f2ef6b2aa4817c6bfe9bd4449b",
-                "reference": "4dce0929ecda56f2ef6b2aa4817c6bfe9bd4449b",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/a653cc10c9cf372d845fdc40a2b7377db3074252",
+                "reference": "a653cc10c9cf372d845fdc40a2b7377db3074252",
                 "shasum": ""
             },
             "require": {
@@ -341,9 +341,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.9"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.10"
             },
-            "time": "2023-09-13T20:38:40+00:00"
+            "time": "2023-09-18T21:11:16+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -3692,16 +3692,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.24.0",
+            "version": "1.24.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "3510b0a6274cc42f7219367cb3abfc123ffa09d6"
+                "reference": "9f854d275c2dbf84915a5c0ec9a2d17d2cd86b01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/3510b0a6274cc42f7219367cb3abfc123ffa09d6",
-                "reference": "3510b0a6274cc42f7219367cb3abfc123ffa09d6",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/9f854d275c2dbf84915a5c0ec9a2d17d2cd86b01",
+                "reference": "9f854d275c2dbf84915a5c0ec9a2d17d2cd86b01",
                 "shasum": ""
             },
             "require": {
@@ -3733,9 +3733,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.24.0"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.24.1"
             },
-            "time": "2023-09-07T20:46:32+00:00"
+            "time": "2023-09-18T12:18:02+00:00"
         },
         {
             "name": "psr/cache",
@@ -12931,7 +12931,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-zip": "*"
+        "ext-zip": "*",
+        "ext-json": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
