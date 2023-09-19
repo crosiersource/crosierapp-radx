@@ -841,7 +841,7 @@ class VendaController extends FormListController
             $notaFiscal->infoCompl = $infoCompl;
             $this->notaFiscalEntityHandler->save($notaFiscal);
             
-            return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
+            return $this->redirect('/v/fis/notaFiscal/form?id=' . $notaFiscal->getId());
         } catch (\Exception $e) {
             $this->syslog->err('Erro ao faturar venda (id: ' . $venda->getId() . ')', $e->getTraceAsString());
             $msg = ExceptionUtils::treatException($e);
