@@ -295,7 +295,7 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.19",
+            "version": "v1.9.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
@@ -340,7 +340,7 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.19"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.20"
             },
             "time": "2023-09-19T18:42:29+00:00"
         },
