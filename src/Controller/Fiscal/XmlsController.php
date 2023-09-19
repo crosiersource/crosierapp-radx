@@ -59,15 +59,15 @@ class XmlsController extends FormListController
             throw new ViewException('XMLDecoded n/d');
         }
 
-        if ($nf->getXMLDecoded()->getName() !== 'nfeProc' && !$request->get('naoAssinar')) {
-            $nf = $this->spedNFeBusiness->gerarXML($nf);
-            $tools = $this->nfeUtils->getToolsEmUso();
-            $tools->model($nf->tipoNotaFiscal === 'NFE' ? '55' : '65');
-            $this->notaFiscalBusiness->handleIdeFields($nf);
-            $fileContent = $tools->signNFe($nf->getXmlNota());
-        } else {
+//        if ($nf->getXMLDecoded()->getName() !== 'nfeProc' && !$request->get('naoAssinar')) {
+//            $nf = $this->spedNFeBusiness->gerarXML($nf);
+//            $tools = $this->nfeUtils->getToolsEmUso();
+//            $tools->model($nf->tipoNotaFiscal === 'NFE' ? '55' : '65');
+//            $this->notaFiscalBusiness->handleIdeFields($nf);
+//            $fileContent = $tools->signNFe($nf->getXmlNota());
+//        } else {
             $fileContent = $nf->getXMLDecodedAsString();
-        }
+//        }
 
         // Return a response with a specific content
         $response = new Response($fileContent);

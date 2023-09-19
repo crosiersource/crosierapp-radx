@@ -29,6 +29,7 @@
       'cStatLote',
       'xMotivoLote',
       'naturezaOperacao',
+      'possuiXml',
     ]"
   >
     <template v-slot:headerButtons>
@@ -107,7 +108,7 @@
           </div>
         </template>
       </Column>
-      <Column field="id" header="Destinatario" sortable>
+      <Column field="id" header="Destinatário" sortable>
         <template #body="r">
           <div class="float-left" v-if="r.data?.documentoDestinatario">
             {{
@@ -173,6 +174,7 @@
             ></a>
 
             <a
+              v-if="r.data.possuiXml"
               role="button"
               title="Download do XML"
               :href="'/api/fis/notaFiscal/downloadXML/' + r.data.id"
@@ -183,7 +185,7 @@
             </a>
 
             <a
-              v-show="!r.data.resumo"
+              v-if="r.data.possuiXml && !r.data.resumo"
               role="button"
               title="Ver PDF"
               class="ml-1 btn btn-sm btn-outline-success"

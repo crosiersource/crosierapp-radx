@@ -14,7 +14,12 @@
             <a type="button" class="btn btn-info mr-2" href="form" title="Novo">
               <i class="fas fa-file" aria-hidden="true"></i>
             </a>
-            <a role="button" class="btn btn-outline-secondary" href="list" title="Listar">
+            <a
+              role="button"
+              class="btn btn-outline-secondary"
+              :href="this.notaFiscal.nossaEmissao ? 'emitidas/list' : 'recebidas/list'"
+              title="Listar"
+            >
               <i class="fas fa-list"></i>
             </a>
           </div>
