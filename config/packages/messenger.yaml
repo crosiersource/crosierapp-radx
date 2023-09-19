@@ -18,4 +18,5 @@ framework:
         routing:
             # Route your messages to the transports
             'App\Messenger\Ecommerce\Message\IntegrarProdutoEcommerceMessage': async
+            'CrosierSource\CrosierLibBaseBundle\Messenger\CrosierQueueMessage': async
             'App\Messenger\Ecommerce\Message\MlNotification': notreat
