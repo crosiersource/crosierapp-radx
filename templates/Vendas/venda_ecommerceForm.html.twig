@@ -198,7 +198,7 @@
 
                         {% if notaFiscalVendaId|default(false) %}
                             <a role="button" class="btn btn-warning"
-                               href="{{ url('fis_emissaonfe_form', {'id': notaFiscalVendaId}) }}">
+                               href="/v/fis/notaFiscal/form?id={{ notaFiscalVendaId }}">
                                 <i class="fas fa-file-invoice" aria-hidden="true"></i> Nota Fiscal
                             </a>
                         {% else %}
