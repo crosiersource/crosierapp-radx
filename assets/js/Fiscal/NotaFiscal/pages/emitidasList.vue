@@ -4,7 +4,7 @@
   <CrosierListS
     titulo="Emitidas"
     apiResource="/api/fis/notaFiscal/"
-    formUrl="/fis/notaFiscal/form"
+    formUrl="/v/fis/notaFiscal/form"
     @beforeFilter="this.beforeFilter"
     v-model:selection="this.selection"
     filtersStoreName="emitidasFilters"

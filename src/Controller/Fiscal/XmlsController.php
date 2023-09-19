@@ -4,6 +4,7 @@ namespace App\Controller\Fiscal;
 
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Messenger\CrosierQueueHandler;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
@@ -66,7 +67,7 @@ class XmlsController extends FormListController
 //            $this->notaFiscalBusiness->handleIdeFields($nf);
 //            $fileContent = $tools->signNFe($nf->getXmlNota());
 //        } else {
-            $fileContent = $nf->getXMLDecodedAsString();
+        $fileContent = $nf->getXMLDecodedAsString();
 //        }
 
         // Return a response with a specific content
@@ -285,6 +286,16 @@ class XmlsController extends FormListController
         @rmdir($_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . 'tmp/');
         // Dispatch request
         return $response;
+    }
+
+
+    /**
+     * @Route("/api/notaFiscal/enviarXmlParaPasta/{id}", name="teste")
+     */
+    public function teste(CrosierQueueHandler $h, int $id): Response
+    {
+        $h->post('fiscal.eventos.nova_nf_com_xml', ['id' => $id]);
+        return new Response('OK');
     }
 
 
