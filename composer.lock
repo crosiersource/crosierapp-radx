@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.9.7",
+            "version": "v1.9.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "3c55bccf43985c40e8bc92b8c7aac8406c78ef63"
+                "reference": "175d3b85f1ef93970c166b54835c57cbd76e318e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/3c55bccf43985c40e8bc92b8c7aac8406c78ef63",
-                "reference": "3c55bccf43985c40e8bc92b8c7aac8406c78ef63",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/175d3b85f1ef93970c166b54835c57cbd76e318e",
+                "reference": "175d3b85f1ef93970c166b54835c57cbd76e318e",
                 "shasum": ""
             },
             "require": {
@@ -289,22 +289,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.9.7"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.9.8"
             },
-            "time": "2023-09-19T00:01:42+00:00"
+            "time": "2023-09-19T14:44:36+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.16",
+            "version": "v1.9.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "e7d76768a845506d20180a0c6b2f56c432559816"
+                "reference": "f7304bbe12e791d4493d39b35ea88bc5b16dc390"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/e7d76768a845506d20180a0c6b2f56c432559816",
-                "reference": "e7d76768a845506d20180a0c6b2f56c432559816",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/f7304bbe12e791d4493d39b35ea88bc5b16dc390",
+                "reference": "f7304bbe12e791d4493d39b35ea88bc5b16dc390",
                 "shasum": ""
             },
             "require": {
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.16"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.17"
             },
-            "time": "2023-09-19T01:17:19+00:00"
+            "time": "2023-09-19T14:45:39+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -2934,16 +2934,16 @@
         },
         {
             "name": "nfephp-org/sped-common",
-            "version": "v5.1.10",
+            "version": "v5.1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-common.git",
-                "reference": "c6ef66efdbbadd640fa5a4748848d481ec3ef26a"
+                "reference": "dc5aa121871b0236c2014ef993f569e07fc09385"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-common/zipball/c6ef66efdbbadd640fa5a4748848d481ec3ef26a",
-                "reference": "c6ef66efdbbadd640fa5a4748848d481ec3ef26a",
+                "url": "https://api.github.com/repos/nfephp-org/sped-common/zipball/dc5aa121871b0236c2014ef993f569e07fc09385",
+                "reference": "dc5aa121871b0236c2014ef993f569e07fc09385",
                 "shasum": ""
             },
             "require": {
@@ -3006,9 +3006,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nfephp-org/sped-common/issues",
-                "source": "https://github.com/nfephp-org/sped-common/tree/v5.1.10"
+                "source": "https://github.com/nfephp-org/sped-common/tree/v5.1.11"
             },
-            "time": "2023-06-01T19:17:00+00:00"
+            "time": "2023-09-19T13:51:57+00:00"
         },
         {
             "name": "nfephp-org/sped-da",
