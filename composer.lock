@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed52ce9eb4d3240147638003c50fb1a9",
+    "content-hash": "1e7a478f2f9166ace09d618d42d9aff1",
     "packages": [
         {
             "name": "api-platform/core",
@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.9.4",
+            "version": "v1.9.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "c00d8ab289027824c3b81aab00aae53282b19807"
+                "reference": "3c55bccf43985c40e8bc92b8c7aac8406c78ef63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/c00d8ab289027824c3b81aab00aae53282b19807",
-                "reference": "c00d8ab289027824c3b81aab00aae53282b19807",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/3c55bccf43985c40e8bc92b8c7aac8406c78ef63",
+                "reference": "3c55bccf43985c40e8bc92b8c7aac8406c78ef63",
                 "shasum": ""
             },
             "require": {
@@ -259,7 +259,6 @@
                 "phpunit/phpunit": "^9.5",
                 "symfony/browser-kit": "5.4.*",
                 "symfony/css-selector": "5.4.*",
-                "symfony/debug-bundle": "5.4.*",
                 "symfony/maker-bundle": "^1.0",
                 "symfony/phpunit-bridge": "^5.4",
                 "symfony/stopwatch": "5.4.*",
@@ -290,22 +289,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.9.4"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.9.7"
             },
-            "time": "2023-09-18T22:39:33+00:00"
+            "time": "2023-09-19T00:01:42+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.12",
+            "version": "v1.9.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "a323827070ec69112bfa7940b5dc6f4a667ad654"
+                "reference": "e7d76768a845506d20180a0c6b2f56c432559816"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/a323827070ec69112bfa7940b5dc6f4a667ad654",
-                "reference": "a323827070ec69112bfa7940b5dc6f4a667ad654",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/e7d76768a845506d20180a0c6b2f56c432559816",
+                "reference": "e7d76768a845506d20180a0c6b2f56c432559816",
                 "shasum": ""
             },
             "require": {
@@ -341,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.12"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.16"
             },
-            "time": "2023-09-18T22:40:45+00:00"
+            "time": "2023-09-19T01:17:19+00:00"
         },
         {
             "name": "doctrine/annotations",
