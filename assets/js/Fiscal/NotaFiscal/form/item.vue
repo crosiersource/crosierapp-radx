@@ -57,20 +57,14 @@
           :disabled="!this.notaFiscal.permiteSalvar"
         />
 
+        <CrosierCurrency col="3" id="subtotal" v-model="this.subtotal" label="Subtotal" disabled />
+
         <CrosierCurrency
           col="2"
           id="valorUnit"
           v-model="this.item.valorDesconto"
           label="Desconto"
           :disabled="!this.notaFiscal.permiteSalvar"
-        />
-
-        <CrosierCurrency
-          col="3"
-          id="subtotal"
-          v-model="this.item.subtotal"
-          label="Subtotal"
-          disabled
         />
 
         <CrosierCurrency
@@ -169,10 +163,10 @@
               id="icmsModBC"
               v-model="this.item.icmsModBC"
               :options="[
-                { label: '0 - Margem Valor Agregado (%)', value: 0 },
-                { label: '1 - Pauta (Valor)', value: 1 },
-                { label: '2 - Preço Tabelado Máx. (valor)', value: 2 },
-                { label: '3 - Valor da operação', value: 3 },
+                { label: '0 - Margem Valor Agregado (%)', value: '0' },
+                { label: '1 - Pauta (Valor)', value: '1' },
+                { label: '2 - Preço Tabelado Máx. (valor)', value: '2' },
+                { label: '3 - Valor da operação', value: '3' },
               ]"
               label="Modalidade BC"
               :disabled="!this.notaFiscal.permiteSalvar"
@@ -332,8 +326,12 @@ export default {
       errors: "getNotaFiscalItemErrors",
     }),
 
-    valorTotal() {
+    subtotal() {
       return this.item.qtde * this.item.valorUnit;
+    },
+
+    valorTotal() {
+      return this.subtotal - this.item.valorDesconto;
     },
   },
 };

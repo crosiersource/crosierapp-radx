@@ -90,6 +90,6 @@ export default {
 </script>
 <style>
 .p-dialog-mask.p-component-overlay.p-component-overlay-enter {
-  z-index: 9999 !important;
+  z-index: 1001 !important;
 }
 </style>

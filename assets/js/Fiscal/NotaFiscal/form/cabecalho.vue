@@ -365,6 +365,16 @@
         >
           <i class="fas fa-copy" aria-hidden="true"></i> Clonar
         </button>
+
+        <a
+          v-if="this.notaFiscal.vendaId"
+          role="button"
+          value="Ir para venda"
+          class="btn btn-sm btn-outline-success ml-1"
+          :href="'/ven/venda/ecommerceForm/' + this.notaFiscal.vendaId"
+        >
+          <i class="fas fa-shopping-cart"></i> Venda
+        </a>
       </div>
     </div>
   </CrosierFormS>
