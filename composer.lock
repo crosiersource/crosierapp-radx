@@ -295,20 +295,20 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.20",
+            "version": "v1.9.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "3f27ecabd2326d491de46165f8bf9414960264ac"
+                "reference": "be0861375abc92bb8b8c4e8842ac26155daf9830"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/3f27ecabd2326d491de46165f8bf9414960264ac",
-                "reference": "3f27ecabd2326d491de46165f8bf9414960264ac",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/be0861375abc92bb8b8c4e8842ac26155daf9830",
+                "reference": "be0861375abc92bb8b8c4e8842ac26155daf9830",
                 "shasum": ""
             },
             "require": {
-                "crosiersource/crosierlib-base": "^1.7.3",
+                "crosiersource/crosierlib-base": "^1.9.9",
                 "econea/nusoap": "^0.9.7",
                 "nfephp-org/sped-common": "^5.1",
                 "nfephp-org/sped-da": "^1.1",
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.20"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.22"
             },
-            "time": "2023-09-19T18:42:29+00:00"
+            "time": "2023-09-19T20:33:54+00:00"
         },
         {
             "name": "doctrine/annotations",
