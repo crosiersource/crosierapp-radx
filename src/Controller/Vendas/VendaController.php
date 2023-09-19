@@ -826,22 +826,21 @@ class VendaController extends FormListController
 
             $this->vendaBusiness->verificarPermiteFaturamento($venda);
 
-            if (!$notaFiscal) {
-                $notaFiscal = new NotaFiscal();
-                $notaFiscal->tipoNotaFiscal = 'NFE';
-                $notaFiscal->finalidadeNf = FinalidadeNF::NORMAL['key'];
+            $notaFiscal = new NotaFiscal();
+            $notaFiscal->tipoNotaFiscal = 'NFE';
+            $notaFiscal->finalidadeNf = FinalidadeNF::NORMAL['key'];
 
-                $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
+            $notaFiscal = $this->notaFiscalBusiness->saveNotaFiscalVenda($venda, $notaFiscal, false);
 
-                $rInfo = $this->notaFiscalEntityHandler->getDoctrine()->getConnection()
-                    ->fetchAllAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
-                        ['appUUID' => $_SERVER['CROSIERAPPRADX_UUID'], 'chave' => 'fiscal.ecommerce.text_padrao_info_compl']
-                    );
-                $infoCompl = 'Pedido E-commerce: ' . $venda->jsonData['ecommerce_idPedido'] ?? '????';
-                $infoCompl .= "\n\r" . ($rInfo[0]['valor'] ?? '');
-                $notaFiscal->infoCompl = $infoCompl;
-                $this->notaFiscalEntityHandler->save($notaFiscal);
-            }
+            $rInfo = $this->notaFiscalEntityHandler->getDoctrine()->getConnection()
+                ->fetchAllAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                    ['appUUID' => $_SERVER['CROSIERAPPRADX_UUID'], 'chave' => 'fiscal.ecommerce.text_padrao_info_compl']
+                );
+            $infoCompl = 'Pedido E-commerce: ' . $venda->jsonData['ecommerce_idPedido'] ?? '????';
+            $infoCompl .= "\n\r" . ($rInfo[0]['valor'] ?? '');
+            $notaFiscal->infoCompl = $infoCompl;
+            $this->notaFiscalEntityHandler->save($notaFiscal);
+            
             return $this->redirectToRoute('fis_emissaonfe_form', ['id' => $notaFiscal->getId()]);
         } catch (\Exception $e) {
             $this->syslog->err('Erro ao faturar venda (id: ' . $venda->getId() . ')', $e->getTraceAsString());
