@@ -116,7 +116,7 @@
               type="button"
               class="btn btn-sm btn-secondary ml-1"
               @click="this.clonar"
-              v-if="this.notaFiscal.nossaEmissao"
+              v-if="this.notaFiscal.id && this.notaFiscal.nossaEmissao"
             >
               <i class="fas fa-copy" aria-hidden="true"></i> Clonar
             </button>
