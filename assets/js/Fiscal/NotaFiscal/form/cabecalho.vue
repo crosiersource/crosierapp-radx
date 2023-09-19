@@ -295,94 +295,17 @@
       />
     </div>
 
-    <div class="row mt-3">
-      <div class="col text-right">
-        <button
-          class="btn btn-sm btn-primary"
-          style="width: 12rem"
-          type="submit"
-          v-if="this.notaFiscal.permiteSalvar"
-        >
-          <i class="fas fa-save"></i> Salvar
-        </button>
-
-        <button
-          type="button"
-          style="width: 15rem"
-          class="btn btn-sm btn-success ml-1"
-          v-if="this.notaFiscal.permiteFaturamento"
-          @click="this.faturar()"
-        >
-          <i class="fas fa-file-invoice"></i> Faturar
-        </button>
-
-        <button
-          type="button"
-          style="width: 15rem"
-          class="btn btn-sm btn-outline-success ml-1"
-          @click="this.consultarStatus()"
-          v-if="this.notaFiscal.infoStatus && this.notaFiscal.infoStatus !== 'SEM STATUS'"
-        >
-          <i class="fas fa-search"></i> Consultar Status
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-sm btn-warning ml-1"
-          v-if="this.notaFiscal.permiteCancelamento"
-          @click="this.$store.state.exibirDialogCancelamento = true"
-        >
-          <i class="fas fa-ban"></i> Cancelar
-        </button>
-
-        <a
-          role="button"
-          value="Download do XML"
-          class="btn btn-sm btn-outline-warning ml-1"
-          :href="'/api/fis/notaFiscal/downloadXML/' + this.notaFiscal.id"
-          target="_blank"
-          v-if="this.notaFiscal.possuiXml"
-        >
-          <i class="fas fa-file-code"></i> XML
-        </a>
-
-        <a
-          role="button"
-          value="Imprimir PDF"
-          class="btn btn-sm btn-outline-primary ml-1"
-          :href="'/api/fis/notaFiscal/imprimir/' + this.notaFiscal.id"
-          target="_blank"
-          v-if="this.notaFiscal.possuiXml"
-        >
-          <i class="fas fa-print" aria-hidden="true"></i> PDF
-        </a>
-
-        <button
-          type="button"
-          class="btn btn-sm btn-secondary ml-1"
-          @click="this.clonar"
-          v-if="this.notaFiscal.nossaEmissao"
-        >
-          <i class="fas fa-copy" aria-hidden="true"></i> Clonar
-        </button>
-
-        <a
-          v-if="this.notaFiscal.vendaId"
-          role="button"
-          value="Ir para venda"
-          class="btn btn-sm btn-outline-success ml-1"
-          :href="'/ven/venda/ecommerceForm/' + this.notaFiscal.vendaId"
-        >
-          <i class="fas fa-shopping-cart"></i> Venda
-        </a>
-      </div>
-    </div>
+    <button
+      type="submit"
+      v-show="false"
+      v-if="this.notaFiscal.permiteSalvar"
+      @click="this.$emit('submitForm')"
+    ></button>
   </CrosierFormS>
 </template>
 
 <script>
 import axios from "axios";
-import * as yup from "yup";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import {
   CrosierCalendar,
@@ -423,83 +346,9 @@ export default {
     };
   },
 
-  async mounted() {
-    this.setLoading(true);
-
-    await this.loadData();
-
-    this.schemaValidator = yup.object().shape({
-      documentoEmitente: yup.string().required().typeError(),
-      naturezaOperacao: yup.string().required().typeError(),
-      finalidadeNf: yup.string().required().typeError(),
-      dtSaiEnt: yup.date().required().typeError(),
-      entradaSaida: yup.string().required().typeError(),
-      idDest: yup.string().required().typeError(),
-      documentoDestinatario: yup.string().required().typeError(),
-      xNomeDestinatario: yup.string().required().typeError(),
-      logradouroDestinatario: yup.string().required().typeError(),
-      numeroDestinatario: yup.string().required().typeError(),
-      bairroDestinatario: yup.string().required().typeError(),
-      cepDestinatario: yup.string().required().typeError(),
-      cidadeDestinatario: yup.string().required().typeError(),
-      estadoDestinatario: yup.string().required().typeError(),
-      transpModalidadeFrete: yup.string().required().typeError(),
-      indicadorFormaPagto: yup.string().required().typeError(),
-    });
-
-    SetFocus("codigo", 100);
-
-    this.setLoading(false);
-  },
-
   methods: {
     ...mapMutations(["setLoading", "setNotaFiscal", "setNotaFiscalErrors"]),
     ...mapActions(["loadData"]),
-
-    async submitForm() {
-      this.setLoading(true);
-      await submitForm({
-        apiResource: "/api/fis/notaFiscal",
-        schemaValidator: this.schemaValidator,
-        $store: this.$store,
-        formDataStateName: "notaFiscal",
-        $toast: this.$toast,
-        fnBeforeSave: (formData) => {
-          delete formData.cStat;
-          delete formData.cStatLote;
-          delete formData.numero;
-          delete formData.serie;
-          delete formData.protocoloAutorizacao;
-          delete formData.chaveAcesso;
-          delete formData.infoStatus;
-          delete formData.cnf;
-          delete formData.dadosDuplicatas;
-          delete formData.dtManifestDest;
-          delete formData.dtProtocoloAutorizacao;
-          delete formData.jsonData;
-          delete formData.permiteSalvar;
-          delete formData.permiteReimpressao;
-          delete formData.permiteReimpressaoCancelamento;
-          delete formData.permiteCancelamento;
-          delete formData.permiteCartaCorrecao;
-          delete formData.permiteFaturamento;
-          delete formData.msgPermiteSalvar;
-          delete formData.msgPermiteReimpressao;
-          delete formData.msgPermiteReimpressaoCancelamento;
-          delete formData.msgPermiteCancelamento;
-          delete formData.msgPermiteCartaCorrecao;
-          delete formData.msgPermiteFaturamento;
-          delete formData.subtotal;
-          delete formData.total;
-          delete formData.totalDescontos;
-          delete formData.nsu;
-          delete formData.nossaEmissao;
-          delete formData.manifestDest;
-          delete formData.motivoCancelamento;
-        },
-      });
-      this.setLoading(false);
-    },
 
     async consultarDestinatario() {
       this.setLoading(true);
@@ -541,145 +390,6 @@ export default {
         });
         SetFocus("numeroDestinatario");
       }
-    },
-
-    faturar() {
-      this.$confirm.require({
-        header: "Confirmação",
-        message: "Confirmar a operação?",
-        icon: "pi pi-exclamation-triangle",
-        group: "confirmDialog_crosierListS",
-        accept: async () => {
-          this.setLoading(true);
-
-          try {
-            const rs = await axios.post(`/api/fis/notaFiscal/faturar/${this.notaFiscal.id}`);
-            await this.loadData();
-            console.log(rs);
-            if (rs?.status === 200) {
-              this.$toast.add({
-                severity: "success",
-                summary: "Sucesso",
-                detail: "Faturado com sucesso!",
-                life: 5000,
-              });
-            }
-          } catch (e) {
-            this.$toast.add({
-              severity: "error",
-              summary: "Erro",
-              detail: e?.response?.data?.EXCEPTION_MSG ?? "Ocorreu um erro ao efetuar a operação",
-              life: 5000,
-            });
-          }
-
-          this.setLoading(false);
-        },
-      });
-    },
-
-    cancelar() {
-      this.$confirm.require({
-        header: "Confirmação",
-        message: "Confirmar a operação?",
-        icon: "pi pi-exclamation-triangle",
-        group: "confirmDialog_crosierListS",
-        accept: async () => {
-          this.setLoading(true);
-
-          try {
-            const rs = await axios.post(`/api/fis/notaFiscal/cancelar/${this.notaFiscal.id}`);
-            await this.loadData();
-            console.log(rs);
-            if (rs?.status === 200) {
-              this.$toast.add({
-                severity: "success",
-                summary: "Sucesso",
-                detail: "Cancelado com sucesso!",
-                life: 5000,
-              });
-            }
-          } catch (e) {
-            this.$toast.add({
-              severity: "error",
-              summary: "Erro",
-              detail: e?.response?.data?.EXCEPTION_MSG ?? "Ocorreu um erro ao efetuar a operação",
-              life: 5000,
-            });
-          }
-
-          this.setLoading(false);
-        },
-      });
-    },
-
-    clonar() {
-      this.$confirm.require({
-        header: "Confirmação",
-        message: "Confirmar a operação?",
-        icon: "pi pi-exclamation-triangle",
-        group: "confirmDialog_crosierListS",
-        accept: async () => {
-          this.setLoading(true);
-
-          try {
-            const rs = await axios.post(`/api/fis/notaFiscal/clonar/${this.notaFiscal.id}`);
-
-            console.log(rs);
-
-            if (rs?.status === 200) {
-              const url = new URL(window.location.href);
-              url.searchParams.set("id", rs.data.DATA.id);
-              window.history.replaceState({}, "", url.toString());
-
-              this.$toast.add({
-                severity: "success",
-                summary: "Sucesso",
-                detail: "Nota Fiscal clonada com sucesso!",
-                life: 5000,
-              });
-
-              await this.loadData();
-            }
-          } catch (e) {
-            this.$toast.add({
-              severity: "error",
-              summary: "Erro",
-              detail: e?.response?.data?.EXCEPTION_MSG ?? "Ocorreu um erro ao efetuar a operação",
-              life: 5000,
-            });
-          }
-
-          this.setLoading(false);
-        },
-      });
-    },
-
-    async consultarStatus() {
-      this.setLoading(true);
-
-      try {
-        const rs = await axios.post(`/api/fis/notaFiscal/consultarStatus/${this.notaFiscal.id}`);
-        await this.loadData();
-        if (rs?.status === 200) {
-          this.$toast.add({
-            severity: "success",
-            summary: "Sucesso",
-            detail: "Operação realizada com sucesso!",
-            life: 5000,
-          });
-        }
-      } catch (e) {
-        console.error(e.message);
-        this.$toast.add({
-          severity: "error",
-          summary: "Erro",
-          detail: e.message ?? "Ocorreu um erro ao efetuar a operação",
-          life: 5000,
-        });
-      }
-
-      this.setLoading(false);
     },
   },
 

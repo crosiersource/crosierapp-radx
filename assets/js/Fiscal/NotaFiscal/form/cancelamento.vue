@@ -110,7 +110,7 @@ export default {
               this.$toast.add({
                 severity: "success",
                 summary: "Sucesso",
-                detail: "Faturado com sucesso!",
+                detail: "Cancelado com sucesso!",
                 life: 5000,
               });
               await this.loadData();

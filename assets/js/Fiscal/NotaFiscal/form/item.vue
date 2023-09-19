@@ -176,9 +176,9 @@
             <CrosierCurrency
               col="3"
               id="icmsValor"
-              v-model="this.item.icmsValor"
+              v-model="this.icmsValor"
               label="Valor"
-              :disabled="!this.notaFiscal.permiteSalvar"
+              disabled
             />
           </div>
         </div>
@@ -205,13 +205,7 @@
               :disabled="!this.notaFiscal.permiteSalvar"
             />
 
-            <CrosierCurrency
-              col="4"
-              id="pisValor"
-              v-model="this.item.pisValor"
-              label="Valor"
-              :disabled="!this.notaFiscal.permiteSalvar"
-            />
+            <CrosierCurrency col="4" id="pisValor" v-model="this.pisValor" label="Valor" disabled />
           </div>
         </div>
       </div>
@@ -240,9 +234,9 @@
             <CrosierCurrency
               col="4"
               id="cofinsValor"
-              v-model="this.item.cofinsValor"
+              v-model="this.cofinsValor"
               label="Valor"
-              :disabled="!this.notaFiscal.permiteSalvar"
+              disabled
             />
           </div>
         </div>
@@ -316,6 +310,10 @@ export default {
 
       this.setLoading(false);
     },
+
+    onUpdateValorTotal() {
+      console.log(`mudei para ${this.valorTotal}`);
+    },
   },
 
   computed: {
@@ -332,6 +330,26 @@ export default {
 
     valorTotal() {
       return this.subtotal - this.item.valorDesconto;
+    },
+
+    icmsValor() {
+      return (this.item.icmsValorBc * this.item.icmsAliquota) / 100.0;
+    },
+
+    pisValor() {
+      return (this.item.pisValorBc * this.item.pisAliquota) / 100.0;
+    },
+
+    cofinsValor() {
+      return (this.item.cofinsValorBc * this.item.cofinsAliquota) / 100.0;
+    },
+  },
+
+  watch: {
+    valorTotal(novo, velho) {
+      this.item.icmsValorBc = novo;
+      this.item.pisValorBc = novo;
+      this.item.cofinsValorBc = novo;
     },
   },
 };
