@@ -261,7 +261,7 @@ export default {
               this.$toast.add({
                 severity: "success",
                 summary: "Sucesso",
-                detail: "Faturado com sucesso!",
+                detail: "Faturamento enviado com sucesso! (Verifique o status)",
                 life: 5000,
               });
             }
