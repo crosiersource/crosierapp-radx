@@ -5,7 +5,7 @@
     :key="this.$store.state.dtHistoricoKey"
     v-if="this.notaFiscal.id"
     :comFiltragem="false"
-    apiResource="/api/fis/notaFiscalHistorico/"
+    apiResource="/api/fis/notaFiscalHistorico"
     ref="dt"
     dtStateName="historicoList"
     filtersStoreName="historicoFilters"

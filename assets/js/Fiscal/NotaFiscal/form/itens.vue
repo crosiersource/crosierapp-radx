@@ -11,7 +11,7 @@
     :key="this.$store.state.dtItensKey"
     v-if="this.notaFiscal.id"
     :comFiltragem="false"
-    apiResource="/api/fis/notaFiscalItem/"
+    apiResource="/api/fis/notaFiscalItem"
     ref="dt"
     dtStateName="itensList"
     filtersStoreName="itensFilters"

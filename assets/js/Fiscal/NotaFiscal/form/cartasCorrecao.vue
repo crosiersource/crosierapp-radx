@@ -18,7 +18,7 @@
     :key="this.$store.state.dtCartasCorrecaoKey"
     v-if="this.notaFiscal.id"
     :comFiltragem="false"
-    apiResource="/api/fis/notaFiscalCartaCorrecao/"
+    apiResource="/api/fis/notaFiscalCartaCorrecao"
     ref="dt"
     dtStateName="cartasCorrecaoList"
     filtersStoreName="cartasCorrecaoFilters"

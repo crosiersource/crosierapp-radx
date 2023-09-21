@@ -3,7 +3,7 @@
   <Toast class="mt-4" />
   <CrosierListS
     titulo="NFs Entrada"
-    apiResource="/api/fis/notaFiscal/"
+    apiResource="/api/fis/notaFiscal"
     :formUrl="this.formUrl"
     @beforeFilter="this.beforeFilter"
     v-model:selection="this.selection"

@@ -44,6 +44,7 @@ const store = createStore({
         jsonData: {},
         dtEmissao: new Date(),
         dtSaiEnt: new Date(),
+        foneDestinatario: "(00) 00000-0000",
       },
       notaFiscalErrors: {},
       notaFiscalItem: {},
@@ -64,9 +65,31 @@ const store = createStore({
     getNotaFiscalErrors: (state) => state.notaFiscalErrors,
     getNotaFiscalItem: (state) => state.notaFiscalItem,
     getNotaFiscalItemErrors: (state) => state.notaFiscalItemErrors,
-    getDefaultItensFilters: (state) => state.defaultItensFilters,
-    getDefaultCartasCorrecaoFilters: (state) => state.defaultCartasCorrecaoFilters,
-    getDefaultHistoricoFilters: (state) => state.defaultHistoricoFilters,
+
+    getDefaultItensFilters(state) {
+      state.defaultItensFilters = {
+        ...state.defaultItensFilters,
+        notaFiscal: state.notaFiscal["@id"],
+      };
+      return state.defaultItensFilters;
+    },
+
+    getDefaultCartasCorrecaoFilters(state) {
+      state.defaultCartasCorrecaoFilters = {
+        ...state.defaultCartasCorrecaoFilters,
+        notaFiscal: state.notaFiscal["@id"],
+      };
+      return state.defaultCartasCorrecaoFilters;
+    },
+
+    getDefaultHistoricoFilters(state) {
+      state.defaultHistoricoFilters = {
+        ...state.defaultHistoricoFilters,
+        notaFiscal: state.notaFiscal["@id"],
+      };
+      return state.defaultHistoricoFilters;
+    },
+
     getNotaFiscalCartaCorrecao: (state) => state.notaFiscalCartaCorrecao,
     getNotaFiscalCartaCorrecaoErrors: (state) => state.notaFiscalCartaCorrecaoErrors,
   },
@@ -133,9 +156,6 @@ const store = createStore({
 
           if (response.data["@id"]) {
             context.commit("setNotaFiscal", response.data);
-            context.commit("setDefaultItensFilters", { notaFiscal: response.data["@id"] });
-            context.commit("setDefaultCartasCorrecaoFilters", { notaFiscal: response.data["@id"] });
-            context.commit("setDefaultHistoricoFilters", { notaFiscal: response.data["@id"] });
           } else {
             console.error("Id não encontrado");
           }
