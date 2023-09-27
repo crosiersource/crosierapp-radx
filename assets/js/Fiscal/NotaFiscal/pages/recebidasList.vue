@@ -210,7 +210,7 @@
             ></a>
 
             <button
-              v-if="r.data.possuiXml && r.data.dtManifestDest"
+              v-if="r.data.resumo && r.data.dtManifestDest"
               title="Tentar baixar nota completa"
               @click="this.tentarBaixarNotaCompleta(r.data.id)"
               class="ml-1 btn btn-outline-warning btn-sm"
