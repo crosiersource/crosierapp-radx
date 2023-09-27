@@ -479,8 +479,6 @@ export default {
           detail: rs?.data?.MSG,
           life: 5000,
         });
-        // eslint-disable-next-line no-restricted-globals
-        history.go(0);
       } else {
         console.error(rs?.data?.MSG);
         this.$toast.add({
