@@ -24,6 +24,7 @@
       'valorTotalFormatted',
       'xNomeEmitente',
       'possuiXml',
+      'dtManifestDest',
     ]"
   >
     <template v-slot:headerButtons>
@@ -207,6 +208,15 @@
             >
               <i class="fas fa-money-check-alt"></i
             ></a>
+
+            <button
+              v-if="r.data.possuiXml && r.data.dtManifestDest"
+              title="Tentar baixar nota completa"
+              @click="this.tentarBaixarNotaCompleta(r.data.id)"
+              class="ml-1 btn btn-outline-warning btn-sm"
+            >
+              <i class="fas fa-download"></i>
+            </button>
 
             <a
               v-if="r.data.possuiXml"
@@ -446,6 +456,41 @@ export default {
           this.setLoading(false);
         },
       });
+    },
+
+    async tentarBaixarNotaCompleta(id) {
+      this.setLoading(true);
+      const rs = await axios.get(
+        // eslint-disable-next-line max-len
+        `/fis/nfeUtils/download/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/ld+json",
+          },
+          validateStatus(status) {
+            return status < 500;
+          },
+        }
+      );
+      if (rs?.data?.RESULT === "OK") {
+        this.$toast.add({
+          severity: "success",
+          summary: "Sucesso",
+          detail: rs?.data?.MSG,
+          life: 5000,
+        });
+        // eslint-disable-next-line no-restricted-globals
+        history.go(0);
+      } else {
+        console.error(rs?.data?.MSG);
+        this.$toast.add({
+          severity: "error",
+          summary: "Erro",
+          detail: rs?.data?.MSG,
+          life: 5000,
+        });
+      }
+      this.setLoading(false);
     },
   },
 

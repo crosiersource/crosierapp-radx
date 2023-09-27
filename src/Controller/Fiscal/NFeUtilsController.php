@@ -6,6 +6,7 @@ namespace App\Controller\Fiscal;
 use App\Form\Fiscal\ConfigToolsType;
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\DistDFeBusiness;
@@ -27,58 +28,22 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class NFeUtilsController extends BaseController
 {
+    /** @required */
+    public SpedNFeBusiness $spedNFeBusiness;
 
-    private SpedNFeBusiness $spedNFeBusiness;
+    /** @required */
+    public DistDFeBusiness $distDFeBusiness;
 
-    private DistDFeBusiness $distDFeBusiness;
+    /** @required */
+    public NFeUtils $nfeUtils;
 
-    private NFeUtils $nfeUtils;
+    /** @required */
+    public LoggerInterface $logger;
 
-    private LoggerInterface $logger;
-
-    /**
-     * @required
-     * @param SpedNFeBusiness $spedNFeBusiness
-     */
-    public function setSpedNFeBusiness(SpedNFeBusiness $spedNFeBusiness): void
-    {
-        $this->spedNFeBusiness = $spedNFeBusiness;
-    }
 
     /**
-     * @required
-     * @param DistDFeBusiness $distDFeBusiness
-     */
-    public function setDistDFeBusiness(DistDFeBusiness $distDFeBusiness): void
-    {
-        $this->distDFeBusiness = $distDFeBusiness;
-    }
-
-    /**
-     * @required
-     * @param NFeUtils $nfeUtils
-     */
-    public function setNfeUtils(NFeUtils $nfeUtils): void
-    {
-        $this->nfeUtils = $nfeUtils;
-    }
-
-    /**
-     * @required
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     *
      * @Route("/fis/nfeUtils/consultaChave/{notaFiscal}", name="nfeUtils_consultaChave")
      * @IsGranted("ROLE_FISCAL", statusCode=403)
-     *
-     * @param NotaFiscal $notaFiscal
-     * @return Response
      */
     public function consultaChave(NotaFiscal $notaFiscal): ?Response
     {
@@ -90,32 +55,25 @@ class NFeUtilsController extends BaseController
         }
     }
 
+    
     /**
-     *
      * @Route("/fis/nfeUtils/download/{notaFiscal}", name="nfeUtils_download")
      * @IsGranted("ROLE_FISCAL", statusCode=403)
-     *
-     * @param NotaFiscal $notaFiscal
-     * @return Response
      */
-    public function download(NotaFiscal $notaFiscal): ?Response
+    public function download(NotaFiscal $notaFiscal): JsonResponse
     {
         try {
             $this->distDFeBusiness->downloadNFe($notaFiscal);
-            return new Response('OK');
+            return CrosierApiResponse::success();
         } catch (\Exception $e) {
-            return new Response($e->getMessage());
+            return CrosierApiResponse::error();
         }
     }
 
 
     /**
-     *
      * @Route("/fis/nfeUtils/reparseDownloadedXML/{notaFiscal}", name="nfeUtils_reparseDownloadedXML")
      * @IsGranted("ROLE_FISCAL", statusCode=403)
-     *
-     * @param NotaFiscal $notaFiscal
-     * @return Response
      */
     public function reparseDownloadedXML(NotaFiscal $notaFiscal): ?Response
     {
@@ -127,12 +85,10 @@ class NFeUtilsController extends BaseController
         }
     }
 
+    
     /**
-     *
      * @Route("/fis/nfeUtils/clearCaches", name="fis_nfeUtils_clearCaches")
      * @IsGranted("ROLE_FISCAL", statusCode=403)
-     *
-     * @return Response
      * @throws \Exception
      */
     public function clearCaches(): ?Response
@@ -148,12 +104,8 @@ class NFeUtilsController extends BaseController
 
 
     /**
-     *
      * @Route("/fis/nfeUtils/configTools", name="nfeUtils_configTools")
      * @IsGranted("ROLE_FISCAL_ADMIN", statusCode=403)
-     *
-     * @param Request $request
-     * @return Response
      * @throws ViewException
      */
     public function configToolsForm(Request $request): ?Response
@@ -178,7 +130,7 @@ class NFeUtilsController extends BaseController
                     $configs['cnpj'] = preg_replace("/[^0-9]/", '', $configs['cnpj']);
                     $this->nfeUtils->saveNFeConfigs($configs);
                     $this->addFlash('success', 'Configurações salvas com sucesso!');
-                } catch (\Exception | ViewException $e) {
+                } catch (\Exception|ViewException $e) {
                     $this->logger->error('Erro ao salvar as configurações');
                     $this->logger->error($e->getMessage());
                     $this->addFlash('error', 'Erro ao salvar as configurações');
@@ -201,13 +153,8 @@ class NFeUtilsController extends BaseController
 
 
     /**
-     *
      * @Route("/fis/nfeUtils/selecionarContribuinte", name="fis_nfeUtils_selecionarContribuinte")
      * @IsGranted("ROLE_FISCAL", statusCode=403)
-     *
-     * @param Request $request
-     * @param Connection $conn
-     * @return Response
      * @throws ViewException
      */
     public function selecionarContribuinte(Request $request, Connection $conn): ?Response
@@ -237,7 +184,7 @@ class NFeUtilsController extends BaseController
                     $certificadoValidoAte = $certificate->getValidTo()->format('d/m/Y H:i:s');
                 } catch (\Throwable $e) {
                     throw new ViewException('Erro ao ler certificado');
-                }                
+                }
                 $contribuintes[] = [
                     'id' => $rContribuinte['id'],
                     'empresa' => StringUtils::mascararCnpjCpf($nfeConfigs['cnpj']) . ' - ' . $nfeConfigs['razaosocial'],
@@ -299,7 +246,6 @@ class NFeUtilsController extends BaseController
             ];
             return new JsonResponse($r);
         }
-
     }
 
 
