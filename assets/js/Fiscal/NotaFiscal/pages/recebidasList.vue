@@ -506,7 +506,9 @@ export default {
     habilitarObterNotas() {
       try {
         return new URLSearchParams(window.location.search.substring(1)).get("h") === "1";
-      } catch (e) {}
+      } catch (e) {
+        return false;
+      }
     },
   },
 };

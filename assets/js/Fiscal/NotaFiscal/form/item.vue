@@ -12,6 +12,7 @@
         <div class="row">
           <div class="col-6">
             <h3>Item</h3>
+            <h6 v-if="this.item.id">Id: {{ ("0".repeat(9) + this.item.id).slice(-9) }}</h6>
           </div>
         </div>
       </div>

@@ -31,6 +31,11 @@
     ]"
   >
     <template v-slot:columns>
+      <Column field="id" header="Id" sortable>
+        <template #body="r">
+          {{ ("0".repeat(9) + r.data.id).slice(-9) }}
+        </template>
+      </Column>
       <Column field="ordem" header="#" sortable />
       <Column field="codigo" header="Código" sortable />
       <Column field="descricao" header="Descrição" sortable>
