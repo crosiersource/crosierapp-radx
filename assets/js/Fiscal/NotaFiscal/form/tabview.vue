@@ -256,7 +256,6 @@ export default {
           try {
             const rs = await axios.post(`/api/fis/notaFiscal/faturar/${this.notaFiscal.id}`);
             await this.loadData();
-            console.log(rs);
             if (rs?.status === 200) {
               this.$toast.add({
                 severity: "success",
@@ -290,8 +289,6 @@ export default {
 
           try {
             const rs = await axios.post(`/api/fis/notaFiscal/clonar/${this.notaFiscal.id}`);
-
-            console.log(rs);
 
             if (rs?.status === 200) {
               const url = new URL(window.location.href);

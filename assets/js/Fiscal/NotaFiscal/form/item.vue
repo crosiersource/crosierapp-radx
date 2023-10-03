@@ -311,10 +311,6 @@ export default {
 
       this.setLoading(false);
     },
-
-    onUpdateValorTotal() {
-      console.log(`mudei para ${this.valorTotal}`);
-    },
   },
 
   computed: {

@@ -64,7 +64,7 @@
 
         <CrosierInputText
           label="Nome Destinatário"
-          col="3"
+          col="4"
           id="xNomeDestinatario"
           v-model="this.filters.xNomeDestinatario"
         />

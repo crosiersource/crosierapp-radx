@@ -33,6 +33,7 @@ const store = createStore({
       exibirDialogCartaCorrecao: false,
       dtItensKey: 0,
       dtCartasCorrecaoKey: 0,
+      dtHistoricoKey: 0,
       notaFiscal: {
         permiteSalvar: true,
         nossaEmissao: true,
@@ -178,6 +179,9 @@ const store = createStore({
         } else {
           console.error("Id não encontrado");
         }
+        context.state.dtCartasCorrecaoKey++;
+        context.state.dtItensKey++;
+        context.state.dtHistoricoKey++;
       } catch (err) {
         console.error(err);
       }
