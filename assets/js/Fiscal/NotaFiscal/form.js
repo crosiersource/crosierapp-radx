@@ -160,6 +160,10 @@ const store = createStore({
           } else {
             console.error("Id não encontrado");
           }
+
+          context.state.dtCartasCorrecaoKey++;
+          context.state.dtItensKey++;
+          context.state.dtHistoricoKey++;
         } catch (err) {
           console.error(err);
         }
@@ -179,9 +183,6 @@ const store = createStore({
         } else {
           console.error("Id não encontrado");
         }
-        context.state.dtCartasCorrecaoKey++;
-        context.state.dtItensKey++;
-        context.state.dtHistoricoKey++;
       } catch (err) {
         console.error(err);
       }

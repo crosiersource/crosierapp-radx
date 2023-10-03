@@ -151,7 +151,7 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
-import { CrosierListS, CrosierCurrency } from "crosier-vue";
+import { CrosierCurrency, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
 import Item from "./item.vue";
 
