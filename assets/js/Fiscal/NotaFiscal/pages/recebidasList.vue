@@ -28,7 +28,12 @@
     ]"
   >
     <template v-slot:headerButtons>
-      <button type="button" class="btn btn-warning ml-1" @click="this.obterNotas">
+      <button
+        v-if="this.habilitarObterNotas"
+        type="button"
+        class="btn btn-warning ml-1"
+        @click="this.obterNotas"
+      >
         <i class="fas fa-download"></i> Baixar Notas
       </button>
 
@@ -497,6 +502,12 @@ export default {
       filters: "getRecebidasFilters",
       contribuintes: "getContribuintes",
     }),
+
+    habilitarObterNotas() {
+      try {
+        return new URLSearchParams(window.location.search.substring(1)).get("h") === "1";
+      } catch (e) {}
+    },
   },
 };
 </script>
