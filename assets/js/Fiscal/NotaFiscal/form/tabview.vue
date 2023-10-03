@@ -81,7 +81,7 @@
 
             <button
               type="button"
-              class="btn btn-sm btn-warning ml-1"
+              class="btn btn-sm btn-danger ml-1"
               v-if="this.notaFiscal.permiteCancelamento"
               @click="this.$store.state.exibirDialogCancelamento = true"
             >
@@ -110,6 +110,17 @@
               v-if="this.notaFiscal.possuiXml"
             >
               <i class="fas fa-print" aria-hidden="true"></i> PDF
+            </a>
+
+            <a
+              role="button"
+              value="Imprimir Cancelamento"
+              class="btn btn-sm btn-outline-danger ml-1"
+              :href="'/api/fis/notaFiscal/imprimirCancelamento/' + this.notaFiscal.id"
+              target="_blank"
+              v-if="this.notaFiscal.permiteReimpressaoCancelamento"
+            >
+              <i class="fas fa-print" aria-hidden="true"></i> Imprimir Cancelamento
             </a>
 
             <button

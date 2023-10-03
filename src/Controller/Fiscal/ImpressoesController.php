@@ -51,7 +51,7 @@ class ImpressoesController extends FormListController
     public function imprimirCancelamento(NotaFiscal $notaFiscal): void
     {
         try {
-            $conn = $this->getEntityHandler()->getDoctrine()->getConnection();
+            $conn = $this->doctrine->getConnection();
             $evento = $conn->fetchAssociative('SELECT xml FROM fis_nf_evento WHERE desc_evento = \'CANCELAMENTO\' AND nota_fiscal_id = :notaFiscalId', ['notaFiscalId' => $notaFiscal->getId()]);
 
             $xml = $evento['xml'];
