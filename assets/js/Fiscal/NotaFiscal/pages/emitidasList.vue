@@ -318,7 +318,7 @@ export default {
       this.setLoading(true);
       try {
         const rs = await axios.get(
-          `/fis/notaFiscal/emitidas/downloadXMLs?documentoEmitente=${
+          `/api/fis/notaFiscal/downloadXMLsMesAno?documentoEmitente=${
             this.filters.documentoEmitente
           }&dtEmissao[after]=${moment(this.filters["dtEmissao[after]"]).format(
             "YYYY-MM-DD"
