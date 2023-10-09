@@ -980,6 +980,7 @@ class VendaController extends FormListController
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
             try {
+
                 $this->vendaItemEntityHandler->delete($item);
                 $this->vendaBusiness->recalcularTotais($item->venda->getId());
                 $this->getEntityHandler()->corrigirOrdens($item->venda);

@@ -43,15 +43,21 @@
           {{ new Date(r.data.updated).toLocaleString() }}
         </template>
       </Column>
-      <Column field="descricao" header="Descrição" />
+      <Column field="descricao" header="Descrição">
+        <template #body="r">
+          <div style="white-space: pre-wrap">
+            {{ r.data.descricao }}
+          </div>
+        </template>
+      </Column>
       <Column field="obs" header="Obs" />
     </template>
   </CrosierListS>
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
-import { CrosierListS, CrosierInputText } from "crosier-vue";
+import { mapGetters } from "vuex";
+import { CrosierInputText, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
 
 export default {
