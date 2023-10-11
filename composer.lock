@@ -295,16 +295,16 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.26",
+            "version": "v1.9.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "d07d20e5c82d5b628b00e5cce328ec8091f34b1b"
+                "reference": "a13a9d5382f187f13400a932111757dc2c7885dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/d07d20e5c82d5b628b00e5cce328ec8091f34b1b",
-                "reference": "d07d20e5c82d5b628b00e5cce328ec8091f34b1b",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/a13a9d5382f187f13400a932111757dc2c7885dc",
+                "reference": "a13a9d5382f187f13400a932111757dc2c7885dc",
                 "shasum": ""
             },
             "require": {
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.26"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.27"
             },
-            "time": "2023-10-11T12:42:43+00:00"
+            "time": "2023-10-11T20:12:22+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -10240,16 +10240,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "1.17.33",
+            "version": "1.17.38",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "68d91dcd2a7a1f00ec1a2b044090dfd37bd981dc"
+                "reference": "b74f197e80e85707c0db2cc6f0fc57fb5e80e331"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/68d91dcd2a7a1f00ec1a2b044090dfd37bd981dc",
-                "reference": "68d91dcd2a7a1f00ec1a2b044090dfd37bd981dc",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/b74f197e80e85707c0db2cc6f0fc57fb5e80e331",
+                "reference": "b74f197e80e85707c0db2cc6f0fc57fb5e80e331",
                 "shasum": ""
             },
             "require": {
@@ -10324,7 +10324,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/1.17.33"
+                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/1.17.38"
             },
             "funding": [
                 {
@@ -10332,20 +10332,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-10-10T12:56:09+00:00"
+            "time": "2023-10-11T16:48:03+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",
-            "version": "1.14.32",
+            "version": "1.14.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-color.git",
-                "reference": "58f2dba538ecadfa2fa2c333f5a4c260778508d7"
+                "reference": "2d7b7e421dba1836d23912723d83adebc53f0ef6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/58f2dba538ecadfa2fa2c333f5a4c260778508d7",
-                "reference": "58f2dba538ecadfa2fa2c333f5a4c260778508d7",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/2d7b7e421dba1836d23912723d83adebc53f0ef6",
+                "reference": "2d7b7e421dba1836d23912723d83adebc53f0ef6",
                 "shasum": ""
             },
             "require": {
@@ -10393,7 +10393,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-color/tree/1.14.32"
+                "source": "https://github.com/tecnickcom/tc-lib-color/tree/1.14.37"
             },
             "funding": [
                 {
@@ -10401,7 +10401,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-10-10T12:55:34+00:00"
+            "time": "2023-10-11T16:46:17+00:00"
         },
         {
             "name": "twig/extra-bundle",
