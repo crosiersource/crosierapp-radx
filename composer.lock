@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.9.9",
+            "version": "v1.9.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "20e7c0955d3d363d57d377db4ed800f5f2c388e5"
+                "reference": "3d3652f4d85942c4b963fa4018acfbbbfd062788"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/20e7c0955d3d363d57d377db4ed800f5f2c388e5",
-                "reference": "20e7c0955d3d363d57d377db4ed800f5f2c388e5",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/3d3652f4d85942c4b963fa4018acfbbbfd062788",
+                "reference": "3d3652f4d85942c4b963fa4018acfbbbfd062788",
                 "shasum": ""
             },
             "require": {
@@ -289,26 +289,26 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.9.9"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v.1.9.10"
             },
-            "time": "2023-09-19T18:40:53+00:00"
+            "time": "2023-10-11T12:38:04+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.25",
+            "version": "v1.9.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "f6e627bbfded73397e9196703e07fae5d606ffe3"
+                "reference": "d07d20e5c82d5b628b00e5cce328ec8091f34b1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/f6e627bbfded73397e9196703e07fae5d606ffe3",
-                "reference": "f6e627bbfded73397e9196703e07fae5d606ffe3",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/d07d20e5c82d5b628b00e5cce328ec8091f34b1b",
+                "reference": "d07d20e5c82d5b628b00e5cce328ec8091f34b1b",
                 "shasum": ""
             },
             "require": {
-                "crosiersource/crosierlib-base": "^1.9.9",
+                "crosiersource/crosierlib-base": "^1.9.10",
                 "econea/nusoap": "^0.9.7",
                 "nfephp-org/sped-common": "^5.1",
                 "nfephp-org/sped-da": "^1.1",
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.25"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.26"
             },
-            "time": "2023-10-09T18:46:12+00:00"
+            "time": "2023-10-11T12:42:43+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -10240,16 +10240,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "1.17.30",
+            "version": "1.17.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "fad59d8453e870cd9fcd83c6c4c6817c6bf8669e"
+                "reference": "68d91dcd2a7a1f00ec1a2b044090dfd37bd981dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/fad59d8453e870cd9fcd83c6c4c6817c6bf8669e",
-                "reference": "fad59d8453e870cd9fcd83c6c4c6817c6bf8669e",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/68d91dcd2a7a1f00ec1a2b044090dfd37bd981dc",
+                "reference": "68d91dcd2a7a1f00ec1a2b044090dfd37bd981dc",
                 "shasum": ""
             },
             "require": {
@@ -10324,7 +10324,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/1.17.30"
+                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/1.17.33"
             },
             "funding": [
                 {
@@ -10332,20 +10332,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-10-09T16:42:04+00:00"
+            "time": "2023-10-10T12:56:09+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",
-            "version": "1.14.29",
+            "version": "1.14.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-color.git",
-                "reference": "552ad37605b7260afbfae0a3ed4682e972e94a91"
+                "reference": "58f2dba538ecadfa2fa2c333f5a4c260778508d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/552ad37605b7260afbfae0a3ed4682e972e94a91",
-                "reference": "552ad37605b7260afbfae0a3ed4682e972e94a91",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/58f2dba538ecadfa2fa2c333f5a4c260778508d7",
+                "reference": "58f2dba538ecadfa2fa2c333f5a4c260778508d7",
                 "shasum": ""
             },
             "require": {
@@ -10393,7 +10393,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-color/tree/1.14.29"
+                "source": "https://github.com/tecnickcom/tc-lib-color/tree/1.14.32"
             },
             "funding": [
                 {
@@ -10401,7 +10401,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-10-09T16:40:57+00:00"
+            "time": "2023-10-10T12:55:34+00:00"
         },
         {
             "name": "twig/extra-bundle",
