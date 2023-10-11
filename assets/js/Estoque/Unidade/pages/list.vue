@@ -2,7 +2,7 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
-  <CrosierListS titulo="Unidades" apiResource="/api/est/unidade/" ref="dt">
+  <CrosierListS titulo="Unidades" apiResource="/api/est/unidade/" ref="dt" :comFiltragem="false">
     <template v-slot:columns>
       <Column field="id" header="Id" sortable>
         <template #body="r">

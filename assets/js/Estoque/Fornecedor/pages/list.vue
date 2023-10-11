@@ -3,29 +3,18 @@
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
   <CrosierListS
+    filtrosNaSidebar
     titulo="Fornecedores"
     apiResource="/api/est/fornecedor/"
     ref="dt"
     :properties="['id', 'codigo', 'updated', 'documento', 'nome', 'nomeFantasia']"
   >
     <template v-slot:filter-fields>
-      <div class="form-row">
-        <CrosierInputText
-          label="CPF/CNPJ"
-          col="3"
-          id="documento"
-          v-model="this.filters.documento"
-        />
+      <CrosierInputText label="CPF/CNPJ" id="documento" v-model="this.filters.documento" />
 
-        <CrosierInputText label="Nome" col="5" id="nome" v-model="this.filters.nome" />
+      <CrosierInputText label="Nome" id="nome" v-model="this.filters.nome" />
 
-        <CrosierDropdownBoolean
-          label="Utilizado"
-          col="4"
-          id="utilizado"
-          v-model="this.filters.utilizado"
-        />
-      </div>
+      <CrosierDropdownBoolean label="Utilizado" id="utilizado" v-model="this.filters.utilizado" />
     </template>
 
     <template v-slot:columns>

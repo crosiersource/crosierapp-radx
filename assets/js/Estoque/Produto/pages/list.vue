@@ -2,13 +2,7 @@
   <Toast group="mainToast" position="bottom-right" class="mb-5" />
   <ConfirmDialog group="confirmDialog_crosierListS" />
 
-  <CrosierListS
-    titulo="Produto"
-    apiResource="/api/est/produto/"
-    filtrosNaSidebar
-    ref="dt"
-    :formUrl="null"
-  >
+  <CrosierListS titulo="Produto" apiResource="/api/est/produto/" filtrosNaSidebar ref="dt">
     <template v-slot:filter-fields>
       <div class="form-row">
         <CrosierInputText label="Código" id="codigo" v-model="this.filters.codigo" />
