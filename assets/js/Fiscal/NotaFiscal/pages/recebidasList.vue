@@ -175,9 +175,13 @@
             <br />{{ r.data.xNomeEmitente }}
           </div>
           <div class="float-right">
-            <span :class="'badge badge-pill badge-' + (r.data.resumo ? 'secondary' : 'primary')">
+            <div :class="'badge badge-pill badge-' + (r.data.resumo ? 'secondary' : 'primary')">
               {{ r.data.resumo ? "Resumo" : "Completa" }}
-            </span>
+            </div>
+            <div></div>
+            <div class="badge badge-pill badge-warning" v-if="!r.data.dtManifestDest">
+              <i class="fas fa-warning"></i> Sem manifestação!
+            </div>
           </div>
         </template>
       </Column>
