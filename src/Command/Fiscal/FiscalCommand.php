@@ -28,7 +28,7 @@ class FiscalCommand extends Command
     private SpedNFeBusiness $spedNFeBusiness;
 
     private NotaFiscalEntityHandler $notaFiscalEntityHandler;
-    
+
     private SyslogBusiness $syslog;
 
 
@@ -47,6 +47,7 @@ class FiscalCommand extends Command
      */
     public function setDistDFeBusiness(DistDFeBusiness $distDFeBusiness): void
     {
+        $distDFeBusiness->setEchoToLogger();
         $this->distDFeBusiness = $distDFeBusiness;
     }
 
@@ -181,7 +182,7 @@ class FiscalCommand extends Command
                             'cnpj' => $cnpj,
                             'dias' => $dias
                         ]);
-                
+
                 if ($rsNFs) {
 
                     $msg = count($rsNFs) . ' NFs para manifestar nos últimos ' . $dias . ' dias para o CNPJ ' . $cnpj . '. Manifestando...';
