@@ -142,7 +142,6 @@
             { label: 'Confirmação', value: '210200 - CONFIRMAÇÃO DA OPERAÇÃO' },
             { label: 'Desconhecimento', value: '210220 - DESCONHECIMENTO DA OPERAÇÃO' },
             { label: 'Não realizada', value: '210240 - OPERAÇÃO NÃO REALIZADA' },
-            { label: 'Nenhuma', value: '' },
           ]"
         />
       </div>
@@ -386,7 +385,7 @@ export default {
               detail: rs?.data?.MSG,
               life: 5000,
             });
-            this.$refs.dt.doClearFilters();
+            await this.loadData();
           } else {
             console.error(rs?.data?.MSG);
             this.$toast.add({
