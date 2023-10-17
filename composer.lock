@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc751115b50577e454e8f8d76c2060e1",
+    "content-hash": "edfee5c4a1e983a62c403700c1917b89",
     "packages": [
         {
             "name": "api-platform/core",
@@ -295,16 +295,16 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.31",
+            "version": "v1.9.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "6429ba19bf6133d32651e41210a3105cc8170781"
+                "reference": "eff9703cc3f8eaa354091ae95566d54609b2483c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/6429ba19bf6133d32651e41210a3105cc8170781",
-                "reference": "6429ba19bf6133d32651e41210a3105cc8170781",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/eff9703cc3f8eaa354091ae95566d54609b2483c",
+                "reference": "eff9703cc3f8eaa354091ae95566d54609b2483c",
                 "shasum": ""
             },
             "require": {
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.31"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.34"
             },
-            "time": "2023-10-17T01:38:39+00:00"
+            "time": "2023-10-17T13:00:43+00:00"
         },
         {
             "name": "doctrine/annotations",
