@@ -76,10 +76,11 @@ class DistDFeController extends AbstractController
     /**
      * @Route("/fis/distDFe/obterDistDFesDeNSUsPulados/{cnpj}", name="distDFe_obterDistDFesDeNSUsPulados")
      */
-    public function obterDistDFesDeNSUsPulados(string $cnpj): Response
+    public function obterDistDFesDeNSUsPulados(?string $cnpj = null): Response
     {
         try {
-            $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados($cnpj);
+            $cnpjEmUso = $cnpj ?? $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+            $q = $this->distDFeBusiness->obterDistDFesDeNSUsPulados($cnpjEmUso);
             return new Response($q . ' DFe\'s obtidos');
         } catch (ViewException $e) {
             return new Response($e->getMessage());
