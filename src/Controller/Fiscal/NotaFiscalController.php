@@ -229,6 +229,7 @@ class NotaFiscalController extends BaseController
             $faturaBusiness->lancarDuplicatasPorNotaFiscal($notaFiscal, $carteira, $categoria);
             return CrosierApiResponse::success();
         } catch (\Throwable $e) {
+            $this->syslog->error('Erro ao lancarDuplicatas', $e->getMessage());
             return CrosierApiResponse::viewExceptionError($e, 'Erro ao lançar duplicatas');
         }
     }
@@ -245,6 +246,7 @@ class NotaFiscalController extends BaseController
             $faturaBusiness->enviarFaturaParaReprocessamento($notaFiscal);
             return CrosierApiResponse::success();
         } catch (\Throwable $e) {
+            $this->syslog->error('Erro ao enviarFaturaParaReprocessamento', $e->getMessage());
             return CrosierApiResponse::viewExceptionError($e, 'Erro ao enviar fatura para reprocessamento');
         }
     }
