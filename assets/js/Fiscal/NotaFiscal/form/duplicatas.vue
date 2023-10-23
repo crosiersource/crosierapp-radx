@@ -31,19 +31,25 @@
       </template>
     </Column>
   </DataTable>
+
+  <FormLancto
+    v-if="
+      Array.isArray(this.notaFiscal.dadosDuplicatas) && this.notaFiscal.dadosDuplicatas.length > 0
+    "
+  />
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
-import { CrosierListS } from "crosier-vue";
+import { mapGetters } from "vuex";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import FormLancto from "./duplicatas_lancto.vue";
 
 export default {
   components: {
-    CrosierListS,
     Column,
     DataTable,
+    FormLancto,
   },
 
   computed: {

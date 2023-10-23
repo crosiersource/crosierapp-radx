@@ -739,17 +739,19 @@ DROP TABLE IF EXISTS `fin_tipo_lancto`;
 
 CREATE TABLE `fin_tipo_lancto`
 (
-  `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
+  `id`                 bigint(20)    NOT NULL AUTO_INCREMENT,
 
-  `codigo`             int(11)      NOT NULL,
-  `descricao`          varchar(200) NOT NULL,
+  `codigo`             int(11)       NOT NULL,
+  `descricao`          varchar(200)  NOT NULL,
+  `obs`                varchar(2000) NULL,
+  `url`                varchar(2000) NULL,
 
-  `inserted`           datetime     NOT NULL,
-  `updated`            datetime     NOT NULL,
+  `inserted`           datetime      NOT NULL,
+  `updated`            datetime      NOT NULL,
   `version`            int(11),
-  `estabelecimento_id` bigint(20)   NOT NULL,
-  `user_inserted_id`   bigint(20)   NOT NULL,
-  `user_updated_id`    bigint(20)   NOT NULL,
+  `estabelecimento_id` bigint(20)    NOT NULL,
+  `user_inserted_id`   bigint(20)    NOT NULL,
+  `user_updated_id`    bigint(20)    NOT NULL,
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_fin_tipo_lancto_codigo` (`codigo`),
@@ -763,6 +765,7 @@ CREATE TABLE `fin_tipo_lancto`
   CONSTRAINT `FK_fin_tipo_lancto_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 
 ) ENGINE = InnoDB;
+
 
 
 DROP TABLE IF EXISTS `fin_banco`;

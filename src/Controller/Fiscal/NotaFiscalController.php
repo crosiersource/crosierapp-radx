@@ -2,20 +2,23 @@
 
 namespace App\Controller\Fiscal;
 
+use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\ValidaCPFCNPJ;
+use CrosierSource\CrosierLibRadxBundle\Business\Financeiro\FaturaBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NFeUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\NotaFiscalBusiness;
 use CrosierSource\CrosierLibRadxBundle\Business\Fiscal\SpedNFeBusiness;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Carteira;
+use CrosierSource\CrosierLibRadxBundle\Entity\Financeiro\Categoria;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscal;
 use CrosierSource\CrosierLibRadxBundle\Entity\Fiscal\NotaFiscalItem;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalCartaCorrecaoEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\Fiscal\NotaFiscalItemEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Fiscal\NotaFiscalRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @author Carlos Eduardo Pauluk
  */
-class NotaFiscalController extends AbstractController
+class NotaFiscalController extends BaseController
 {
 
     /** @required */
@@ -209,6 +212,41 @@ class NotaFiscalController extends AbstractController
         $repoNotaFiscal = $this->doctrine->getRepository(NotaFiscal::class);
         $dadosPessoa = $repoNotaFiscal->findUltimosDadosPessoa($documento);
         return new JsonResponse(['result' => 'OK', 'dados' => $dadosPessoa]);
+    }
+
+
+    /**
+     * @Route("/api/fis/notaFiscal/lancarDuplicatas/{notaFiscal}/{carteira}/{categoria}", name="api_fis_notaFiscal_lancarDuplicatas")
+     */
+    public function lancarDuplicatas(
+        FaturaBusiness $faturaBusiness,
+        NotaFiscal     $notaFiscal,
+        Carteira       $carteira,
+        Categoria      $categoria
+    ): JsonResponse
+    {
+        try {
+            $faturaBusiness->lancarDuplicatasPorNotaFiscal($notaFiscal, $carteira, $categoria);
+            return CrosierApiResponse::success();
+        } catch (\Throwable $e) {
+            return CrosierApiResponse::viewExceptionError($e, 'Erro ao lançar duplicatas');
+        }
+    }
+
+    /**
+     * @Route("/api/fis/notaFiscal/enviarFaturaParaReprocessamento/{notaFiscal}", name="api_fis_notaFiscal_enviarFaturaParaReprocessamento")
+     */
+    public function enviarFaturaParaReprocessamento(
+        FaturaBusiness $faturaBusiness,
+        NotaFiscal     $notaFiscal
+    ): JsonResponse
+    {
+        try {
+            $faturaBusiness->enviarFaturaParaReprocessamento($notaFiscal);
+            return CrosierApiResponse::success();
+        } catch (\Throwable $e) {
+            return CrosierApiResponse::viewExceptionError($e, 'Erro ao enviar fatura para reprocessamento');
+        }
     }
 
 
