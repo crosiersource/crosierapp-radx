@@ -45,7 +45,7 @@
           label="Fatura"
           v-model="this.notaFiscal.jsonData.fin_fatura_id"
           appendButtonIcon="fas fa-file-invoice"
-          appendButtonLinkHref="'/v/fin/fatura/form/' + this.notaFiscal.jsonData.fin_fatura_id"
+          :appendButtonLinkHref="'/v/fin/fatura/form/' + this.notaFiscal.jsonData.fin_fatura_id"
           disabled
         />
 
