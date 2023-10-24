@@ -179,7 +179,10 @@
               {{ r.data.resumo ? "Resumo" : "Completa" }}
             </div>
             <div></div>
-            <div class="badge badge-pill badge-warning" v-if="!r.data.dtManifestDest">
+            <div
+              class="badge badge-pill badge-warning"
+              v-if="r.data.resumo && !r.data.dtManifestDest"
+            >
               <i class="fas fa-warning"></i> Sem manifestação!
             </div>
           </div>
