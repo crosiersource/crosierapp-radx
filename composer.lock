@@ -295,16 +295,16 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.9.41",
+            "version": "v1.9.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "5363b389964b0a1d01a9998b7bbc794b9e324e55"
+                "reference": "db08dd9dcb43a1a019cec022fa18545f58711ec6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/5363b389964b0a1d01a9998b7bbc794b9e324e55",
-                "reference": "5363b389964b0a1d01a9998b7bbc794b9e324e55",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/db08dd9dcb43a1a019cec022fa18545f58711ec6",
+                "reference": "db08dd9dcb43a1a019cec022fa18545f58711ec6",
                 "shasum": ""
             },
             "require": {
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.41"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.9.42"
             },
-            "time": "2023-10-23T20:08:51+00:00"
+            "time": "2023-10-25T12:26:15+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -3465,31 +3465,26 @@
         },
         {
             "name": "php-http/promise",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/promise.git",
-                "reference": "4c4c1f9b7289a2ec57cde7f1e9762a5789506f88"
+                "reference": "ef4905bfb492ff389eb7f12e26925a0f20073050"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/promise/zipball/4c4c1f9b7289a2ec57cde7f1e9762a5789506f88",
-                "reference": "4c4c1f9b7289a2ec57cde7f1e9762a5789506f88",
+                "url": "https://api.github.com/repos/php-http/promise/zipball/ef4905bfb492ff389eb7f12e26925a0f20073050",
+                "reference": "ef4905bfb492ff389eb7f12e26925a0f20073050",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0"
             },
             "require-dev": {
-                "friends-of-phpspec/phpspec-code-coverage": "^4.3.2",
-                "phpspec/phpspec": "^5.1.2 || ^6.2"
+                "friends-of-phpspec/phpspec-code-coverage": "^4.3.2 || ^6.3",
+                "phpspec/phpspec": "^5.1.2 || ^6.2 || ^7.4"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Http\\Promise\\": "src/"
@@ -3516,9 +3511,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/promise/issues",
-                "source": "https://github.com/php-http/promise/tree/1.1.0"
+                "source": "https://github.com/php-http/promise/tree/1.2.0"
             },
-            "time": "2020-07-07T09:29:14+00:00"
+            "time": "2023-10-24T09:20:26+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -5752,16 +5747,16 @@
         },
         {
             "name": "symfony/flex",
-            "version": "v1.21.0",
+            "version": "v1.21.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/flex.git",
-                "reference": "5529871fa173c74cf76eaeaed69c9a52e408b2c5"
+                "reference": "7c191ea3c4cd40d074810b2f4750eac2c241396c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/flex/zipball/5529871fa173c74cf76eaeaed69c9a52e408b2c5",
-                "reference": "5529871fa173c74cf76eaeaed69c9a52e408b2c5",
+                "url": "https://api.github.com/repos/symfony/flex/zipball/7c191ea3c4cd40d074810b2f4750eac2c241396c",
+                "reference": "7c191ea3c4cd40d074810b2f4750eac2c241396c",
                 "shasum": ""
             },
             "require": {
@@ -5797,7 +5792,7 @@
             "description": "Composer plugin for Symfony",
             "support": {
                 "issues": "https://github.com/symfony/flex/issues",
-                "source": "https://github.com/symfony/flex/tree/v1.21.0"
+                "source": "https://github.com/symfony/flex/tree/v1.21.1"
             },
             "funding": [
                 {
@@ -5813,7 +5808,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-22T18:04:44+00:00"
+            "time": "2023-10-24T13:32:04+00:00"
         },
         {
             "name": "symfony/form",
