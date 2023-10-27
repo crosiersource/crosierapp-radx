@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.10.3",
+            "version": "v1.10.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "8d61ff5d9368f6f7c99b9f282b03a3156019a599"
+                "reference": "bde111134c19b9c7c0e1f641c073def14180a7d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/8d61ff5d9368f6f7c99b9f282b03a3156019a599",
-                "reference": "8d61ff5d9368f6f7c99b9f282b03a3156019a599",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/bde111134c19b9c7c0e1f641c073def14180a7d9",
+                "reference": "bde111134c19b9c7c0e1f641c073def14180a7d9",
                 "shasum": ""
             },
             "require": {
@@ -289,22 +289,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.10.3"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.10.4"
             },
-            "time": "2023-10-26T19:09:35+00:00"
+            "time": "2023-10-27T20:02:40+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.10.1",
+            "version": "v1.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "46bd0852584685e42a63cc3a14de799d86cb3bf1"
+                "reference": "cdded44081ecfd5a3bfc418ec767f89b3520a4e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/46bd0852584685e42a63cc3a14de799d86cb3bf1",
-                "reference": "46bd0852584685e42a63cc3a14de799d86cb3bf1",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/cdded44081ecfd5a3bfc418ec767f89b3520a4e4",
+                "reference": "cdded44081ecfd5a3bfc418ec767f89b3520a4e4",
                 "shasum": ""
             },
             "require": {
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.10.1"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.10.2"
             },
-            "time": "2023-10-26T19:13:54+00:00"
+            "time": "2023-10-27T20:03:23+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -2782,16 +2782,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "2.9.1",
+            "version": "2.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "f259e2b15fb95494c83f52d3caad003bbf5ffaa1"
+                "reference": "437cb3628f4cf6042cc10ae97fc2b8472e48ca1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/f259e2b15fb95494c83f52d3caad003bbf5ffaa1",
-                "reference": "f259e2b15fb95494c83f52d3caad003bbf5ffaa1",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/437cb3628f4cf6042cc10ae97fc2b8472e48ca1f",
+                "reference": "437cb3628f4cf6042cc10ae97fc2b8472e48ca1f",
                 "shasum": ""
             },
             "require": {
@@ -2868,7 +2868,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/2.9.1"
+                "source": "https://github.com/Seldaek/monolog/tree/2.9.2"
             },
             "funding": [
                 {
@@ -2880,7 +2880,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-06T13:44:46+00:00"
+            "time": "2023-10-27T15:25:26+00:00"
         },
         {
             "name": "nelmio/cors-bundle",
