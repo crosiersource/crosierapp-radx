@@ -108,6 +108,9 @@ class ImpressoesController extends FormListController
             }
             echo $pdf;
         } catch (\Throwable $e) {
+            if ($e instanceof ViewException) {
+                throw $e;
+            }
             throw new \RuntimeException('Ocorreu um erro durante o processamento :' . $e->getMessage());
         }
     }

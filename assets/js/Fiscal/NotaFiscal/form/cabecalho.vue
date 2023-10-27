@@ -156,6 +156,7 @@
             label="Nome / Razão Social"
             id="xNomeDestinatario"
             v-model="this.notaFiscal.xNomeDestinatario"
+            :error="this.errors.xNomeDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
             col="6"
           />
@@ -174,6 +175,7 @@
             label="Logradouro"
             id="logradouroDestinatario"
             v-model="this.notaFiscal.logradouroDestinatario"
+            :error="this.errors.logradouroDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
             col="4"
           />
@@ -182,6 +184,7 @@
             label="Número"
             id="numeroDestinatario"
             v-model="this.notaFiscal.numeroDestinatario"
+            :error="this.errors.numeroDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
             col="2"
           />
@@ -198,6 +201,7 @@
             label="Bairro"
             id="bairroDestinatario"
             v-model="this.notaFiscal.bairroDestinatario"
+            :error="this.errors.bairroDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
             col="2"
           />
@@ -206,6 +210,7 @@
             label="CEP"
             id="cepDestinatario"
             v-model="this.notaFiscal.cepDestinatario"
+            :error="this.errors.cepDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
             :comConsulta="this.notaFiscal.permiteSalvar"
             @consultaCep="this.consultaCep"
@@ -234,6 +239,7 @@
             label="Cidade"
             id="cidadeDestinatario"
             v-model="this.notaFiscal.cidadeDestinatario"
+            :error="this.errors.cidadeDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
             col="4"
           />
@@ -242,6 +248,7 @@
             label="UF"
             id="estadoDestinatario"
             v-model="this.notaFiscal.estadoDestinatario"
+            :error="this.errors.estadoDestinatario"
             :disabled="!this.notaFiscal.permiteSalvar"
             col="2"
           />
@@ -261,6 +268,7 @@
           { label: 'Por conta de terceiros', value: 'TERCEIROS' },
         ]"
         v-model="this.notaFiscal.transpModalidadeFrete"
+        :error="this.errors.transpModalidadeFrete"
         :disabled="!this.notaFiscal.permiteSalvar"
       />
 
@@ -338,12 +346,6 @@ export default {
     CrosierDropdownUf,
     CrosierCalendar,
     Cancelamento,
-  },
-
-  data() {
-    return {
-      schemaValidator: {},
-    };
   },
 
   methods: {

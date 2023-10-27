@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "crosiersource/crosierlib-radx": "^1.9.34",
+        "crosiersource/crosierlib-radx": "^1.10.0",
         "knplabs/knp-snappy-bundle": "^1.7",
         "ext-zip": "*",
         "ext-json": "*"

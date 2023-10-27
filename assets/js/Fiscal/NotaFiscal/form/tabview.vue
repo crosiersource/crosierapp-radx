@@ -179,6 +179,12 @@ export default {
     Historico,
   },
 
+  data() {
+    return {
+      schemaValidator: {},
+    };
+  },
+
   async mounted() {
     this.setLoading(true);
 
@@ -361,6 +367,7 @@ export default {
     ...mapGetters({
       loading: "isLoading",
       notaFiscal: "getNotaFiscal",
+      errors: "getNotaFiscalErrors",
     }),
   },
 };
