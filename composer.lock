@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.11.0",
+            "version": "v1.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "568d94fdb99af01eeccfdf17c252a249d1a24643"
+                "reference": "5e3b469e07351a9f61b1e55b7809a4936ec499c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/568d94fdb99af01eeccfdf17c252a249d1a24643",
-                "reference": "568d94fdb99af01eeccfdf17c252a249d1a24643",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/5e3b469e07351a9f61b1e55b7809a4936ec499c4",
+                "reference": "5e3b469e07351a9f61b1e55b7809a4936ec499c4",
                 "shasum": ""
             },
             "require": {
@@ -216,6 +216,7 @@
                 "php-http/guzzle6-adapter": "^2.0",
                 "phpdocumentor/reflection-docblock": "^5.3",
                 "scienta/doctrine-json-functions": "~4.1",
+                "sensio/framework-extra-bundle": "v6.*",
                 "symfony/asset": "5.4.*",
                 "symfony/cache": "5.4.*",
                 "symfony/console": "5.4.*",
@@ -288,22 +289,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.11.0"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.11.3"
             },
-            "time": "2023-10-28T14:49:14+00:00"
+            "time": "2023-10-28T16:18:29+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.11.0",
+            "version": "v1.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "32045505b2eb1513c519592174462ebe4a93e21d"
+                "reference": "0930868487e33379292370eb83087cc038bd0825"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/32045505b2eb1513c519592174462ebe4a93e21d",
-                "reference": "32045505b2eb1513c519592174462ebe4a93e21d",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/0930868487e33379292370eb83087cc038bd0825",
+                "reference": "0930868487e33379292370eb83087cc038bd0825",
                 "shasum": ""
             },
             "require": {
@@ -339,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.11.0"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.11.3"
             },
-            "time": "2023-10-28T14:50:03+00:00"
+            "time": "2023-10-28T16:19:13+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -4259,6 +4260,84 @@
                 "source": "https://github.com/ScientaNL/DoctrineJsonFunctions/tree/4.4.0"
             },
             "time": "2021-09-17T11:20:14+00:00"
+        },
+        {
+            "name": "sensio/framework-extra-bundle",
+            "version": "v6.2.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sensiolabs/SensioFrameworkExtraBundle.git",
+                "reference": "2f886f4b31f23c76496901acaedfedb6936ba61f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/2f886f4b31f23c76496901acaedfedb6936ba61f",
+                "reference": "2f886f4b31f23c76496901acaedfedb6936ba61f",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/annotations": "^1.0|^2.0",
+                "php": ">=7.2.5",
+                "symfony/config": "^4.4|^5.0|^6.0",
+                "symfony/dependency-injection": "^4.4|^5.0|^6.0",
+                "symfony/framework-bundle": "^4.4|^5.0|^6.0",
+                "symfony/http-kernel": "^4.4|^5.0|^6.0"
+            },
+            "conflict": {
+                "doctrine/doctrine-cache-bundle": "<1.3.1",
+                "doctrine/persistence": "<1.3"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^2.10|^3.0",
+                "doctrine/doctrine-bundle": "^1.11|^2.0",
+                "doctrine/orm": "^2.5",
+                "symfony/browser-kit": "^4.4|^5.0|^6.0",
+                "symfony/doctrine-bridge": "^4.4|^5.0|^6.0",
+                "symfony/dom-crawler": "^4.4|^5.0|^6.0",
+                "symfony/expression-language": "^4.4|^5.0|^6.0",
+                "symfony/finder": "^4.4|^5.0|^6.0",
+                "symfony/monolog-bridge": "^4.0|^5.0|^6.0",
+                "symfony/monolog-bundle": "^3.2",
+                "symfony/phpunit-bridge": "^4.4.9|^5.0.9|^6.0",
+                "symfony/security-bundle": "^4.4|^5.0|^6.0",
+                "symfony/twig-bundle": "^4.4|^5.0|^6.0",
+                "symfony/yaml": "^4.4|^5.0|^6.0",
+                "twig/twig": "^1.34|^2.4|^3.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "6.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sensio\\Bundle\\FrameworkExtraBundle\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "/tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "This bundle provides a way to configure your controllers with annotations",
+            "keywords": [
+                "annotations",
+                "controllers"
+            ],
+            "support": {
+                "source": "https://github.com/sensiolabs/SensioFrameworkExtraBundle/tree/v6.2.10"
+            },
+            "abandoned": "Symfony",
+            "time": "2023-02-24T14:57:12+00:00"
         },
         {
             "name": "symfony/amqp-messenger",
