@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.11.4",
+            "version": "v1.11.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "da81c11e76d443b908c2b39752ca7c589f4a606f"
+                "reference": "b55953f6e4c616737622da0d58b282a13e6d157a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/da81c11e76d443b908c2b39752ca7c589f4a606f",
-                "reference": "da81c11e76d443b908c2b39752ca7c589f4a606f",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/b55953f6e4c616737622da0d58b282a13e6d157a",
+                "reference": "b55953f6e4c616737622da0d58b282a13e6d157a",
                 "shasum": ""
             },
             "require": {
@@ -289,22 +289,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.11.4"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.11.5"
             },
-            "time": "2023-10-30T13:28:47+00:00"
+            "time": "2023-11-06T12:28:42+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.11.4",
+            "version": "v1.11.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "f5f9df3d23d059b1e92d651b6cc6cdeb7deb48c9"
+                "reference": "74839f629e124da733e31a91a89a4585142dfdf5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/f5f9df3d23d059b1e92d651b6cc6cdeb7deb48c9",
-                "reference": "f5f9df3d23d059b1e92d651b6cc6cdeb7deb48c9",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/74839f629e124da733e31a91a89a4585142dfdf5",
+                "reference": "74839f629e124da733e31a91a89a4585142dfdf5",
                 "shasum": ""
             },
             "require": {
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.11.4"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.11.5"
             },
-            "time": "2023-10-30T13:29:23+00:00"
+            "time": "2023-11-06T12:31:08+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -5755,16 +5755,16 @@
         },
         {
             "name": "symfony/flex",
-            "version": "v1.21.1",
+            "version": "v1.21.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/flex.git",
-                "reference": "7c191ea3c4cd40d074810b2f4750eac2c241396c"
+                "reference": "f1cf4014ffac79e0c031cc40d6d66354e7de5da5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/flex/zipball/7c191ea3c4cd40d074810b2f4750eac2c241396c",
-                "reference": "7c191ea3c4cd40d074810b2f4750eac2c241396c",
+                "url": "https://api.github.com/repos/symfony/flex/zipball/f1cf4014ffac79e0c031cc40d6d66354e7de5da5",
+                "reference": "f1cf4014ffac79e0c031cc40d6d66354e7de5da5",
                 "shasum": ""
             },
             "require": {
@@ -5800,7 +5800,7 @@
             "description": "Composer plugin for Symfony",
             "support": {
                 "issues": "https://github.com/symfony/flex/issues",
-                "source": "https://github.com/symfony/flex/tree/v1.21.1"
+                "source": "https://github.com/symfony/flex/tree/v1.21.2"
             },
             "funding": [
                 {
@@ -5816,7 +5816,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-24T13:32:04+00:00"
+            "time": "2023-10-30T18:34:59+00:00"
         },
         {
             "name": "symfony/form",
@@ -6931,30 +6931,30 @@
         },
         {
             "name": "symfony/monolog-bundle",
-            "version": "v3.8.0",
+            "version": "v3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/monolog-bundle.git",
-                "reference": "a41bbcdc1105603b6d73a7d9a43a3788f8e0fb7d"
+                "reference": "d14cf794d5b63337849d7e30925778ceaed82b34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/a41bbcdc1105603b6d73a7d9a43a3788f8e0fb7d",
-                "reference": "a41bbcdc1105603b6d73a7d9a43a3788f8e0fb7d",
+                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/d14cf794d5b63337849d7e30925778ceaed82b34",
+                "reference": "d14cf794d5b63337849d7e30925778ceaed82b34",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": "^1.22 || ^2.0 || ^3.0",
-                "php": ">=7.1.3",
-                "symfony/config": "~4.4 || ^5.0 || ^6.0",
-                "symfony/dependency-injection": "^4.4 || ^5.0 || ^6.0",
-                "symfony/http-kernel": "~4.4 || ^5.0 || ^6.0",
-                "symfony/monolog-bridge": "~4.4 || ^5.0 || ^6.0"
+                "monolog/monolog": "^1.25.1 || ^2.0 || ^3.0",
+                "php": ">=7.2.5",
+                "symfony/config": "^5.4 || ^6.0 || ^7.0",
+                "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
+                "symfony/http-kernel": "^5.4 || ^6.0 || ^7.0",
+                "symfony/monolog-bridge": "^5.4 || ^6.0 || ^7.0"
             },
             "require-dev": {
-                "symfony/console": "~4.4 || ^5.0 || ^6.0",
-                "symfony/phpunit-bridge": "^5.2 || ^6.0",
-                "symfony/yaml": "~4.4 || ^5.0 || ^6.0"
+                "symfony/console": "^5.4 || ^6.0 || ^7.0",
+                "symfony/phpunit-bridge": "^6.3 || ^7.0",
+                "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -6992,7 +6992,7 @@
             ],
             "support": {
                 "issues": "https://github.com/symfony/monolog-bundle/issues",
-                "source": "https://github.com/symfony/monolog-bundle/tree/v3.8.0"
+                "source": "https://github.com/symfony/monolog-bundle/tree/v3.9.0"
             },
             "funding": [
                 {
@@ -7008,7 +7008,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-10T14:24:36+00:00"
+            "time": "2023-11-06T11:28:48+00:00"
         },
         {
             "name": "symfony/notifier",
