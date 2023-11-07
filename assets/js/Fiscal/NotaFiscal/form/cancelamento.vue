@@ -105,11 +105,12 @@ export default {
             const rs = await api.post(`/api/fis/notaFiscal/cancelar/${this.notaFiscal.id}`, {
               motivoCancelamento: this.notaFiscal.motivoCancelamento,
             });
+            console.log(rs);
             if (rs?.status === 200) {
               this.$toast.add({
                 severity: "success",
                 summary: "Sucesso",
-                detail: "Cancelado com sucesso!",
+                detail: "Cancelamento solicitado com sucesso! (verifique histórico)",
                 life: 5000,
               });
               await this.loadData();
