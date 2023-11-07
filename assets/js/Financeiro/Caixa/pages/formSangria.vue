@@ -58,13 +58,11 @@ import {
   CrosierInputInt,
   CrosierInputText,
   CrosierInputTextarea,
-  CrosierCalendar,
   submitForm,
   SetFocus,
 } from "crosier-vue";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import moment from "moment";
-import SacadoCedente from "../../Movimentacao/pages/sacadoCedente";
 import Rodape from "./rodape.vue";
 
 export default {
@@ -75,7 +73,6 @@ export default {
     CrosierInputText,
     CrosierInputInt,
     CrosierInputTextarea,
-    SacadoCedente,
     Rodape,
   },
 

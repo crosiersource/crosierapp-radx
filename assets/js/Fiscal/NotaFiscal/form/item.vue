@@ -280,8 +280,6 @@ export default {
     CrosierPercent,
   },
 
-  async mounted() {},
-
   methods: {
     ...mapMutations(["setLoading", "setNotaFiscalItem", "setNotaFiscalItemErrors"]),
 
@@ -343,7 +341,7 @@ export default {
   },
 
   watch: {
-    valorTotal(novo, velho) {
+    valorTotal(novo) {
       this.item.icmsValorBc = novo;
       this.item.pisValorBc = novo;
       this.item.cofinsValorBc = novo;

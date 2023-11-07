@@ -435,7 +435,6 @@ export default {
           descricao: yup.string().required().typeError(),
           dtMoviment: yup.date().required().typeError(),
           dtVencto: yup.date().required().typeError(),
-          valor: yup.number().required().typeError(),
           cadeiaQtde: yup.number().min(1).max(720).required().typeError(),
         })
       );
@@ -556,8 +555,25 @@ export default {
     },
 
     gerarParcelas() {
+      if (
+        !validateFormData({
+          $store: this.$store,
+          formDataStateName: "parcelas",
+          schemaValidator: this.schemaValidator,
+          $toast: this.$toast,
+        })
+      ) {
+        return;
+      }
+
       this.parcelas.splice(1);
-      const valorParcela = this.valorParcela ?? this.valorTotal / this.fields.cadeiaQtde;
+      let valorParcela = 0.0;
+      if (this.valorParcela) {
+        valorParcela = this.valorParcela;
+      } else {
+        valorParcela = this.valorTotal / this.fields.cadeiaQtde;
+      }
+
       this.fields.valor = valorParcela;
       this.fields.cadeiaOrdem = 1;
       this.fields.descricao = this.fields.descricao ? this.fields.descricao.toUpperCase() : null;

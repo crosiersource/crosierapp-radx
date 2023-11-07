@@ -165,6 +165,9 @@ export default {
         formDataStateName: "fields",
         $toast: this.$toast,
         fnBeforeSave: (formData) => {
+          if (formData?.itens) {
+            delete formData.itens;
+          }
           formData.categoriaPadrao =
             formData.categoriaPadrao && "@id" in formData.categoriaPadrao
               ? formData.categoriaPadrao["@id"]

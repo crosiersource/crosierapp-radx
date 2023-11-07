@@ -42,30 +42,23 @@
 <script>
 import * as yup from "yup";
 import {
-  CrosierCalendar,
   CrosierCurrency,
-  CrosierDropdownEntity,
   CrosierFormS,
   CrosierInputInt,
-  CrosierInputText,
   CrosierDropdown,
   CrosierInputTextarea,
   submitForm,
 } from "crosier-vue";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import moment from "moment";
-import SacadoCedente from "../../Movimentacao/pages/sacadoCedente";
 import Rodape from "./rodape.vue";
 
 export default {
   components: {
-    CrosierDropdownEntity,
     CrosierCurrency,
     CrosierFormS,
-    CrosierInputText,
     CrosierInputInt,
     CrosierInputTextarea,
-    SacadoCedente,
     CrosierDropdown,
     Rodape,
   },

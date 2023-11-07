@@ -55,7 +55,6 @@
 <script>
 import * as yup from "yup";
 import {
-  CrosierCalendar,
   CrosierCurrency,
   CrosierDropdownEntity,
   CrosierFormS,

@@ -23,12 +23,6 @@
 
       <Column field="descricao" header="Descrição" sortable></Column>
 
-      <Column field="carteiraPagantePadrao" header="Carteira Padrão" sortable>
-        <template #body="r">
-          {{ r.data.carteiraPagantePadrao.descricaoMontada }}
-        </template>
-      </Column>
-
       <Column field="ativo" header="Utilizado" sortable>
         <template #body="r">
           {{ r.data.ativo ? "Sim" : "Não" }}

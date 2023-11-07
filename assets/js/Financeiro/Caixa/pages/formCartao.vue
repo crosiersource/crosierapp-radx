@@ -143,7 +143,6 @@ import {
 } from "crosier-vue";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import moment from "moment";
-import ToggleButton from "primevue/togglebutton";
 import SacadoCedente from "../../Movimentacao/pages/sacadoCedente";
 import Rodape from "./rodape.vue";
 
@@ -156,7 +155,6 @@ export default {
     CrosierInputInt,
     CrosierInputTextarea,
     SacadoCedente,
-    ToggleButton,
     Rodape,
   },
 

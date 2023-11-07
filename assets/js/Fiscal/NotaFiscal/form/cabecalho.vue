@@ -328,7 +328,6 @@ import {
   CrosierInputText,
   CrosierInputTextarea,
   SetFocus,
-  submitForm,
 } from "crosier-vue";
 import Cancelamento from "./cancelamento.vue";
 

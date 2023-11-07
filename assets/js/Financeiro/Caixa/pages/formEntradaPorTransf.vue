@@ -88,7 +88,6 @@ import {
   CrosierInputInt,
   CrosierInputText,
   CrosierInputTextarea,
-  CrosierCalendar,
   submitForm,
   SetFocus,
 } from "crosier-vue";
