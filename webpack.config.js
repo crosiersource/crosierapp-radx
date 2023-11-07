@@ -127,6 +127,9 @@ Encore
 
 
   .addEntry('ven/vendas/resultMensal', './assets/js/Vendas/resultMensal.js')
+
+
+  .addEntry('Fiscal/emissaoNFe/form', './assets/js/Fiscal/emissaoNFe/form.js')
   
   // --------------------------------------------
 

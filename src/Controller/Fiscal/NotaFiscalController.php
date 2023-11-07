@@ -51,6 +51,19 @@ class NotaFiscalController extends BaseController
 
 
     /**
+     * @Route("/api/fis/notaFiscal/bla/{notaFiscal}", name="api_fis_notaFiscal_bla")
+     */
+    public function bla(NotaFiscal $notaFiscal): JsonResponse
+    {
+
+        $notaFiscal->dtEmissao = $notaFiscal->dtEmissao->setTimezone(new \DateTimeZone('America/Fortaleza'));
+        $teste = $notaFiscal->dtEmissao->format('Y-m-d\TH:i:sP');
+        
+        return CrosierApiResponse::success();
+        
+    }
+
+    /**
      * @Route("/api/fis/notaFiscal/consultarCNPJ", name="api_fis_notaFiscal_consultarCNPJ")
      */
     public function consultarCNPJ(Request $request): JsonResponse
