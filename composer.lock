@@ -177,16 +177,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.11.5",
+            "version": "v1.11.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "b55953f6e4c616737622da0d58b282a13e6d157a"
+                "reference": "baa63f2cd39a48c825f5aec66ea30c7bbe5550b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/b55953f6e4c616737622da0d58b282a13e6d157a",
-                "reference": "b55953f6e4c616737622da0d58b282a13e6d157a",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/baa63f2cd39a48c825f5aec66ea30c7bbe5550b6",
+                "reference": "baa63f2cd39a48c825f5aec66ea30c7bbe5550b6",
                 "shasum": ""
             },
             "require": {
@@ -212,7 +212,7 @@
                 "friendsofsymfony/jsrouting-bundle": "^2.2",
                 "guzzlehttp/guzzle": "6.5.8",
                 "nelmio/cors-bundle": "^2.1",
-                "php": "^7.4|^8.0",
+                "php": "^8.0",
                 "php-http/guzzle6-adapter": "^2.0",
                 "phpdocumentor/reflection-docblock": "^5.3",
                 "scienta/doctrine-json-functions": "~4.1",
@@ -289,22 +289,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.11.5"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.11.6"
             },
-            "time": "2023-11-06T12:28:42+00:00"
+            "time": "2023-11-08T13:22:28+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.11.7",
+            "version": "v1.11.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "52df90ce3e78f0eb58f674d25966734c08db8c7a"
+                "reference": "ad72346946426492c7d258520aff07b5d50a9661"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/52df90ce3e78f0eb58f674d25966734c08db8c7a",
-                "reference": "52df90ce3e78f0eb58f674d25966734c08db8c7a",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/ad72346946426492c7d258520aff07b5d50a9661",
+                "reference": "ad72346946426492c7d258520aff07b5d50a9661",
                 "shasum": ""
             },
             "require": {
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.11.7"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.11.8"
             },
-            "time": "2023-11-07T18:25:20+00:00"
+            "time": "2023-11-08T13:31:14+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -3478,16 +3478,16 @@
         },
         {
             "name": "php-http/promise",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/promise.git",
-                "reference": "ef4905bfb492ff389eb7f12e26925a0f20073050"
+                "reference": "44a67cb59f708f826f3bec35f22030b3edb90119"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/promise/zipball/ef4905bfb492ff389eb7f12e26925a0f20073050",
-                "reference": "ef4905bfb492ff389eb7f12e26925a0f20073050",
+                "url": "https://api.github.com/repos/php-http/promise/zipball/44a67cb59f708f826f3bec35f22030b3edb90119",
+                "reference": "44a67cb59f708f826f3bec35f22030b3edb90119",
                 "shasum": ""
             },
             "require": {
@@ -3524,9 +3524,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/promise/issues",
-                "source": "https://github.com/php-http/promise/tree/1.2.0"
+                "source": "https://github.com/php-http/promise/tree/1.2.1"
             },
-            "time": "2023-10-24T09:20:26+00:00"
+            "time": "2023-11-08T12:57:08+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
