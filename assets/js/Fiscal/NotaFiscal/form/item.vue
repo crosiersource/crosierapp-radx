@@ -127,7 +127,7 @@
           helpText="Código da Situação Tributária"
         />
 
-        <CrosierInputText
+        <CrosierInputInt
           col="4"
           id="csosn"
           v-model="this.item.csosn"
@@ -263,6 +263,7 @@ import {
   CrosierInputText,
   CrosierCurrency,
   CrosierInputDecimal,
+  CrosierInputInt,
   CrosierDropdown,
   CrosierPercent,
 } from "crosier-vue";
@@ -275,6 +276,7 @@ export default {
     CrosierFormS,
     CrosierInputDecimal,
     CrosierInputText,
+    CrosierInputInt,
     CrosierCurrency,
     CrosierDropdown,
     CrosierPercent,
