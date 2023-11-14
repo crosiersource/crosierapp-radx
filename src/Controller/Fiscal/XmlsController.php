@@ -94,13 +94,14 @@ class XmlsController extends FormListController
      */
     public function downloadXMLsMesAno(Request $request): Response
     {
-        $documentoEmitente = $request->get('documentoEmitente');
-        if (!$documentoEmitente) {
-            throw new ViewException('documentoEmitente n/d');
-        }
-        $dtEmissao = $request->get('dtEmissao');
-        $dtEmissaoDe = DateTimeUtils::parseDateStr($dtEmissao['after']);
-        $dtEmissaoAte = DateTimeUtils::parseDateStr($dtEmissao['before']);
+        $documentoEmitente = $request->get('documentoEmitente') ?? $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
+        
+        $mesano = $request->get('mesano');
+
+        $dtsMesAno = DateTimeUtils::getDatasMesAno($mesano);
+        
+        $dtEmissaoDe = $dtsMesAno['i'];
+        $dtEmissaoAte = $dtsMesAno['f'];
         if (!$dtEmissaoDe || !$dtEmissaoAte) {
             return CrosierApiResponse::error(null, false, 'Período n/d');
         }
