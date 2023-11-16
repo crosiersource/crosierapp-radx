@@ -374,6 +374,7 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import * as yup from "yup";
 import {
+  api,
   CrosierCurrency,
   CrosierDropdownEntity,
   CrosierFormS,
@@ -387,7 +388,6 @@ import {
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 import moment from "moment";
-import { cacheAdapterEnhancer } from "axios-extensions";
 import SacadoCedente from "./sacadoCedente";
 
 export default {
@@ -413,7 +413,6 @@ export default {
       exibirDtPagto: false,
       valorParcela: null,
       valorTotal: null,
-      api: null,
       totalParcelas: null,
       exibirCamposChequeTerceiros: false,
       exibirCamposChequeProprio: false,
@@ -443,13 +442,6 @@ export default {
     if (rPagamento) {
       this.exibirDtPagto = true;
     }
-
-    this.api = axios.create({
-      baseURL: "/",
-      headers: { "Cache-Control": "no-cache" },
-      // cache will be enabled by default
-      adapter: cacheAdapterEnhancer(axios.defaults.adapter),
-    });
 
     this.setLoading(false);
   },
@@ -613,7 +605,7 @@ export default {
           this.parcelas[i].dtVencto
         ).format("YYYY-MM-DD")}`;
 
-        const rs = await this.api.get(route);
+        const rs = await api.get({ apiResource: route });
 
         if (rs?.data?.diaUtil) {
           this.parcelas[i].dtVenctoEfetiva = new Date(moment(rs.data.diaUtil));
