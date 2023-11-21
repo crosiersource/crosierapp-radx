@@ -447,7 +447,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["setLoading", "setparcelasErrors"]),
+    ...mapMutations(["setLoading", "setParcelasErrors"]),
 
     moment(date) {
       return moment(date);
