@@ -319,6 +319,7 @@ export default {
     },
 
     async trocaPeriodo(proximo) {
+      this.setLoading(true);
       const ini = moment(this.filters["dtVenda[after]"]).format("YYYY-MM-DD");
       const fim = moment(this.filters["dtVenda[before]"]).format("YYYY-MM-DD");
 
@@ -326,10 +327,11 @@ export default {
         `/base/diaUtil/incPeriodo/?ini=${ini}&fim=${fim}&futuro=${proximo}&comercial=false&financeiro=false`
       );
 
-      this.filters["dtVenda[after]"] = new Date(`${rs.data.dtIni}T00:00:00-03:00`);
-      this.filters["dtVenda[before]"] = new Date(`${rs.data.dtFim}T23:59:59-03:00`);
+      this.filters["dtVenda[after]"] = new Date(`${rs.data.dtIni}T12:00:00-03:00`);
+      this.filters["dtVenda[before]"] = new Date(`${rs.data.dtFim}T12:00:00-03:00`);
 
       this.doFilter();
+      this.setLoading(false);
     },
 
     doFilterNextTick() {
@@ -344,19 +346,19 @@ export default {
       if (!this.filters["dtVenda[after]"]) {
         this.filters["dtVenda[after]"] = `${this.moment()
           .subtract(7, "days")
-          .format("YYYY-MM-DD")}T00:00:00-03:00`;
+          .format("YYYY-MM-DD")}T12:00:00-03:00`;
       } else {
         this.filters["dtVenda[after]"] = `${this.moment(this.filters["dtVenda[after]"]).format(
           "YYYY-MM-DD"
-        )}T00:00:00-03:00`;
+        )}T12:00:00-03:00`;
       }
 
       if (!this.filters["dtVenda[before]"]) {
-        this.filters["dtVenda[before]"] = `${this.moment().format("YYYY-MM-DD")}T23:59:59-03:00`;
+        this.filters["dtVenda[before]"] = `${this.moment().format("YYYY-MM-DD")}T12:00:00-03:00`;
       } else {
         this.filters["dtVenda[before]"] = `${this.moment(this.filters["dtVenda[before]"]).format(
           "YYYY-MM-DD"
-        )}T23:59:59-03:00`;
+        )}T12:00:00-03:00`;
       }
 
       this.filters["codVendedor[i]"] = this.filters["codVendedor[i]"] ?? 0;
