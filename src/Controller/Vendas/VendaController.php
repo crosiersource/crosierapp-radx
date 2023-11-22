@@ -1643,7 +1643,11 @@ class VendaController extends FormListController
                     if ($i === $tt -2) {
                         $fatorAnoAnterior = '(?)';
                     } else {
-                        $dFatorAnoAnterior = bcdiv($r['compa'][$i + 1]['dados']['total'], $r['compa'][$i + 2]['dados']['total'], 4);
+                        if (($r['compa'][$i + 2]['dados']['total'] ?? 0.0) <= 0.0) {
+                            $dFatorAnoAnterior = 0;
+                        } else {
+                            $dFatorAnoAnterior = bcdiv($r['compa'][$i + 1]['dados']['total'], $r['compa'][$i + 2]['dados']['total'], 4);
+                        }
                         if ($dFatorAnoAnterior < 1) {
                             $quedaDe = bcmul(bcsub(1, $dFatorAnoAnterior, 4), 100, 2);
                             $fatorAnoAnterior = 'Queda de ' . $quedaDe . '%';
@@ -1653,8 +1657,11 @@ class VendaController extends FormListController
                         }
                     }
 
-
-                    $dFatorAnoAtual = bcdiv($r['compa'][0]['dados']['total'], $r['compa'][$i + 1]['dados']['total'], 4);
+                    if (($r['compa'][$i + 1]['dados']['total'] ?? 0) <= 0.0) {
+                        $dFatorAnoAtual = 0;
+                    } else {
+                        $dFatorAnoAtual = bcdiv($r['compa'][0]['dados']['total'], $r['compa'][$i + 1]['dados']['total'], 4);
+                    }
 
                     if ($dFatorAnoAtual < 1) {
                         $quedaDe = bcmul(bcsub(1, $dFatorAnoAtual, 4), 100, 2);
