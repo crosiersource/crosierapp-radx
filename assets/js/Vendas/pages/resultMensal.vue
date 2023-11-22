@@ -235,7 +235,7 @@ import ConfirmDialog from "primevue/confirmdialog";
 import Sidebar from "primevue/sidebar";
 import { mapGetters, mapMutations } from "vuex";
 import { CrosierBlock, CrosierCalendar, CrosierInputInt } from "crosier-vue";
-import moment from "moment";
+import moment from "moment-timezone";
 import axios from "axios";
 import printJS from "print-js";
 
