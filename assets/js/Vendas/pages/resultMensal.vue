@@ -155,8 +155,7 @@
         >
           <Column field="id" header="Vendedor" sortable>
             <template #body="r">
-              {{ ("00" + r.data?.vendedor?.jsonData?.codigo).slice(-2) }} -
-              {{ r.data.vendedor.nome }}
+              {{ r.data.vendedor }}
             </template>
           </Column>
 
@@ -214,10 +213,18 @@
             </template>
           </Column>
 
-          <Column field="dados.fator" header="Fator" sortable>
+          <Column field="dados.fator" header="Fator (Ano Anterior)" sortable>
             <template #body="r">
               <div class="text-center">
-                {{ r.data.dados.fator ?? 0 }}
+                {{ r.data.dados.fatorAnoAnterior ?? 0 }}
+              </div>
+            </template>
+          </Column>
+
+          <Column field="dados.fator" header="Fator (Ano Atual)" sortable>
+            <template #body="r">
+              <div class="text-center">
+                {{ r.data.dados.fatorAnoAtual ?? 0 }}
               </div>
             </template>
           </Column>

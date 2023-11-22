@@ -1634,26 +1634,46 @@ class VendaController extends FormListController
                     'periodo' => 'Entre ' . $dtIni->format('d/m/Y') . ' e ' . $dtFim->format('d/m/Y'),
                     'dados' => $dados,
                 ];
-
                 $dtIni = DateTimeUtils::incMes($dtIni, -12);
                 $dtFim = DateTimeUtils::incMes($dtFim, -12);
-
             }
 
             for ($i = 0; $i < $tt - 1; $i++) {
-                $fator = null;
                 try {
-                    $dFator = bcdiv($r['compa'][$i]['dados']['total'], $r['compa'][$i + 1]['dados']['total'], 4);
-                    $fator = $dFator < 1 ?
-                        'Queda de ' . bcmul((bcsub(1, $dFator, 4)), 100, 2) . '%' :
-                        'Aumento de ' . bcmul((bcsub($dFator, 1, 4)), 100, 2) . '%';
+                    if ($i === $tt -2) {
+                        $fatorAnoAnterior = '(?)';
+                    } else {
+                        $dFatorAnoAnterior = bcdiv($r['compa'][$i + 1]['dados']['total'], $r['compa'][$i + 2]['dados']['total'], 4);
+                        if ($dFatorAnoAnterior < 1) {
+                            $quedaDe = bcmul(bcsub(1, $dFatorAnoAnterior, 4), 100, 2);
+                            $fatorAnoAnterior = 'Queda de ' . $quedaDe . '%';
+                        } else {
+                            $aumentoDe = bcmul(bcsub($dFatorAnoAnterior, 1, 4), 100, 2);
+                            $fatorAnoAnterior = 'Aumento de ' . $aumentoDe . '%';
+                        }
+                    }
+
+
+                    $dFatorAnoAtual = bcdiv($r['compa'][0]['dados']['total'], $r['compa'][$i + 1]['dados']['total'], 4);
+
+                    if ($dFatorAnoAtual < 1) {
+                        $quedaDe = bcmul(bcsub(1, $dFatorAnoAtual, 4), 100, 2);
+                        $fatorAnoAtual = 'Queda de ' . $quedaDe . '%';
+                    } else {
+                        $aumentoDe = bcmul(bcsub($dFatorAnoAtual, 1, 4), 100, 2);
+                        $fatorAnoAtual = 'Aumento de ' . $aumentoDe . '%';
+                    }
+                    
                 } catch (\Exception $e) {
                     $e->getTraceAsString();
                 }
 
-                $r['compa'][$i]['dados']['fator'] = $fator;
+                $r['compa'][$i+1]['dados']['fatorAnoAnterior'] = $fatorAnoAnterior;
+                $r['compa'][$i+1]['dados']['fatorAnoAtual'] = $fatorAnoAtual;
             }
 
+            // remove the first from $r['compa']
+            array_shift($r['compa']);
 
             return CrosierApiResponse::success($r);
         } catch (\Exception $e) {
