@@ -178,6 +178,10 @@
                 <Column field="descricao" header="Descrição" style="width: 60%">
                   <template #body="r">
                     <b>{{ r.data.descricaoMontada }}</b>
+
+                    <div class="muted" v-if="r.data.sacado">
+                      {{ r.data.sacado }}
+                    </div>
                   </template>
                 </Column>
 

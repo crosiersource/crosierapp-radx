@@ -166,7 +166,6 @@ VALUES ('fdabfbb2-197f-4cd4-87dd-f3ea02ef7a06', 'Importação', 'fas fa-file-imp
         '/v/fin/movimentacao/importador', 'ROLE_FINAN', 'b7a5f134-ea80-40e4-822e-e04cdac70258', @ordem, null, now(), now(), 1, 1, 1);
 
 
-
 -- Tela para Caixa
 DELETE
 FROM cfg_entmenu
@@ -211,7 +210,7 @@ DELETE
 FROM cfg_entmenu
 WHERE uuid = 'a2f6c378-71c8-426b-8974-804187e8776a';
 
-SET @ordem = @ordem + 1;
+SET @ordem = @ordem + 1000;
 
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id,
                         user_updated_id)

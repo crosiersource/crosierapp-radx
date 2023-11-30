@@ -98,6 +98,9 @@ class NotaFiscalController extends BaseController
     public function downloadXMLsEmLote(Request $request, NFeUtils $nfeUtils): Response
     {
         $nfsIds = $request->get('nfsIds');
+        if (!$nfsIds) {
+            throw new ViewException('Nenhum ID de NF informado');
+        }
 
         $zip = new ZipArchive();
         $uuid = StringUtils::guidv4();

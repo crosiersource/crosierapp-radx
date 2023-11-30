@@ -21,6 +21,7 @@
       'numero',
       'serie',
       'resumo',
+      'retornoManifest',
       'valorTotalFormatted',
       'xNomeEmitente',
       'possuiXml',
@@ -175,13 +176,17 @@
             <br />{{ r.data.xNomeEmitente }}
           </div>
           <div class="float-right">
-            <div :class="'badge badge-pill badge-' + (r.data.resumo ? 'secondary' : 'primary')">
+            <div
+              :class="'badge badge-pill badge-' + (r.data.resumo ? 'secondary' : 'primary')"
+              :title="r.data?.retornoManifest"
+            >
               {{ r.data.resumo ? "Resumo" : "Completa" }}
             </div>
             <div></div>
             <div
               class="badge badge-pill badge-warning"
               v-if="r.data.resumo && !r.data.dtManifestDest"
+              :title="r.data?.retornoManifest"
             >
               <i class="fas fa-warning"></i> Sem manifestação!
             </div>

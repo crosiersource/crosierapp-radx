@@ -165,7 +165,7 @@ class FiscalCommand extends Command
                     'appUUID' => $_SERVER['CROSIERAPPRADX_UUID']
                 ]);
 
-        $dias = $rsDias['valor'] ?? 3;
+        $dias = $rsDias['valor'] ?? 10;
         $cnpjs = $this->nfeUtils->getNFeConfigsCNPJs();
 
         $repoNotaFiscal = $this->notaFiscalEntityHandler->getDoctrine()->getRepository(NotaFiscal::class);
