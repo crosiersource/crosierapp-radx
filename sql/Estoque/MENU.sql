@@ -28,7 +28,6 @@ VALUES ('75f3e22e-0114-11ec-b1db-47f2e75c14df', 'Estoque (Menu Raíz)', '', 'PAI
         '9121ea11-dc5d-4a22-9596-187f5452f95a', '', '', null, 0, null, now(), now(), 1, 1, 1);
 
 
-
 -- Pedidos de Compra
 DELETE
 FROM cfg_entmenu

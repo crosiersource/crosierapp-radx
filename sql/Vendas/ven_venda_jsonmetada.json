@@ -1,15 +1,15 @@
 {
-  "campos": {
-    "canal": {
-      "label": "Canal",
-      "tipo": "select",
-      "class": "s2allownew",
-      "sugestoes": [
-        "LOJA FÍSICA",
-        "ECOMMERCE"
-      ]
+    "campos": {
+        "canal": {
+            "label": "Canal",
+            "tipo": "select",
+            "class": "s2allownew",
+            "sugestoes": [
+                "LOJA FÍSICA",
+                "ECOMMERCE"
+            ]
+        }
+    },
+    "abas": {
     }
-  },
-  "abas": {
-  }
 }

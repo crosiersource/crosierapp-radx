@@ -1,9 +1,9 @@
 UPDATE cfg_app_config SET valor = '
 {
-  "vinculoAoEstoque": "porProduto",
-  "campos": {
-  },
-  "abas": {
-  }
+    "vinculoAoEstoque": "porProduto",
+    "campos": {
+    },
+    "abas": {
+    }
 }
 ' WHERE chave = 'est_pedidocompra_json_metadata';
