@@ -97,13 +97,16 @@ class XmlsController extends FormListController
         $documentoEmitente = $request->get('documentoEmitente') ?? $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
         
         $mesano = $request->get('mesano');
-
-        $dtsMesAno = DateTimeUtils::getDatasMesAno($mesano);
-        
-        $dtEmissaoDe = $dtsMesAno['i'];
-        $dtEmissaoAte = $dtsMesAno['f'];
-        if (!$dtEmissaoDe || !$dtEmissaoAte) {
-            return CrosierApiResponse::error(null, false, 'Período n/d');
+        if ($mesano) {
+            $dtsMesAno = DateTimeUtils::getDatasMesAno($mesano);
+            $dtEmissaoDe = $dtsMesAno['i'];
+            $dtEmissaoAte = $dtsMesAno['f'];
+            if (!$dtEmissaoDe || !$dtEmissaoAte) {
+                return CrosierApiResponse::error(null, false, 'Período n/d');
+            }
+        } else {
+            $dtEmissaoDe = DateTimeUtils::parseDateStr($request->query->get('dtEmissao')['after']);
+            $dtEmissaoAte = DateTimeUtils::parseDateStr($request->query->get('dtEmissao')['before']);
         }
 
         if (DateTimeUtils::diffInDias($dtEmissaoAte, $dtEmissaoDe) > 31) {
