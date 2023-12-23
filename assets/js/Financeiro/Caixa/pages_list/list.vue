@@ -3,8 +3,6 @@
   <Toast position="bottom-right" class="mb-5" />
   <CrosierBlock :loading="this.loading" />
 
-  <DialogMovimentacao />
-
   <div class="container-fluid">
     <div class="card" style="margin-bottom: 50px">
       <div class="card-header">
@@ -16,22 +14,26 @@
           <div class="ml-auto"></div>
           <div>
             <CrosierCalendar
-              label="Data"
-              v-model="this.filters.dtMoviment"
-              @date-select="this.doFilterNextTick"
+              label="Período"
+              v-model="this.filters.periodo"
+              range
+              comBotoesPeriodo
+              maxRange="59"
+              @date-select="this.doFilter"
             />
           </div>
 
           <div>
-            <CrosierDropdownEntity
-              v-model="this.filters.carteira"
+            <CrosierMultiSelectEntity
+              style="z-index: 99999"
+              v-model="this.filters.carteirasIds"
               entity-uri="/api/fin/carteira"
               optionLabel="descricaoMontada"
+              optionValue="id"
               :orderBy="{ codigo: 'ASC' }"
               :filters="{ caixa: true, atual: true }"
-              label="Caixa"
-              id="carteira"
-              @change="this.doFilterNextTick"
+              label="Caixas"
+              id="carteiras"
             />
           </div>
 
@@ -46,14 +48,18 @@
 
           <button
             type="button"
-            class="btn btn-outline-info ml-1 mt-3"
-            @click="novo"
-            title="Lançar nova movimentação"
+            class="btn btn-outline-danger ml-1 mt-3"
+            @click="this.abrirFecharCaixa"
+            :title="this.caixaAberto ? 'Fechar caixa' : 'Abrir caixa'"
           >
-            <i class="fas fa-file" aria-hidden="true"></i>
+            <i
+              :class="this.caixaAberto ? 'fas fa-lock' : 'fas fa-lock-open'"
+              aria-hidden="true"
+            ></i>
           </button>
         </div>
       </div>
+
       <div class="card-body">
         <DataTable
           v-model:expandedRows="expandedRows"
@@ -254,10 +260,9 @@ import { api, CrosierBlock, CrosierDropdownEntity, CrosierCalendar } from "crosi
 import moment from "moment";
 import axios from "axios";
 import printJS from "print-js";
-import DialogMovimentacao from "./formDialog.vue";
 
 export default {
-  name: "caixa",
+  name: "list",
 
   components: {
     ConfirmDialog,
@@ -267,7 +272,6 @@ export default {
     Toast,
     CrosierDropdownEntity,
     CrosierCalendar,
-    DialogMovimentacao,
   },
 
   data() {
@@ -282,13 +286,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations([
-      "setLoading",
-      "setFilters",
-      "setNovaMovimentacao",
-      "setMovimentacao",
-      "setTipoMovimentacao",
-    ]),
+    ...mapMutations(["setLoading", "setFilters"]),
     ...mapActions(["doFilter"]),
 
     moment(date) {
@@ -297,12 +295,11 @@ export default {
 
     doFilterNextTick() {
       this.$nextTick(async () => {
-        localStorage.setItem("caixaListFilters", JSON.stringify(this.filters));
         await this.doFilter();
       });
     },
 
-    deletar(id) {
+    abrirFecharCaixa() {
       this.$confirm.require({
         acceptLabel: "Sim",
         rejectLabel: "Não",
@@ -311,104 +308,29 @@ export default {
         icon: "pi pi-exclamation-triangle",
         accept: async () => {
           this.setLoading(true);
+
           try {
-            const deleteUrl = `/api/fin/movimentacao/${id}`;
-            const rsDelete = await api.delete(deleteUrl);
-            if (!rsDelete) {
-              throw new Error("rsDelete n/d");
-            }
-            if (rsDelete?.status === 204) {
+            const rs = await api.post(
+              `/api/fin/caixaOperacao/abrirFechar/${this.filters.carteira.id}`
+            );
+
+            if (rs?.status === 200) {
               this.$toast.add({
                 severity: "success",
                 summary: "Sucesso",
-                detail: "Registro deletado com sucesso",
+                detail: "Caixa blablabla com sucesso!",
                 life: 5000,
               });
-              await this.doFilter();
-            } else if (rsDelete?.data && rsDelete.data["hydra:description"]) {
-              throw new Error(`status !== 204: ${rsDelete?.data["hydra:description"]}`);
-            } else if (rsDelete?.statusText) {
-              throw new Error(`status !== 204: ${rsDelete?.statusText}`);
+              await this.loadData();
             } else {
-              throw new Error("Erro ao deletar (erro n/d, status !== 204)");
+              throw new Error();
             }
           } catch (e) {
-            console.error(e);
+            console.error("Erro ao blablabla caixa", e);
             this.$toast.add({
               severity: "error",
               summary: "Erro",
-              detail: "Ocorreu um erro ao deletar",
-              life: 5000,
-            });
-          }
-          this.setLoading(false);
-        },
-      });
-    },
-
-    async imprimir() {
-      this.setLoading(true);
-      const pdf = await axios.post("/fin/movimentacao/aPagarReceber/rel", {
-        tableData: JSON.stringify(this.tableData),
-        filters: JSON.stringify(this.filters),
-        saldos: JSON.stringify(Object.fromEntries(this.saldos)),
-        totalGeral: this.totalGeral,
-      });
-      printJS({
-        printable: pdf.data,
-        type: "pdf",
-        base64: true,
-        targetStyles: "*",
-      });
-      this.setLoading(false);
-    },
-
-    async consolidar(data) {
-      this.$confirm.require({
-        acceptLabel: "Sim",
-        rejectLabel: "Não",
-        message: "Confirmar?",
-        header: "Atenção!",
-        group: "confirmDialog_crosierListS",
-        icon: "pi pi-exclamation-triangle",
-        accept: async () => {
-          this.setLoading(true);
-          const url = `/api/fin/carteira/consolidar/${this.filters.carteira.id}/${data.substring(
-            0,
-            10
-          )}`;
-          try {
-            const rs = await axios.get(url, {
-              validateStatus(status) {
-                return status < 500; // Resolve only if the status code is less than 500
-              },
-              responseType: "json",
-            });
-
-            if (![200, 201].includes(rs?.status)) {
-              this.$toast.add({
-                severity: "error",
-                summary: "Erro",
-                group: "mainToast",
-                detail: rs?.data?.EXCEPTION_MSG || rs?.data?.MSG || "Ocorreu um erro",
-                life: 5000,
-              });
-            } else {
-              this.$toast.add({
-                severity: "success",
-                summary: "Sucesso",
-                group: "mainToast",
-                detail: "Carteira consolidada com sucesso",
-                life: 5000,
-              });
-            }
-          } catch (e) {
-            console.error(e);
-            this.$toast.add({
-              severity: "error",
-              summary: "Erro",
-              group: "mainToast",
-              detail: "Ocorreu um erro na chamada",
+              detail: e?.response?.data?.EXCEPTION_MSG ?? "Ocorreu um erro ao efetuar a operação",
               life: 5000,
             });
           }
@@ -416,38 +338,6 @@ export default {
           this.setLoading(false);
         },
       });
-    },
-
-    async editar(mov) {
-      this.setLoading(true);
-      try {
-        const rsMov = await api.get({ apiResource: `/api/fin/movimentacao/${mov.id}` });
-        if (rsMov.data.id === mov.id) {
-          this.setMovimentacao(rsMov.data);
-          this.$store.state.exibeDialogMovimentacao = true;
-        } else {
-          this.$toast.add({
-            severity: "error",
-            summary: "Erro",
-            detail: "Ocorreu um erro ao editar",
-            life: 5000,
-          });
-        }
-      } catch (e) {
-        console.error(e);
-      }
-      this.setLoading(false);
-    },
-
-    totalPorCategoriaEModo(categoriaCodigo, modoCodigo) {
-      return this.data[categoriaCodigo].movimentacoes
-        .filter((e) => e.modo.codigo === modoCodigo)
-        .reduce((a, b) => a + b.valorTotal, 0);
-    },
-
-    novo() {
-      this.setNovaMovimentacao();
-      this.$store.state.exibeDialogMovimentacao = true;
     },
   },
 
@@ -455,10 +345,11 @@ export default {
     ...mapGetters({
       loading: "isLoading",
       filters: "getFilters",
-      data: "getData",
-      saldoAnterior: "getSaldoAnterior",
-      saldoPosterior: "getSaldoPosterior",
     }),
+
+    caixaAberto() {
+      return true;
+    },
   },
 };
 </script>
