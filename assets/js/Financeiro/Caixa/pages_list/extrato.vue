@@ -25,15 +25,16 @@
           </div>
 
           <div>
-            <CrosierDropdownEntity
-              v-model="this.filters.carteira"
+            <CrosierMultiSelectEntity
+              style="z-index: 99999"
+              v-model="this.filters.carteirasIds"
               entity-uri="/api/fin/carteira"
               optionLabel="descricaoMontada"
-              :optionValue="null"
+              optionValue="id"
               :orderBy="{ codigo: 'ASC' }"
-              :filters="{ concreta: true, caixa: false, atual: true }"
-              label="Carteira"
-              id="carteira"
+              :filters="{ caixa: true, atual: true }"
+              label="Caixas"
+              id="carteiras"
             />
           </div>
 
@@ -74,21 +75,17 @@
           @sort="doFilter($event)"
           :multiSortMeta="multiSortMeta"
           :removable-sort="true"
-          v-model:selection="this.selection"
-          @update:selection="this.onUpdateSelection($event)"
-          selectionMode="multiple"
           :metaKeySelection="false"
           dataKey="id"
-          @rowSelect="this.onRowSelect"
-          @rowUnselect="this.onRowUnselect"
-          :resizableColumns="true"
+          resizableColumns
           columnResizeMode="fit"
           responsiveLayout="scroll"
           :first="firstRecordIndex"
           ref="dt"
-          :rowHover="true"
+          rowHover
         >
           <template #empty> Nenhum dado a exibir. </template>
+
           <Column field="id">
             <template #body="r">
               {{ ("0".repeat(8) + r.data.id).slice(-8) }}
@@ -267,13 +264,16 @@
           </Column>
 
           <template #header>
-            <div class="h5 text-right mr-5" v-if="this.saldoAnterior">
+            <div class="h5 text-right mr-5" v-if="this.exibirSaldos && this.saldoAnterior">
               Saldo anterior: {{ this.getValorFormatted(this.saldoAnterior) }}
             </div>
           </template>
 
           <template #footer>
-            <div class="h5 text-right mr-5" v-if="this.saldoFinal && totalRecords === 0">
+            <div
+              class="h5 text-right mr-5"
+              v-if="this.exibirSaldos && this.saldoFinal && totalRecords === 0"
+            >
               Saldo posterior: {{ this.getValorFormatted(this.saldoFinal) }}
             </div>
           </template>
@@ -286,6 +286,7 @@
 
           <template #groupfooter="r">
             <td
+              v-if="this.exibirSaldos"
               class="h5 text-right"
               colspan="4"
               :style="
@@ -297,6 +298,7 @@
               Saldo em {{ this.moment(r.data.dtUtil).format("DD/MM/YYYY") }}:
             </td>
             <td
+              v-if="this.exibirSaldos"
               class="text-right h5"
               :style="
                 'font-weight: bolder; color: ' + (this.getSaldo(r.data.dtUtil) >= 0)
@@ -306,16 +308,7 @@
             >
               {{ this.getSaldoFormatted(r.data.dtUtil) }}
             </td>
-            <td>
-              <button
-                type="button"
-                @click="this.consolidar(r.data.dtUtil)"
-                class="btn btn-sm btn-block btn-outline-primary"
-                title="Consolidar carteira nesta data"
-              >
-                <i class="fas fa-check"></i>
-              </button>
-            </td>
+            <td></td>
           </template>
         </DataTable>
       </div>
@@ -329,7 +322,7 @@ import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierBlock, CrosierDropdownEntity, CrosierCalendar } from "crosier-vue";
+import { api, CrosierBlock, CrosierMultiSelectEntity, CrosierCalendar } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
 import printJS from "print-js";
@@ -343,7 +336,7 @@ export default {
     DataTable,
     Column,
     Toast,
-    CrosierDropdownEntity,
+    CrosierMultiSelectEntity,
     CrosierCalendar,
   },
 
@@ -416,7 +409,7 @@ export default {
     },
 
     async doFilter() {
-      if (!this.filters.carteira) {
+      if (!this.filters.carteirasIds) {
         this.$toast.add({
           group: "mainToast",
           severity: "error",
@@ -429,11 +422,6 @@ export default {
       this.setLoading(true);
 
       try {
-        if (typeof this.filters.carteira === "string" || this.filters.carteira instanceof String) {
-          const rCarteira = await axios.get(this.filters.carteira);
-          this.filters.carteira = rCarteira.data;
-        }
-
         const dtIni = this.filters.periodo[0];
         const dtFim = this.filters.periodo[1];
 
@@ -460,20 +448,20 @@ export default {
           });
         }
 
-        if (!this.filters.carteira) {
+        if (!this.filters.carteirasIds) {
           const rsCarteiras = await api.get({
             apiResource: "/api/fin/carteira",
             allRows: true,
             order: { codigo: "ASC" },
-            filters: { concreta: true, atual: true },
+            filters: { caixa: true, atual: true },
             properties: ["id", "descricaoMontada"],
           });
-          this.filters.carteira = rsCarteiras.data["hydra:member"][0];
+          this.filters.carteirasIds = [rsCarteiras.data["hydra:member"][0]];
         }
 
         const filters = { ...this.filters };
-        filters.carteira = filters.carteira["@id"];
-        filters.status = "ABERTA"; // RTA
+        filters.carteirasIds = this.filters.carteirasIds;
+        filters.status = "REALIZADA"; // RTA
 
         const rows = Number.MAX_SAFE_INTEGER;
         const page = 1;
@@ -482,7 +470,7 @@ export default {
           apiResource: this.apiResource,
           page,
           rows,
-          order: { dtUtil: "ASC", "categoria.codigoSuper": "ASC", valorTotal: "ASC" },
+          order: { updated: "ASC" },
           filters,
           defaultFilters: this.defaultFilters,
           properties: [
@@ -518,13 +506,15 @@ export default {
           .subtract(1, "days")
           .format("YYYY-MM-DD")}T00:00:00-03:00`;
 
-        const rsSaldos = await axios.get(
-          `/api/fin/saldo?carteira=${this.filters.carteira["@id"]}&dtSaldo[after]=${umDiaAntes}&dtSaldo[before]=${this.filters["dtUtil[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
-        );
+        if (this.exibirSaldos) {
+          const rsSaldos = await axios.get(
+            `/api/fin/saldo?carteira=/api/fin/carteira/${this.filters.carteirasIds[0]}&dtSaldo[after]=${umDiaAntes}&dtSaldo[before]=${this.filters["dtUtil[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
+          );
 
-        this.saldos = rsSaldos.data["hydra:member"];
-        this.saldoAnterior = this.saldos[0].totalRealizadas;
-        this.saldoFinal = this.saldos[this.saldos.length - 1].totalRealizadas;
+          this.saldos = rsSaldos.data["hydra:member"];
+          this.saldoAnterior = this.saldos[0].totalRealizadas;
+          this.saldoFinal = this.saldos[this.saldos.length - 1].totalRealizadas;
+        }
 
         // salva os filtros no localStorage
         localStorage.setItem(this.filtersOnLocalStorage, JSON.stringify(this.filters));
@@ -585,113 +575,6 @@ export default {
             console.error(e);
           }
         }
-      });
-    },
-
-    onRowSelect($event) {
-      this.$emit("row-select", $event);
-      this.handleTudoSelecionado();
-    },
-
-    onRowUnselect($event) {
-      this.$emit("row-unselect", $event);
-      this.handleTudoSelecionado();
-    },
-
-    deletar(id) {
-      this.$confirm.require({
-        acceptLabel: "Sim",
-        rejectLabel: "Não",
-        message: "Confirmar a operação?",
-        header: "Atenção!",
-        icon: "pi pi-exclamation-triangle",
-        group: "confirmDialog_crosierListS",
-        accept: async () => {
-          this.setLoading(true);
-          try {
-            const deleteUrl = `${this.apiResource}/${id}`;
-            const rsDelete = await api.delete(deleteUrl);
-            if (!rsDelete) {
-              throw new Error("rsDelete n/d");
-            }
-            if (rsDelete?.status === 204) {
-              this.$toast.add({
-                severity: "success",
-                summary: "Sucesso",
-                detail: "Registro deletado com sucesso",
-                group: "mainToast",
-                life: 5000,
-              });
-              await this.doFilter();
-            } else if (rsDelete?.data && rsDelete.data["hydra:description"]) {
-              throw new Error(`status !== 204: ${rsDelete?.data["hydra:description"]}`);
-            } else if (rsDelete?.statusText) {
-              throw new Error(`status !== 204: ${rsDelete?.statusText}`);
-            } else {
-              throw new Error("Erro ao deletar (erro n/d, status !== 204)");
-            }
-          } catch (e) {
-            console.error(e);
-            this.$toast.add({
-              severity: "error",
-              summary: "Erro",
-              detail: "Ocorreu um erro ao deletar",
-              group: "mainToast",
-              life: 5000,
-            });
-          }
-          this.setLoading(false);
-        },
-      });
-    },
-
-    deletarRegistrosSelecionados() {
-      this.$confirm.require({
-        acceptLabel: "Sim",
-        rejectLabel: "Não",
-        message: "Confirmar a operação?",
-        header: "Atenção!",
-        icon: "pi pi-exclamation-triangle",
-        group: "confirmDialog_crosierListS",
-        accept: async () => {
-          this.setLoading(true);
-          try {
-            this.selection.forEach(async (e) => {
-              const deleteUrl = `${this.apiResource}/${e.id}`;
-              const rsDelete = await api.delete(deleteUrl);
-              if (!rsDelete) {
-                throw new Error("rsDelete n/d");
-              }
-              if (rsDelete?.status === 204) {
-                this.$toast.add({
-                  severity: "success",
-                  summary: "Sucesso",
-                  detail: "Registro deletado com sucesso",
-                  group: "mainToast",
-                  life: 5000,
-                });
-                delete this.selection[this.selection.indexOf(e)];
-              } else if (rsDelete?.data && rsDelete.data["hydra:description"]) {
-                throw new Error(`status !== 204: ${rsDelete?.data["hydra:description"]}`);
-              } else if (rsDelete?.statusText) {
-                throw new Error(`status !== 204: ${rsDelete?.statusText}`);
-              } else {
-                throw new Error("Erro ao deletar (erro n/d, status !== 204)");
-              }
-            });
-          } catch (e) {
-            console.error(e);
-            this.$toast.add({
-              severity: "error",
-              summary: "Erro",
-              detail: "Ocorreu um erro ao deletar",
-              group: "mainToast",
-              life: 5000,
-            });
-          }
-          await this.doFilter();
-          this.setLoading(false);
-        },
       });
     },
 
@@ -862,7 +745,7 @@ export default {
     },
 
     dataTableStateKey() {
-      return "dt-state_extrato";
+      return "dt-state_caixa_extrato";
     },
 
     isFiltering() {
@@ -875,6 +758,10 @@ export default {
         }
       }
       return false;
+    },
+
+    exibirSaldos() {
+      return this.filters?.carteirasIds?.length === 1;
     },
   },
 };

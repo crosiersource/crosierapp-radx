@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import PrimeVue from "primevue/config";
 import ToastService from "primevue/toastservice";
 import { createStore } from "vuex";
+import { api } from "crosier-vue";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
 import ConfirmationService from "primevue/confirmationservice";
 import Page from "./pages/caixaOperacaoForm";
@@ -41,19 +42,13 @@ const store = createStore({
       },
     };
   },
+
   getters: {
-    isLoading(state) {
-      return state.loading > 0;
-    },
-    getFields(state) {
-      const { fields } = state;
-      return fields;
-    },
-    getFieldsErrors(state) {
-      const { fieldsErrors } = state;
-      return fieldsErrors;
-    },
+    isLoading: (state) => state.loading > 0,
+    getFields: (state) => state.fields,
+    getFieldsErrors: (state) => state.fieldsErrors,
   },
+
   mutations: {
     setLoading(state, loading) {
       if (loading) {
@@ -64,21 +59,41 @@ const store = createStore({
     },
 
     setFields(state, fields) {
-      fields.dtConsolidado = fields.dtConsolidado ? new Date(fields.dtConsolidado) : null;
-      fields.operadoraCartao = fields.operadoraCartao ? fields.operadoraCartao["@id"] : null;
-      if (!fields?.carteira?.caixaResponsavel) {
-        fields.carteira = {
-          ...fields.carteira,
-          ...{
-            caixaResponsavel: {},
-          },
-        };
-      }
       state.fields = fields;
     },
 
     setFieldsErrors(state, formErrors) {
       state.fieldsErrors = formErrors;
+    },
+  },
+
+  actions: {
+    async loadData(context) {
+      context.commit("setLoading", true);
+      const id = new URLSearchParams(window.location.search.substring(1)).get("id");
+      if (id) {
+        try {
+          const response = await api.get({
+            apiResource: `/api/fin/carteira/${id}`,
+          });
+
+          if (response.data["@id"]) {
+            const carteira = response.data;
+            context.state.fields.carteira = carteira;
+            if (!carteira?.caixaStatus) {
+              context.state.fields.carteira.caixaStatus = "FECHADO";
+            }
+            context.state.fields.operacao =
+              context.state.fields.carteira.caixaStatus === "FECHADO" ? "ABERTURA" : "FECHAMENTO";
+            context.state.fields.dtOperacao = new Date();
+          } else {
+            console.error("Id não encontrado");
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      context.commit("setLoading", false);
     },
   },
 });

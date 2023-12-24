@@ -3,7 +3,7 @@
 
   <ConfirmDialog></ConfirmDialog>
 
-  <CrosierFormS @submitForm="this.submitForm" :titulo="this.titulo" :formUrl="null">
+  <CrosierFormS @submitForm="this.submitForm" :titulo="this.operacaoASerExecutada" :formUrl="null">
     <div class="form-row">
       <CrosierDropdownEntity
         v-model="this.fields.carteira"
@@ -18,13 +18,31 @@
       />
     </div>
 
-    <div v-if="this.fields.carteira.id">
+    <div v-if="this.fields.carteira?.id">
       <div class="form-row">
         <CrosierInputText
-          id="caixaStatus"
-          label="Status"
+          id="statusAtualDoCaixa"
+          label="Status Atual"
           col="6"
           v-model="this.fields.carteira.caixaStatus"
+          disabled
+        />
+
+        <CrosierInputText
+          id="operacao"
+          label="Executar..."
+          col="6"
+          v-model="this.operacaoASerExecutada"
+          disabled
+        />
+
+        <CrosierCalendar
+          id="operacao"
+          label="Dt Última Operação"
+          showTime
+          inputClass="crsr-datetime"
+          col="6"
+          v-model="this.fields.carteira.caixaDtUltimaOperacao"
           disabled
         />
 
@@ -37,6 +55,7 @@
           disabled
         />
       </div>
+
       <div class="form-row">
         <CrosierInputText
           id="operacao"
@@ -48,11 +67,11 @@
 
         <CrosierCalendar
           id="operacao"
-          label="Operação"
+          label="Dt Operação"
+          showTime
           inputClass="crsr-datetime"
           col="3"
           v-model="this.fields.dtOperacao"
-          disabled
         />
 
         <CrosierInputText
@@ -63,13 +82,7 @@
           disabled
         />
 
-        <CrosierCurrency
-          id="valor"
-          label="Valor"
-          col="3"
-          v-model="this.fields.valor"
-          :error="this.formErrors.valor"
-        />
+        <CrosierCurrency id="valor" label="Valor" col="3" v-model="this.fields.valor" disabled />
       </div>
 
       <div class="form-row">
@@ -92,7 +105,7 @@ import {
   CrosierDropdownEntity,
   submitForm,
 } from "crosier-vue";
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import { nextTick } from "vue";
 
 export default {
@@ -119,7 +132,7 @@ export default {
     this.setLoading(true);
 
     this.schemaValidator = yup.object().shape({
-      valor: yup.string().required().typeError(),
+      dtOperacao: yup.date().required().typeError(),
     });
 
     const me = await api.get({
@@ -128,20 +141,23 @@ export default {
 
     this.fields.responsavel = me.data;
 
-    window.setInterval(() => {
-      this.fields.dtOperacao = new Date();
-    }, 1000);
+    this.loadData();
 
     this.setLoading(false);
   },
 
   methods: {
     ...mapMutations(["setLoading", "setFields", "setFieldsErrors"]),
+    ...mapActions(["loadData"]),
 
     onChangeCaixa() {
       nextTick(() => {
+        if (!this.fields?.carteira?.caixaStatus) {
+          this.fields.carteira.caixaStatus = "FECHADO";
+        }
         this.fields.operacao =
-          this.fields.carteira?.caixaStatus === "ABERTO" ? "FECHAMENTO" : "ABERTURA";
+          this.fields.carteira.caixaStatus === "FECHADO" ? "ABERTURA" : "FECHAMENTO";
+        this.fields.dtOperacao = new Date();
       });
     },
 
@@ -163,6 +179,7 @@ export default {
               fnBeforeSave: (formData) => {
                 formData.carteira = formData.carteira["@id"];
                 formData.responsavel = `/api/sec/user/${formData.responsavel.id}`;
+                formData.valor = formData.valor ?? 0.0;
               },
             })
           ) {
@@ -176,9 +193,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters({ fields: "getFields", formErrors: "getFieldsErrors" }),
+    ...mapGetters({
+      fields: "getFields",
+      formErrors: "getFieldsErrors",
+    }),
 
-    titulo() {
+    operacaoASerExecutada() {
       return this.fields.carteira?.caixaStatus === "ABERTO"
         ? "Fechamento de Caixa"
         : "Abertura de Caixa";

@@ -40,6 +40,8 @@ const store = createStore({
       movimentacaoErrors: {},
 
       exibirCampos: {},
+
+      ultimaOperacao: {},
     };
   },
 
@@ -158,6 +160,10 @@ const store = createStore({
           filtersComDtMovimentAjustada.dtMoviment
         ).format("YYYY-MM-DD");
 
+        filtersComDtMovimentAjustada.notLike = {
+          status: "ESTORNADA",
+        };
+
         const response = await api.get({
           apiResource: "/api/fin/movimentacao",
           rows: 999999,
@@ -218,6 +224,8 @@ const store = createStore({
         localStorage.setItem("caixaListFilters", JSON.stringify(context.state.filters));
 
         context.dispatch("loadSaldos");
+
+        context.dispatch("loadUltimaOperacao");
       } catch (e) {
         console.error(e);
       }
@@ -251,6 +259,12 @@ const store = createStore({
 
       context.state.saldoPosterior = rsSaldoPosterior?.totalRealizadas;
     },
+
+    // async loadStatus(context) {
+    //   const rs = await axios.get(`/api/fin/caixaOperacao/status/${context.state.filters.carteira}`);
+    //
+    //   context.state.saldoAnterior = rsSaldoAnterior?.totalRealizadas;
+    // },
 
     salvarUltimaMovimentacaoNoLocalStorage(context) {
       localStorage.setItem(
