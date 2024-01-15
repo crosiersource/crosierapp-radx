@@ -22,11 +22,13 @@
                 :filters="{ ativo: true }"
                 id="grupo"
                 label="Grupo"
+                @change="this.grupoItem_key++"
               />
             </div>
             <div>
               <CrosierDropdownEntity
                 v-if="this.filters.grupo"
+                :key="this.grupoItem_key"
                 v-model="this.filters.grupoItem"
                 entity-uri="/api/fin/grupoItem"
                 optionLabel="descricaoMontada"
@@ -337,6 +339,7 @@ export default {
       visibleRight: false,
       apiResource: "/api/fin/movimentacao",
       selection: [],
+      grupoItem_key: 0,
     };
   },
 
