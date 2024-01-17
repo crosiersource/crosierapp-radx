@@ -741,7 +741,7 @@ export default {
     }),
 
     filtersOnLocalStorage() {
-      return "filters_extrato";
+      return "filters_list_extrato";
     },
 
     dataTableStateKey() {

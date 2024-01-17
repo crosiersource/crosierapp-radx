@@ -483,7 +483,7 @@ export default {
     }),
 
     filtersOnLocalStorage() {
-      return "filters_extrato";
+      return "filters_caixa_extrato";
     },
 
     dataTableStateKey() {

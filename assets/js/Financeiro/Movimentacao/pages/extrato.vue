@@ -88,7 +88,7 @@
           ref="dt"
           :rowHover="true"
         >
-          <template #empty> Nenhum dado a exibir. </template>
+          <template #empty> Nenhum dado a exibir.</template>
           <Column field="id">
             <template #body="r">
               {{ ("0".repeat(8) + r.data.id).slice(-8) }}
@@ -318,6 +318,16 @@
             </td>
           </template>
         </DataTable>
+
+        <div class="d-flex justify-content-end">
+          <button
+            class="btn btn-outline-info btn-sm ml-1 mt-3"
+            title="Limpar configurações da tabela"
+            @click="this.limparConfiguracoesDaTabela"
+          >
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -329,7 +339,7 @@ import Column from "primevue/column";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierBlock, CrosierDropdownEntity, CrosierCalendar } from "crosier-vue";
+import { api, CrosierBlock, CrosierCalendar, CrosierDropdownEntity } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
 import printJS from "print-js";
@@ -812,6 +822,22 @@ export default {
       // this.doCorrigeLinhasSaldos();
       // await this.delay(1500); // RTA demais... Aguarda e chama de novo
       // this.doCorrigeLinhasSaldos();
+    },
+
+    limparConfiguracoesDaTabela() {
+      this.$confirm.require({
+        acceptLabel: "Sim",
+        rejectLabel: "Não",
+        message: "Confirmar a operação?",
+        header: "Atenção!",
+        icon: "pi pi-exclamation-triangle",
+        group: "confirmDialog_crosierListS",
+        accept: () => {
+          localStorage.removeItem(this.dataTableStateKey);
+          // now refresh the page
+          window.location.reload();
+        },
+      });
     },
 
     async doCorrigeLinhasSaldos() {
