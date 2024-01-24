@@ -5,7 +5,7 @@ import { createStore } from "vuex";
 import { api } from "crosier-vue";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
 import ConfirmationService from "primevue/confirmationservice";
-import Page from "./pages/caixaOperacaoForm";
+import Page from "./caixaOperacaoForm/caixaOperacaoForm";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css

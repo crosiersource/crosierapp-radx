@@ -532,7 +532,7 @@ export default {
           `/api/fin/saldo?carteira=${this.filters.carteira["@id"]}&dtSaldo[after]=${umDiaAntes}&dtSaldo[before]=${this.filters["dtUtil[before]"]}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
         );
 
-        this.saldos = rsSaldos.data["hydra:member"];
+        this.saldos = rsSaldos.data;
         this.saldoAnterior = this.saldos[0].totalRealizadas;
         this.saldoFinal = this.saldos[this.saldos.length - 1].totalRealizadas;
 

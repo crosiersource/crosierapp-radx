@@ -33,15 +33,15 @@ Encore
   .addEntry('Vendas/venda_ecommerceForm', './assets/js/Vendas/venda_ecommerceForm.js')
 
   .addEntry('fis/notaFiscal/form', './assets/js/Fiscal/NotaFiscal/form.js')
-  
-  
+
+
   // --------------------------------------------
-  
+
   // Estoque
-  
+
   .addEntry('crm/cliente/list', './assets/js/CRM/Cliente/list.js')
   .addEntry('crm/cliente/form', './assets/js/CRM/Cliente/form.js')
-  
+
   .addEntry('est/fornecedor/list', './assets/js/Estoque/Fornecedor/list.js')
   .addEntry('est/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')
 
@@ -55,19 +55,25 @@ Encore
 
   .addEntry('est/listaPreco/list', './assets/js/Estoque/ListaPreco/list.js')
   .addEntry('est/listaPreco/form', './assets/js/Estoque/ListaPreco/form.js')
-  
+
   .addEntry('est/deptoGrupoSubgrupo/migrador', './assets/js/Estoque/DeptoGrupoSubgrupo/migrador.js')
-  
-  
+
+
   // Financeiro
-  
+
   .addEntry('fin/banco/list', './assets/js/Financeiro/Banco/list.js')
   .addEntry('fin/banco/form', './assets/js/Financeiro/Banco/form.js')
   .addEntry('fin/bandeiraCartao/list', './assets/js/Financeiro/BandeiraCartao/list.js')
   .addEntry('fin/bandeiraCartao/form', './assets/js/Financeiro/BandeiraCartao/form.js')
+
   .addEntry('fin/carteira/list', './assets/js/Financeiro/Carteira/list.js')
   .addEntry('fin/carteira/form', './assets/js/Financeiro/Carteira/form.js')
-  .addEntry('fin/carteira/caixaOperacaoForm', './assets/js/Financeiro/Carteira/caixaOperacaoForm.js')
+  
+  .addEntry('fin/caixa/caixaOperacaoForm', './assets/js/Financeiro/Caixa/caixaOperacaoForm.js')
+  .addEntry('fin/caixa/sangria', './assets/js/Financeiro/Caixa/lanctoDeSangria.js')
+  .addEntry('fin/caixa/porCategoria', './assets/js/Financeiro/Caixa/caixaPorCategoria.js')
+  .addEntry('fin/caixa/list', './assets/js/Financeiro/Caixa/caixaList.js')
+
   .addEntry('fin/categoria/form', './assets/js/Financeiro/Categoria/form.js')
   .addEntry('fin/centroCusto/list', './assets/js/Financeiro/CentroCusto/list.js')
   .addEntry('fin/centroCusto/form', './assets/js/Financeiro/CentroCusto/form.js')
@@ -79,13 +85,13 @@ Encore
   .addEntry('fin/registroConferencia/form', './assets/js/Financeiro/RegistroConferencia/form.js')
   .addEntry('fin/regraImportacaoLinha/list', './assets/js/Financeiro/RegraImportacaoLinha/list.js')
   .addEntry('fin/regraImportacaoLinha/form', './assets/js/Financeiro/RegraImportacaoLinha/form.js')
-  
+
   .addEntry('fin/grupo/list', './assets/js/Financeiro/Grupo/list.js')
   .addEntry('fin/grupo/form', './assets/js/Financeiro/Grupo/form.js')
-  
+
   .addEntry('fin/fornecedor/list', './assets/js/Estoque/Fornecedor/list.js')
   .addEntry('fin/fornecedor/form', './assets/js/Estoque/Fornecedor/form.js')
-  
+
   .addEntry('fin/cliente/list', './assets/js/CRM/Cliente/list.js')
   .addEntry('fin/cliente/form', './assets/js/CRM/Cliente/form.js')
 
@@ -99,15 +105,12 @@ Encore
   .addEntry('fin/movimentacao/recorrente/form', './assets/js/Financeiro/Movimentacao/form_recorrente.js')
   .addEntry('fin/movimentacao/recorrente/list', './assets/js/Financeiro/Movimentacao/list_recorrente.js')
   .addEntry('fin/movimentacao/transfEntreCarteiras/form', './assets/js/Financeiro/Movimentacao/form_transfEntreCarteiras.js')
-  
+
   .addEntry('fin/movimentacao/grupo/form', './assets/js/Financeiro/Movimentacao/form_emGrupo.js')
   .addEntry('fin/movimentacao/grupo/list', './assets/js/Financeiro/Movimentacao/list_emGrupo.js')
 
-  .addEntry('fin/caixa', './assets/js/Financeiro/Caixa/caixa.js')
-  .addEntry('fin/caixaList', './assets/js/Financeiro/Caixa/caixaList.js')
-  
   .addEntry('fin/cadeia/exibirMovimentacoes', './assets/js/Financeiro/Movimentacao/cadeia_exibirMovimentacoes.js')
-  
+
   .addEntry('fin/fatura/list', './assets/js/Financeiro/Fatura/list.js')
   .addEntry('fin/fatura/form', './assets/js/Financeiro/Fatura/form.js')
 
@@ -115,15 +118,15 @@ Encore
   .addEntry('fis/notaFiscal/emitidas/list', './assets/js/Fiscal/NotaFiscal/emitidasList.js')
   .addEntry('fis/notaFiscal/distdfe/list', './assets/js/Fiscal/NotaFiscal/distDFesList.js')
   .addEntry('fis/selecaoContribuinte', './assets/js/Fiscal/NotaFiscal/selecaoContribuinte.js')
-  
-  
+
+
   .addEntry('ecommerce/clienteConfig/list', './assets/js/Ecommerce/ClienteConfig/list.js')
   .addEntry('ecommerce/clienteConfig/form', './assets/js/Ecommerce/ClienteConfig/form.js')
-  
+
   .addEntry('ecommerce/trayVenda/list', './assets/js/Ecommerce/TrayVenda/list.js')
   .addEntry('ecommerce/mercadoLivrePergunta/list', './assets/js/Ecommerce/MercadoLivre/list_perguntas.js')
   // .addEntry('ecommerce/mercadoLivre/form_venda', './assets/js/Ecommerce/MercadoLivre/form_venda.js')
-  
+
   .addEntry('ecommerce/dashboard/tray-e-ml', './assets/js/Ecommerce/dashboards/dashboard-tray-e-ml.js')
 
 
@@ -131,7 +134,7 @@ Encore
 
 
   .addEntry('Fiscal/emissaoNFe/form', './assets/js/Fiscal/emissaoNFe/form.js')
-  
+
   // --------------------------------------------
 
   .splitEntryChunks()

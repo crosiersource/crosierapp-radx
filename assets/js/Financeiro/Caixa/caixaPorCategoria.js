@@ -13,7 +13,7 @@ import "crosier-vue/src/momentjs.locale.ptbr.js";
 import { api } from "crosier-vue";
 import moment from "moment";
 import axios from "axios";
-import Page from "./pages/list";
+import Page from "./caixaPorCategoria/list";
 
 const app = createApp(Page);
 
@@ -244,14 +244,14 @@ const store = createStore({
         `/api/fin/saldo?carteira=${context.state.filters.carteira}&dtSaldo[after]=${umDiaAntes}&dtSaldo[before]=${dtMovimentF}&properties[]=id&properties[]=dtSaldo&properties[]=totalRealizadas&properties[]=totalPendencias&properties[]=totalComPendentes`
       );
 
-      const rsSaldoAnterior = rsSaldos.data["hydra:member"].find((saldo) => {
+      const rsSaldoAnterior = rsSaldos.data.find((saldo) => {
         const dtSaldo = moment(saldo.dtSaldo.substr(0, 10)).format("YYYY-MM-DD");
         const umDiaAntesF = moment(umDiaAntes).format("YYYY-MM-DD");
         return dtSaldo === umDiaAntesF;
       });
       context.state.saldoAnterior = rsSaldoAnterior?.totalRealizadas;
 
-      const rsSaldoPosterior = rsSaldos.data["hydra:member"].find((saldo) => {
+      const rsSaldoPosterior = rsSaldos.data.find((saldo) => {
         return (
           moment(saldo.dtSaldo).format("YYYY-MM-DD") === moment(dtMoviment).format("YYYY-MM-DD")
         );

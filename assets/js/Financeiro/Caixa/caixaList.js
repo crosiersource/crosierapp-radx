@@ -5,7 +5,7 @@ import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
 import { createStore } from "vuex";
 import primevueOptions from "crosier-vue/src/primevue.config.js";
-import Page from "./pages_list/extrato";
+import Page from "./caixaList/extrato";
 import "primeflex/primeflex.css";
 import "primevue/resources/themes/saga-blue/theme.css"; // theme
 import "primevue/resources/primevue.min.css"; // core css
