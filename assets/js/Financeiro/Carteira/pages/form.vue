@@ -35,7 +35,7 @@
     <div class="form-row">
       <CrosierDropdownBoolean
         label="Concreta"
-        col="3"
+        col="2"
         id="concreta"
         helpText="Somente carteiras
       concretas podem conter movimentações com status 'REALIZADA'"
@@ -45,7 +45,7 @@
 
       <CrosierDropdownBoolean
         label="Abertas"
-        col="3"
+        col="2"
         id="abertas"
         helpText="Podem conter movimentação a pagar/receber (status 'ABERTA')"
         v-model="this.fields.abertas"
@@ -54,7 +54,7 @@
 
       <CrosierDropdownBoolean
         label="Caixa"
-        col="3"
+        col="2"
         id="caixa"
         helpText="As datas de vencimento, pagamento e movimentação sempre coincidem"
         v-model="this.fields.caixa"
@@ -63,11 +63,19 @@
 
       <CrosierDropdownBoolean
         label="Cheques"
-        col="3"
+        col="2"
         id="cheque"
         helpText="A carteira possui talão de cheques"
         v-model="this.fields.cheque"
         :error="this.formErrors.cheque"
+      />
+
+      <CrosierDropdownBoolean
+        label="Destino de Sangrias"
+        col="2"
+        id="destinoDeSangrias"
+        helpText="A carteira pode receber sangrias de caixas"
+        v-model="this.fields.destinoDeSangrias"
       />
     </div>
 
