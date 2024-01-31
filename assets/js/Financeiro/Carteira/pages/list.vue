@@ -17,6 +17,7 @@
       'atual',
       'caixa',
       'caixaStatus',
+      'caixaResponsavel',
       'destinoDeSangrias',
     ]"
   >
@@ -24,6 +25,8 @@
       <CrosierInputText label="Descrição" id="descricao" v-model="this.filters.descricao" />
 
       <CrosierDropdownBoolean label="Atual" id="atual" v-model="this.filters.atual" />
+
+      <CrosierDropdownBoolean label="Caixa" id="caixa" v-model="this.filters.caixa" />
     </template>
 
     <template v-slot:columns>
@@ -66,6 +69,10 @@
           <div v-if="r.data.caixa">
             <span class="badge badge-info">
               {{ r.data.caixaStatus }}
+            </span>
+            <div></div>
+            <span class="badge badge-success" v-if="r.data.caixaStatus === 'ABERTO'">
+              <i class="fas fa-user"></i> {{ r.data.caixaResponsavel?.nome }}
             </span>
           </div>
         </template>
