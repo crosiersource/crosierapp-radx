@@ -15,6 +15,9 @@
       'operadoraCartao.descricao',
       'dtConsolidado',
       'atual',
+      'caixa',
+      'caixaStatus',
+      'destinoDeSangrias',
     ]"
   >
     <template v-slot:filter-fields>
@@ -54,6 +57,23 @@
       <Column field="atual" header="Atual" sortable>
         <template #body="r">
           {{ r.data.atual ? "Sim" : "Não" }}
+        </template>
+      </Column>
+
+      <Column field="caixa" header="Caixa" sortable>
+        <template #body="r">
+          {{ r.data.caixa ? "Sim" : "Não" }}
+          <div v-if="r.data.caixa">
+            <span class="badge badge-info">
+              {{ r.data.caixaStatus }}
+            </span>
+          </div>
+        </template>
+      </Column>
+
+      <Column field="destinoDeSangrias" header="Dest Sangrias" sortable>
+        <template #body="r">
+          {{ r.data.destinoDeSangrias ? "Sim" : "Não" }}
         </template>
       </Column>
 
