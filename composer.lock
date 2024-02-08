@@ -177,7 +177,7 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.11.11",
+            "version": "v1.11.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
@@ -289,22 +289,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.11.11"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.11.12"
             },
             "time": "2024-02-08T00:38:39+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.12.7",
+            "version": "v1.12.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "90f3981b5956792fd61931fee1694cd7d9f68893"
+                "reference": "4589a5fd124e01c83365b8e8d72ec0c90bb613d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/90f3981b5956792fd61931fee1694cd7d9f68893",
-                "reference": "90f3981b5956792fd61931fee1694cd7d9f68893",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/4589a5fd124e01c83365b8e8d72ec0c90bb613d8",
+                "reference": "4589a5fd124e01c83365b8e8d72ec0c90bb613d8",
                 "shasum": ""
             },
             "require": {
@@ -340,9 +340,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.12.7"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.12.8"
             },
-            "time": "2024-02-08T00:46:36+00:00"
+            "time": "2024-02-08T14:07:05+00:00"
         },
         {
             "name": "doctrine/annotations",
