@@ -1559,7 +1559,7 @@ class IntegradorWebStorm implements IntegradorEcommerce
 
     /**
      * @param int $idPedido
-     * @return \SimpleXMLElement|void|null
+     * @return \SimpleXMLElement|bool|void|null
      */
     public function obterVendaPorId(int $idPedido, ?bool $resalvar = false)
     {
@@ -1738,8 +1738,8 @@ class IntegradorWebStorm implements IntegradorEcommerce
                     $cliente->jsonData['inscricao_estadual'] = preg_replace("/[^0-9]/", "", $clienteEcommerce->inscricaoEstadual->__toString());
                 }
 
-                $cliente->jsonData['fone1'] = $clienteEcommerce->telefone1->__toString();
-                $cliente->jsonData['fone2'] = $clienteEcommerce->telefone2->__toString();
+                $cliente->jsonData['fone1'] = self::trataFone($clienteEcommerce->telefone1->__toString());                
+                $cliente->jsonData['fone2'] = self::trataFone($clienteEcommerce->telefone2->__toString());
 
                 $cliente->jsonData['email'] = $clienteEcommerce->email->__toString();
                 $cliente->jsonData['canal'] = 'ECOMMERCE';
@@ -1798,7 +1798,7 @@ class IntegradorWebStorm implements IntegradorEcommerce
             $venda->jsonData['ecommerce_entrega_cidade'] = ($pedido->entrega->cidade->__toString() ?? null);
             $venda->jsonData['ecommerce_entrega_uf'] = ($pedido->entrega->estado->__toString() ?? null);
             $venda->jsonData['ecommerce_entrega_cep'] = ($pedido->entrega->cep->__toString() ?? null);
-            $venda->jsonData['ecommerce_entrega_telefone'] = ($pedido->entrega->telefone->__toString() ?? null);
+            $venda->jsonData['ecommerce_entrega_telefone'] = self::trataFone(($pedido->entrega->telefone->__toString() ?? null));
             $venda->jsonData['ecommerce_entrega_frete_calculado'] = ($pedido->entrega->frete->__toString() ?? null);
             $venda->jsonData['ecommerce_entrega_frete_real'] = 0.00;
             $venda->jsonData['ecommerce_status'] = $pedido->status->__toString();
@@ -2226,6 +2226,21 @@ class IntegradorWebStorm implements IntegradorEcommerce
         $produto->jsonData['ecommerce_item_venda_id'] = $ecommerceItemVendaId;
         $this->produtoEntityHandler->gerarThumbnailAoSalvar = false;
         $this->produtoEntityHandler->save($produto);
+    }
+
+
+
+    public static function trataFone($string): string {
+        // Verifica se a string é nula ou tem menos de 10 caracteres
+        if (is_null($string) || strlen($string) < 10) {
+            return '0000000000';
+        }
+
+        // Remove todos os caracteres que não são dígitos
+        $apenasDigitos = preg_replace('/\D/', '', $string);
+
+        // Retorna somente os primeiros 10 dígitos
+        return substr($apenasDigitos, 0, 10);
     }
 
 }
