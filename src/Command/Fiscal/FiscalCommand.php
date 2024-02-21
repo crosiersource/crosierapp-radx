@@ -130,13 +130,17 @@ class FiscalCommand extends Command
 
             $this->doObterDistDFes($cnpj, $output, $primeiroNSU, false);
 
-            if ($cnpj['obterDistDFesParaCTes'] ?? false) {
+            $nfeConfigs = $this->nfeUtils->getNFeConfigsByCNPJ($cnpj);
+            
+            if ($nfeConfigs['obterDistDFesParaCTes'] ?? false) {
                 $this->doObterDistDFes($cnpj, $output, $primeiroNSU, true);
             }
 
             $output->writeln('Processando obtidos...');
             $this->distDFeBusiness->processarDistDFesObtidos($cnpj);
             $output->writeln('OK');
+            $output->writeln('');
+            $output->writeln('----------');
         }
     }
 
