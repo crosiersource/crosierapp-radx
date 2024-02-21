@@ -295,16 +295,16 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.12.10",
+            "version": "v1.12.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "dab0996759094c5fdbdb22f5295368572cd4c868"
+                "reference": "d7d3dcac54e1fba0c03f3b6527bdf5c3a5a66a68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/dab0996759094c5fdbdb22f5295368572cd4c868",
-                "reference": "dab0996759094c5fdbdb22f5295368572cd4c868",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/d7d3dcac54e1fba0c03f3b6527bdf5c3a5a66a68",
+                "reference": "d7d3dcac54e1fba0c03f3b6527bdf5c3a5a66a68",
                 "shasum": ""
             },
             "require": {
@@ -341,9 +341,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.12.10"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.12.11"
             },
-            "time": "2024-02-20T19:04:57+00:00"
+            "time": "2024-02-21T13:39:55+00:00"
         },
         {
             "name": "doctrine/annotations",
