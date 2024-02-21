@@ -121,32 +121,48 @@ class FiscalCommand extends Command
      * Chamar com:
      * - php bin/console crosierappradx:fiscal --operacao=obterDistDFes
      *
-     * @param OutputInterface $output
-     * @param int|null $primeiroNSU
      * @throws ViewException
      */
-    public function obterDistDFes(OutputInterface $output, int $primeiroNSU = null)
+    public function obterDistDFes(OutputInterface $output, int $primeiroNSU = null): void
     {
         $cnpjs = $this->nfeUtils->getNFeConfigsCNPJs();
         foreach ($cnpjs as $cnpj) {
-            $output->writeln('Obtendo DistDFes para o CNPJ: ' . $cnpj);
-            try {
-                if ($primeiroNSU) {
-                    $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpj);
-                } else {
-                    $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpj);
-                }
-                $output->writeln($q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
-                $output->writeln('Processando obtidos...');
-                $this->distDFeBusiness->processarDistDFesObtidos($cnpj);
-                $output->writeln('OK');
-            } catch (ViewException $e) {
-                $output->writeln('Erro ao obter e processar DistDFes para o CNPJ: ' . $cnpj);
-                $output->writeln($e->getMessage());
+
+            $this->doObterDistDFes($cnpj, $output, $primeiroNSU, false);
+
+            if ($cnpj['obterDistDFesParaCTes'] ?? false) {
+                $this->doObterDistDFes($cnpj, $output, $primeiroNSU, true);
             }
-            $output->writeln('----------');
+
+            $output->writeln('Processando obtidos...');
+            $this->distDFeBusiness->processarDistDFesObtidos($cnpj);
+            $output->writeln('OK');
         }
     }
+
+    private function doObterDistDFes(
+        string          $cnpj,
+        OutputInterface $output,
+        ?int            $primeiroNSU,
+        ?bool           $paraCTes
+    ): void
+    {
+        $output->writeln('Obtendo DistDFes ' . ($paraCTes ? '(para CTes)' : '') . ' para o CNPJ: ' . $cnpj);
+        try {
+            if ($primeiroNSU) {
+                $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpj, $paraCTes);
+            } else {
+                $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpj, $paraCTes);
+            }
+            $output->writeln($q ? $q . ' DistDFe(s) obtidos' : 'Nenhum DistDFe obtido');
+
+        } catch (ViewException $e) {
+            $output->writeln('Erro ao obter e processar DistDFes para o CNPJ: ' . $cnpj);
+            $output->writeln($e->getMessage());
+        }
+        $output->writeln('----------');
+    }
+
 
     /**
      * Chamar com:
@@ -154,7 +170,10 @@ class FiscalCommand extends Command
      *
      * @throws ViewException|\Doctrine\DBAL\Exception
      */
-    public function manifestarCienciaParaUltimas(OutputInterface $output, int $primeiroNSU = null)
+    public function manifestarCienciaParaUltimas(
+        OutputInterface $output,
+        int             $primeiroNSU = null
+    ): void
     {
 
         $rsDias = $this->nfeUtils->conn
@@ -215,5 +234,6 @@ class FiscalCommand extends Command
             $output->writeln('----------');
         }
     }
+
 
 }

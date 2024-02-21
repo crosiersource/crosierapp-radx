@@ -52,11 +52,12 @@ class DistDFeController extends AbstractController
     public function obterDistDFes(Request $request, int $primeiroNSU = null): JsonResponse
     {
         try {
+            $ctes = (bool)($request->get('buscarParaCtes') ?? false);
             $cnpjEmUso = $request->get('documentoDestinatario') ?? $this->nfeUtils->getNFeConfigsEmUso()['cnpj'];
             if ($primeiroNSU) {
-                $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpjEmUso);
+                $q = $this->distDFeBusiness->obterDistDFes($primeiroNSU, $cnpjEmUso, $ctes);
             } else {
-                $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso);
+                $q = $this->distDFeBusiness->obterDistDFesAPartirDoUltimoNSU($cnpjEmUso, $ctes);
             }
 
             $this->distDFeBusiness->processarDistDFesObtidos($cnpjEmUso);

@@ -10,13 +10,14 @@
         }
     ],
     "require": {
+        "ext-bcmath": "*",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-simplexml": "*",
+        "ext-zip": "*",
         "crosiersource/crosierlib-radx": "^1.10.0",
         "knplabs/knp-snappy-bundle": "^1.7",
-        "ext-zip": "*",
-        "ext-json": "*",
-        "ext-bcmath": "*",
-        "ext-simplexml": "*",
-        "ext-curl": "*"
+        "nfephp-org/sped-cte": "^5.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
