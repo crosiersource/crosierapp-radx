@@ -31,7 +31,6 @@ class IntegradorEcommerceFactory implements ServiceSubscriberInterface
             "TRAY" => IntegradorTray::class,
             "SIMPLO7" => IntegradorSimplo7::class,
             "MERCADOPAGO" => IntegradorMercadoPago::class,
-            "WEBSTORM" => IntegradorWebStorm::class,
         ];
     }
 
