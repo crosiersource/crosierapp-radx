@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- *
  * @author Carlos Eduardo Pauluk
  */
 class FiscalCommand extends Command
@@ -32,48 +31,32 @@ class FiscalCommand extends Command
     private SyslogBusiness $syslog;
 
 
-    /**
-     * @required
-     * @param NFeUtils $nfeUtils
-     */
+    /** @required */
     public function setNfeUtils(NFeUtils $nfeUtils): void
     {
         $this->nfeUtils = $nfeUtils;
     }
 
-    /**
-     * @required
-     * @param DistDFeBusiness $distDFeBusiness
-     */
+    /** @required */
     public function setDistDFeBusiness(DistDFeBusiness $distDFeBusiness): void
     {
         $distDFeBusiness->setEchoToLogger();
         $this->distDFeBusiness = $distDFeBusiness;
     }
 
-    /**
-     * @required
-     * @param SpedNFeBusiness $spedNFeBusiness
-     */
+    /** @required */
     public function setSpedNFeBusiness(SpedNFeBusiness $spedNFeBusiness): void
     {
         $this->spedNFeBusiness = $spedNFeBusiness;
     }
 
-    /**
-     * @required
-     * @param NotaFiscalEntityHandler $notaFiscalEntityHandler
-     */
+    /** @required */
     public function setNotaFiscalEntityHandler(NotaFiscalEntityHandler $notaFiscalEntityHandler): void
     {
         $this->notaFiscalEntityHandler = $notaFiscalEntityHandler;
     }
 
-
-    /**
-     * @required
-     * @param SyslogBusiness $syslog
-     */
+    /** @required */
     public function setSyslog(SyslogBusiness $syslog): void
     {
         $this->syslog = $syslog->setApp('radx')->setComponent(self::class);
@@ -89,24 +72,28 @@ class FiscalCommand extends Command
             InputOption::VALUE_REQUIRED,
             'Operação a ser executada'
         );
+        $this->addOption(
+            'cnpj',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Apenas para o CNPJ...'
+        );
     }
 
     /**
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $operacao = $input->getOption('operacao');
+        $cnpj = $input->getOption('cnpj');
         if (!$operacao) {
             throw new \InvalidArgumentException('operacao n/d');
         }
 
         switch ($operacao) {
             case 'obterDistDFes':
-                $this->obterDistDFes($output);
+                $this->obterDistDFes($output, $cnpj);
                 break;
             case 'manifestarCienciaParaUltimas':
                 $this->manifestarCienciaParaUltimas($output);
@@ -119,25 +106,32 @@ class FiscalCommand extends Command
 
     /**
      * Chamar com:
-     * - php bin/console crosierappradx:fiscal --operacao=obterDistDFes
+     * - php bin/console crosierappradx:fiscal --operacao=obterDistDFes [--cnpj=00000000000000]
      *
      * @throws ViewException
      */
-    public function obterDistDFes(OutputInterface $output, int $primeiroNSU = null): void
+    public function obterDistDFes(
+        OutputInterface $output,
+        ?string         $cnpj = null,
+    ): void
     {
-        $cnpjs = $this->nfeUtils->getNFeConfigsCNPJs();
-        foreach ($cnpjs as $cnpj) {
+        if ($cnpj) {
+            $nfeConfig = $this->nfeUtils->getNFeConfigsByCNPJ($cnpj);
+            $nfeConfigs = [$nfeConfig];
+        } else {
+            $nfeConfigs = $this->nfeUtils->getNFeConfigs();
+        }
 
-            $this->doObterDistDFes($cnpj, $output, $primeiroNSU, false);
+        foreach ($nfeConfigs as $nfeConfig) {
 
-            $nfeConfigs = $this->nfeUtils->getNFeConfigsByCNPJ($cnpj);
-            
-            if ($nfeConfigs['obterDistDFesParaCTes'] ?? false) {
-                $this->doObterDistDFes($cnpj, $output, $primeiroNSU, true);
+            $this->doObterDistDFes($nfeConfig['cnpj'], $output, null, false);
+
+            if ($nfeConfig['obterDistDFesParaCTes'] ?? false) {
+                $this->doObterDistDFes($nfeConfig['cnpj'], $output, null, true);
             }
 
             $output->writeln('Processando obtidos...');
-            $this->distDFeBusiness->processarDistDFesObtidos($cnpj);
+            $this->distDFeBusiness->processarDistDFesObtidos($nfeConfig['cnpj']);
             $output->writeln('OK');
             $output->writeln('');
             $output->writeln('----------');
