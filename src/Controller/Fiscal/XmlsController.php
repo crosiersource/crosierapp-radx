@@ -175,6 +175,7 @@ class XmlsController extends FormListController
                 $tools = $this->nfeUtils->getToolsByCNPJ($nf->documentoEmitente);
                 $tools->model($nf->tipoNotaFiscal === 'NFE' ? '55' : '65');
                 $fileContent = $tools->signNFe($nf->getXmlNota());
+                $nf->jsonData['xml_assinado'][] = $fileContent;
                 $nf->setXmlNota($fileContent);
                 $this->entityHandler->save($nf);
             }
