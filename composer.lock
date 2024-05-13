@@ -295,23 +295,22 @@
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.12.21",
+            "version": "v1.12.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "6853412d8949afd9ab4081a6c34ff24563747250"
+                "reference": "8de5cd7109bbb6610a62876a0a5e266acddd2939"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/6853412d8949afd9ab4081a6c34ff24563747250",
-                "reference": "6853412d8949afd9ab4081a6c34ff24563747250",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/8de5cd7109bbb6610a62876a0a5e266acddd2939",
+                "reference": "8de5cd7109bbb6610a62876a0a5e266acddd2939",
                 "shasum": ""
             },
             "require": {
                 "crosiersource/crosierlib-base": "^1.10.2",
                 "econea/nusoap": "^0.9.7",
                 "ext-bcmath": "*",
-                "ext-http": "*",
                 "ext-simplexml": "*",
                 "nfephp-org/sped-common": "^5.1",
                 "nfephp-org/sped-cte": "^5.0",
@@ -344,9 +343,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.12.21"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.12.22"
             },
-            "time": "2024-05-13T21:04:20+00:00"
+            "time": "2024-05-13T21:14:07+00:00"
         },
         {
             "name": "doctrine/annotations",
