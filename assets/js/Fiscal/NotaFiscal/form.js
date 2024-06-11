@@ -37,7 +37,7 @@ const store = createStore({
       notaFiscal: {
         permiteSalvar: true,
         nossaEmissao: true,
-        idDest: 1,
+        idDest: null,
         entradaSaida: "S",
         finalidadeNf: "NORMAL",
         transpModalidadeFrete: "SEM_FRETE",
