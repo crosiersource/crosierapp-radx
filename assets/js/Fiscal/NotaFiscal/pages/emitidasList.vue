@@ -69,6 +69,7 @@
           v-model="this.filters.xNomeDestinatario"
         />
       </div>
+
       <div class="form-row">
         <CrosierInputText
           label="Chave"
@@ -94,6 +95,28 @@
         />
 
         <CrosierCurrency label="Valor" col="3" id="valor" v-model="this.filters.valorTotal" />
+      </div>
+
+      <div class="form-row">
+        <CrosierInputText
+          label="Natureza da Operação"
+          id="naturezaOperacao"
+          v-model="this.filters.naturezaOperacao"
+          col="6"
+        />
+
+        <CrosierDropdown
+          label="Finalidade"
+          col="6"
+          id="finalidadeNf"
+          :options="[
+            { label: 'Normal', value: 'NORMAL' },
+            { label: 'Complementar', value: 'COMPLEMENTAR' },
+            { label: 'Ajuste', value: 'AJUSTE' },
+            { label: 'Devolução/Retorno', value: 'DEVOLUCAO' },
+          ]"
+          v-model="this.filters.finalidadeNf"
+        />
       </div>
     </template>
 
