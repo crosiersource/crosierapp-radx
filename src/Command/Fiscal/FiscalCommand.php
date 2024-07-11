@@ -95,6 +95,9 @@ class FiscalCommand extends Command
             case 'obterDistDFes':
                 $this->obterDistDFes($output, $cnpj);
                 break;
+            case 'processarDistDFes':
+                $this->processarDistDFes($output, $cnpj);
+                break;
             case 'manifestarCienciaParaUltimas':
                 $this->manifestarCienciaParaUltimas($output);
                 break;
@@ -137,6 +140,35 @@ class FiscalCommand extends Command
             $output->writeln('----------');
         }
     }
+
+
+    /**
+     * Chamar com:
+     * - php bin/console crosierappradx:fiscal --operacao=processarDistDFes [--cnpj=00000000000000]
+     *
+     * @throws ViewException
+     */
+    public function processarDistDFes(
+        OutputInterface $output,
+        ?string         $cnpj = null,
+    ): void
+    {
+        if ($cnpj) {
+            $nfeConfig = $this->nfeUtils->getNFeConfigsByCNPJ($cnpj);
+            $nfeConfigs = [$nfeConfig];
+        } else {
+            $nfeConfigs = $this->nfeUtils->getNFeConfigs();
+        }
+
+        foreach ($nfeConfigs as $nfeConfig) {
+            $output->writeln('Processando obtidos...');
+            $this->distDFeBusiness->processarDistDFesObtidos($nfeConfig['cnpj']);
+            $output->writeln('OK');
+            $output->writeln('');
+            $output->writeln('----------');
+        }
+    }
+    
 
     private function doObterDistDFes(
         string          $cnpj,
