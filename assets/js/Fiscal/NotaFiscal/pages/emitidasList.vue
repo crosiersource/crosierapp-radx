@@ -340,36 +340,51 @@ export default {
       }
       this.setLoading(true);
       try {
-        const rs = await axios.get(
-          `/api/fis/notaFiscal/downloadXMLsMesAno?documentoEmitente=${
-            this.filters.documentoEmitente
-          }&dtEmissao[after]=${moment(this.filters["dtEmissao[after]"]).format(
-            "YYYY-MM-DD"
-          )}&dtEmissao[before]=${moment(this.filters["dtEmissao[before]"]).format("YYYY-MM-DD")}`,
-          {
-            validateStatus(status) {
-              return status < 500; // Resolve only if the status code is less than 500
-            },
-            responseType: "blob",
-          }
-        );
-        if (rs?.data?.RESULT === "ERRO") {
-          this.$toast.add({
-            severity: "error",
-            summary: "Erro",
-            detail: rs?.data?.MSG,
-            life: 5000,
-          });
+        this.beforeFilter();
+
+        // now concat all filters to the URL as querystring
+        const filtersQuerystring = Object.keys(this.filters)
+          .map((key) => `${key}=${this.filters[key]}`)
+          .join("&");
+
+        const rs = await axios.get(`/api/fis/notaFiscal/downloadXMLsMesAno?${filtersQuerystring}`, {
+          validateStatus(status) {
+            return status < 500;
+          },
+          responseType: "blob",
+        });
+
+        const contentType = rs.headers["content-type"];
+
+        if (contentType.includes("application/json")) {
+          // A resposta é um JSON
+          const reader = new FileReader();
+          reader.onload = () => {
+            const json = JSON.parse(reader.result);
+
+            if (json?.RESULT === "ERRO") {
+              this.$toast.add({
+                severity: "error",
+                summary: "Erro",
+                detail: json?.MSG,
+                life: 5000,
+              });
+              this.setLoading(false);
+            }
+          };
+          reader.readAsText(rs.data);
           return;
         }
-        const url = window.URL.createObjectURL(new Blob([rs.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", rs.headers.filename); // or any other extension
-        document.body.appendChild(link);
-        link.click();
+
+        window.open(URL.createObjectURL(rs.data));
+        // const url = window.URL.createObjectURL(new Blob([rs.data]));
+        // const link = document.createElement("a");
+        // link.href = url;
+        // link.setAttribute("download", rs.headers.filename); // or any other extension
+        // document.body.appendChild(link);
+        // link.click();
       } catch (e) {
-        console.dir(e);
+        console.error(e);
       }
       this.setLoading(false);
     },

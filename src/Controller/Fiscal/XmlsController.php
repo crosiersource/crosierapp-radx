@@ -108,11 +108,11 @@ class XmlsController extends FormListController
             $dtEmissaoDe = DateTimeUtils::parseDateStr($request->query->get('dtEmissao')['after']);
             $dtEmissaoAte = DateTimeUtils::parseDateStr($request->query->get('dtEmissao')['before']);
         }
-
-        if (DateTimeUtils::diffInDias($dtEmissaoAte, $dtEmissaoDe) > 31) {
-            return CrosierApiResponse::error(null, false, 'Período não pode ser superior a 31 dias');
+        
+        if (DateTimeUtils::diffInDias($dtEmissaoAte, $dtEmissaoDe) > 30) {
+            return CrosierApiResponse::error(null, false, 'Para o download dos XMLs o período não pode ser superior a 31 dias');
         }
-
+        
         $zip = new \ZipArchive();
         $filename = $documentoEmitente . '_' . $dtEmissaoDe->format('Ymd') . '-' . $dtEmissaoAte->format('Ymd');
         $arquivo = $_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . $filename . '.zip';
@@ -121,16 +121,45 @@ class XmlsController extends FormListController
         if ($zip->open($arquivo, \ZipArchive::CREATE) !== TRUE) {
             return CrosierApiResponse::error(null, false, 'Erro ao gerar arquivo zip');
         }
-
-        /** @var NotaFiscalRepository $repoNotasFiscais */
-        $repoNotasFiscais = $this->doctrine->getRepository(NotaFiscal::class);
-
-        $nfes = $repoNotasFiscais->findByFiltersSimpl([
+        
+        $filters = [
             ['dtEmissao', 'BETWEEN_DATE', [$dtEmissaoDe, $dtEmissaoAte]],
             ['documentoEmitente', 'EQ', $documentoEmitente],
             ['numero', 'IS_NOT_EMPTY'],
             ['ambiente', 'EQ', 'PROD']
-        ], ['serie' => 'ASC', 'numero' => 'ASC'], 0, -1);
+        ];
+        
+        if ($request->get('numero')) {
+            $filters[] = ['numero', 'EQ', $request->get('numero')];
+        }
+        if ($request->get('serie')) {
+            $filters[] = ['serie', 'EQ', $request->get('serie')];
+        }
+        if ($request->get('documentoDestinatario')) {
+            $filters[] = ['documentoDestinatario', 'EQ', $request->get('documentoDestinatario')];
+        }
+        if ($request->get('xnomeDestinatario')) {
+            $filters[] = ['xnomeDestinatario', 'LIKE', '%' . $request->get('xnomeDestinatario') . '%'];
+        }
+        if ($request->get('chaveAcesso')) {
+            $filters[] = ['chaveAcesso', 'EQ', $request->get('chaveAcesso')];
+        }
+        if ($request->get('valorTotal')) {
+            $filters[] = ['valorTotal', 'EQ', $request->get('valorTotal')];
+        }
+        if ($request->get('naturezaOperacao')) {
+            $filters[] = ['naturezaOperacao', 'LIKE', '%' . $request->get('naturezaOperacao') . '%'];
+        }
+        if ($request->get('finalidadeNf')) {
+            $filters[] = ['finalidadeNf', 'EQ', $request->get('finalidadeNf')];
+        }
+        
+        
+
+        /** @var NotaFiscalRepository $repoNotasFiscais */
+        $repoNotasFiscais = $this->doctrine->getRepository(NotaFiscal::class);
+
+        $nfes = $repoNotasFiscais->findByFiltersSimpl($filters, ['serie' => 'ASC', 'numero' => 'ASC'], 0, -1);
 
         // homologadas
         $nfes100 = [];
