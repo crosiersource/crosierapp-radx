@@ -3,7 +3,6 @@
 
 namespace App\Business\Ecommerce;
 
-use App\Business\ConnectionUtils;
 use App\Messenger\Ecommerce\Message\IntegrarProdutoEcommerceMessage;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
@@ -95,8 +94,6 @@ class IntegradorWebStorm implements IntegradorEcommerce
 
     private ?array $marcasNaWebStorm = null;
 
-    public ConnectionUtils $connUtils;
-
     public function __construct(AppConfigEntityHandler $appConfigEntityHandler,
                                 Security               $security,
                                 DeptoEntityHandler     $deptoEntityHandler,
@@ -108,8 +105,7 @@ class IntegradorWebStorm implements IntegradorEcommerce
                                 ClienteEntityHandler   $clienteEntityHandler,
                                 UploaderHelper         $uploaderHelper,
                                 MessageBusInterface    $bus,
-                                SyslogBusiness         $syslog,
-                                ConnectionUtils        $connUtils)
+                                SyslogBusiness         $syslog)
     {
         $this->appConfigEntityHandler = $appConfigEntityHandler;
         $this->security = $security;
@@ -123,7 +119,6 @@ class IntegradorWebStorm implements IntegradorEcommerce
         $this->uploaderHelper = $uploaderHelper;
         $this->bus = $bus;
         $this->syslog = $syslog->setApp('radx')->setComponent(self::class);
-        $this->connUtils = $connUtils;
     }
 
 
@@ -1234,14 +1229,7 @@ class IntegradorWebStorm implements IntegradorEcommerce
                 </itensVenda></produto>';
                 $temAtualizacao = true;
 
-                $this->connUtils->logsConnection->insert('cfg_entity_change', [
-                    'entity_class' => Produto::class,
-                    'entity_id' => $produtoId,
-                    'changing_user_id' => 1,
-                    'changed_at' => (new \DateTime())->format('Y-m-d H:i:s'),
-                    'changes' => 'Preço: ' . $preco . ', Estoque: ' . $estoque,
-                    'obs' => 'ATUALIZANDO SALDO NA WEBSTORM (via atualizarTodosOsEstoquesEPrecos)',
-                ]);
+                // TODO: incluir log do entity_change no INFLUX
 
             }
 
