@@ -8,7 +8,7 @@
         "axios": "^1.6.0",
         "chart.js": "^3.3.2",
         "cleave.js": "^1.6.0",
-        "crosier-vue": "^1.5.11",
+        "crosier-vue": "^1.5.12",
         "deepmerge": "^4.2.2",
         "mitt": "^2.1.0",
         "moment": "^2.29.4",
