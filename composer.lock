@@ -243,16 +243,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.13.6",
+            "version": "v1.13.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "224650c11516049b1ae455431060a0b0dbe7d4f0"
+                "reference": "5be15065dc2e5005b5a0279bdfe593629e2bfb18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/224650c11516049b1ae455431060a0b0dbe7d4f0",
-                "reference": "224650c11516049b1ae455431060a0b0dbe7d4f0",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/5be15065dc2e5005b5a0279bdfe593629e2bfb18",
+                "reference": "5be15065dc2e5005b5a0279bdfe593629e2bfb18",
                 "shasum": ""
             },
             "require": {
@@ -356,22 +356,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.13.6"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.13.7"
             },
-            "time": "2024-08-09T17:45:24+00:00"
+            "time": "2024-08-29T14:24:56+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.13.6",
+            "version": "v1.13.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "c4a767fbd5c58f5d56c33cf621ed4eb4f69a4344"
+                "reference": "6bc710c3278c152039ecf3c2b045c14a8cb718cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/c4a767fbd5c58f5d56c33cf621ed4eb4f69a4344",
-                "reference": "c4a767fbd5c58f5d56c33cf621ed4eb4f69a4344",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/6bc710c3278c152039ecf3c2b045c14a8cb718cd",
+                "reference": "6bc710c3278c152039ecf3c2b045c14a8cb718cd",
                 "shasum": ""
             },
             "require": {
@@ -410,9 +410,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.13.6"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.13.7"
             },
-            "time": "2024-08-09T17:47:09+00:00"
+            "time": "2024-08-29T14:25:31+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -762,16 +762,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "3.8.7",
+            "version": "3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "2093d670ca17f634f3c095ec10a20687eccebd99"
+                "reference": "d8f68ea6cc00912e5313237130b8c8decf4d28c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/2093d670ca17f634f3c095ec10a20687eccebd99",
-                "reference": "2093d670ca17f634f3c095ec10a20687eccebd99",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/d8f68ea6cc00912e5313237130b8c8decf4d28c6",
+                "reference": "d8f68ea6cc00912e5313237130b8c8decf4d28c6",
                 "shasum": ""
             },
             "require": {
@@ -855,7 +855,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.8.7"
+                "source": "https://github.com/doctrine/dbal/tree/3.9.0"
             },
             "funding": [
                 {
@@ -871,7 +871,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-07T11:57:25+00:00"
+            "time": "2024-08-15T07:34:42+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -1465,16 +1465,16 @@
         },
         {
             "name": "doctrine/migrations",
-            "version": "3.8.0",
+            "version": "3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/migrations.git",
-                "reference": "535a70dcbd88b8c6ba945be050977457f4f4c06c"
+                "reference": "7760fbd0b7cb58bfb50415505a7bab821adf0877"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/535a70dcbd88b8c6ba945be050977457f4f4c06c",
-                "reference": "535a70dcbd88b8c6ba945be050977457f4f4c06c",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/7760fbd0b7cb58bfb50415505a7bab821adf0877",
+                "reference": "7760fbd0b7cb58bfb50415505a7bab821adf0877",
                 "shasum": ""
             },
             "require": {
@@ -1497,6 +1497,7 @@
                 "doctrine/persistence": "^2 || ^3",
                 "doctrine/sql-formatter": "^1.0",
                 "ext-pdo_sqlite": "*",
+                "fig/log-test": "^1",
                 "phpstan/phpstan": "^1.10",
                 "phpstan/phpstan-deprecation-rules": "^1.1",
                 "phpstan/phpstan-phpunit": "^1.3",
@@ -1547,7 +1548,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/migrations/issues",
-                "source": "https://github.com/doctrine/migrations/tree/3.8.0"
+                "source": "https://github.com/doctrine/migrations/tree/3.8.1"
             },
             "funding": [
                 {
@@ -1563,20 +1564,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-26T14:12:46+00:00"
+            "time": "2024-08-28T13:17:28+00:00"
         },
         {
             "name": "doctrine/orm",
-            "version": "2.19.6",
+            "version": "2.19.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/orm.git",
-                "reference": "c1bb2ccf4b19c845f91ff7c4c01dc7cbba7f4073"
+                "reference": "168ac31084226f94d42e7461a40ff5607a56bd35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/c1bb2ccf4b19c845f91ff7c4c01dc7cbba7f4073",
-                "reference": "c1bb2ccf4b19c845f91ff7c4c01dc7cbba7f4073",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/168ac31084226f94d42e7461a40ff5607a56bd35",
+                "reference": "168ac31084226f94d42e7461a40ff5607a56bd35",
                 "shasum": ""
             },
             "require": {
@@ -1662,9 +1663,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/2.19.6"
+                "source": "https://github.com/doctrine/orm/tree/2.19.7"
             },
-            "time": "2024-06-26T17:24:40+00:00"
+            "time": "2024-08-23T06:54:57+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -3412,16 +3413,16 @@
         },
         {
             "name": "nfephp-org/sped-nfe",
-            "version": "v5.1.24",
+            "version": "v5.1.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-nfe.git",
-                "reference": "c54d8b6a577fc2df97afde3e14c9fa1ba0b15f3e"
+                "reference": "73c9ab7019061dc78f39c1c73200a804ff701482"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/c54d8b6a577fc2df97afde3e14c9fa1ba0b15f3e",
-                "reference": "c54d8b6a577fc2df97afde3e14c9fa1ba0b15f3e",
+                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/73c9ab7019061dc78f39c1c73200a804ff701482",
+                "reference": "73c9ab7019061dc78f39c1c73200a804ff701482",
                 "shasum": ""
             },
             "require": {
@@ -3446,7 +3447,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "v5.0": "5.0-dev"
+                    "v5.1": "5.1-dev"
                 }
             },
             "autoload": {
@@ -3488,9 +3489,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nfephp-org/sped-nfe/issues",
-                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.1.24"
+                "source": "https://github.com/nfephp-org/sped-nfe/tree/v5.1.25"
             },
-            "time": "2024-05-02T20:24:29+00:00"
+            "time": "2024-07-30T19:42:42+00:00"
         },
         {
             "name": "phenx/php-font-lib",
@@ -4147,16 +4148,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.29.1",
+            "version": "1.30.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "fcaefacf2d5c417e928405b71b400d4ce10daaf4"
+                "reference": "5ceb0e384997db59f38774bf79c2a6134252c08f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/fcaefacf2d5c417e928405b71b400d4ce10daaf4",
-                "reference": "fcaefacf2d5c417e928405b71b400d4ce10daaf4",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/5ceb0e384997db59f38774bf79c2a6134252c08f",
+                "reference": "5ceb0e384997db59f38774bf79c2a6134252c08f",
                 "shasum": ""
             },
             "require": {
@@ -4188,9 +4189,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.29.1"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.30.0"
             },
-            "time": "2024-05-31T08:52:43+00:00"
+            "time": "2024-08-29T09:54:52+00:00"
         },
         {
             "name": "psr/cache",
@@ -10918,20 +10919,20 @@
         },
         {
             "name": "twig/extra-bundle",
-            "version": "v3.11.0",
+            "version": "v3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/twig-extra-bundle.git",
-                "reference": "bf8a304eac15838d7724fdf64c345bdefbb75f03"
+                "reference": "a5427976a23c50b98d034d2f4c215ffaaaf5875f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/twig-extra-bundle/zipball/bf8a304eac15838d7724fdf64c345bdefbb75f03",
-                "reference": "bf8a304eac15838d7724fdf64c345bdefbb75f03",
+                "url": "https://api.github.com/repos/twigphp/twig-extra-bundle/zipball/a5427976a23c50b98d034d2f4c215ffaaaf5875f",
+                "reference": "a5427976a23c50b98d034d2f4c215ffaaaf5875f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
+                "php": ">=8.0.2",
                 "symfony/framework-bundle": "^5.4|^6.4|^7.0",
                 "symfony/twig-bundle": "^5.4|^6.4|^7.0",
                 "twig/twig": "^3.0"
@@ -10976,7 +10977,7 @@
                 "twig"
             ],
             "support": {
-                "source": "https://github.com/twigphp/twig-extra-bundle/tree/v3.11.0"
+                "source": "https://github.com/twigphp/twig-extra-bundle/tree/v3.12.0"
             },
             "funding": [
                 {
@@ -10988,24 +10989,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-21T06:25:01+00:00"
+            "time": "2024-08-10T10:32:24+00:00"
         },
         {
             "name": "twig/intl-extra",
-            "version": "v3.11.0",
+            "version": "v3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/intl-extra.git",
-                "reference": "e9cadd61342e71e45b2f4f0558122433fd7e4566"
+                "reference": "61e1189333120a475d2b67b93664b8002668fc27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/intl-extra/zipball/e9cadd61342e71e45b2f4f0558122433fd7e4566",
-                "reference": "e9cadd61342e71e45b2f4f0558122433fd7e4566",
+                "url": "https://api.github.com/repos/twigphp/intl-extra/zipball/61e1189333120a475d2b67b93664b8002668fc27",
+                "reference": "61e1189333120a475d2b67b93664b8002668fc27",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
+                "php": ">=8.0.2",
                 "symfony/intl": "^5.4|^6.4|^7.0",
                 "twig/twig": "^3.10"
             },
@@ -11040,7 +11041,7 @@
                 "twig"
             ],
             "support": {
-                "source": "https://github.com/twigphp/intl-extra/tree/v3.11.0"
+                "source": "https://github.com/twigphp/intl-extra/tree/v3.12.0"
             },
             "funding": [
                 {
@@ -11052,28 +11053,27 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-21T06:25:01+00:00"
+            "time": "2024-08-10T10:32:24+00:00"
         },
         {
             "name": "twig/twig",
-            "version": "v3.11.0",
+            "version": "v3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "e80fb8ebba85c7341a97a9ebf825d7fd4b77708d"
+                "reference": "4d19472d4ac1838e0b1f0e029ce1fa4040eb34ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e80fb8ebba85c7341a97a9ebf825d7fd4b77708d",
-                "reference": "e80fb8ebba85c7341a97a9ebf825d7fd4b77708d",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/4d19472d4ac1838e0b1f0e029ce1fa4040eb34ea",
+                "reference": "4d19472d4ac1838e0b1f0e029ce1fa4040eb34ea",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
+                "php": ">=8.0.2",
                 "symfony/deprecation-contracts": "^2.5|^3",
                 "symfony/polyfill-ctype": "^1.8",
                 "symfony/polyfill-mbstring": "^1.3",
-                "symfony/polyfill-php80": "^1.22",
                 "symfony/polyfill-php81": "^1.29"
             },
             "require-dev": {
@@ -11120,7 +11120,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.11.0"
+                "source": "https://github.com/twigphp/Twig/tree/v3.12.0"
             },
             "funding": [
                 {
@@ -11132,7 +11132,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-08T16:15:16+00:00"
+            "time": "2024-08-29T09:51:12+00:00"
         },
         {
             "name": "vich/uploader-bundle",
