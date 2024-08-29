@@ -1,21 +1,43 @@
 monolog:
     handlers:
-        main:
-            type: fingers_crossed
-            action_level: error
-            handler: nested
-        nested:
+        # Handler para logs gerais de info para cima
+        info_log:
             type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: info
+            max_files: 10
+            channels: ["app"]
+        
+        # Handler para erros e acima, usando fingers_crossed
+        error_log:
+            type: fingers_crossed
+            action_level: error
+            handler: error_nested
+
+        error_nested:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.error.log"
+            level: error
+        
+        # Handler para todos os outros logs
+        general_log:
+            type: rotating_file
+            path: "%kernel.logs_dir%/%kernel.environment%.all.log"
             level: debug
             max_files: 10
+            channels: ["!event", "!php"]
+
+        # Log para o console, como estava antes
         console:
             type: console
             process_psr_3_messages: false
             channels: ["!event", "!doctrine"]
+
+        # Log para depreciações, como estava antes
         deprecation:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.deprecations.log"
+
         deprecation_filter:
             type: filter
             handler: deprecation
