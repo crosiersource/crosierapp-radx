@@ -5,7 +5,10 @@ framework:
         
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
-            async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    queue_name: crosierapp-radx
             failed: 'doctrine://default?queue_name=failed'
             # este transporte é uma RTA para que, de fato, não tente consumir a mensagem, deixando 
             # tempo para que o handler correto (em outra aplicação) faça o tratamento
