@@ -36,7 +36,7 @@
         "babel-eslint": "^10.1.0",
         "babel-preset-typescript-vue": "^1.1.1",
         "blueimp-file-upload": "^10.8.0",
-        "bootstrap": "4.4.1",
+        "bootstrap": "5.0.0",
         "bootstrap-datepicker": "^1.8.0",
         "copy-webpack-plugin": "^6.2.1",
         "core-js": "^3.6.5",
