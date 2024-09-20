@@ -24,7 +24,7 @@
         <div class="col mb-sm-2 mb-0">
           <div class="text-medium-emphasis">Total</div>
           <div class="fw-semibold h4">
-            <Vue3autocounter
+            <!--            <Vue3autocounter
               :startAmount="0"
               :endAmount="resultadosGerais.totalGeral"
               :duration="4"
@@ -33,7 +33,7 @@
               decimalSeparator=","
               :decimals="2"
               :autoinit="true"
-            />
+            />-->
           </div>
           <div class="progress progress-thin mt-2">
             <div
@@ -50,13 +50,13 @@
         <div class="col mb-sm-2 mb-0">
           <div class="text-medium-emphasis">Qtde Vendas</div>
           <div class="fw-semibold h4">
-            <Vue3autocounter
+            <!--            <Vue3autocounter
               :startAmount="0"
               :endAmount="resultadosGerais.qtdeVendas"
               :duration="4"
               separator="."
               :autoinit="true"
-            />
+            />-->
           </div>
           <div class="progress progress-thin mt-2">
             <div
@@ -73,13 +73,13 @@
         <div class="col mb-sm-2 mb-0">
           <div class="text-medium-emphasis">Perguntas/Respostas</div>
           <div class="fw-semibold h4">
-            <Vue3autocounter
+            <!--            <Vue3autocounter
               :startAmount="0"
               :endAmount="resultadosGerais.qtdePerguntas"
               :duration="3"
               separator="."
               :autoinit="true"
-            />
+            />-->
           </div>
           <div class="progress progress-thin mt-2">
             <div
@@ -101,7 +101,7 @@
 import Chart from "primevue/chart";
 import { api, CrosierCalendar } from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
-import Vue3autocounter from "vue3-autocounter";
+// import Vue3autocounter from "vue3-autocounter";
 import moment from "moment";
 
 export default {
@@ -109,7 +109,7 @@ export default {
 
   components: {
     Chart,
-    Vue3autocounter,
+    // Vue3autocounter,
     CrosierCalendar,
   },
 

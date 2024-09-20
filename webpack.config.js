@@ -24,6 +24,7 @@ Encore
     ],
   }))
 
+
   // --------------------------------------------
 
   .addEntry("cleanls", "./assets/js/CleanLocalStorage/cleanLocalStorage.js")
@@ -137,6 +138,7 @@ Encore
 
   // --------------------------------------------
 
+
   .splitEntryChunks()
 
   // se deixar habilitado não funciona o datatables e o select2 (parece que começa a fazer 2 chamadas para montá-los no código)
@@ -184,9 +186,11 @@ Encore
   })
 ;
 
+
 config = Encore.getWebpackConfig();
 config.watchOptions = {
   aggregateTimeout: 1500,
 };
 
 module.exports = config;
+
