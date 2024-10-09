@@ -58,9 +58,9 @@ class NotaFiscalController extends BaseController
 
         $notaFiscal->dtEmissao = $notaFiscal->dtEmissao->setTimezone(new \DateTimeZone('America/Fortaleza'));
         $teste = $notaFiscal->dtEmissao->format('Y-m-d\TH:i:sP');
-        
+
         return CrosierApiResponse::success();
-        
+
     }
 
     /**
@@ -262,6 +262,16 @@ class NotaFiscalController extends BaseController
             $this->syslog->error('Erro ao enviarFaturaParaReprocessamento', $e->getMessage());
             return CrosierApiResponse::viewExceptionError($e, 'Erro ao enviar fatura para reprocessamento');
         }
+    }
+
+
+    /**
+     * @Route("/fis/notaFiscal/findNumerosNfPulados/{cnpj}", name="fis_notaFiscal_findNumerosNfPulados")
+     */
+    public function findNumerosNfPulados(String $cnpj): JsonResponse
+    {
+        $r = $this->doctrine->getRepository(NotaFiscal::class)->findNumerosNfPulados($cnpj);
+        return CrosierApiResponse::success($r);
     }
 
 

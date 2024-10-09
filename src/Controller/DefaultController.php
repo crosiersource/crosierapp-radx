@@ -4,7 +4,9 @@ namespace App\Controller;
 
 
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -67,6 +69,27 @@ class DefaultController extends BaseController
     public function nosec(): Response
     {
         return new Response('nosec OK');
+    }
+
+
+    /**
+     * @Route("/logAnErrorToSyslog", name="logAnErrorToSyslog")
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function logAnErrorToSyslog(): JsonResponse
+    {
+        $this->syslog->error('Um erro que não é um errooooo.', 'Aqui vai a observação!!!');
+        return new JsonResponse(['message' => 'Erro logado no syslog']);
+    }
+
+    /**
+     * @Route("/logAnInfoToSyslog", name="logAnInfoToSyslog")
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function logAnInfoToSyslog(): JsonResponse
+    {
+        $this->syslog->info('Um info SEMMMMM """[[["OBS"]]]""" no syslog.');
+        return new JsonResponse(['message' => 'Info logado no syslog']);
     }
 
 }
