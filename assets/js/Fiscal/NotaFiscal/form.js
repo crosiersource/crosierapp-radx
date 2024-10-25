@@ -148,6 +148,12 @@ const store = createStore({
     async loadData(context) {
       context.commit("setLoading", true);
       await context.dispatch("fiscalStore/loadContribuintes");
+      const contribuintes = context.getters["fiscalStore/getContribuintes"];
+      const contribuinteSelecionado = contribuintes.find((c) => c.checked === "checked");
+      if (contribuinteSelecionado) {
+        context.state.notaFiscal.documentoEmitente = contribuinteSelecionado.cnpj;
+      }
+
       const id = new URLSearchParams(window.location.search.substring(1)).get("id");
       if (id) {
         try {

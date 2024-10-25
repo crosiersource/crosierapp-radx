@@ -99,7 +99,7 @@
 
         <CrosierInputText
           col="4"
-          id="cfop"
+          id="ncm"
           v-model="this.item.ncm"
           :error="this.errors.ncm"
           label="NCM"
@@ -304,7 +304,7 @@ export default {
       });
 
       if ([200, 201].includes(rs?.status)) {
-        this.loadData();
+        await this.loadData();
         this.$store.state.dtItensKey++;
         this.$store.state.exibirDialogItem = false;
       }

@@ -62,6 +62,16 @@
             <button
               type="button"
               style="width: 15rem"
+              class="btn btn-sm btn-outline-danger ml-1"
+              v-if="this.notaFiscal.permiteInutilizacaoDaNumeracao"
+              @click="this.inutilizarNumeracao()"
+            >
+              <i class="far fa-window-close"></i> Inutilizar Numeração
+            </button>
+
+            <button
+              type="button"
+              style="width: 15rem"
               class="btn btn-sm btn-success ml-1"
               v-if="this.notaFiscal.permiteFaturamento"
               @click="this.faturar()"
@@ -141,6 +151,19 @@
             >
               <i class="fas fa-shopping-cart"></i> Venda
             </a>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col">
+            <div
+              class="alert alert-secondary"
+              role="alert"
+              v-if="!(this.notaFiscal?.permiteFaturamento ?? true)"
+            >
+              <i class="fas fa-exclamation-circle"></i> Faturamento habilitado?
+              {{ this.notaFiscal.msgPermiteFaturamento }}
+            </div>
           </div>
         </div>
       </div>
@@ -278,6 +301,42 @@ export default {
                 severity: "success",
                 summary: "Sucesso",
                 detail: "Faturamento enviado com sucesso! (Verifique o status)",
+                life: 5000,
+              });
+            }
+          } catch (e) {
+            this.$toast.add({
+              severity: "error",
+              summary: "Erro",
+              detail: e?.response?.data?.EXCEPTION_MSG ?? "Ocorreu um erro ao efetuar a operação",
+              life: 5000,
+            });
+          }
+
+          this.setLoading(false);
+        },
+      });
+    },
+
+    inutilizarNumeracao() {
+      this.$confirm.require({
+        header: "Confirmação",
+        message: "Confirmar a operação?",
+        icon: "pi pi-exclamation-triangle",
+        group: "confirmDialog_crosierListS",
+        accept: async () => {
+          this.setLoading(true);
+
+          try {
+            const rs = await axios.post(
+              `/fis/notaFiscal/emitidas/inutilizaNumeracao/${this.notaFiscal.id}`
+            );
+            await this.loadData();
+            if (rs?.status === 200) {
+              this.$toast.add({
+                severity: "success",
+                summary: "Sucesso",
+                detail: "Inutilização da numeração realizada com sucesso!",
                 life: 5000,
               });
             }

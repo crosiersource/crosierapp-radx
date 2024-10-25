@@ -87,17 +87,39 @@ class NotaFiscalController extends BaseController
 
 
     /**
-     * @Route("/fis/notaFiscal/emitidas/inutilizaNumeracao", name="fis_notaFiscal_emitidas_inutilizaNumeracao")
+     * @Route("/fis/notaFiscal/emitidas/inutilizaNumeracaoPorDados", name="fis_notaFiscal_emitidas_inutilizaNumeracaoPorDados")
      */
-    public function inutilizaNumeracao(Request $request): Response
+    public function inutilizaNumeracaoPorDados(Request $request): JsonResponse
     {
-        $tipo = $request->get('tipo');
-        $serie = $request->get('serie');
-        $numero = $request->get('numero');
-
-        $r = $this->spedNFeBusiness->inutilizaNumeracao($tipo, $serie, $numero);
-
-        return new Response('<pre>' . print_r($r, true));
+        try {
+            $cnpjEmitente = $request->get('cnpjEmitente');
+            $tipo = $request->get('tipo');
+            $serie = $request->get('serie');
+            $numero = $request->get('numero');
+            $r = $this->spedNFeBusiness->inutilizaNumeracao($cnpjEmitente, $tipo, $serie, $numero);
+            return CrosierApiResponse::success($r);
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error('Erro ao inutilizar numeração');
+        }
+    }
+    
+    /**
+     * @Route("/fis/notaFiscal/emitidas/inutilizaNumeracao/{notaFiscal}", name="fis_notaFiscal_emitidas_inutilizaNumeracao")
+     */
+    public function inutilizaNumeracao(NotaFiscal $notaFiscal): JsonResponse
+    {
+        try {
+            $cnpjEmitente = $notaFiscal->documentoEmitente;
+            $tipo = $notaFiscal->tipoNotaFiscal;
+            $serie = $notaFiscal->serie;
+            $numero = $notaFiscal->numero;
+            $r = $this->spedNFeBusiness->inutilizaNumeracao($cnpjEmitente, $tipo, $serie, $numero);
+            $notaFiscal->jsonData['retorno_inutilizacao_numeracao'] = $r;
+            $this->notaFiscalEntityHandler->save($notaFiscal);
+            return CrosierApiResponse::success($r);
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error('Erro ao inutilizar numeração');
+        }
     }
 
 
