@@ -170,6 +170,9 @@ class XmlsController extends FormListController
         $nfces100 = [];
         // canceladas
         $nfces101 = [];
+        
+        $nfesDevolucao = [];
+        $nfcesDevolucao = [];
 
         $verifNumeros = [];
 
@@ -224,7 +227,11 @@ class XmlsController extends FormListController
 
             if ($nf->tipoNotaFiscal === 'NFE') {
                 if ((int)$nf->cStat === 100) {
-                    $nfes100[] = $nf;
+                    if ($nf->finalidadeNf === 'DEVOLUCAO') {
+                        $nfesDevolucao[] = $nf;
+                    } else {
+                        $nfes100[] = $nf;
+                    }
                 } elseif ((int)$nf->cStat === 101 || ((int)$nf->cStat === 135 && (int)$nf->cStatLote === 101)) {
                     $problemas[] = 'NFE ' . $nf->numero . ' (Chave: ' . $nf->chaveAcesso . ') CANCELADA';
                     $nfes101[] = $nf;
@@ -236,7 +243,11 @@ class XmlsController extends FormListController
                 }
             } elseif ($nf->tipoNotaFiscal === 'NFCE') {
                 if ((int)$nf->cStat === 100) {
-                    $nfces100[] = $nf;
+                    if ($nf->finalidadeNf === 'DEVOLUCAO') {
+                        $nfcesDevolucao[] = $nf;
+                    } else {
+                        $nfces100[] = $nf;
+                    }
                 } elseif ((int)$nf->cStat === 101) {
                     $nfces101[] = $nf;
                 } else {
@@ -298,6 +309,22 @@ class XmlsController extends FormListController
             file_put_contents($arquivoCompleto, $nfce101->getXmlNota());
             touch($arquivoCompleto, $nfce101->dtEmissao->getTimestamp());
             $zip->addFile($arquivoCompleto, 'NFCEs/canceladas/' . $nomeArquivo);
+        }
+
+        foreach ($nfesDevolucao as $nfDevolucao) {
+            $nomeArquivo = $nfDevolucao->chaveAcesso . '-' . $nfDevolucao->numero . '.xml';
+            $arquivoCompleto = $_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . 'tmp/' . $nomeArquivo;
+            file_put_contents($arquivoCompleto, $nfDevolucao->getXmlNota());
+            touch($arquivoCompleto, $nfDevolucao->dtEmissao->getTimestamp());
+            $zip->addFile($arquivoCompleto, 'NFEs/devolucoes/' . $nomeArquivo);
+        }
+        
+        foreach ($nfcesDevolucao as $nfDevolucao) {
+            $nomeArquivo = $nfDevolucao->chaveAcesso . '-' . $nfDevolucao->numero . '.xml';
+            $arquivoCompleto = $_SERVER['FISCAL_PASTA_DOWNLOAD_XMLS'] . 'tmp/' . $nomeArquivo;
+            file_put_contents($arquivoCompleto, $nfDevolucao->getXmlNota());
+            touch($arquivoCompleto, $nfDevolucao->dtEmissao->getTimestamp());
+            $zip->addFile($arquivoCompleto, 'NFCEs/devolucoes/' . $nomeArquivo);
         }
 
         $zip->addFromString('avisos.txt', implode(PHP_EOL, $problemas));
