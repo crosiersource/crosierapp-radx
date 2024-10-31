@@ -1145,7 +1145,6 @@ class VendaController extends FormListController
         };
 
         $fnHandleDadosList = function (&$dados, $countByFilter, ?array $filterDatas = []) {
-            $dia = null;
             $dias = [];
             $i = -1;
 
@@ -1164,7 +1163,9 @@ class VendaController extends FormListController
                 /** @var FilterData $filterData */
                 foreach ($filterDatas as $filterData) {
                     if ($filterData->filterType === 'BETWEEN_DATE_CONCAT') {
-                        $serieDeDias = DateTimeUtils::getDatesList($filterData->val['f'], $filterData->val['i']);
+                        $dtFim = DateTimeUtils::parseDateStr($filterData->val['f']);
+                        $dtIni = DateTimeUtils::parseDateStr($filterData->val['i']);
+                        $serieDeDias = DateTimeUtils::getDatesList($dtFim, $dtIni);
                     }
                 }
             } else {
