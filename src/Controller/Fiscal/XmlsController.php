@@ -150,7 +150,7 @@ class XmlsController extends FormListController
         if ($request->get('naturezaOperacao')) {
             $filters[] = ['naturezaOperacao', 'LIKE', '%' . $request->get('naturezaOperacao') . '%'];
         }
-        if ($request->get('finalidadeNf')) {
+        if ($request->get('finalidadeNf') && $request->get('finalidadeNf') !== 'null') {
             $filters[] = ['finalidadeNf', 'EQ', $request->get('finalidadeNf')];
         }
         

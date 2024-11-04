@@ -183,7 +183,7 @@ class NFeUtilsController extends BaseController
                     $certificate = Certificate::readPfx($pfx, $nfeConfigs['certificadoPwd']);
                     $certificadoValidoAte = $certificate->getValidTo()->format('d/m/Y H:i:s');
                 } catch (\Throwable $e) {
-                    $this->logger->error('Erro ao ler certificado', $e);
+                    $this->logger->error('Erro ao ler certificado');
                     throw new ViewException('Erro ao ler certificado');
                 }
                 $contribuintes[] = [
