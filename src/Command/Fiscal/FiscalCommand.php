@@ -127,6 +127,8 @@ class FiscalCommand extends Command
 
         foreach ($nfeConfigs as $nfeConfig) {
 
+            $output->writeln(print_r($nfeConfig, true));
+            
             $this->doObterDistDFes($nfeConfig['cnpj'], $output, null, false);
 
             if ($nfeConfig['obterDistDFesParaCTes'] ?? false) {
