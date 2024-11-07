@@ -126,7 +126,7 @@ class FiscalCommand extends Command
         }
 
         foreach ($nfeConfigs as $nfeConfig) {
-
+            $output->writeln(str_repeat('-', 100));
             $output->writeln(print_r($nfeConfig, true));
             
             $this->doObterDistDFes($nfeConfig['cnpj'], $output, null, false);
