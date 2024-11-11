@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4835504692eba4b60f0bd46fbff63417",
+    "content-hash": "ef793eeaabcd168b116cad612e1d075c",
     "packages": [
         {
             "name": "api-platform/core",
@@ -243,16 +243,16 @@
         },
         {
             "name": "crosiersource/crosierlib-base",
-            "version": "v1.14.1",
+            "version": "v1.14.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-base.git",
-                "reference": "06ca173ab823269d971d200c89abcd891f5672ec"
+                "reference": "0af06c7fc5eb13e33bb3d14ee6cc3a9ffeaeb0a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/06ca173ab823269d971d200c89abcd891f5672ec",
-                "reference": "06ca173ab823269d971d200c89abcd891f5672ec",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-base/zipball/0af06c7fc5eb13e33bb3d14ee6cc3a9ffeaeb0a8",
+                "reference": "0af06c7fc5eb13e33bb3d14ee6cc3a9ffeaeb0a8",
                 "shasum": ""
             },
             "require": {
@@ -356,22 +356,22 @@
             ],
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-base/issues",
-                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.14.1"
+                "source": "https://github.com/crosiersource/crosierlib-base/tree/v1.14.2"
             },
-            "time": "2024-11-07T20:00:01+00:00"
+            "time": "2024-11-11T19:01:32+00:00"
         },
         {
             "name": "crosiersource/crosierlib-radx",
-            "version": "v1.14.2",
+            "version": "v1.14.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crosiersource/crosierlib-radx.git",
-                "reference": "53dfebe52277c469bee915354900e4a2d5612ebb"
+                "reference": "db67e74da9a19560bf392bc92433341ca236f656"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/53dfebe52277c469bee915354900e4a2d5612ebb",
-                "reference": "53dfebe52277c469bee915354900e4a2d5612ebb",
+                "url": "https://api.github.com/repos/crosiersource/crosierlib-radx/zipball/db67e74da9a19560bf392bc92433341ca236f656",
+                "reference": "db67e74da9a19560bf392bc92433341ca236f656",
                 "shasum": ""
             },
             "require": {
@@ -410,9 +410,9 @@
             "description": "Bundle para o CrosierApp Radx",
             "support": {
                 "issues": "https://github.com/crosiersource/crosierlib-radx/issues",
-                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.14.2"
+                "source": "https://github.com/crosiersource/crosierlib-radx/tree/v1.14.3"
             },
-            "time": "2024-11-07T20:00:40+00:00"
+            "time": "2024-11-11T19:06:01+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -4092,23 +4092,23 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.9.0",
+            "version": "1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "1fb5ba8d045f5dd984ebded5b1cc66f29459422d"
+                "reference": "679e3ce485b99e84c775d28e2e96fade9a7fb50a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/1fb5ba8d045f5dd984ebded5b1cc66f29459422d",
-                "reference": "1fb5ba8d045f5dd984ebded5b1cc66f29459422d",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/679e3ce485b99e84c775d28e2e96fade9a7fb50a",
+                "reference": "679e3ce485b99e84c775d28e2e96fade9a7fb50a",
                 "shasum": ""
             },
             "require": {
                 "doctrine/deprecations": "^1.0",
                 "php": "^7.3 || ^8.0",
                 "phpdocumentor/reflection-common": "^2.0",
-                "phpstan/phpdoc-parser": "^1.18"
+                "phpstan/phpdoc-parser": "^1.18|^2.0"
             },
             "require-dev": {
                 "ext-tokenizer": "*",
@@ -4144,9 +4144,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.9.0"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.10.0"
             },
-            "time": "2024-11-03T20:11:34+00:00"
+            "time": "2024-11-09T15:12:26+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -13456,7 +13456,8 @@
         "ext-curl": "*",
         "ext-json": "*",
         "ext-simplexml": "*",
-        "ext-zip": "*"
+        "ext-zip": "*",
+        "ext-zlib": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"
