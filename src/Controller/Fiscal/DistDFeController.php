@@ -2,6 +2,7 @@
 
 namespace App\Controller\Fiscal;
 
+use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
@@ -20,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @author Carlos Eduardo Pauluk
  */
-class DistDFeController extends AbstractController
+class DistDFeController extends BaseController
 {
 
     private NFeUtils $nfeUtils;
@@ -155,7 +156,7 @@ class DistDFeController extends AbstractController
         } catch (ViewException $e) {
             $this->addFlash('error', $e->getMessage());
         }
-        return $this->redirect('/v/fis/notaFiscal/distdfe/list');
+        return $this->redirect('/v/fis/notaFiscal/form?id=' . $distDFe?->notaFiscal?->getId());
     }
 
 
@@ -195,6 +196,31 @@ class DistDFeController extends AbstractController
     {
         $this->distDFeBusiness->res2proc();
         return CrosierApiResponse::success();
+    }
+
+
+    /**
+     * @Route("/fis/distDFe/exibirDistDFesPorChave/{chave}", name="fis_distDFe_exibirDistDFesPorChave")
+     */
+    public function exibirDistDFesPorChave(String $chave): JsonResponse
+    {
+        $repoDistDFes = $this->doctrine->getRepository(DistDFe::class);
+        $distDFes = $repoDistDFes->findBy(['chave' => $chave], ['nsu' => 'DESC']);
+        $rs = [];
+        /** @var DistDFe $distDFe */
+        foreach ($distDFes as $distDFe) {
+            $d = [
+                'id' => $distDFe->getId(),
+                'nsu' => $distDFe->nsu,
+                'dataHora' => $distDFe->getUpdated()->format('d/m/Y H:i:s'),
+                'documento' => $distDFe->documento,
+                'chave' => $distDFe->chave,
+                'status' => $distDFe->status,
+                'xml' => $distDFe->getXMLDecodedAsString(),
+            ];
+            $rs[] = $d;
+        }
+        return new JsonResponse($rs);
     }
 
 

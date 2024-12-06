@@ -26,6 +26,7 @@
       'xNomeEmitente',
       'possuiXml',
       'dtManifestDest',
+      'cStat',
     ]"
   >
     <template v-slot:headerButtons>
@@ -182,6 +183,8 @@
             >
               {{ r.data.resumo ? "Resumo" : "Completa" }}
             </div>
+            <div></div>
+            <div class="badge badge-pill badge-info" v-if="r.data.cStat == 101">CANCELADA</div>
             <div></div>
             <div
               class="badge badge-pill badge-warning"

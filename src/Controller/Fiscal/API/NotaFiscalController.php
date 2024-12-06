@@ -71,7 +71,7 @@ class NotaFiscalController extends BaseController
         try {
             $rNfsIds = $request->get('nfsIds');
             $nfsIds = explode(',', $rNfsIds);
-            $repoNotaFiscal = $this->getDoctrine()->getRepository(NotaFiscal::class);
+            $repoNotaFiscal = $this->doctrine->getRepository(NotaFiscal::class);
             foreach ($nfsIds as $nfId) {
                 $nf = $repoNotaFiscal->find($nfId);
                 $spedNFeBusiness->manifestar($nf, $codManifest);
@@ -113,7 +113,7 @@ class NotaFiscalController extends BaseController
         }
 
         /** @var NotaFiscalRepository $repoNotasFiscais */
-        $repoNotasFiscais = $this->getDoctrine()->getRepository(NotaFiscal::class);
+        $repoNotasFiscais = $this->doctrine->getRepository(NotaFiscal::class);
 
         $nfs = $repoNotasFiscais->findByFiltersSimpl([
             ['id', 'IN', explode(',', $nfsIds)],
@@ -168,7 +168,7 @@ class NotaFiscalController extends BaseController
         }
         
         /** @var NotaFiscalRepository $repoNotasFiscais */
-        $repoNotasFiscais = $this->getDoctrine()->getRepository(NotaFiscal::class);
+        $repoNotasFiscais = $this->doctrine->getRepository(NotaFiscal::class);
 
         $nfs = $repoNotasFiscais->findByFiltersSimpl([
             ['id', 'IN', explode(',', $nfsIds)],

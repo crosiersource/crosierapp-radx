@@ -600,7 +600,6 @@ class VendaController extends FormListController
         $fnHandleRequestOnValid = function (Request $request, $venda) use ($integradorBusinessFactory): void {
             $this->integrarVendaParaEcommerce($venda, $integradorBusinessFactory);
         };
-
         $params['permiteFinalizarVenda'] = $this->vendaBusiness->permiteFinalizarVenda($venda);
 
         return $this->doForm($request, $venda, $params, false, $fnHandleRequestOnValid);

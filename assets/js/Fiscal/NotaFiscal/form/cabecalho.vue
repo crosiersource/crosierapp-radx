@@ -28,7 +28,22 @@
     </div>
 
     <div class="form-row">
-      <CrosierInputText label="Status" id="status" v-model="this.notaFiscal.infoStatus" disabled />
+      <CrosierInputText
+        :col="this.notaFiscal.cStat === 101 ? 6 : 12"
+        label="Status"
+        id="status"
+        v-model="this.notaFiscal.infoStatus"
+        disabled
+      />
+
+      <CrosierInputText
+        v-if="this.notaFiscal.cStat === 101"
+        col="6"
+        label="Motivo do Cancelamento"
+        id="motivoCancelamento"
+        v-model="this.notaFiscal.motivoCancelamento"
+        disabled
+      />
     </div>
 
     <div class="form-row">

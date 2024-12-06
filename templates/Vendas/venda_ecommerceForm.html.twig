@@ -282,6 +282,12 @@
                                                 {% if item.jsonData.obs|default(false) %}
                                                     <br><small class="text-muted">{{ item.jsonData.obs }}</small>
                                                 {% endif %}
+                                                {% if item.produto.composicao == 'S' %}
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        {{ item.produto.descricaoMontadaComposicao|nl2br }}
+                                                    </small>
+                                                {% endif %}
                                             </div>
                                             <div class="float-right">
                                                 <a href="{{ url('est_produto_form', {'id':item.produto.id}) }}" target="_blank">
